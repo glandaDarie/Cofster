@@ -18,10 +18,10 @@ class _QuestionnairePageState extends State<QuestionnairePage> {
       _selectedOptions.add(option);
       _questionIndex++;
     });
-    // if (_questionIndex >= questions.length) {
-    //   Navigator.of(context)
-    //       .pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
-    // }
+    if (_questionIndex >= questions.length) {
+      Navigator.of(context)
+          .pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
+    }
   }
 
   void _onPreviousQuestion() {
