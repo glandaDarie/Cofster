@@ -1,330 +1,7 @@
-// import 'package:flutter/material.dart';
-// import 'package:google_fonts/google_fonts.dart';
-// import 'package:coffee_orderer/utils/questions.dart';
-
-// class QuestionnairePage extends StatefulWidget {
-//   @override
-//   _QuestionnairePageState createState() => _QuestionnairePageState();
-// }
-
-// class _QuestionnairePageState extends State<QuestionnairePage> {
-//   int _questionIndex = 0;
-//   List<String> _selectedOptions = [];
-
-//   void _onOptionSelected(String option) {
-//     setState(() {
-//       _selectedOptions.add(option);
-//       _questionIndex++;
-//     });
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     List<String> currentQuestionOptions =
-//         questions.values.elementAt(_questionIndex);
-
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text("Questionnaire"),
-//         centerTitle: true,
-//         backgroundColor: Colors.brown,
-//       ),
-//       body: Padding(
-//         padding: const EdgeInsets.all(16.0),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.stretch,
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             Text(
-//               questions.keys.elementAt(_questionIndex),
-//               style: GoogleFonts.quicksand(
-//                 textStyle: TextStyle(
-//                   fontSize: 20,
-//                   fontWeight: FontWeight.bold,
-//                   color: Colors.brown,
-//                 ),
-//               ),
-//               textAlign: TextAlign.center,
-//             ),
-//             SizedBox(height: 16),
-//             ...currentQuestionOptions.map(
-//               (option) => Padding(
-//                 padding: EdgeInsets.symmetric(vertical: 8.0),
-//                 child: ElevatedButton(
-//                   onPressed: () => _onOptionSelected(option),
-//                   style: ElevatedButton.styleFrom(
-//                     backgroundColor: Colors.brown,
-//                     shape: RoundedRectangleBorder(
-//                       borderRadius: BorderRadius.circular(16.0),
-//                     ),
-//                   ),
-//                   child: Text(
-//                     option,
-//                     style: GoogleFonts.quicksand(
-//                       textStyle: TextStyle(
-//                         fontSize: 16,
-//                         fontWeight: FontWeight.bold,
-//                         color: Colors.white,
-//                       ),
-//                     ),
-//                   ),
-//                 ),
-//               ),
-//             ),
-//             SizedBox(height: 16),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// import 'package:flutter/material.dart';
-// import 'package:google_fonts/google_fonts.dart';
-// import 'package:coffee_orderer/utils/questions.dart';
-
-// class QuestionnairePage extends StatefulWidget {
-//   @override
-//   _QuestionnairePageState createState() => _QuestionnairePageState();
-// }
-
-// class _QuestionnairePageState extends State<QuestionnairePage> {
-//   int _questionIndex = 0;
-//   List<String> _selectedOptions = [];
-
-//   void _onOptionSelected(String option) {
-//     setState(() {
-//       _selectedOptions.add(option);
-//       print("Selected options are : ${_selectedOptions}");
-//       _questionIndex++;
-//     });
-//   }
-
-//   void _onPreviousQuestion() {
-//     setState(() {
-//       _questionIndex--;
-//       _selectedOptions.removeLast();
-//     });
-//   }
-
-//   void _onNextQuestion() {
-//     setState(() {
-//       _questionIndex++;
-//     });
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     List<String> currentQuestionOptions =
-//         questions.values.elementAt(_questionIndex);
-
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text("Questionnaire"),
-//         centerTitle: true,
-//         backgroundColor: Colors.brown,
-//       ),
-//       body: Padding(
-//         padding: const EdgeInsets.all(16.0),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.stretch,
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             Text(
-//               questions.keys.elementAt(_questionIndex),
-//               style: GoogleFonts.quicksand(
-//                 textStyle: TextStyle(
-//                   fontSize: 20,
-//                   fontWeight: FontWeight.bold,
-//                   color: Colors.brown,
-//                 ),
-//               ),
-//               textAlign: TextAlign.center,
-//             ),
-//             SizedBox(height: 16),
-//             ...currentQuestionOptions.map(
-//               (option) => Padding(
-//                 padding: EdgeInsets.symmetric(vertical: 8.0),
-//                 child: ElevatedButton(
-//                   onPressed: () => _onOptionSelected(option),
-//                   style: ElevatedButton.styleFrom(
-//                     backgroundColor: Colors.brown,
-//                     shape: RoundedRectangleBorder(
-//                       borderRadius: BorderRadius.circular(16.0),
-//                     ),
-//                   ),
-//                   child: Text(
-//                     option,
-//                     style: GoogleFonts.quicksand(
-//                       textStyle: TextStyle(
-//                         fontSize: 16,
-//                         fontWeight: FontWeight.bold,
-//                         color: Colors.white,
-//                       ),
-//                     ),
-//                   ),
-//                 ),
-//               ),
-//             ),
-//             SizedBox(height: 16),
-//             Row(
-//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//               children: [
-//                 if (_questionIndex > 0)
-//                   ElevatedButton(
-//                     onPressed: _onPreviousQuestion,
-//                     child: Text("Back"),
-//                   ),
-//                 if (_questionIndex < questions.length - 1)
-//                   ElevatedButton(
-//                     onPressed: _onNextQuestion,
-//                     child: Text("Next"),
-//                   ),
-//               ],
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// import 'package:flutter/material.dart';
-// import 'package:google_fonts/google_fonts.dart';
-// import 'package:coffee_orderer/utils/questions.dart';
-
-// class QuestionnairePage extends StatefulWidget {
-//   @override
-//   _QuestionnairePageState createState() => _QuestionnairePageState();
-// }
-
-// class _QuestionnairePageState extends State<QuestionnairePage> {
-//   int _questionIndex = 0;
-//   List<String> _selectedOptions = [];
-
-//   void _onOptionSelected(String option) {
-//     setState(() {
-//       _selectedOptions.add(option);
-//       print("Selected options are : ${_selectedOptions}");
-//       _questionIndex++;
-//     });
-//   }
-
-//   void _onPreviousQuestion() {
-//     setState(() {
-//       _questionIndex--;
-//       _selectedOptions.removeLast();
-//     });
-//   }
-
-//   void _onNextQuestion() {
-//     setState(() {
-//       _questionIndex++;
-//     });
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     List<String> currentQuestionOptions =
-//         questions.values.elementAt(_questionIndex);
-
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text("Questionnaire"),
-//         centerTitle: true,
-//         backgroundColor: Colors.brown,
-//       ),
-//       body: Padding(
-//         padding: const EdgeInsets.all(16.0),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.stretch,
-//           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//           children: [
-//             Column(
-//               children: [
-//                 Text(
-//                   questions.keys.elementAt(_questionIndex),
-//                   style: GoogleFonts.quicksand(
-//                     textStyle: TextStyle(
-//                       fontSize: 20,
-//                       fontWeight: FontWeight.bold,
-//                       color: Colors.brown,
-//                     ),
-//                   ),
-//                   textAlign: TextAlign.center,
-//                 ),
-//                 SizedBox(height: 16),
-//                 ...currentQuestionOptions.map(
-//                   (option) => Padding(
-//                     padding: EdgeInsets.symmetric(vertical: 8.0),
-//                     child: ElevatedButton(
-//                       onPressed: () => _onOptionSelected(option),
-//                       style: ElevatedButton.styleFrom(
-//                         backgroundColor: Colors.brown,
-//                         padding:
-//                             EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-//                         shape: RoundedRectangleBorder(
-//                           borderRadius: BorderRadius.circular(16.0),
-//                         ),
-//                       ),
-//                       child: Text(
-//                         option,
-//                         style: GoogleFonts.quicksand(
-//                           textStyle: TextStyle(
-//                             fontSize: 16,
-//                             fontWeight: FontWeight.bold,
-//                             color: Colors.white,
-//                           ),
-//                         ),
-//                       ),
-//                     ),
-//                   ),
-//                 ),
-//               ],
-//             ),
-//             Row(
-//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//               children: [
-//                 if (_questionIndex > 0)
-//                   ElevatedButton.icon(
-//                     onPressed: _onPreviousQuestion,
-//                     icon: Icon(Icons.arrow_back),
-//                     label: Text("Back"),
-//                     style: ElevatedButton.styleFrom(
-//                       backgroundColor: Colors.brown,
-//                       padding:
-//                           EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-//                       shape: RoundedRectangleBorder(
-//                         borderRadius: BorderRadius.circular(16.0),
-//                       ),
-//                     ),
-//                   ),
-//                 if (_questionIndex < questions.length - 1)
-//                   ElevatedButton.icon(
-//                     onPressed: _onNextQuestion,
-//                     icon: Icon(Icons.arrow_forward),
-//                     label: Text("Next"),
-//                     style: ElevatedButton.styleFrom(
-//                       backgroundColor: Colors.brown,
-//                       padding:
-//                           EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-//                       shape: RoundedRectangleBorder(
-//                         borderRadius: BorderRadius.circular(16.0),
-//                       ),
-//                     ),
-//                   ),
-//               ],
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:coffee_orderer/utils/questions.dart';
+import 'package:coffee_orderer/screens/mainScreen.dart';
 
 class QuestionnairePage extends StatefulWidget {
   @override
@@ -334,13 +11,17 @@ class QuestionnairePage extends StatefulWidget {
 class _QuestionnairePageState extends State<QuestionnairePage> {
   int _questionIndex = 0;
   List<String> _selectedOptions = [];
+  List<String> currentQuestionOptions;
 
   void _onOptionSelected(String option) {
     setState(() {
       _selectedOptions.add(option);
-      print("Selected options are : ${_selectedOptions}");
       _questionIndex++;
     });
+    // if (_questionIndex >= questions.length) {
+    //   Navigator.of(context)
+    //       .pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
+    // }
   }
 
   void _onPreviousQuestion() {
@@ -354,13 +35,20 @@ class _QuestionnairePageState extends State<QuestionnairePage> {
     setState(() {
       _questionIndex++;
     });
+    if (_questionIndex >= questions.length) {
+      Navigator.of(context)
+          .pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    List<String> currentQuestionOptions =
-        questions.values.elementAt(_questionIndex);
-
+    print("Status ? ${_questionIndex <= questions.length}");
+    print(
+        "_questionIndex: ${_questionIndex}, questions.length: ${questions.length}");
+    if (_questionIndex < questions.length) {
+      currentQuestionOptions = questions.values.elementAt(_questionIndex);
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text("Questionnaire"),
