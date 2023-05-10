@@ -14,31 +14,33 @@ class _QuestionnairePageState extends State<QuestionnairePage> {
   List<String> currentQuestionOptions;
 
   void _onOptionSelected(String option) {
-    setState(() {
-      _selectedOptions.add(option);
-      _questionIndex++;
-    });
-    if (_questionIndex >= questions.length) {
+    if (_questionIndex >= questions.length - 1) {
       Navigator.of(context)
           .pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
+      return;
     }
+    setState(() {
+      _selectedOptions.add(option);
+      _questionIndex += 1;
+    });
   }
 
   void _onPreviousQuestion() {
     setState(() {
-      _questionIndex--;
+      _questionIndex -= 1;
       _selectedOptions.removeLast();
     });
   }
 
-  void _onNextQuestion() {
-    setState(() {
-      _questionIndex++;
-    });
-    if (_questionIndex >= questions.length) {
+  void _onNextQuestion() async {
+    if (_questionIndex >= questions.length - 1) {
       Navigator.of(context)
           .pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
+      return;
     }
+    setState(() {
+      _questionIndex += 1;
+    });
   }
 
   @override
@@ -101,7 +103,8 @@ class _QuestionnairePageState extends State<QuestionnairePage> {
                         (option) => Padding(
                           padding: EdgeInsets.symmetric(vertical: 8.0),
                           child: ElevatedButton(
-                            onPressed: () => _onOptionSelected(option),
+                            onPressed: () async =>
+                                await _onOptionSelected(option),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.brown,
                               shape: RoundedRectangleBorder(

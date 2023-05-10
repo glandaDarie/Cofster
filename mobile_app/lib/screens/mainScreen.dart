@@ -43,7 +43,7 @@ class _HomePageState extends State<HomePage> {
               builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
                 if (snapshot.hasData) {
                   return Text(
-                    "Welcome, ${snapshot.data}",
+                    "Hello, ${snapshot.data}",
                     style: TextStyle(
                         fontFamily: "Baskerville",
                         fontSize: 35.0,
