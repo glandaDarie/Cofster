@@ -1,19 +1,5 @@
 // import 'package:flutter/material.dart';
-
-// class QuestionnairePage extends StatefulWidget {
-//   @override
-//   _QuestionnairePageState createState() => _QuestionnairePageState();
-// }
-
-// class _QuestionnairePageState extends State<QuestionnairePage> {
-//   QuestionnairePageState() {}
-
-//   Widget build(BuildContext context) {
-//     return Scaffold();
-//   }
-// }
-
-// import 'package:flutter/material.dart';
+// import 'package:google_fonts/google_fonts.dart';
 // import 'package:coffee_orderer/utils/questions.dart';
 
 // class QuestionnairePage extends StatefulWidget {
@@ -39,117 +25,53 @@
 
 //     return Scaffold(
 //       appBar: AppBar(
-//         title: Text('Question ${_questionIndex + 1}'),
-//       ),
-//       body: Padding(
-//         padding: const EdgeInsets.all(16.0),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.stretch,
-//           children: [
-//             Text(
-//               questions.keys.elementAt(_questionIndex),
-//               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-//             ),
-//             SizedBox(height: 16),
-//             ...currentQuestionOptions.map((option) => OptionButton(
-//                   text: option,
-//                   onPressed: () => _onOptionSelected(option),
-//                 )),
-//             Spacer(),
-//             if (_questionIndex < questions.length - 1)
-//               ElevatedButton(
-//                 onPressed: () => _onOptionSelected(null),
-//                 child: Text('Next'),
-//               ),
-//             if (_questionIndex == questions.length - 1)
-//               ElevatedButton(
-//                 onPressed: () => print(_selectedOptions),
-//                 child: Text('Submit'),
-//               ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// class OptionButton extends StatelessWidget {
-//   final String text;
-//   final VoidCallback onPressed;
-
-//   OptionButton({@required this.text, @required this.onPressed});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return ElevatedButton(
-//       onPressed: onPressed,
-//       child: Text(text),
-//     );
-//   }
-// }
-
-// import 'package:flutter/material.dart';
-// import 'package:coffee_orderer/utils/questions.dart';
-
-// class QuestionnairePage extends StatefulWidget {
-//   @override
-//   _QuestionnairePageState createState() => _QuestionnairePageState();
-// }
-
-// class _QuestionnairePageState extends State<QuestionnairePage> {
-//   int _questionIndex = 0;
-//   List<String> _selectedOptions = [];
-
-//   void _onOptionSelected(String option) {
-//     setState(() {
-//       _selectedOptions.add(option);
-//       _questionIndex++;
-//     });
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     List<String> currentQuestionOptions =
-//         questions.values.elementAt(_questionIndex);
-
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Question ${_questionIndex + 1}'),
+//         title: Text("Questionnaire"),
+//         centerTitle: true,
 //         backgroundColor: Colors.brown,
 //       ),
 //       body: Padding(
 //         padding: const EdgeInsets.all(16.0),
 //         child: Column(
 //           crossAxisAlignment: CrossAxisAlignment.stretch,
+//           mainAxisAlignment: MainAxisAlignment.center,
 //           children: [
 //             Text(
 //               questions.keys.elementAt(_questionIndex),
-//               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+//               style: GoogleFonts.quicksand(
+//                 textStyle: TextStyle(
+//                   fontSize: 20,
+//                   fontWeight: FontWeight.bold,
+//                   color: Colors.brown,
+//                 ),
+//               ),
+//               textAlign: TextAlign.center,
 //             ),
 //             SizedBox(height: 16),
-//             ...currentQuestionOptions.map((option) => OptionButton(
-//                   text: option,
+//             ...currentQuestionOptions.map(
+//               (option) => Padding(
+//                 padding: EdgeInsets.symmetric(vertical: 8.0),
+//                 child: ElevatedButton(
 //                   onPressed: () => _onOptionSelected(option),
-//                 )),
-//             Spacer(),
-//             if (_questionIndex < questions.length - 1)
-//               ElevatedButton(
-//                 onPressed: () => _onOptionSelected(null),
-//                 child: Text('Next'),
-//                 style: ElevatedButton.styleFrom(
-//                   primary: Colors.brown,
-//                   onPrimary: Colors.white,
+//                   style: ElevatedButton.styleFrom(
+//                     backgroundColor: Colors.brown,
+//                     shape: RoundedRectangleBorder(
+//                       borderRadius: BorderRadius.circular(16.0),
+//                     ),
+//                   ),
+//                   child: Text(
+//                     option,
+//                     style: GoogleFonts.quicksand(
+//                       textStyle: TextStyle(
+//                         fontSize: 16,
+//                         fontWeight: FontWeight.bold,
+//                         color: Colors.white,
+//                       ),
+//                     ),
+//                   ),
 //                 ),
 //               ),
-//             if (_questionIndex == questions.length - 1)
-//               ElevatedButton(
-//                 onPressed: () => print(_selectedOptions),
-//                 child: Text('Submit'),
-//                 style: ElevatedButton.styleFrom(
-//                   primary: Colors.brown,
-//                   onPrimary: Colors.white,
-//                 ),
-//               ),
+//             ),
+//             SizedBox(height: 16),
 //           ],
 //         ),
 //       ),
@@ -157,30 +79,8 @@
 //   }
 // }
 
-// class OptionButton extends StatelessWidget {
-//   final String text;
-//   final VoidCallback onPressed;
-
-//   OptionButton({@required this.text, @required this.onPressed});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return ElevatedButton(
-//       onPressed: onPressed,
-//       child: Text(text),
-//       style: ElevatedButton.styleFrom(
-//         primary: Colors.white,
-//         onPrimary: Colors.brown,
-//         shape: RoundedRectangleBorder(
-//           borderRadius: BorderRadius.circular(8),
-//         ),
-//         padding: EdgeInsets.symmetric(vertical: 16),
-//       ),
-//     );
-//   }
-// }
-
 // import 'package:flutter/material.dart';
+// import 'package:google_fonts/google_fonts.dart';
 // import 'package:coffee_orderer/utils/questions.dart';
 
 // class QuestionnairePage extends StatefulWidget {
@@ -195,6 +95,20 @@
 //   void _onOptionSelected(String option) {
 //     setState(() {
 //       _selectedOptions.add(option);
+//       print("Selected options are : ${_selectedOptions}");
+//       _questionIndex++;
+//     });
+//   }
+
+//   void _onPreviousQuestion() {
+//     setState(() {
+//       _questionIndex--;
+//       _selectedOptions.removeLast();
+//     });
+//   }
+
+//   void _onNextQuestion() {
+//     setState(() {
 //       _questionIndex++;
 //     });
 //   }
@@ -206,114 +120,210 @@
 
 //     return Scaffold(
 //       appBar: AppBar(
-//         backgroundColor: Colors.brown[400],
-//         elevation: 0,
-//         title: Text(
-//           'Question ${_questionIndex + 1}',
-//           style: TextStyle(
-//             color: Colors.white,
-//             fontWeight: FontWeight.bold,
-//           ),
-//         ),
+//         title: Text("Questionnaire"),
 //         centerTitle: true,
+//         backgroundColor: Colors.brown,
 //       ),
-//       body: Container(
-//         decoration: BoxDecoration(
-//           gradient: LinearGradient(
-//             begin: Alignment.topCenter,
-//             end: Alignment.bottomCenter,
-//             colors: [Colors.brown[400], Colors.brown[200]],
-//           ),
-//         ),
-//         child: Padding(
-//           padding: const EdgeInsets.all(16.0),
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.stretch,
-//             children: [
-//               Expanded(
-//                 child: Card(
-//                   shape: RoundedRectangleBorder(
-//                     borderRadius: BorderRadius.circular(20),
+//       body: Padding(
+//         padding: const EdgeInsets.all(16.0),
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.stretch,
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: [
+//             Text(
+//               questions.keys.elementAt(_questionIndex),
+//               style: GoogleFonts.quicksand(
+//                 textStyle: TextStyle(
+//                   fontSize: 20,
+//                   fontWeight: FontWeight.bold,
+//                   color: Colors.brown,
+//                 ),
+//               ),
+//               textAlign: TextAlign.center,
+//             ),
+//             SizedBox(height: 16),
+//             ...currentQuestionOptions.map(
+//               (option) => Padding(
+//                 padding: EdgeInsets.symmetric(vertical: 8.0),
+//                 child: ElevatedButton(
+//                   onPressed: () => _onOptionSelected(option),
+//                   style: ElevatedButton.styleFrom(
+//                     backgroundColor: Colors.brown,
+//                     shape: RoundedRectangleBorder(
+//                       borderRadius: BorderRadius.circular(16.0),
+//                     ),
 //                   ),
-//                   child: Padding(
-//                     padding: const EdgeInsets.all(16.0),
-//                     child: Column(
-//                       children: [
-//                         Text(
-//                           questions.keys.elementAt(_questionIndex),
-//                           style: TextStyle(
-//                             fontSize: 20,
-//                             fontWeight: FontWeight.bold,
-//                           ),
-//                         ),
-//                         SizedBox(height: 16),
-//                         ...currentQuestionOptions.map(
-//                           (option) => OptionButton(
-//                             text: option,
-//                             onPressed: () => _onOptionSelected(option),
-//                           ),
-//                         ),
-//                       ],
+//                   child: Text(
+//                     option,
+//                     style: GoogleFonts.quicksand(
+//                       textStyle: TextStyle(
+//                         fontSize: 16,
+//                         fontWeight: FontWeight.bold,
+//                         color: Colors.white,
+//                       ),
 //                     ),
 //                   ),
 //                 ),
 //               ),
-//               SizedBox(height: 16),
-//               if (_questionIndex < questions.length - 1)
-//                 ElevatedButton(
-//                   onPressed: () => _onOptionSelected(null),
-//                   style: ElevatedButton.styleFrom(
-//                     primary: Colors.brown[400],
-//                     onPrimary: Colors.white,
-//                     shape: RoundedRectangleBorder(
-//                       borderRadius: BorderRadius.circular(20),
-//                     ),
+//             ),
+//             SizedBox(height: 16),
+//             Row(
+//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//               children: [
+//                 if (_questionIndex > 0)
+//                   ElevatedButton(
+//                     onPressed: _onPreviousQuestion,
+//                     child: Text("Back"),
 //                   ),
-//                   child: Text('Next'),
-//                 ),
-//               if (_questionIndex == questions.length - 1)
-//                 ElevatedButton(
-//                   onPressed: () => print(_selectedOptions),
-//                   style: ElevatedButton.styleFrom(
-//                     primary: Colors.brown[400],
-//                     onPrimary: Colors.white,
-//                     shape: RoundedRectangleBorder(
-//                       borderRadius: BorderRadius.circular(20),
-//                     ),
+//                 if (_questionIndex < questions.length - 1)
+//                   ElevatedButton(
+//                     onPressed: _onNextQuestion,
+//                     child: Text("Next"),
 //                   ),
-//                   child: Text('Submit'),
-//                 ),
-//             ],
-//           ),
+//               ],
+//             ),
+//           ],
 //         ),
 //       ),
 //     );
 //   }
 // }
 
-// class OptionButton extends StatelessWidget {
-//   final String text;
-//   final VoidCallback onPressed;
+// import 'package:flutter/material.dart';
+// import 'package:google_fonts/google_fonts.dart';
+// import 'package:coffee_orderer/utils/questions.dart';
 
-//   OptionButton({@required this.text, @required this.onPressed});
+// class QuestionnairePage extends StatefulWidget {
+//   @override
+//   _QuestionnairePageState createState() => _QuestionnairePageState();
+// }
+
+// class _QuestionnairePageState extends State<QuestionnairePage> {
+//   int _questionIndex = 0;
+//   List<String> _selectedOptions = [];
+
+//   void _onOptionSelected(String option) {
+//     setState(() {
+//       _selectedOptions.add(option);
+//       print("Selected options are : ${_selectedOptions}");
+//       _questionIndex++;
+//     });
+//   }
+
+//   void _onPreviousQuestion() {
+//     setState(() {
+//       _questionIndex--;
+//       _selectedOptions.removeLast();
+//     });
+//   }
+
+//   void _onNextQuestion() {
+//     setState(() {
+//       _questionIndex++;
+//     });
+//   }
 
 //   @override
 //   Widget build(BuildContext context) {
-//     return ElevatedButton(
-//       onPressed: onPressed,
-//       style: ElevatedButton.styleFrom(
-//         primary: Colors.brown[200],
-//         onPrimary: Colors.black,
-//         shape: RoundedRectangleBorder(
-//           borderRadius: BorderRadius.circular(20),
+//     List<String> currentQuestionOptions =
+//         questions.values.elementAt(_questionIndex);
+
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text("Questionnaire"),
+//         centerTitle: true,
+//         backgroundColor: Colors.brown,
+//       ),
+//       body: Padding(
+//         padding: const EdgeInsets.all(16.0),
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.stretch,
+//           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//           children: [
+//             Column(
+//               children: [
+//                 Text(
+//                   questions.keys.elementAt(_questionIndex),
+//                   style: GoogleFonts.quicksand(
+//                     textStyle: TextStyle(
+//                       fontSize: 20,
+//                       fontWeight: FontWeight.bold,
+//                       color: Colors.brown,
+//                     ),
+//                   ),
+//                   textAlign: TextAlign.center,
+//                 ),
+//                 SizedBox(height: 16),
+//                 ...currentQuestionOptions.map(
+//                   (option) => Padding(
+//                     padding: EdgeInsets.symmetric(vertical: 8.0),
+//                     child: ElevatedButton(
+//                       onPressed: () => _onOptionSelected(option),
+//                       style: ElevatedButton.styleFrom(
+//                         backgroundColor: Colors.brown,
+//                         padding:
+//                             EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+//                         shape: RoundedRectangleBorder(
+//                           borderRadius: BorderRadius.circular(16.0),
+//                         ),
+//                       ),
+//                       child: Text(
+//                         option,
+//                         style: GoogleFonts.quicksand(
+//                           textStyle: TextStyle(
+//                             fontSize: 16,
+//                             fontWeight: FontWeight.bold,
+//                             color: Colors.white,
+//                           ),
+//                         ),
+//                       ),
+//                     ),
+//                   ),
+//                 ),
+//               ],
+//             ),
+//             Row(
+//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//               children: [
+//                 if (_questionIndex > 0)
+//                   ElevatedButton.icon(
+//                     onPressed: _onPreviousQuestion,
+//                     icon: Icon(Icons.arrow_back),
+//                     label: Text("Back"),
+//                     style: ElevatedButton.styleFrom(
+//                       backgroundColor: Colors.brown,
+//                       padding:
+//                           EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+//                       shape: RoundedRectangleBorder(
+//                         borderRadius: BorderRadius.circular(16.0),
+//                       ),
+//                     ),
+//                   ),
+//                 if (_questionIndex < questions.length - 1)
+//                   ElevatedButton.icon(
+//                     onPressed: _onNextQuestion,
+//                     icon: Icon(Icons.arrow_forward),
+//                     label: Text("Next"),
+//                     style: ElevatedButton.styleFrom(
+//                       backgroundColor: Colors.brown,
+//                       padding:
+//                           EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+//                       shape: RoundedRectangleBorder(
+//                         borderRadius: BorderRadius.circular(16.0),
+//                       ),
+//                     ),
+//                   ),
+//               ],
+//             ),
+//           ],
 //         ),
 //       ),
-//       child: Text(text),
 //     );
 //   }
 // }
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:coffee_orderer/utils/questions.dart';
 
 class QuestionnairePage extends StatefulWidget {
@@ -328,6 +338,20 @@ class _QuestionnairePageState extends State<QuestionnairePage> {
   void _onOptionSelected(String option) {
     setState(() {
       _selectedOptions.add(option);
+      print("Selected options are : ${_selectedOptions}");
+      _questionIndex++;
+    });
+  }
+
+  void _onPreviousQuestion() {
+    setState(() {
+      _questionIndex--;
+      _selectedOptions.removeLast();
+    });
+  }
+
+  void _onNextQuestion() {
+    setState(() {
       _questionIndex++;
     });
   }
@@ -338,96 +362,118 @@ class _QuestionnairePageState extends State<QuestionnairePage> {
         questions.values.elementAt(_questionIndex);
 
     return Scaffold(
-      backgroundColor: Colors.brown[100],
       appBar: AppBar(
-        backgroundColor: Colors.brown[800],
-        title: Text('Question ${_questionIndex + 1}'),
+        title: Text("Questionnaire"),
         centerTitle: true,
-        elevation: 0,
+        backgroundColor: Colors.brown,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            SizedBox(height: 20),
-            Text(
-              questions.keys.elementAt(_questionIndex),
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Colors.brown[800],
-              ),
-            ),
-            SizedBox(height: 20),
-            ...currentQuestionOptions
-                .map((option) => OptionButton(
-                      text: option,
-                      onPressed: () => _onOptionSelected(option),
-                    ))
-                .toList(),
-            Spacer(),
-            if (_questionIndex < questions.length - 1)
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.brown[800],
-                  padding: EdgeInsets.symmetric(vertical: 15),
-                ),
-                onPressed: () => _onOptionSelected(null),
-                child: Text(
-                  'Next',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            if (_questionIndex == questions.length - 1)
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.brown[800],
-                  padding: EdgeInsets.symmetric(vertical: 15),
-                ),
-                onPressed: () => print(_selectedOptions),
-                child: Text(
-                  'Submit',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-          ],
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Colors.brown.shade200, Colors.brown.shade700],
+          ),
         ),
-      ),
-    );
-  }
-}
-
-class OptionButton extends StatelessWidget {
-  final String text;
-  final VoidCallback onPressed;
-
-  OptionButton({@required this.text, @required this.onPressed});
-
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        primary: Colors.white,
-        onPrimary: Colors.brown[800],
-        elevation: 0,
-        padding: EdgeInsets.symmetric(vertical: 15),
-      ),
-      onPressed: onPressed,
-      child: Text(
-        text,
-        style: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-          color: Colors.brown[800],
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Container(
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 10,
+                        spreadRadius: 1,
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        questions.keys.elementAt(_questionIndex),
+                        style: GoogleFonts.quicksand(
+                          textStyle: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.brown,
+                          ),
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 16),
+                      ...currentQuestionOptions.map(
+                        (option) => Padding(
+                          padding: EdgeInsets.symmetric(vertical: 8.0),
+                          child: ElevatedButton(
+                            onPressed: () => _onOptionSelected(option),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.brown,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16.0),
+                              ),
+                              minimumSize: Size(double.infinity, 48),
+                            ),
+                            child: Center(
+                              child: Text(
+                                option,
+                                style: GoogleFonts.quicksand(
+                                  textStyle: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 32),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  if (_questionIndex > 0)
+                    ElevatedButton(
+                      onPressed: _onPreviousQuestion,
+                      style: ElevatedButton.styleFrom(
+                        shape: CircleBorder(),
+                        padding: EdgeInsets.all(16),
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.brown,
+                        minimumSize: Size(48, 48),
+                      ),
+                      child: Icon(Icons.arrow_back),
+                    ),
+                  if (_questionIndex < questions.length - 1)
+                    ElevatedButton(
+                      onPressed: _onNextQuestion,
+                      style: ElevatedButton.styleFrom(
+                        shape: CircleBorder(),
+                        padding: EdgeInsets.all(16),
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.brown,
+                        minimumSize: Size(48, 48),
+                      ),
+                      child: Icon(Icons.arrow_forward),
+                    ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
