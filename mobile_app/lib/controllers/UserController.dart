@@ -94,6 +94,19 @@ class UserController {
     return await this.userDaoUploadUsersPhoto.uploadUsersPhotoToS3(content);
   }
 
+<<<<<<< HEAD
+=======
+  // Future<String> getUsersPhotoFromS3(Map<String, String> content) async {
+  //   // String bucketName, String filename
+  //   this.urlServiceGetUsersPhoto = UrlService(
+  //       "https://${content['bucketName']}.s3.amazonaws.com/",
+  //       "/users_photos/${content['filename']}");
+  //   this.urlGetUsersPhoto = this.urlServiceGetUsersPhoto.createUrl();
+  //   this.userDaoGetUsersPhoto = DynamoDBUserDao(this.urlGetUsersPhoto);
+  //   return await this.userDaoGetUsersPhoto.getUsersPhotoFromS3();
+  // }
+
+>>>>>>> e9201313364fd9f6681ba616f0beced1b746da73
   Future<String> getUsersPhotoFromS3(Map<String, String> content) async {
     this.urlServiceGetUsersPhoto = UrlService(
         "https://2rbfw9r283.execute-api.us-east-1.amazonaws.com/prod",
