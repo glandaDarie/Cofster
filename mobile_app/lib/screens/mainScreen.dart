@@ -64,7 +64,6 @@ class _HomePageState extends State<HomePage> {
                 }
               },
             ),
-<<<<<<< HEAD
             Padding(
               padding: EdgeInsets.only(right: 13.0),
               child: FutureBuilder<Uint8List>(
@@ -87,33 +86,6 @@ class _HomePageState extends State<HomePage> {
                     return Container();
                   }
                 },
-=======
-            SizedBox(
-              width: 58.0,
-              child: Padding(
-                padding: EdgeInsets.only(right: 13.0),
-                child: FutureBuilder<Uint8List>(
-                  future: this.authController.loadUserPhoto(),
-                  builder: (BuildContext context,
-                      AsyncSnapshot<Uint8List> snapshot) {
-                    if (snapshot.hasData) {
-                      return Container(
-                        height: 45.0,
-                        width: 45.0,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30.0),
-                          image: DecorationImage(
-                            image: MemoryImage(snapshot.data),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      );
-                    } else {
-                      return Container();
-                    }
-                  },
-                ),
->>>>>>> e9201313364fd9f6681ba616f0beced1b746da73
               ),
             ),
           ],

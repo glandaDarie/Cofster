@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:coffee_orderer/screens/profilePhotoScreen.dart';
-<<<<<<< HEAD
 import 'package:coffee_orderer/screens/mainScreen.dart';
-=======
->>>>>>> e9201313364fd9f6681ba616f0beced1b746da73
 import 'package:flutter_login/flutter_login.dart';
 import 'package:coffee_orderer/controllers/AuthController.dart';
 import 'package:coffee_orderer/utils/localUserInformation.dart';
@@ -56,11 +53,12 @@ class _AuthPageState extends State<AuthPage> {
               accentColor: Color.fromARGB(255, 232, 233, 236)),
           onLogin: authController.authUser,
           onSignup: (SignupData signupData) async {
-            // String unique =
-            //     await authController.usernameUniqueOnSingup(signupData.name);
-            // if (unique != null) {
-            //   return unique;
-            // }
+            // commented for easier debugging in the code
+            String unique =
+                await authController.usernameUniqueOnSingup(signupData.name);
+            if (unique != null) {
+              return unique;
+            }
             setState(() {
               name = signupData.additionalSignupData["1"];
             });
@@ -86,11 +84,7 @@ class _AuthPageState extends State<AuthPage> {
               return;
             }
             Navigator.of(context).pushReplacement(
-<<<<<<< HEAD
                 MaterialPageRoute(builder: (context) => HomePage()));
-=======
-                MaterialPageRoute(builder: (context) => ProfilePhotoPage()));
->>>>>>> e9201313364fd9f6681ba616f0beced1b746da73
           },
           onConfirmSignup: (String verificationCode, LoginData data) async {
             String response = await this
