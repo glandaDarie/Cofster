@@ -9,47 +9,20 @@ class QuestionnairePage extends StatefulWidget {
 }
 
 class _QuestionnairePageState extends State<QuestionnairePage> {
-  int _questionIndex = 0;
-  List<String> _selectedOptions = [];
-  List<String> currentQuestionOptions;
+  int _questionIndex;
+  List<String> _selectedOptions;
+  List<String> _currentQuestionOptions;
 
-  void _onOptionSelected(String option) {
-    if (_questionIndex >= questions.length - 1) {
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
-      return;
-    }
-    setState(() {
-      _selectedOptions.add(option);
-      _questionIndex += 1;
-    });
-  }
-
-  void _onPreviousQuestion() {
-    setState(() {
-      _questionIndex -= 1;
-      _selectedOptions.removeLast();
-    });
-  }
-
-  void _onNextQuestion() async {
-    if (_questionIndex >= questions.length - 1) {
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
-      return;
-    }
-    setState(() {
-      _questionIndex += 1;
-    });
+  _QuestionnairePageState() {
+    _questionIndex = 0;
+    _selectedOptions = [];
+    _currentQuestionOptions = [];
   }
 
   @override
   Widget build(BuildContext context) {
-    print("Status ? ${_questionIndex <= questions.length}");
-    print(
-        "_questionIndex: ${_questionIndex}, questions.length: ${questions.length}");
     if (_questionIndex < questions.length) {
-      currentQuestionOptions = questions.values.elementAt(_questionIndex);
+      _currentQuestionOptions = questions.values.elementAt(_questionIndex);
     }
     return Scaffold(
       appBar: AppBar(
@@ -99,12 +72,22 @@ class _QuestionnairePageState extends State<QuestionnairePage> {
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(height: 16),
-                      ...currentQuestionOptions.map(
+                      ..._currentQuestionOptions.map(
                         (option) => Padding(
                           padding: EdgeInsets.symmetric(vertical: 8.0),
                           child: ElevatedButton(
-                            onPressed: () async =>
-                                await _onOptionSelected(option),
+                            onPressed: () async {
+                              if (_questionIndex >= questions.length - 1) {
+                                Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                        builder: (context) => HomePage()));
+                                return;
+                              }
+                              setState(() {
+                                _selectedOptions.add(option);
+                                _questionIndex += 1;
+                              });
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.brown,
                               shape: RoundedRectangleBorder(
@@ -139,7 +122,12 @@ class _QuestionnairePageState extends State<QuestionnairePage> {
                 children: [
                   if (_questionIndex > 0)
                     ElevatedButton(
-                      onPressed: _onPreviousQuestion,
+                      onPressed: () {
+                        setState(() {
+                          _questionIndex -= 1;
+                          _selectedOptions.removeLast();
+                        });
+                      },
                       style: ElevatedButton.styleFrom(
                         shape: CircleBorder(),
                         padding: EdgeInsets.all(16),
@@ -151,7 +139,17 @@ class _QuestionnairePageState extends State<QuestionnairePage> {
                     ),
                   if (_questionIndex < questions.length - 1)
                     ElevatedButton(
-                      onPressed: _onNextQuestion,
+                      onPressed: () {
+                        if (_questionIndex >= questions.length - 1) {
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (context) => HomePage()));
+                          return;
+                        }
+                        setState(() {
+                          _questionIndex += 1;
+                        });
+                      },
                       style: ElevatedButton.styleFrom(
                         shape: CircleBorder(),
                         padding: EdgeInsets.all(16),
