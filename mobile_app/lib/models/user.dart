@@ -23,12 +23,12 @@ class User {
   String get favouriteDrink => this._favouriteDrink;
   String get photo => this._photo;
 
-  set id(int value) => this._id = value;
-  set name(String value) => this._name = value.trim();
-  set username(String value) => this._username = value.trim();
-  set password(String value) => this._password = value.trim();
-  set favouriteDrink(String value) => this._favouriteDrink = value.trim();
-  set photo(String value) => this._photo = value.trim();
+  set id(int _value) => this._id = _value;
+  set name(String _value) => this._name = _value.trim();
+  set username(String _value) => this._username = _value.trim();
+  set password(String _value) => this._password = _value.trim();
+  set favouriteDrink(String _value) => this._favouriteDrink = _value.trim();
+  set photo(String _value) => this._photo = _value.trim();
 
   @override
   String toString() {

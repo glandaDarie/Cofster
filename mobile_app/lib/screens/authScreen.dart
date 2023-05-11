@@ -53,7 +53,7 @@ class _AuthPageState extends State<AuthPage> {
               accentColor: Color.fromARGB(255, 232, 233, 236)),
           onLogin: authController.authUser,
           onSignup: (SignupData signupData) async {
-            // commented for easier debugging in the code
+            // comment for easier debugging in the code
             String unique =
                 await authController.usernameUniqueOnSingup(signupData.name);
             if (unique != null) {
