@@ -20,13 +20,19 @@ class DynamoDBQuestionnaireDao {
     return questions;
   }
 
+  Future<String> postQuestionsToGetPredictedFavouriteDrink(
+      Map<String, String> content) async {
+    // to be implemented
+    return null;
+  }
+
   List<Question> parseJson(List<dynamic> json) {
     if (json == null || json.isEmpty) {
       throw Exception("JSON is null or empty");
     }
     List<Question> outQuestions = [];
     List<dynamic> questions = json[0]["questions"];
-    for (int i = 0; i < questions.length; i += 2) {
+    for (int i = 0; i < questions.length - 2; i += 2) {
       String question = questions[i]["question"];
       List<String> options = List<String>.from(questions[i + 1]["options"]);
       outQuestions.add(Question(question: question, options: options));
