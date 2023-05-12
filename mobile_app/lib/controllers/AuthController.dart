@@ -225,18 +225,20 @@ class AuthController extends ValidateCredentialsService {
     return null;
   }
 
+  // temporary blocked for not making S3 request while debugging
   Future<Uint8List> loadUserPhoto() async {
-    String cacheStr;
-    try {
-      cacheStr = await loadUserInformationFromCache();
-    } catch (e) {
-      return null;
-    }
-    Map<String, String> cache = fromStringCachetoMapCache(cacheStr);
-    Map<String, String> content = {"name": cache["name"].toLowerCase()};
-    String photoBase64 = await this.userController.getUsersPhotoFromS3(content);
-    Uint8List photoBytes = base64.decode(photoBase64);
-    return photoBytes;
+    // String cacheStr;
+    // try {
+    //   cacheStr = await loadUserInformationFromCache();
+    // } catch (e) {
+    //   return null;
+    // }
+    // Map<String, String> cache = fromStringCachetoMapCache(cacheStr);
+    // Map<String, String> content = {"name": cache["name"].toLowerCase()};
+    // String photoBase64 = await this.userController.getUsersPhotoFromS3(content);
+    // Uint8List photoBytes = base64.decode(photoBase64);
+    // return photoBytes;
+    return null;
   }
 
   Future<String> loadName() async {

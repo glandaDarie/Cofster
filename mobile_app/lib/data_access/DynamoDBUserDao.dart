@@ -130,17 +130,17 @@ class DynamoDBUserDao {
     return msg;
   }
 
-  Future<String> getUsersPhotoFromS3() async {
-    String msg = null;
-    String photoBase64 = null;
-    try {
-      http.Response response = await http.get(Uri.parse(this.url));
-      if (response.statusCode == 200) {
-        photoBase64 = response.body;
-      }
-    } catch (e) {
-      msg = "Exception when fetching a file from S3 bucket: ${e}";
-    }
-    return msg == null ? photoBase64 : msg;
-  }
+  // Future<String> getUsersPhotoFromS3() async {
+  //   String msg = null;
+  //   String photoBase64 = null;
+  //   try {
+  //     http.Response response = await http.get(Uri.parse(this.url));
+  //     if (response.statusCode == 200) {
+  //       photoBase64 = response.body;
+  //     }
+  //   } catch (e) {
+  //     msg = "Exception when fetching a file from S3 bucket: ${e}";
+  //   }
+  //   return msg == null ? photoBase64 : msg;
+  // }
 }

@@ -1,7 +1,9 @@
+import 'package:coffee_orderer/controllers/QuestionnaireController.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:coffee_orderer/utils/questions.dart';
 import 'package:coffee_orderer/screens/mainScreen.dart';
+import 'package:coffee_orderer/models/question.dart';
 
 class QuestionnairePage extends StatefulWidget {
   @override
@@ -12,17 +14,33 @@ class _QuestionnairePageState extends State<QuestionnairePage> {
   int _questionIndex;
   List<String> _selectedOptions;
   List<String> _currentQuestionOptions;
+  QuestionnaireController questionnaireController;
+  List<Question> _questions;
 
   _QuestionnairePageState() {
     _questionIndex = 0;
     _selectedOptions = [];
     _currentQuestionOptions = [];
+    questionnaireController = QuestionnaireController();
+  }
+
+  Future<void> _fetchQuestions() async {
+    _questions = await questionnaireController.getAllQuestions();
+    print("Questions : ${_questions}");
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchQuestions();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_questionIndex < questions.length) {
-      _currentQuestionOptions = questions.values.elementAt(_questionIndex);
+    print("Length of question = ${_questions.length}");
+    if (_questionIndex < _questions.length) {
+      _currentQuestionOptions = _questions[_questionIndex].getOptions();
+      // _currentQuestionOptions = questions.values.elementAt(_questionIndex);
     }
     return Scaffold(
       appBar: AppBar(
@@ -61,7 +79,7 @@ class _QuestionnairePageState extends State<QuestionnairePage> {
                   child: Column(
                     children: [
                       Text(
-                        questions.keys.elementAt(_questionIndex),
+                        _questions[_questionIndex].question,
                         style: GoogleFonts.quicksand(
                           textStyle: TextStyle(
                             fontSize: 20,
@@ -77,7 +95,7 @@ class _QuestionnairePageState extends State<QuestionnairePage> {
                           padding: EdgeInsets.symmetric(vertical: 8.0),
                           child: ElevatedButton(
                             onPressed: () async {
-                              if (_questionIndex >= questions.length - 1) {
+                              if (_questionIndex >= _questions.length - 1) {
                                 Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
                                         builder: (context) => HomePage()));
@@ -137,10 +155,10 @@ class _QuestionnairePageState extends State<QuestionnairePage> {
                       ),
                       child: Icon(Icons.arrow_back),
                     ),
-                  if (_questionIndex < questions.length - 1)
+                  if (_questionIndex < _questions.length - 1)
                     ElevatedButton(
                       onPressed: () {
-                        if (_questionIndex >= questions.length - 1) {
+                        if (_questionIndex >= _questions.length - 1) {
                           Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
                                   builder: (context) => HomePage()));
