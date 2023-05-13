@@ -1,24 +1,39 @@
+from typing import List, Dict 
 from prediction import predict
-from flask import Flask, jsonify
-from typing import Dict
-from Labels import labels
+from flask import Flask, jsonify, request
+from features import questions
+from classes import labels
+import json 
 
 app = Flask(__name__)
 
-test_prediction : Dict[str, str] = {
-    "Question 0" : "medium",
-    "Question 1" : "no",
-    "Question 2" : "i do not use sugar in my coffee",
-    "Question 3" : "below 30%",
-    "Question 4" : "short and strong",
-    "Question 5" : "none of the above",
-    "Question 6" : "no"
-}
-
-@app.route("/prediction_drink")
-def prediction_classifier() -> jsonify:
-    predicted_favourite_drink : int = predict(test_prediction)
-    return jsonify({"favouriteDrink" : labels[predicted_favourite_drink]})
+@app.route("/prediction_drinks", methods=["POST"])
+def prediction_drinks() -> json:
+    if request.method == "POST":
+        try:
+            data : Dict[str, str] = request.get_json()
+            data : Dict[str, str] = data["body"]
+        except Exception as e:
+            return jsonify({
+                "statusCode" : 400,
+                "body" : f"Error {e} when adding the user information" 
+            })
+        if len(questions) != len(data):
+            return jsonify({
+                "statusCode" : 500,
+                "body" : "Invalid server error"
+            })
+        predictions : List[int] = predict(data)
+        predictions : Dict[str, str] = \
+            {f"drink {i+1}": labels[pred] for i, pred in enumerate(predictions)}
+        return jsonify({
+            "status" : 201,
+            "favouriteDrinks" : predictions
+            })
+    return jsonify({
+        "status": 405,
+        "message": "Method not allowed"
+    })
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000)

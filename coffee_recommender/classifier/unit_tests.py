@@ -1,7 +1,7 @@
 from typing import List, Dict
 import os
 from prediction import predict
-from Labels import labels
+from classes import labels
 
 def unit_test_accuracy(path : str, nr_samples : int = 100) -> List[Dict[str, str]]: 
     with open(path, "r") as input_file:
@@ -16,7 +16,7 @@ def unit_test_accuracy(path : str, nr_samples : int = 100) -> List[Dict[str, str
             sample_dict : Dict[str, str] = {}
             for j, answer in enumerate(answers):
                 sample_dict[f"Question {j}"] = answer
-            prediction : int = predict(sample_dict)
+            prediction : int = predict(responses=sample_dict, k=1)
             predicted : str = labels[prediction].lower()
             print(f"predicted_label : {predicted}, ground_truth_label : {ground_truth}")
             if ground_truth == predicted:

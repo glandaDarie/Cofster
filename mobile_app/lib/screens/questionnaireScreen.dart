@@ -1,4 +1,5 @@
 import 'package:coffee_orderer/controllers/QuestionnaireController.dart';
+import 'package:coffee_orderer/controllers/UserController.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:coffee_orderer/screens/mainScreen.dart';
@@ -10,9 +11,10 @@ class QuestionnairePage extends StatefulWidget {
 }
 
 class _QuestionnairePageState extends State<QuestionnairePage> {
+  QuestionnaireController questionnaireController;
+  UserController userController;
   int _questionIndex;
   List<String> _selectedOptions;
-  QuestionnaireController questionnaireController;
   List<Question> _questions;
   bool _fetchedQuestions = false;
 
@@ -20,6 +22,7 @@ class _QuestionnairePageState extends State<QuestionnairePage> {
     _questionIndex = 0;
     _selectedOptions = [];
     questionnaireController = QuestionnaireController();
+    userController = UserController();
   }
 
   Future<void> _fetchQuestions() async {
@@ -90,6 +93,7 @@ class _QuestionnairePageState extends State<QuestionnairePage> {
   Widget _buildQuestionWidget() {
     Question currentQuestion = _questions[_questionIndex];
     List<String> currentQuestionOptions = currentQuestion.getOptions();
+    bool questionnaireFinished = false;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -129,23 +133,29 @@ class _QuestionnairePageState extends State<QuestionnairePage> {
                       onPressed: () async {
                         setState(() {
                           _selectedOptions.add(option);
-                          if (_questionIndex >= _questions.length - 1) {
-                            Map<String, String> selectedOptionsForClassifier =
-                                {};
-                            for (int i = 0; i < _selectedOptions.length; ++i) {
-                              selectedOptionsForClassifier[
-                                  "Question ${i + 1}"] = _selectedOptions[i];
-                            }
-                            questionnaireController
-                                .postQuestionsToGetPredictedFavouriteDrink(
-                                    selectedOptionsForClassifier);
-                            Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                    builder: (context) => HomePage()));
-                            return;
-                          }
-                          _questionIndex += 1;
+                          _questionIndex >= _questions.length - 1
+                              ? questionnaireFinished = true
+                              : _questionIndex += 1;
                         });
+                        if (questionnaireFinished) {
+                          Map<String, String> selectedOptionsForClassifier = {};
+                          for (int i = 0; i < _selectedOptions.length; ++i) {
+                            selectedOptionsForClassifier["Question ${i}"] =
+                                _selectedOptions[i].toLowerCase();
+                          }
+                          // to be implemented
+                          List<String> favouriteDrinks =
+                              await questionnaireController
+                                  .postQuestionsToGetPredictedFavouriteDrinks(
+                                      selectedOptionsForClassifier);
+                          print("Favourite drinks = ${favouriteDrinks}");
+                          await userController
+                              .updateUsersFavouriteDrinks(favouriteDrinks);
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (context) => HomePage()));
+                          return;
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.brown,

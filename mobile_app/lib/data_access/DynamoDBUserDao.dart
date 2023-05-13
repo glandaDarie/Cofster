@@ -143,4 +143,9 @@ class DynamoDBUserDao {
   //   }
   //   return msg == null ? photoBase64 : msg;
   // }
+
+  Future<String> updateUsersFavouriteDrinks(List<String> content) async {
+    // to be implemented
+    return null;
+  }
 }

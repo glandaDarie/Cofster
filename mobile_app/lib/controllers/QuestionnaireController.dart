@@ -23,15 +23,14 @@ class QuestionnaireController {
     return await this.userDaoGetQuestions.getAllQuestions();
   }
 
-  Future<String> postQuestionsToGetPredictedFavouriteDrink(
+  Future<List<String>> postQuestionsToGetPredictedFavouriteDrinks(
       Map<String, String> content) async {
-    this.urlServicePostAnswers = UrlService(
-        "https://1xihq64176.execute-api.us-east-1.amazonaws.com/prod",
-        "/questions");
+    this.urlServicePostAnswers =
+        UrlService("http://192.168.8.103:8000", "/prediction_drinks");
     this.urlPostAnswers = this.urlServicePostAnswers.createUrl();
     this.userDaoPostAnswers = DynamoDBQuestionnaireDao(this.urlPostAnswers);
     return await this
         .userDaoPostAnswers
-        .postQuestionsToGetPredictedFavouriteDrink(content);
+        .postQuestionsToGetPredictedFavouriteDrinks(content);
   }
 }

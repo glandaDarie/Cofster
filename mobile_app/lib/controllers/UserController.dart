@@ -103,4 +103,8 @@ class UserController {
   //   this.userDaoGetUsersPhoto = DynamoDBUserDao(this.urlGetUsersPhoto);
   //   return await this.userDaoGetUsersPhoto.getUsersPhotoFromS3();
   // }
+
+  Future<String> updateUsersFavouriteDrinks(List<String> content) {
+    return null;
+  }
 }
