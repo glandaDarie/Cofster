@@ -130,20 +130,15 @@ class _QuestionnairePageState extends State<QuestionnairePage> {
                         setState(() {
                           _selectedOptions.add(option);
                           if (_questionIndex >= _questions.length - 1) {
-                            print("Selected options = ${_selectedOptions}");
-                            // Map<String, String> selectedOptionsForClassifier;
-                            // for (int i = 0;
-                            //     i < selectedOptionsForClassifier.length;
-                            //     ++i) {
-                            //   selectedOptionsForClassifier[
-                            //           "Question ${i + 1}"] =
-                            //       selectedOptionsForClassifier[i];
-                            // }
-                            // print(
-                            //     "Option drinks = ${selectedOptionsForClassifier}");
-                            // questionnaireController
-                            //     .postQuestionsToGetPredictedFavouriteDrink(
-                            //         selectedOptionsForClassifier);
+                            Map<String, String> selectedOptionsForClassifier =
+                                {};
+                            for (int i = 0; i < _selectedOptions.length; ++i) {
+                              selectedOptionsForClassifier[
+                                  "Question ${i + 1}"] = _selectedOptions[i];
+                            }
+                            questionnaireController
+                                .postQuestionsToGetPredictedFavouriteDrink(
+                                    selectedOptionsForClassifier);
                             Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
                                     builder: (context) => HomePage()));
