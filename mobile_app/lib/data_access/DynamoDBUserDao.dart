@@ -144,8 +144,19 @@ class DynamoDBUserDao {
   //   return msg == null ? photoBase64 : msg;
   // }
 
-  Future<String> updateUsersFavouriteDrinks(List<String> content) async {
-    // to be implemented
-    return null;
+  Future<String> updateUsersFavouriteDrinks(Map<String, String> content) async {
+    String msg = null;
+    try {
+      http.Response response = await http.put(Uri.parse(this.url),
+          headers: {"Content-Type": "application/json"},
+          body: jsonEncode(content));
+      msg = "Successfully updated the favourite drinks";
+      if (response.statusCode != 200) {
+        msg = "Status code is: ${response.statusCode}";
+      }
+    } catch (e) {
+      msg = "Exception when updating the password: ${e}";
+    }
+    return msg;
   }
 }

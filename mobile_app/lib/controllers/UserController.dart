@@ -22,6 +22,10 @@ class UserController {
   String urlGetUsersPhoto;
   DynamoDBUserDao userDaoGetUsersPhoto;
 
+  UrlService urlServiceUpdateUsersFavouriteDrinks;
+  String urlUpdateUsersFavouriteDrinks;
+  DynamoDBUserDao userDaoUpateUsersFavouriteDrinks;
+
   UserController() {
     this.urlServiceGetUsers = UrlService(
         "https://2rbfw9r283.execute-api.us-east-1.amazonaws.com/prod",
@@ -29,22 +33,6 @@ class UserController {
         {"usersInformation": "info"});
     this.urlGetUsers = this.urlServiceGetUsers.createUrl();
     this.userDaoGetUsers = DynamoDBUserDao(this.urlGetUsers);
-
-    this.urlServiceUpdateUsersPassword = null;
-    this.userDaoUpdateUsersPassword = null;
-    this.urlUpdateUsersPassword = null;
-
-    this.urlServiceInsertNewUser = null;
-    this.urlInsertNewUser = null;
-    this.userDaoInsertNewUser = null;
-
-    this.urlServiceUploadUsersPhoto = null;
-    this.urlUploadUsersPhoto = null;
-    this.userDaoUploadUsersPhoto = null;
-
-    this.urlServiceGetUsersPhoto = null;
-    this.urlGetUsersPhoto = null;
-    this.userDaoGetUsersPhoto = null;
   }
 
   Future<List<dynamic>> getAllUsers() async {
@@ -104,7 +92,17 @@ class UserController {
   //   return await this.userDaoGetUsersPhoto.getUsersPhotoFromS3();
   // }
 
-  Future<String> updateUsersFavouriteDrinks(List<String> content) {
-    return null;
+  Future<String> updateUsersFavouriteDrinks(Map<String, String> content) async {
+    this.urlServiceUpdateUsersFavouriteDrinks = UrlService(
+        "https://2rbfw9r283.execute-api.us-east-1.amazonaws.com/prod",
+        "/users/favouriteDrinks",
+        content);
+    this.urlUpdateUsersFavouriteDrinks =
+        this.urlServiceUpdateUsersFavouriteDrinks.createUrl();
+    this.userDaoUpateUsersFavouriteDrinks =
+        DynamoDBUserDao(this.urlUpdateUsersFavouriteDrinks);
+    return await this
+        .userDaoUpateUsersFavouriteDrinks
+        .updateUsersFavouriteDrinks(content);
   }
 }

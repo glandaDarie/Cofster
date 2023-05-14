@@ -26,7 +26,7 @@ class QuestionnaireController {
   Future<List<String>> postQuestionsToGetPredictedFavouriteDrinks(
       Map<String, String> content) async {
     this.urlServicePostAnswers =
-        UrlService("http://192.168.8.103:8000", "/prediction_drinks");
+        UrlService("http://192.168.1.110:8000", "/prediction_drinks");
     this.urlPostAnswers = this.urlServicePostAnswers.createUrl();
     this.userDaoPostAnswers = DynamoDBQuestionnaireDao(this.urlPostAnswers);
     return await this

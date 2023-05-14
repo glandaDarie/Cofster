@@ -143,12 +143,14 @@ class _QuestionnairePageState extends State<QuestionnairePage> {
                             selectedOptionsForClassifier["Question ${i}"] =
                                 _selectedOptions[i].toLowerCase();
                           }
-                          // to be implemented
-                          List<String> favouriteDrinks =
+                          List<String> fetchedFavouriteDrinks =
                               await questionnaireController
                                   .postQuestionsToGetPredictedFavouriteDrinks(
                                       selectedOptionsForClassifier);
-                          print("Favourite drinks = ${favouriteDrinks}");
+                          // to be implemented code on AWS
+                          Map<String, String> favouriteDrinks =
+                              fetchedFavouriteDrinks.asMap().map((key, value) =>
+                                  MapEntry("drink ${key + 1}", value));
                           await userController
                               .updateUsersFavouriteDrinks(favouriteDrinks);
                           Navigator.of(context).pushReplacement(
