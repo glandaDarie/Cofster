@@ -73,6 +73,7 @@ class UserController {
         .updateUsersPassword(username, newPassword);
   }
 
+  //comment for better integration testing
   Future<String> uploadUsersPhotoToS3(Map<String, String> content) async {
     this.urlServiceUploadUsersPhoto = UrlService(
         "https://2rbfw9r283.execute-api.us-east-1.amazonaws.com/prod",
@@ -82,20 +83,21 @@ class UserController {
     return await this.userDaoUploadUsersPhoto.uploadUsersPhotoToS3(content);
   }
 
-  // Future<String> getUsersPhotoFromS3(Map<String, String> content) async {
-  //   this.urlServiceGetUsersPhoto = UrlService(
-  //       "https://2rbfw9r283.execute-api.us-east-1.amazonaws.com/prod",
-  //       "/users/photo",
-  //       content);
-  //   this.urlGetUsersPhoto = this.urlServiceGetUsersPhoto.createUrl();
-  //   this.userDaoGetUsersPhoto = DynamoDBUserDao(this.urlGetUsersPhoto);
-  //   return await this.userDaoGetUsersPhoto.getUsersPhotoFromS3();
-  // }
+  // comment for better integration testing
+  Future<String> getUsersPhotoFromS3(Map<String, String> content) async {
+    this.urlServiceGetUsersPhoto = UrlService(
+        "https://2rbfw9r283.execute-api.us-east-1.amazonaws.com/prod",
+        "/users/photo",
+        content);
+    this.urlGetUsersPhoto = this.urlServiceGetUsersPhoto.createUrl();
+    this.userDaoGetUsersPhoto = DynamoDBUserDao(this.urlGetUsersPhoto);
+    return await this.userDaoGetUsersPhoto.getUsersPhotoFromS3();
+  }
 
   Future<String> updateUsersFavouriteDrinks(Map<String, String> content) async {
     this.urlServiceUpdateUsersFavouriteDrinks = UrlService(
         "https://2rbfw9r283.execute-api.us-east-1.amazonaws.com/prod",
-        "/users/favouriteDrinks",
+        "/users/favourite_drinks",
         content);
     this.urlUpdateUsersFavouriteDrinks =
         this.urlServiceUpdateUsersFavouriteDrinks.createUrl();

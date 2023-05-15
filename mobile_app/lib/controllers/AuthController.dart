@@ -225,7 +225,7 @@ class AuthController extends ValidateCredentialsService {
     return null;
   }
 
-  // temporary blocked for not making S3 request while debugging
+  // comment for better integration testing
   Future<Uint8List> loadUserPhoto() async {
     // String cacheStr;
     // try {

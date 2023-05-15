@@ -68,8 +68,13 @@ class DynamoDBUserDao {
       String username = _u["username"];
       String password = _u["password"];
       String photo = _u["photo"];
-      String favouriteDrink = _u["favouriteDrink"];
-      User user = User(id, name, username, password, photo, favouriteDrink);
+      List<Map<String, String>> favouriteDrinksJson =
+          List<Map<String, String>>.from(_u["favouriteDrinks"]);
+      List<String> favouriteDrinks = favouriteDrinksJson
+          .map((favDrink) =>
+              favDrink["drink ${favouriteDrinksJson.indexOf(favDrink) + 1}"])
+          .toList();
+      User user = User(id, name, username, password, photo, favouriteDrinks);
       usersInformation.add(user);
     }
     return usersInformation;
@@ -112,6 +117,7 @@ class DynamoDBUserDao {
     return msg;
   }
 
+  // comment for better integration testing
   Future<String> uploadUsersPhotoToS3(Map<String, String> content) async {
     String msg = null;
     Map<String, dynamic> requestBody = {"body": content};
@@ -127,29 +133,31 @@ class DynamoDBUserDao {
     } catch (e) {
       msg = "Exception when adding a file to the S3 bucket: ${e}";
     }
-    return msg;
+    // return msg;
   }
 
-  // Future<String> getUsersPhotoFromS3() async {
-  //   String msg = null;
-  //   String photoBase64 = null;
-  //   try {
-  //     http.Response response = await http.get(Uri.parse(this.url));
-  //     if (response.statusCode == 200) {
-  //       photoBase64 = response.body;
-  //     }
-  //   } catch (e) {
-  //     msg = "Exception when fetching a file from S3 bucket: ${e}";
-  //   }
-  //   return msg == null ? photoBase64 : msg;
-  // }
+  // //comment for better integration testing
+  Future<String> getUsersPhotoFromS3() async {
+    String msg = null;
+    String photoBase64 = null;
+    try {
+      http.Response response = await http.get(Uri.parse(this.url));
+      if (response.statusCode == 200) {
+        photoBase64 = response.body;
+      }
+    } catch (e) {
+      msg = "Exception when fetching a file from S3 bucket: ${e}";
+    }
+    return msg == null ? photoBase64 : msg;
+  }
 
   Future<String> updateUsersFavouriteDrinks(Map<String, String> content) async {
     String msg = null;
     try {
+      Map<String, dynamic> requestBody = {"body": content};
       http.Response response = await http.put(Uri.parse(this.url),
           headers: {"Content-Type": "application/json"},
-          body: jsonEncode(content));
+          body: jsonEncode(requestBody));
       msg = "Successfully updated the favourite drinks";
       if (response.statusCode != 200) {
         msg = "Status code is: ${response.statusCode}";

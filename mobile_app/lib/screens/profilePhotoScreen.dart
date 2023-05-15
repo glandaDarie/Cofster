@@ -7,7 +7,7 @@ import 'package:coffee_orderer/services/chooseUserPhotoService.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:coffee_orderer/utils/localUserInformation.dart';
-import 'package:coffee_orderer/screens/mainScreen.dart';
+import 'package:coffee_orderer/screens/questionnaireScreen.dart';
 
 class ProfilePhotoPage extends StatefulWidget {
   const ProfilePhotoPage({Key key}) : super(key: key);
@@ -125,8 +125,8 @@ class _ProfilePhotoPageState extends State<ProfilePhotoPage>
                   "photo": base64Photo,
                 };
                 await this.userController.uploadUsersPhotoToS3(content);
-                Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (context) => HomePage()));
+                Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (context) => QuestionnairePage()));
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,

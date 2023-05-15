@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:coffee_orderer/screens/mainScreen.dart';
 import 'package:coffee_orderer/models/question.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class QuestionnairePage extends StatefulWidget {
   @override
@@ -147,16 +148,29 @@ class _QuestionnairePageState extends State<QuestionnairePage> {
                               await questionnaireController
                                   .postQuestionsToGetPredictedFavouriteDrinks(
                                       selectedOptionsForClassifier);
-                          // to be implemented code on AWS
                           Map<String, String> favouriteDrinks =
                               fetchedFavouriteDrinks.asMap().map((key, value) =>
                                   MapEntry("drink ${key + 1}", value));
-                          await userController
+                          String response = await userController
                               .updateUsersFavouriteDrinks(favouriteDrinks);
+                          if (response !=
+                              "Successfully updated the favourite drinks") {
+                            Fluttertoast.showToast(
+                                msg: response,
+                                toastLength: Toast.LENGTH_SHORT,
+                                backgroundColor:
+                                    Color.fromARGB(255, 102, 33, 12),
+                                textColor: Color.fromARGB(255, 220, 217, 216),
+                                fontSize: 16);
+                            return Center(
+                                child: CircularProgressIndicator(
+                                    color: Colors.brown,
+                                    backgroundColor: Colors.white));
+                          }
                           Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
                                   builder: (context) => HomePage()));
-                          return;
+                          return null;
                         }
                       },
                       style: ElevatedButton.styleFrom(

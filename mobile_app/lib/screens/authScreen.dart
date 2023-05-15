@@ -54,11 +54,11 @@ class _AuthPageState extends State<AuthPage> {
           onLogin: authController.authUser,
           onSignup: (SignupData signupData) async {
             // comment for easier debugging in the code
-            String unique =
-                await authController.usernameUniqueOnSingup(signupData.name);
-            if (unique != null) {
-              return unique;
-            }
+            // String unique =
+            //     await authController.usernameUniqueOnSingup(signupData.name);
+            // if (unique != null) {
+            //   return unique;
+            // }
             setState(() {
               name = signupData.additionalSignupData["1"];
             });
