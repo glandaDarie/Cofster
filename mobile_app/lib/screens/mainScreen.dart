@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'package:coffee_orderer/controllers/UserController.dart';
 import 'package:coffee_orderer/screens/detailsScreen.dart';
 import 'package:coffee_orderer/controllers/AuthController.dart';
+import 'package:coffee_orderer/controllers/QuestionnaireController.dart';
 import 'package:flutter/material.dart';
 import '../utils/coffeeFunFact.dart';
 
@@ -16,16 +17,31 @@ class _HomePageState extends State<HomePage> {
   String photo = null;
   UserController userController;
   AuthController authController;
+  QuestionnaireController questionnaireController;
+  List<String> _favouriteDrinks;
 
   _HomePageState() {
     this.userController = UserController();
     this.authController = AuthController();
+    this.questionnaireController = QuestionnaireController();
+    _favouriteDrinks = [];
   }
 
   @override
   void initState() {
     super.initState();
     this.authController.loadUserPhoto();
+  }
+
+  Future<void> loadFavouriteDrinks() async {
+    List<String> data =
+        await ((await this.questionnaireController.drinksPresentInCache())
+            ? this.questionnaireController.loadDrinksFromCache()
+            : this.questionnaireController.loadDrinksFromDynamoDB());
+    setState(() {
+      _favouriteDrinks = data;
+      print("Favourite drinks = ${_favouriteDrinks}");
+    });
   }
 
   @override
@@ -121,18 +137,18 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Text(
-              'Taste of the week',
+              "Taste made for you",
               style: TextStyle(
-                  fontFamily: 'varela',
+                  fontFamily: "varela",
                   fontSize: 17.0,
                   color: Color(0xFF473D3A)),
             ),
             Padding(
               padding: const EdgeInsets.only(right: 15.0),
               child: Text(
-                'See all',
+                "Drag to see all",
                 style: TextStyle(
-                    fontFamily: 'varela',
+                    fontFamily: "varela",
                     fontSize: 15.0,
                     color: Color(0xFFCEC7C4)),
               ),
@@ -145,18 +161,74 @@ class _HomePageState extends State<HomePage> {
             child: ListView(scrollDirection: Axis.horizontal, children: [
               _coffeeListCard(
                   'assets/images/starbucks.png',
-                  'Caffe Misto',
-                  'Coffeeshop',
+                  'Cortado',
+                  'Cofster',
                   'Our dark, rich espresso balanced with steamed milk and a light layer of foam',
                   '\$4.99',
                   false),
               _coffeeListCard(
                   'assets/images/starbucks.png',
-                  'Caffe Latte',
-                  'BrownHouse',
+                  'Americano',
+                  'Cofster',
                   'Rich, full-bodied espresso with bittersweet milk sauce and steamed milk',
                   '\$3.99',
-                  false)
+                  false),
+              _coffeeListCard(
+                  'assets/images/starbucks.png',
+                  'Cappuccino',
+                  'Cofster',
+                  'Rich, full-bodied espresso with bittersweet milk sauce and steamed milk',
+                  '\$3.99',
+                  true),
+              _coffeeListCard(
+                  'assets/images/starbucks.png',
+                  'Machiatto',
+                  'Cofster',
+                  'Rich, full-bodied espresso with bittersweet milk sauce and steamed milk',
+                  '\$3.99',
+                  true),
+              _coffeeListCard(
+                  'assets/images/starbucks.png',
+                  'Flat white',
+                  'Cofster',
+                  'Rich, full-bodied espresso with bittersweet milk sauce and steamed milk',
+                  '\$3.99',
+                  false),
+              _coffeeListCard(
+                  'assets/images/starbucks.png',
+                  'Espresso',
+                  'Cofster',
+                  'Rich, full-bodied espresso with bittersweet milk sauce and steamed milk',
+                  '\$3.99',
+                  false),
+              _coffeeListCard(
+                  'assets/images/starbucks.png',
+                  'Mocha',
+                  'Cofster',
+                  'Rich, full-bodied espresso with bittersweet milk sauce and steamed milk',
+                  '\$3.99',
+                  false),
+              _coffeeListCard(
+                  'assets/images/starbucks.png',
+                  'Cold brew',
+                  'Cofster',
+                  'Rich, full-bodied espresso with bittersweet milk sauce and steamed milk',
+                  '\$3.99',
+                  false),
+              _coffeeListCard(
+                  'assets/images/starbucks.png',
+                  'Coretto',
+                  'Cofster',
+                  'Rich, full-bodied espresso with bittersweet milk sauce and steamed milk',
+                  '\$3.99',
+                  false),
+              _coffeeListCard(
+                  'assets/images/starbucks.png',
+                  'Irish coffee',
+                  'Cofster',
+                  'Rich, full-bodied espresso with bittersweet milk sauce and steamed milk',
+                  '\$3.99',
+                  false),
             ])),
         SizedBox(height: 15.0),
         Row(
@@ -172,7 +244,7 @@ class _HomePageState extends State<HomePage> {
             Padding(
               padding: const EdgeInsets.only(right: 15.0),
               child: Text(
-                'See All',
+                'Drag to see all',
                 style: TextStyle(
                     fontFamily: 'varela',
                     fontSize: 15.0,
@@ -232,23 +304,27 @@ class _HomePageState extends State<HomePage> {
                                 SizedBox(
                                   height: 60.0,
                                 ),
-                                Text(
-                                  shopName + '\'s',
-                                  style: TextStyle(
-                                      fontFamily: 'nunito',
-                                      fontSize: 14.0,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white),
+                                Center(
+                                  child: Text(
+                                    shopName + '\'s',
+                                    style: TextStyle(
+                                        fontFamily: 'nunito',
+                                        fontSize: 12.0,
+                                        fontWeight: FontWeight.bold,
+                                        fontStyle: FontStyle.italic,
+                                        color: Colors.white),
+                                  ),
                                 ),
-                                SizedBox(height: 10.0),
-                                Text(
+                                SizedBox(height: 3.0),
+                                Center(
+                                    child: Text(
                                   coffeeName,
                                   style: TextStyle(
                                       fontFamily: 'varela',
                                       fontSize: 32.0,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white),
-                                ),
+                                )),
                                 SizedBox(height: 10.0),
                                 Text(
                                   description,

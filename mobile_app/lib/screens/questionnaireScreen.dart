@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:coffee_orderer/screens/mainScreen.dart';
 import 'package:coffee_orderer/models/question.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:coffee_orderer/utils/localUserInformation.dart';
 
 class QuestionnairePage extends StatefulWidget {
   @override
@@ -167,6 +168,14 @@ class _QuestionnairePageState extends State<QuestionnairePage> {
                                     color: Colors.brown,
                                     backgroundColor: Colors.white));
                           }
+                          Map<String, String> convertedFavouriteDrinks =
+                              favouriteDrinks.map((key, value) {
+                            String newKey = key.replaceAll(" ", "-");
+                            String newValue = value.replaceAll(" ", "-");
+                            return MapEntry(newKey, newValue);
+                          });
+                          await storeUserInformationInCache(
+                              convertedFavouriteDrinks);
                           Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
                                   builder: (context) => HomePage()));

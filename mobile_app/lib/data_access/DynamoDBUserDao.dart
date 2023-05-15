@@ -26,6 +26,7 @@ class DynamoDBUserDao {
 
   Future<dynamic> getLastUser() async {
     List<dynamic> users = await getAllUsers();
+    print("Length of users: ${users.length}");
     return users[users.length - 1];
   }
 
@@ -133,7 +134,7 @@ class DynamoDBUserDao {
     } catch (e) {
       msg = "Exception when adding a file to the S3 bucket: ${e}";
     }
-    // return msg;
+    return msg;
   }
 
   // //comment for better integration testing

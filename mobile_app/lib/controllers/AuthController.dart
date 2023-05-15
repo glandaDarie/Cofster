@@ -227,18 +227,17 @@ class AuthController extends ValidateCredentialsService {
 
   // comment for better integration testing
   Future<Uint8List> loadUserPhoto() async {
-    // String cacheStr;
-    // try {
-    //   cacheStr = await loadUserInformationFromCache();
-    // } catch (e) {
-    //   return null;
-    // }
-    // Map<String, String> cache = fromStringCachetoMapCache(cacheStr);
-    // Map<String, String> content = {"name": cache["name"].toLowerCase()};
-    // String photoBase64 = await this.userController.getUsersPhotoFromS3(content);
-    // Uint8List photoBytes = base64.decode(photoBase64);
-    // return photoBytes;
-    return null;
+    String cacheStr;
+    try {
+      cacheStr = await loadUserInformationFromCache();
+    } catch (e) {
+      return null;
+    }
+    Map<String, String> cache = fromStringCachetoMapCache(cacheStr);
+    Map<String, String> content = {"name": cache["name"].toLowerCase()};
+    String photoBase64 = await this.userController.getUsersPhotoFromS3(content);
+    Uint8List photoBytes = base64.decode(photoBase64);
+    return photoBytes;
   }
 
   Future<String> loadName() async {
@@ -247,6 +246,9 @@ class AuthController extends ValidateCredentialsService {
       String cacheStr = await loadUserInformationFromCache();
       Map<String, String> cache = fromStringCachetoMapCache(cacheStr);
       cacheNameValue = cache["name"];
+      if (cacheNameValue == null) {
+        cacheNameValue = "User";
+      }
     } catch (e) {
       return "Error loading name: ${e}";
     }

@@ -1,6 +1,8 @@
 import 'package:coffee_orderer/services/urlService.dart';
 import 'package:coffee_orderer/data_access/DynamoDBQuestionnaireDao.dart';
 import 'package:coffee_orderer/models/question.dart';
+import 'package:coffee_orderer/utils/localUserInformation.dart';
+import 'package:coffee_orderer/controllers/UserController.dart';
 
 class QuestionnaireController {
   UrlService urlServiceGetQuestions;
@@ -11,7 +13,10 @@ class QuestionnaireController {
   String urlPostAnswers;
   DynamoDBQuestionnaireDao userDaoPostAnswers;
 
-  QuestionnaireController() {}
+  UserController userController;
+  QuestionnaireController() {
+    userController = UserController();
+  }
 
   Future<List<Question>> getAllQuestions() async {
     this.urlServiceGetQuestions = UrlService(
@@ -32,5 +37,22 @@ class QuestionnaireController {
     return await this
         .userDaoPostAnswers
         .postQuestionsToGetPredictedFavouriteDrinks(content);
+  }
+
+  Future<bool> drinksPresentInCache() async {
+    return RegExp(r"drink-[1-5]")
+        .hasMatch(await loadUserInformationFromCache());
+  }
+
+  Future<List<String>> loadDrinksFromCache() async {
+    String cacheStr = await loadUserInformationFromCache();
+    Map<String, String> cache = fromStringCachetoMapCache(cacheStr);
+    return cache.values
+        .map((String element) => element.replaceAll("-", " "))
+        .toList();
+  }
+
+  Future<List<String>> loadDrinksFromDynamoDB() async {
+    return await userController.getLastUser();
   }
 }
