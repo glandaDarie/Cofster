@@ -55,4 +55,10 @@ class QuestionnaireController {
   Future<List<String>> loadDrinksFromDynamoDB() async {
     return await userController.getLastUser();
   }
+
+  Future<List<String>> loadFavouriteDrinks() async {
+    return await ((await drinksPresentInCache())
+        ? loadDrinksFromCache()
+        : loadDrinksFromDynamoDB());
+  }
 }

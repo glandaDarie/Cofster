@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:coffee_orderer/screens/detailsScreen.dart';
 
-Padding coffeeListCard(BuildContext context, String imgPath, String coffeeName,
+Padding coffeeCard(BuildContext context, String imgPath, String coffeeName,
     String shopName, String description, String price, bool isFavorite) {
   return Padding(
       padding: EdgeInsets.only(left: 15.0, right: 15.0),

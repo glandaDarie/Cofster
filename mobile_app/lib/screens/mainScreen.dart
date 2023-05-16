@@ -2,12 +2,17 @@ import 'dart:typed_data';
 import 'package:coffee_orderer/controllers/UserController.dart';
 import 'package:coffee_orderer/controllers/AuthController.dart';
 import 'package:coffee_orderer/controllers/QuestionnaireController.dart';
+import 'package:coffee_orderer/enums/coffeeTypes.dart';
+import 'package:fancy_card/fancy_card.dart';
 import 'package:flutter/material.dart';
 import '../utils/coffeeFunFact.dart';
 import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
-import 'package:coffee_orderer/components/popupFreeDrink.dart'
+import 'package:coffee_orderer/components/mainScreen/popupFreeDrink.dart'
     show showNotification;
-import 'package:coffee_orderer/components/listCard.dart' show coffeeListCard;
+import 'package:coffee_orderer/components/mainScreen/coffeeCard.dart'
+    show coffeeCard;
+import 'package:coffee_orderer/utils/labelConversionHandler.dart' show classes;
+import 'package:coffee_orderer/utils/imagePaths.dart' show coffeeTypeImagePaths;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);
@@ -21,12 +26,14 @@ class _HomePageState extends State<HomePage> {
   AuthController authController;
   QuestionnaireController questionnaireController;
   List<String> _favouriteDrinks;
+  List<Padding> _coffeCardList;
   int _navBarItemSelected;
 
   _HomePageState() {
     this.userController = UserController();
     this.authController = AuthController();
     this.questionnaireController = QuestionnaireController();
+    this._coffeCardList = [];
     this._favouriteDrinks = [];
     this._navBarItemSelected = 0;
   }
@@ -36,7 +43,10 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     // this.authController.loadUserPhoto();
     WidgetsBinding.instance.addPostFrameCallback((Duration timeStamp) {
-      loadFavouriteDrinks().then((List<String> favouriteDrinks) {
+      this
+          .questionnaireController
+          .loadFavouriteDrinks()
+          .then((List<String> favouriteDrinks) {
         setState(() {
           this._favouriteDrinks = List.from(favouriteDrinks);
           print(this._favouriteDrinks);
@@ -44,12 +54,6 @@ class _HomePageState extends State<HomePage> {
         });
       });
     });
-  }
-
-  Future<List<String>> loadFavouriteDrinks() async {
-    return await ((await this.questionnaireController.drinksPresentInCache())
-        ? this.questionnaireController.loadDrinksFromCache()
-        : this.questionnaireController.loadDrinksFromDynamoDB());
   }
 
   callbackSetFavouriteDrinks(List<String> favouriteDrinks) {
@@ -62,8 +66,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    _coffeCardList = coffeeCardList();
     return FutureBuilder<List<String>>(
-      future: loadFavouriteDrinks(),
+      future: this.questionnaireController.loadFavouriteDrinks(),
       builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
@@ -194,98 +199,7 @@ class _HomePageState extends State<HomePage> {
                       height: 410.0,
                       child: ListView(
                         scrollDirection: Axis.horizontal,
-                        children: [
-                          coffeeListCard(
-                            context,
-                            'assets/images/coffee_cortado.png',
-                            'Cortado',
-                            'Cofster',
-                            'Bold espresso balanced with steamed milk for a harmonious flavor',
-                            '\$4.99',
-                            false,
-                          ),
-                          coffeeListCard(
-                            context,
-                            'assets/images/coffee_americano.png',
-                            'Americano',
-                            'Cofster',
-                            'Bold and robust espresso combined with hot water for a strong and smooth flavor',
-                            '\$3.99',
-                            false,
-                          ),
-                          coffeeListCard(
-                            context,
-                            'assets/images/coffee_cappuccino.png',
-                            'Cappuccino',
-                            'Cofster',
-                            'Perfectly brewed espresso with silky steamed milk and frothy foam',
-                            '\$3.99',
-                            true,
-                          ),
-                          coffeeListCard(
-                            context,
-                            'assets/images/coffee_latte_machiatto.png',
-                            'Machiatto',
-                            'Cofster',
-                            'Savor the beauty of rich latte gently layered with velvety steamed milk',
-                            '\$3.99',
-                            true,
-                          ),
-                          coffeeListCard(
-                            context,
-                            'assets/images/coffee_flat_white.png',
-                            'Flat white',
-                            'Cofster',
-                            'Indulge in the simplicity of double shots of bold espresso harmoniously blended with creamy, velvety milk',
-                            '\$3.99',
-                            false,
-                          ),
-                          coffeeListCard(
-                            context,
-                            'assets/images/coffee_espresso.png',
-                            'Espresso',
-                            'Cofster',
-                            'Embrace the essence of pure coffee perfection with a concentrated shot of intense espresso',
-                            '\$3.99',
-                            false,
-                          ),
-                          coffeeListCard(
-                            context,
-                            'assets/images/coffee_mocha.png',
-                            'Mocha',
-                            'Cofster',
-                            'Delight in the irresistible fusion of decadent chocolate, robust espresso, and velvety steamed milk',
-                            '\$3.99',
-                            false,
-                          ),
-                          coffeeListCard(
-                            context,
-                            'assets/images/coffee_cold_brew.png',
-                            'Cold brew',
-                            'Cofster',
-                            'Discover the refreshing side of coffee with our meticulously steeped, smooth and full-bodied cold brew',
-                            '\$3.99',
-                            false,
-                          ),
-                          coffeeListCard(
-                            context,
-                            'assets/images/coffee_coretto.png',
-                            'Coretto',
-                            'Cofster',
-                            'Elevate your coffee experience with the enticing combination of espresso artistry and a splash of art',
-                            '\$3.99',
-                            false,
-                          ),
-                          coffeeListCard(
-                            context,
-                            'assets/images/coffee_irish_coffee.png',
-                            'Irish coffee',
-                            'Cofster',
-                            'Embark on a journey to Ireland with the classic blend of rich, smooth coffee, a hint of brown sugar',
-                            '\$3.99',
-                            false,
-                          ),
-                        ],
+                        children: filteredCoffeeCardList(),
                       ),
                     ),
                     SizedBox(height: 15.0),
@@ -343,7 +257,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  _buildImage(String imgPath) {
+  Padding _buildImage(String imgPath) {
     return Padding(
         padding: EdgeInsets.only(right: 15.0),
         child: Container(
@@ -353,6 +267,129 @@ class _HomePageState extends State<HomePage> {
                 borderRadius: BorderRadius.circular(15.0),
                 image: DecorationImage(
                     image: AssetImage(imgPath), fit: BoxFit.cover))));
+  }
+
+  List<Padding> coffeeCardList() {
+    return [
+      coffeeCard(
+        context,
+        'assets/images/coffee_cortado.png',
+        'Cortado',
+        'Cofster',
+        'Bold espresso balanced with steamed milk for a harmonious flavor',
+        '\$4.99',
+        false,
+      ),
+      coffeeCard(
+        context,
+        'assets/images/coffee_americano.png',
+        'Americano',
+        'Cofster',
+        'Bold and robust espresso combined with hot water for a strong and smooth flavor',
+        '\$3.99',
+        false,
+      ),
+      coffeeCard(
+        context,
+        'assets/images/coffee_cappuccino.png',
+        'Cappuccino',
+        'Cofster',
+        'Perfectly brewed espresso with silky steamed milk and frothy foam',
+        '\$3.99',
+        true,
+      ),
+      coffeeCard(
+        context,
+        'assets/images/coffee_latte_machiatto.png',
+        'Machiatto',
+        'Cofster',
+        'Savor the beauty of rich latte gently layered with velvety steamed milk',
+        '\$3.99',
+        true,
+      ),
+      coffeeCard(
+        context,
+        'assets/images/coffee_flat_white.png',
+        'Flat white',
+        'Cofster',
+        'Indulge in the simplicity of double shots of bold espresso harmoniously blended with creamy, velvety milk',
+        '\$3.99',
+        false,
+      ),
+      coffeeCard(
+        context,
+        'assets/images/coffee_espresso.png',
+        'Espresso',
+        'Cofster',
+        'Embrace the essence of pure coffee perfection with a concentrated shot of intense espresso',
+        '\$3.99',
+        false,
+      ),
+      coffeeCard(
+        context,
+        'assets/images/coffee_mocha.png',
+        'Mocha',
+        'Cofster',
+        'Delight in the irresistible fusion of decadent chocolate, robust espresso, and velvety steamed milk',
+        '\$3.99',
+        false,
+      ),
+      coffeeCard(
+        context,
+        'assets/images/coffee_cold_brew.png',
+        'Cold brew',
+        'Cofster',
+        'Discover the refreshing side of coffee with our meticulously steeped, smooth and full-bodied cold brew',
+        '\$3.99',
+        false,
+      ),
+      coffeeCard(
+        context,
+        'assets/images/coffee_coretto.png',
+        'Coretto',
+        'Cofster',
+        'Elevate your coffee experience with the enticing combination of espresso artistry and a splash of art',
+        '\$3.99',
+        false,
+      ),
+      coffeeCard(
+        context,
+        'assets/images/coffee_irish_coffee.png',
+        'Irish coffee',
+        'Cofster',
+        'Embark on a journey to Ireland with the classic blend of rich, smooth coffee, a hint of brown sugar',
+        '\$3.99',
+        false,
+      ),
+    ];
+  }
+
+  List<FancyCard> fancyCards() {
+    List<FancyCard> cards = coffeeTypeImagePaths.values.toList().map((path) {
+      print("Path = ${path}");
+      FancyCard(
+        title: "Something",
+        image: Image(
+          image: AssetImage(path),
+        ),
+      );
+    }).toList();
+    return cards;
+  }
+
+  List<Padding> filteredCoffeeCardList() {
+    List<int> favouriteDrinkIndices = this
+        ._favouriteDrinks
+        .map((favouriteDrink) => classes[favouriteDrink.toLowerCase()])
+        .toList();
+    List<Padding> coffeeCards = coffeeCardList();
+    List<Padding> filteredCards = coffeeCards
+        .asMap()
+        .entries
+        .where((entry) => favouriteDrinkIndices.contains(entry.key))
+        .map((entry) => entry.value)
+        .toList();
+    return filteredCards;
   }
 
   FloatingNavbar _bottomNavigationBar(int selectedIndex, Function callback) {
