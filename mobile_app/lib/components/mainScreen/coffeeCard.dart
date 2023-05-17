@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:coffee_orderer/screens/detailsScreen.dart';
+import 'package:coffee_orderer/models/card.dart' show CoffeeCard;
 
-Padding coffeeCard(BuildContext context, String imgPath, String coffeeName,
-    String shopName, String description, String price, bool isFavorite) {
+Padding coffeeCard(CoffeeCard card) {
   return Padding(
       padding: EdgeInsets.only(left: 15.0, right: 15.0),
       child: Container(
@@ -29,7 +29,7 @@ Padding coffeeCard(BuildContext context, String imgPath, String coffeeName,
                               ),
                               Center(
                                 child: Text(
-                                  shopName + "\'s",
+                                  card.shopName + "\'s",
                                   style: TextStyle(
                                       fontFamily: "nunito",
                                       fontSize: 12.0,
@@ -41,7 +41,7 @@ Padding coffeeCard(BuildContext context, String imgPath, String coffeeName,
                               SizedBox(height: 3.0),
                               Center(
                                   child: Text(
-                                coffeeName,
+                                card.coffeeName,
                                 style: TextStyle(
                                     fontFamily: "varela",
                                     fontSize: 32.0,
@@ -50,7 +50,7 @@ Padding coffeeCard(BuildContext context, String imgPath, String coffeeName,
                               )),
                               SizedBox(height: 10.0),
                               Text(
-                                description,
+                                card.description,
                                 style: TextStyle(
                                     fontFamily: "nunito",
                                     fontSize: 14.0,
@@ -63,7 +63,7 @@ Padding coffeeCard(BuildContext context, String imgPath, String coffeeName,
                                     MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
                                   Text(
-                                    price,
+                                    card.price,
                                     style: TextStyle(
                                         fontFamily: "varela",
                                         fontSize: 25.0,
@@ -79,7 +79,7 @@ Padding coffeeCard(BuildContext context, String imgPath, String coffeeName,
                                           color: Colors.white),
                                       child: Center(
                                           child: Icon(Icons.favorite,
-                                              color: isFavorite
+                                              color: card.isFavorite
                                                   ? Colors.red
                                                   : Colors.grey,
                                               size: 15.0)))
@@ -94,13 +94,13 @@ Padding coffeeCard(BuildContext context, String imgPath, String coffeeName,
                         width: 100.0,
                         decoration: BoxDecoration(
                             image: DecorationImage(
-                                image: AssetImage(imgPath),
+                                image: AssetImage(card.imgPath),
                                 fit: BoxFit.contain))))
               ]),
               SizedBox(height: 20.0),
               InkWell(
                   onTap: () {
-                    Navigator.of(context).push(
+                    Navigator.of(card.context).push(
                         MaterialPageRoute(builder: (context) => DetailsPage()));
                   },
                   child: Container(

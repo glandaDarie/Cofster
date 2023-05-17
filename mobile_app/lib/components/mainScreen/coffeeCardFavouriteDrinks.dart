@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:coffee_orderer/models/swiper.dart' show CardSwiper;
+import 'package:coffee_orderer/models/card.dart' show CoffeeCard;
 
-Padding coffeeSwiper(CardSwiper swiperData) {
+Padding coffeeCardFavouriteDrink(CoffeeCard card) {
   return Padding(
       padding: EdgeInsets.only(left: 15.0, right: 15.0),
       child: Container(
@@ -20,11 +20,7 @@ Padding coffeeSwiper(CardSwiper swiperData) {
                     width: 225.0,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(75.0),
-                      gradient: LinearGradient(colors: [
-                        Color.fromARGB(255, 218, 182, 140),
-                        Color.fromARGB(255, 208, 166, 114),
-                      ]),
-                      // color: Color(0xFFDAB68C),
+                      color: Color(0xFF473D3A),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,7 +28,7 @@ Padding coffeeSwiper(CardSwiper swiperData) {
                         SizedBox(height: 48.0),
                         Center(
                           child: Text(
-                            swiperData.shopName + "\'s",
+                            card.shopName + "\'s",
                             style: TextStyle(
                               fontFamily: "nunito",
                               fontSize: 8.0,
@@ -45,7 +41,7 @@ Padding coffeeSwiper(CardSwiper swiperData) {
                         SizedBox(height: 16.0),
                         Center(
                           child: Text(
-                            swiperData.coffeeName,
+                            card.coffeeName,
                             style: TextStyle(
                               fontFamily: "varela",
                               fontSize: 34.0,
@@ -57,12 +53,12 @@ Padding coffeeSwiper(CardSwiper swiperData) {
                         SizedBox(height: 10.0),
                         Center(
                           child: Text(
-                            swiperData.price,
+                            card.price,
                             style: TextStyle(
                               fontFamily: "varela",
                               fontSize: 28.0,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF473D3A),
+                              color: Colors.white,
                             ),
                           ),
                         )
@@ -78,8 +74,7 @@ Padding coffeeSwiper(CardSwiper swiperData) {
                     width: 85.0,
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                          image: AssetImage(swiperData.imgPath),
-                          fit: BoxFit.contain),
+                          image: AssetImage(card.imgPath), fit: BoxFit.contain),
                     ),
                   ),
                 ),

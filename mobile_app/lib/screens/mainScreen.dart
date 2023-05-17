@@ -2,18 +2,18 @@ import 'dart:typed_data';
 import 'package:coffee_orderer/controllers/UserController.dart';
 import 'package:coffee_orderer/controllers/AuthController.dart';
 import 'package:coffee_orderer/controllers/QuestionnaireController.dart';
-import 'package:coffee_orderer/models/swiper.dart';
 import 'package:flutter/material.dart';
 import '../utils/coffeeFunFact.dart';
-// import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
 import 'package:coffee_orderer/components/mainScreen/navigationBar.dart';
 import 'package:coffee_orderer/components/mainScreen/popupFreeDrink.dart'
     show showNotification;
 import 'package:coffee_orderer/components/mainScreen/coffeeCard.dart'
     show coffeeCard;
-import 'package:coffee_orderer/utils/labelConversionHandler.dart' show classes;
-import 'package:coffee_orderer/utils/imagePaths.dart' show coffeeTypeImagePaths;
-import 'package:coffee_orderer/components/mainScreen/coffeeSwiper.dart';
+import 'package:coffee_orderer/utils/cardProperties.dart'
+    show coffeeImagePaths, coffeeNames, coffeeDescription, coffeePrices;
+import 'package:coffee_orderer/enums/coffeeTypes.dart' show CoffeeType;
+import 'package:coffee_orderer/controllers/CoffeeCardFavouriteDrinksController.dart';
+import 'package:coffee_orderer/models/card.dart' show CoffeeCard;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);
@@ -26,6 +26,7 @@ class _HomePageState extends State<HomePage> {
   UserController userController;
   AuthController authController;
   QuestionnaireController questionnaireController;
+  CoffeeCardFavouriteDrinksController coffeeCardController;
   List<String> _favouriteDrinks;
   int _navBarItemSelected;
 
@@ -33,6 +34,7 @@ class _HomePageState extends State<HomePage> {
     this.userController = UserController();
     this.authController = AuthController();
     this.questionnaireController = QuestionnaireController();
+    this.coffeeCardController = CoffeeCardFavouriteDrinksController();
     this._favouriteDrinks = [];
     this._navBarItemSelected = 0;
   }
@@ -192,16 +194,16 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                     SizedBox(height: 15.0),
-
-                    // NOW WORKING ON
                     Container(
                       height: 310.0,
                       child: ListView(
                         scrollDirection: Axis.horizontal,
-                        children: coffeeSwiperList(),
+                        children: this
+                            .coffeeCardController
+                            .filteredCoffeeCardsWithFavouriteDrinksFromClassifier(
+                                this._favouriteDrinks),
                       ),
                     ),
-
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
@@ -227,13 +229,11 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                     SizedBox(height: 15.0),
-                    // TILL HERE
-
                     Container(
                       height: 410.0,
                       child: ListView(
                         scrollDirection: Axis.horizontal,
-                        children: _filteredCoffeeCardList(),
+                        children: _coffeeCardList(),
                       ),
                     ),
                     SizedBox(height: 15.0),
@@ -306,138 +306,105 @@ class _HomePageState extends State<HomePage> {
   List<Padding> _coffeeCardList() {
     return [
       coffeeCard(
-        context,
-        'assets/images/coffee_cortado.png',
-        'Cortado',
-        'Cofster',
-        'Bold espresso balanced with steamed milk for a harmonious flavor',
-        '\$4.99',
-        false,
+        CoffeeCard(
+            coffeeImagePaths[CoffeeType.cortado],
+            coffeeNames[CoffeeType.cortado],
+            "Cofster",
+            coffeePrices[CoffeeType.cortado],
+            coffeeDescription[CoffeeType.cortado],
+            false,
+            context),
       ),
       coffeeCard(
-        context,
-        'assets/images/coffee_americano.png',
-        'Americano',
-        'Cofster',
-        'Bold and robust espresso combined with hot water for a strong and smooth flavor',
-        '\$3.99',
-        false,
+        CoffeeCard(
+            coffeeImagePaths[CoffeeType.americano],
+            coffeeNames[CoffeeType.americano],
+            "Cofster",
+            coffeePrices[CoffeeType.americano],
+            coffeeDescription[CoffeeType.americano],
+            false,
+            context),
       ),
       coffeeCard(
-        context,
-        'assets/images/coffee_cappuccino.png',
-        'Cappuccino',
-        'Cofster',
-        'Perfectly brewed espresso with silky steamed milk and frothy foam',
-        '\$3.99',
-        true,
+        CoffeeCard(
+            coffeeImagePaths[CoffeeType.cappuccino],
+            coffeeNames[CoffeeType.cappuccino],
+            "Cofster",
+            coffeePrices[CoffeeType.cappuccino],
+            coffeeDescription[CoffeeType.cappuccino],
+            true,
+            context),
       ),
       coffeeCard(
-        context,
-        'assets/images/coffee_latte_machiatto.png',
-        'Machiatto',
-        'Cofster',
-        'Savor the beauty of rich latte gently layered with velvety steamed milk',
-        '\$3.99',
-        true,
+        CoffeeCard(
+            coffeeImagePaths[CoffeeType.latteMachiatto],
+            coffeeNames[CoffeeType.latteMachiatto],
+            "Cofster",
+            coffeePrices[CoffeeType.latteMachiatto],
+            coffeeDescription[CoffeeType.latteMachiatto],
+            true,
+            context),
       ),
       coffeeCard(
-        context,
-        'assets/images/coffee_flat_white.png',
-        'Flat white',
-        'Cofster',
-        'Indulge in the simplicity of double shots of bold espresso harmoniously blended with creamy, velvety milk',
-        '\$3.99',
-        false,
+        CoffeeCard(
+            coffeeImagePaths[CoffeeType.flatWhite],
+            coffeeNames[CoffeeType.flatWhite],
+            "Cofster",
+            coffeePrices[CoffeeType.flatWhite],
+            coffeeDescription[CoffeeType.flatWhite],
+            false,
+            context),
       ),
       coffeeCard(
-        context,
-        'assets/images/coffee_espresso.png',
-        'Espresso',
-        'Cofster',
-        'Embrace the essence of pure coffee perfection with a concentrated shot of intense espresso',
-        '\$3.99',
-        false,
+        CoffeeCard(
+            coffeeImagePaths[CoffeeType.coldEspresso],
+            coffeeNames[CoffeeType.coldEspresso],
+            "Cofster",
+            coffeePrices[CoffeeType.coldEspresso],
+            coffeeDescription[CoffeeType.coldEspresso],
+            false,
+            context),
       ),
       coffeeCard(
-        context,
-        'assets/images/coffee_mocha.png',
-        'Mocha',
-        'Cofster',
-        'Delight in the irresistible fusion of decadent chocolate, robust espresso, and velvety steamed milk',
-        '\$3.99',
-        false,
+        CoffeeCard(
+            coffeeImagePaths[CoffeeType.mocha],
+            coffeeNames[CoffeeType.mocha],
+            "Cofster",
+            coffeePrices[CoffeeType.mocha],
+            coffeeDescription[CoffeeType.mocha],
+            false,
+            context),
       ),
       coffeeCard(
-        context,
-        'assets/images/coffee_cold_brew.png',
-        'Cold brew',
-        'Cofster',
-        'Discover the refreshing side of coffee with our meticulously steeped, smooth and full-bodied cold brew',
-        '\$3.99',
-        false,
+        CoffeeCard(
+            coffeeImagePaths[CoffeeType.coldBrew],
+            coffeeNames[CoffeeType.coldBrew],
+            "Cofster",
+            coffeePrices[CoffeeType.coldBrew],
+            coffeeDescription[CoffeeType.coldBrew],
+            false,
+            context),
       ),
       coffeeCard(
-        context,
-        'assets/images/coffee_coretto.png',
-        'Coretto',
-        'Cofster',
-        'Elevate your coffee experience with the enticing combination of espresso artistry and a splash of art',
-        '\$3.99',
-        false,
+        CoffeeCard(
+            coffeeImagePaths[CoffeeType.coretto],
+            coffeeNames[CoffeeType.coretto],
+            "Cofster",
+            coffeePrices[CoffeeType.coretto],
+            coffeeDescription[CoffeeType.coretto],
+            false,
+            context),
       ),
       coffeeCard(
-        context,
-        'assets/images/coffee_irish_coffee.png',
-        'Irish coffee',
-        'Cofster',
-        'Embark on a journey to Ireland with the classic blend of rich, smooth coffee, a hint of brown sugar',
-        '\$3.99',
-        false,
+        CoffeeCard(
+            coffeeImagePaths[CoffeeType.irishCoffee],
+            coffeeNames[CoffeeType.irishCoffee],
+            "Cofster",
+            coffeePrices[CoffeeType.irishCoffee],
+            coffeeDescription[CoffeeType.irishCoffee],
+            false,
+            context),
       ),
     ];
   }
-
-  List<Padding> coffeeSwiperList() {
-    return [
-      coffeeSwiper(CardSwiper(
-        context,
-        'assets/images/coffee_cortado.png',
-        'Cortado',
-        'Cofster',
-        '\$4.99',
-      )),
-      coffeeSwiper(CardSwiper(context, 'assets/images/coffee_americano.png',
-          'Americano', 'Cofster', '\$4.99'))
-    ];
-  }
-
-  List<Padding> _filteredCoffeeCardList() {
-    List<int> favouriteDrinkIndices = this
-        ._favouriteDrinks
-        .map((favouriteDrink) => classes[favouriteDrink.toLowerCase()])
-        .toList();
-    return _coffeeCardList()
-        .asMap()
-        .entries
-        .where((entry) => favouriteDrinkIndices.contains(entry.key))
-        .map((entry) => entry.value)
-        .toList();
-  }
-
-  // FloatingNavbar _bottomNavigationBar(int selectedIndex, Function callback) {
-  //   return FloatingNavbar(
-  //     currentIndex: selectedIndex,
-  //     onTap: (int index) {
-  //       callback(index);
-  //     },
-  //     backgroundColor: Color(0xFF473D3A),
-  //     items: [
-  //       FloatingNavbarItem(title: "Home", icon: Icons.home),
-  //       FloatingNavbarItem(title: "Profile", icon: Icons.person),
-  //       FloatingNavbarItem(title: "Orders", icon: Icons.history),
-  //       FloatingNavbarItem(title: "Settings", icon: Icons.settings)
-  //     ],
-  //   );
-  // }
 }
