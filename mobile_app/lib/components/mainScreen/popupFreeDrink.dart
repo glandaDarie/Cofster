@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-void showNotification(BuildContext context, String favouriteDrink) {
+void showPopup(BuildContext context, String favouriteDrink) {
   showModalBottomSheet(
     context: context,
     builder: (BuildContext context) {

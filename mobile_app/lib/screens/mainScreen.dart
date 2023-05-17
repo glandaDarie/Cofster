@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import '../utils/coffeeFunFact.dart';
 import 'package:coffee_orderer/components/mainScreen/navigationBar.dart';
 import 'package:coffee_orderer/components/mainScreen/popupFreeDrink.dart'
-    show showNotification;
+    show showPopup;
 import 'package:coffee_orderer/components/mainScreen/coffeeCard.dart'
     show coffeeCard;
 import 'package:coffee_orderer/utils/cardProperties.dart'
@@ -14,6 +14,8 @@ import 'package:coffee_orderer/utils/cardProperties.dart'
 import 'package:coffee_orderer/enums/coffeeTypes.dart' show CoffeeType;
 import 'package:coffee_orderer/controllers/CoffeeCardFavouriteDrinksController.dart';
 import 'package:coffee_orderer/models/card.dart' show CoffeeCard;
+import 'package:coffee_orderer/services/notificationService.dart'
+    show NotificationService;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);
@@ -27,6 +29,7 @@ class _HomePageState extends State<HomePage> {
   AuthController authController;
   QuestionnaireController questionnaireController;
   CoffeeCardFavouriteDrinksController coffeeCardController;
+  NotificationService notificationService;
   List<String> _favouriteDrinks;
   int _navBarItemSelected;
 
@@ -50,7 +53,14 @@ class _HomePageState extends State<HomePage> {
           .then((List<String> favouriteDrinks) {
         setState(() {
           this._favouriteDrinks = List.from(favouriteDrinks);
-          showNotification(context, this._favouriteDrinks.first);
+          String favouriteDrink = this._favouriteDrinks.first;
+          showPopup(context, favouriteDrink);
+          print("YES? 1");
+          NotificationService().showNotification(
+              title: "New user reward",
+              body:
+                  "You won a free ${favouriteDrink.toLowerCase()} coffee. Enjoy!");
+          print("YES? 2");
         });
       });
     });

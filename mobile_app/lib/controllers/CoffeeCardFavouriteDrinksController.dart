@@ -82,14 +82,15 @@ class CoffeeCardFavouriteDrinksController {
   List<Padding> filteredCoffeeCardsWithFavouriteDrinksFromClassifier(
       List<String> favouriteDrinks) {
     List<int> favouriteDrinkIndices = favouriteDrinks
-        .map((favouriteDrink) => classes[favouriteDrink.toLowerCase()])
+        .map((String favouriteDrink) => classes[favouriteDrink.toLowerCase()])
         .toList();
     return this
         .cardsFavouriteDrinks
         .asMap()
         .entries
-        .where((entry) => favouriteDrinkIndices.contains(entry.key))
-        .map((entry) => entry.value)
+        .where((MapEntry<int, Padding> entry) =>
+            favouriteDrinkIndices.contains(entry.key))
+        .map((MapEntry<int, Padding> entry) => entry.value)
         .toList();
   }
 }
