@@ -2,17 +2,18 @@ import 'dart:typed_data';
 import 'package:coffee_orderer/controllers/UserController.dart';
 import 'package:coffee_orderer/controllers/AuthController.dart';
 import 'package:coffee_orderer/controllers/QuestionnaireController.dart';
-import 'package:coffee_orderer/enums/coffeeTypes.dart';
-import 'package:fancy_card/fancy_card.dart';
+import 'package:coffee_orderer/models/swiper.dart';
 import 'package:flutter/material.dart';
 import '../utils/coffeeFunFact.dart';
-import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
+// import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
+import 'package:coffee_orderer/components/mainScreen/navigationBar.dart';
 import 'package:coffee_orderer/components/mainScreen/popupFreeDrink.dart'
     show showNotification;
 import 'package:coffee_orderer/components/mainScreen/coffeeCard.dart'
     show coffeeCard;
 import 'package:coffee_orderer/utils/labelConversionHandler.dart' show classes;
 import 'package:coffee_orderer/utils/imagePaths.dart' show coffeeTypeImagePaths;
+import 'package:coffee_orderer/components/mainScreen/coffeeSwiper.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);
@@ -26,14 +27,12 @@ class _HomePageState extends State<HomePage> {
   AuthController authController;
   QuestionnaireController questionnaireController;
   List<String> _favouriteDrinks;
-  List<Padding> _coffeCardList;
   int _navBarItemSelected;
 
   _HomePageState() {
     this.userController = UserController();
     this.authController = AuthController();
     this.questionnaireController = QuestionnaireController();
-    this._coffeCardList = [];
     this._favouriteDrinks = [];
     this._navBarItemSelected = 0;
   }
@@ -49,7 +48,6 @@ class _HomePageState extends State<HomePage> {
           .then((List<String> favouriteDrinks) {
         setState(() {
           this._favouriteDrinks = List.from(favouriteDrinks);
-          print(this._favouriteDrinks);
           showNotification(context, this._favouriteDrinks.first);
         });
       });
@@ -66,7 +64,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    _coffeCardList = coffeeCardList();
     return FutureBuilder<List<String>>(
       future: this.questionnaireController.loadFavouriteDrinks(),
       builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
@@ -174,7 +171,77 @@ class _HomePageState extends State<HomePage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Text(
-                          "Taste made for you",
+                          "Drinks made for you",
+                          style: TextStyle(
+                            fontFamily: "varela",
+                            fontSize: 17.0,
+                            color: Color(0xFF473D3A),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 15.0),
+                          child: Text(
+                            "Drag to see all",
+                            style: TextStyle(
+                              fontFamily: "varela",
+                              fontSize: 15.0,
+                              color: Color(0xFFCEC7C4),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 15.0),
+
+                    // NOW WORKING ON
+                    Container(
+                      height: 310.0,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: coffeeSwiperList(),
+                      ),
+                    ),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(
+                          "Drinks available",
+                          style: TextStyle(
+                            fontFamily: "varela",
+                            fontSize: 17.0,
+                            color: Color(0xFF473D3A),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 15.0),
+                          child: Text(
+                            "Drag to see all",
+                            style: TextStyle(
+                              fontFamily: "varela",
+                              fontSize: 15.0,
+                              color: Color(0xFFCEC7C4),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 15.0),
+                    // TILL HERE
+
+                    Container(
+                      height: 410.0,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: _filteredCoffeeCardList(),
+                      ),
+                    ),
+                    SizedBox(height: 15.0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(
+                          "Explore nearby",
                           style: TextStyle(
                             fontFamily: "varela",
                             fontSize: 17.0,
@@ -196,58 +263,25 @@ class _HomePageState extends State<HomePage> {
                     ),
                     SizedBox(height: 15.0),
                     Container(
-                      height: 410.0,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        children: filteredCoffeeCardList(),
-                      ),
-                    ),
-                    SizedBox(height: 15.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(
-                          'Explore nearby',
-                          style: TextStyle(
-                            fontFamily: 'varela',
-                            fontSize: 17.0,
-                            color: Color(0xFF473D3A),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 15.0),
-                          child: Text(
-                            'Drag to see all',
-                            style: TextStyle(
-                              fontFamily: 'varela',
-                              fontSize: 15.0,
-                              color: Color(0xFFCEC7C4),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 15.0),
-                    Container(
                       height: 125.0,
                       child: ListView(
                         scrollDirection: Axis.horizontal,
                         children: [
-                          _buildImage('assets/images/coffee.jpg'),
-                          _buildImage('assets/images/coffee2.jpg'),
-                          _buildImage('assets/images/coffee3.jpg'),
+                          _buildImage("assets/images/coffee.jpg"),
+                          _buildImage("assets/images/coffee2.jpg"),
+                          _buildImage("assets/images/coffee3.jpg"),
                         ],
                       ),
                     ),
                   ],
                 ),
-                SizedBox(height: 20.0),
+                SizedBox(height: 50.0),
                 Positioned(
                   left: 0,
                   right: 0,
                   bottom: 0,
                   child:
-                      _bottomNavigationBar(_navBarItemSelected, callbackNavBar),
+                      bottomNavigationBar(_navBarItemSelected, callbackNavBar),
                 ),
               ],
             ),
@@ -269,7 +303,7 @@ class _HomePageState extends State<HomePage> {
                     image: AssetImage(imgPath), fit: BoxFit.cover))));
   }
 
-  List<Padding> coffeeCardList() {
+  List<Padding> _coffeeCardList() {
     return [
       coffeeCard(
         context,
@@ -364,47 +398,46 @@ class _HomePageState extends State<HomePage> {
     ];
   }
 
-  List<FancyCard> fancyCards() {
-    List<FancyCard> cards = coffeeTypeImagePaths.values.toList().map((path) {
-      print("Path = ${path}");
-      FancyCard(
-        title: "Something",
-        image: Image(
-          image: AssetImage(path),
-        ),
-      );
-    }).toList();
-    return cards;
+  List<Padding> coffeeSwiperList() {
+    return [
+      coffeeSwiper(CardSwiper(
+        context,
+        'assets/images/coffee_cortado.png',
+        'Cortado',
+        'Cofster',
+        '\$4.99',
+      )),
+      coffeeSwiper(CardSwiper(context, 'assets/images/coffee_americano.png',
+          'Americano', 'Cofster', '\$4.99'))
+    ];
   }
 
-  List<Padding> filteredCoffeeCardList() {
+  List<Padding> _filteredCoffeeCardList() {
     List<int> favouriteDrinkIndices = this
         ._favouriteDrinks
         .map((favouriteDrink) => classes[favouriteDrink.toLowerCase()])
         .toList();
-    List<Padding> coffeeCards = coffeeCardList();
-    List<Padding> filteredCards = coffeeCards
+    return _coffeeCardList()
         .asMap()
         .entries
         .where((entry) => favouriteDrinkIndices.contains(entry.key))
         .map((entry) => entry.value)
         .toList();
-    return filteredCards;
   }
 
-  FloatingNavbar _bottomNavigationBar(int selectedIndex, Function callback) {
-    return FloatingNavbar(
-      currentIndex: selectedIndex,
-      onTap: (int index) {
-        callback(index);
-      },
-      backgroundColor: Color(0xFF473D3A),
-      items: [
-        FloatingNavbarItem(title: "Home", icon: Icons.home),
-        FloatingNavbarItem(title: "Profile", icon: Icons.person),
-        FloatingNavbarItem(title: "Orders", icon: Icons.history),
-        FloatingNavbarItem(title: "Settings", icon: Icons.settings)
-      ],
-    );
-  }
+  // FloatingNavbar _bottomNavigationBar(int selectedIndex, Function callback) {
+  //   return FloatingNavbar(
+  //     currentIndex: selectedIndex,
+  //     onTap: (int index) {
+  //       callback(index);
+  //     },
+  //     backgroundColor: Color(0xFF473D3A),
+  //     items: [
+  //       FloatingNavbarItem(title: "Home", icon: Icons.home),
+  //       FloatingNavbarItem(title: "Profile", icon: Icons.person),
+  //       FloatingNavbarItem(title: "Orders", icon: Icons.history),
+  //       FloatingNavbarItem(title: "Settings", icon: Icons.settings)
+  //     ],
+  //   );
+  // }
 }
