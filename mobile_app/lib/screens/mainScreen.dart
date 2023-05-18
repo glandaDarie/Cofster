@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:coffee_orderer/controllers/CoffeeCardController.dart';
 import 'package:coffee_orderer/controllers/UserController.dart';
 import 'package:coffee_orderer/controllers/AuthController.dart';
 import 'package:coffee_orderer/controllers/QuestionnaireController.dart';
@@ -7,13 +8,13 @@ import '../utils/coffeeFunFact.dart';
 import 'package:coffee_orderer/components/mainScreen/navigationBar.dart';
 import 'package:coffee_orderer/components/mainScreen/popupFreeDrink.dart'
     show showPopup;
-import 'package:coffee_orderer/components/mainScreen/coffeeCard.dart'
-    show coffeeCard;
-import 'package:coffee_orderer/utils/cardProperties.dart'
-    show coffeeImagePaths, coffeeNames, coffeeDescription, coffeePrices;
-import 'package:coffee_orderer/enums/coffeeTypes.dart' show CoffeeType;
+// import 'package:coffee_orderer/components/mainScreen/coffeeCard.dart'
+//     show coffeeCard;
+// import 'package:coffee_orderer/utils/cardProperties.dart'
+//     show coffeeImagePaths, coffeeNames, coffeeDescription, coffeePrices;
+// import 'package:coffee_orderer/enums/coffeeTypes.dart' show CoffeeType;
 import 'package:coffee_orderer/controllers/CoffeeCardFavouriteDrinksController.dart';
-import 'package:coffee_orderer/models/card.dart' show CoffeeCard;
+// import 'package:coffee_orderer/models/card.dart' show CoffeeCard;
 import 'package:coffee_orderer/services/notificationService.dart'
     show NotificationService;
 
@@ -28,16 +29,18 @@ class _HomePageState extends State<HomePage> {
   UserController userController;
   AuthController authController;
   QuestionnaireController questionnaireController;
-  CoffeeCardFavouriteDrinksController coffeeCardController;
+  CoffeeCardController coffeeCardController;
+  CoffeeCardFavouriteDrinksController coffeeCardFavouriteDrinksController;
   NotificationService notificationService;
-  List<String> _favouriteDrinks;
   int _navBarItemSelected;
+  List<String> _favouriteDrinks;
 
   _HomePageState() {
     this.userController = UserController();
     this.authController = AuthController();
     this.questionnaireController = QuestionnaireController();
-    this.coffeeCardController = CoffeeCardFavouriteDrinksController();
+    this.coffeeCardFavouriteDrinksController =
+        CoffeeCardFavouriteDrinksController();
     this._favouriteDrinks = [];
     this._navBarItemSelected = 0;
   }
@@ -45,12 +48,14 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    this.coffeeCardController = CoffeeCardController(context);
     // this.authController.loadUserPhoto();
     WidgetsBinding.instance.addPostFrameCallback((Duration timeStamp) {
       this
           .questionnaireController
           .loadFavouriteDrinks()
           .then((List<String> favouriteDrinks) {
+        if (!mounted) return;
         setState(() {
           this._favouriteDrinks = List.from(favouriteDrinks);
           String favouriteDrink = this._favouriteDrinks.first;
@@ -207,7 +212,7 @@ class _HomePageState extends State<HomePage> {
                       child: ListView(
                         scrollDirection: Axis.horizontal,
                         children: this
-                            .coffeeCardController
+                            .coffeeCardFavouriteDrinksController
                             .filteredCoffeeCardsWithFavouriteDrinksFromClassifier(
                                 this._favouriteDrinks),
                       ),
@@ -241,7 +246,7 @@ class _HomePageState extends State<HomePage> {
                       height: 410.0,
                       child: ListView(
                         scrollDirection: Axis.horizontal,
-                        children: _coffeeCardList(),
+                        children: this.coffeeCardController.getAllCofeeCards(),
                       ),
                     ),
                     SizedBox(height: 15.0),
@@ -311,108 +316,108 @@ class _HomePageState extends State<HomePage> {
                     image: AssetImage(imgPath), fit: BoxFit.cover))));
   }
 
-  List<Padding> _coffeeCardList() {
-    return [
-      coffeeCard(
-        CoffeeCard(
-            coffeeImagePaths[CoffeeType.cortado],
-            coffeeNames[CoffeeType.cortado],
-            "Cofster",
-            coffeePrices[CoffeeType.cortado],
-            coffeeDescription[CoffeeType.cortado],
-            false,
-            context),
-      ),
-      coffeeCard(
-        CoffeeCard(
-            coffeeImagePaths[CoffeeType.americano],
-            coffeeNames[CoffeeType.americano],
-            "Cofster",
-            coffeePrices[CoffeeType.americano],
-            coffeeDescription[CoffeeType.americano],
-            false,
-            context),
-      ),
-      coffeeCard(
-        CoffeeCard(
-            coffeeImagePaths[CoffeeType.cappuccino],
-            coffeeNames[CoffeeType.cappuccino],
-            "Cofster",
-            coffeePrices[CoffeeType.cappuccino],
-            coffeeDescription[CoffeeType.cappuccino],
-            true,
-            context),
-      ),
-      coffeeCard(
-        CoffeeCard(
-            coffeeImagePaths[CoffeeType.latteMachiatto],
-            coffeeNames[CoffeeType.latteMachiatto],
-            "Cofster",
-            coffeePrices[CoffeeType.latteMachiatto],
-            coffeeDescription[CoffeeType.latteMachiatto],
-            true,
-            context),
-      ),
-      coffeeCard(
-        CoffeeCard(
-            coffeeImagePaths[CoffeeType.flatWhite],
-            coffeeNames[CoffeeType.flatWhite],
-            "Cofster",
-            coffeePrices[CoffeeType.flatWhite],
-            coffeeDescription[CoffeeType.flatWhite],
-            false,
-            context),
-      ),
-      coffeeCard(
-        CoffeeCard(
-            coffeeImagePaths[CoffeeType.coldEspresso],
-            coffeeNames[CoffeeType.coldEspresso],
-            "Cofster",
-            coffeePrices[CoffeeType.coldEspresso],
-            coffeeDescription[CoffeeType.coldEspresso],
-            false,
-            context),
-      ),
-      coffeeCard(
-        CoffeeCard(
-            coffeeImagePaths[CoffeeType.mocha],
-            coffeeNames[CoffeeType.mocha],
-            "Cofster",
-            coffeePrices[CoffeeType.mocha],
-            coffeeDescription[CoffeeType.mocha],
-            false,
-            context),
-      ),
-      coffeeCard(
-        CoffeeCard(
-            coffeeImagePaths[CoffeeType.coldBrew],
-            coffeeNames[CoffeeType.coldBrew],
-            "Cofster",
-            coffeePrices[CoffeeType.coldBrew],
-            coffeeDescription[CoffeeType.coldBrew],
-            false,
-            context),
-      ),
-      coffeeCard(
-        CoffeeCard(
-            coffeeImagePaths[CoffeeType.coretto],
-            coffeeNames[CoffeeType.coretto],
-            "Cofster",
-            coffeePrices[CoffeeType.coretto],
-            coffeeDescription[CoffeeType.coretto],
-            false,
-            context),
-      ),
-      coffeeCard(
-        CoffeeCard(
-            coffeeImagePaths[CoffeeType.irishCoffee],
-            coffeeNames[CoffeeType.irishCoffee],
-            "Cofster",
-            coffeePrices[CoffeeType.irishCoffee],
-            coffeeDescription[CoffeeType.irishCoffee],
-            false,
-            context),
-      ),
-    ];
-  }
+  // List<Padding> _initCoffeeCards() {
+  //   return [
+  //     coffeeCard(
+  //       CoffeeCard(
+  //           coffeeImagePaths[CoffeeType.cortado],
+  //           coffeeNames[CoffeeType.cortado],
+  //           "Cofster",
+  //           coffeePrices[CoffeeType.cortado],
+  //           coffeeDescription[CoffeeType.cortado],
+  //           false,
+  //           context),
+  //     ),
+  //     coffeeCard(
+  //       CoffeeCard(
+  //           coffeeImagePaths[CoffeeType.americano],
+  //           coffeeNames[CoffeeType.americano],
+  //           "Cofster",
+  //           coffeePrices[CoffeeType.americano],
+  //           coffeeDescription[CoffeeType.americano],
+  //           false,
+  //           context),
+  //     ),
+  //     coffeeCard(
+  //       CoffeeCard(
+  //           coffeeImagePaths[CoffeeType.cappuccino],
+  //           coffeeNames[CoffeeType.cappuccino],
+  //           "Cofster",
+  //           coffeePrices[CoffeeType.cappuccino],
+  //           coffeeDescription[CoffeeType.cappuccino],
+  //           true,
+  //           context),
+  //     ),
+  //     coffeeCard(
+  //       CoffeeCard(
+  //           coffeeImagePaths[CoffeeType.latteMachiatto],
+  //           coffeeNames[CoffeeType.latteMachiatto],
+  //           "Cofster",
+  //           coffeePrices[CoffeeType.latteMachiatto],
+  //           coffeeDescription[CoffeeType.latteMachiatto],
+  //           true,
+  //           context),
+  //     ),
+  //     coffeeCard(
+  //       CoffeeCard(
+  //           coffeeImagePaths[CoffeeType.flatWhite],
+  //           coffeeNames[CoffeeType.flatWhite],
+  //           "Cofster",
+  //           coffeePrices[CoffeeType.flatWhite],
+  //           coffeeDescription[CoffeeType.flatWhite],
+  //           false,
+  //           context),
+  //     ),
+  //     coffeeCard(
+  //       CoffeeCard(
+  //           coffeeImagePaths[CoffeeType.coldEspresso],
+  //           coffeeNames[CoffeeType.coldEspresso],
+  //           "Cofster",
+  //           coffeePrices[CoffeeType.coldEspresso],
+  //           coffeeDescription[CoffeeType.coldEspresso],
+  //           false,
+  //           context),
+  //     ),
+  //     coffeeCard(
+  //       CoffeeCard(
+  //           coffeeImagePaths[CoffeeType.mocha],
+  //           coffeeNames[CoffeeType.mocha],
+  //           "Cofster",
+  //           coffeePrices[CoffeeType.mocha],
+  //           coffeeDescription[CoffeeType.mocha],
+  //           false,
+  //           context),
+  //     ),
+  //     coffeeCard(
+  //       CoffeeCard(
+  //           coffeeImagePaths[CoffeeType.coldBrew],
+  //           coffeeNames[CoffeeType.coldBrew],
+  //           "Cofster",
+  //           coffeePrices[CoffeeType.coldBrew],
+  //           coffeeDescription[CoffeeType.coldBrew],
+  //           false,
+  //           context),
+  //     ),
+  //     coffeeCard(
+  //       CoffeeCard(
+  //           coffeeImagePaths[CoffeeType.coretto],
+  //           coffeeNames[CoffeeType.coretto],
+  //           "Cofster",
+  //           coffeePrices[CoffeeType.coretto],
+  //           coffeeDescription[CoffeeType.coretto],
+  //           false,
+  //           context),
+  //     ),
+  //     coffeeCard(
+  //       CoffeeCard(
+  //           coffeeImagePaths[CoffeeType.irishCoffee],
+  //           coffeeNames[CoffeeType.irishCoffee],
+  //           "Cofster",
+  //           coffeePrices[CoffeeType.irishCoffee],
+  //           coffeeDescription[CoffeeType.irishCoffee],
+  //           false,
+  //           context),
+  //     ),
+  //   ];
+  // }
 }

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:coffee_orderer/screens/detailsScreen.dart';
 import 'package:coffee_orderer/models/card.dart' show CoffeeCard;
+import 'package:coffee_orderer/controllers/CoffeeCardController.dart'
+    show CoffeeCardController;
+import 'package:fluttertoast/fluttertoast.dart';
 
-Padding coffeeCard(CoffeeCard card) {
+Padding coffeeCard(CoffeeCard card, Function(int) callback) {
   return Padding(
       padding: EdgeInsets.only(left: 15.0, right: 15.0),
       child: Container(
@@ -100,6 +103,12 @@ Padding coffeeCard(CoffeeCard card) {
               SizedBox(height: 20.0),
               InkWell(
                   onTap: () {
+                    // CoffeeCardController coffeeCardController =
+                    //     CoffeeCardController(card.context);
+                    // int coffeeCardNumber = callback(index);
+                    print("Image path = ${card.imgPath}");
+                    print("Image description = ${card.description}");
+                    print("Actual coffee name = ${card.coffeeName}");
                     Navigator.of(card.context).push(
                         MaterialPageRoute(builder: (context) => DetailsPage()));
                   },

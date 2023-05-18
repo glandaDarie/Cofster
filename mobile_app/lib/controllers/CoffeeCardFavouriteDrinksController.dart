@@ -8,10 +8,10 @@ import 'package:coffee_orderer/components/mainScreen/coffeeCardFavouriteDrinks.d
 import 'package:coffee_orderer/utils/labelConversionHandler.dart' show classes;
 
 class CoffeeCardFavouriteDrinksController {
-  List<Padding> cardsFavouriteDrinks;
+  List<Padding> _cardsFavouriteDrinks;
 
   CoffeeCardFavouriteDrinksController() {
-    this.cardsFavouriteDrinks = _initCoffeeCards();
+    this._cardsFavouriteDrinks = _initCoffeeCards();
   }
 
   List<Padding> _initCoffeeCards() {
@@ -85,7 +85,7 @@ class CoffeeCardFavouriteDrinksController {
         .map((String favouriteDrink) => classes[favouriteDrink.toLowerCase()])
         .toList();
     return this
-        .cardsFavouriteDrinks
+        ._cardsFavouriteDrinks
         .asMap()
         .entries
         .where((MapEntry<int, Padding> entry) =>
