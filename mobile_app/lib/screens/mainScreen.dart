@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    this.coffeeCardController = CoffeeCardController(context);
+    this.coffeeCardController = CoffeeCardController(context, onTapHeartLogo);
     // this.authController.loadUserPhoto();
     WidgetsBinding.instance.addPostFrameCallback((Duration timeStamp) {
       this
@@ -69,12 +69,18 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  callbackSetFavouriteDrinks(List<String> favouriteDrinks) {
+  void callbackSetFavouriteDrinks(List<String> favouriteDrinks) {
     this._favouriteDrinks = List.from(favouriteDrinks);
   }
 
-  callbackNavBar(int newNavBarItemSelected) {
+  void callbackNavBar(int newNavBarItemSelected) {
     setState(() => this._navBarItemSelected = newNavBarItemSelected);
+  }
+
+  bool onTapHeartLogo(bool isFavourite) {
+    setState(() {
+      return !isFavourite;
+    });
   }
 
   @override
@@ -315,109 +321,4 @@ class _HomePageState extends State<HomePage> {
                 image: DecorationImage(
                     image: AssetImage(imgPath), fit: BoxFit.cover))));
   }
-
-  // List<Padding> _initCoffeeCards() {
-  //   return [
-  //     coffeeCard(
-  //       CoffeeCard(
-  //           coffeeImagePaths[CoffeeType.cortado],
-  //           coffeeNames[CoffeeType.cortado],
-  //           "Cofster",
-  //           coffeePrices[CoffeeType.cortado],
-  //           coffeeDescription[CoffeeType.cortado],
-  //           false,
-  //           context),
-  //     ),
-  //     coffeeCard(
-  //       CoffeeCard(
-  //           coffeeImagePaths[CoffeeType.americano],
-  //           coffeeNames[CoffeeType.americano],
-  //           "Cofster",
-  //           coffeePrices[CoffeeType.americano],
-  //           coffeeDescription[CoffeeType.americano],
-  //           false,
-  //           context),
-  //     ),
-  //     coffeeCard(
-  //       CoffeeCard(
-  //           coffeeImagePaths[CoffeeType.cappuccino],
-  //           coffeeNames[CoffeeType.cappuccino],
-  //           "Cofster",
-  //           coffeePrices[CoffeeType.cappuccino],
-  //           coffeeDescription[CoffeeType.cappuccino],
-  //           true,
-  //           context),
-  //     ),
-  //     coffeeCard(
-  //       CoffeeCard(
-  //           coffeeImagePaths[CoffeeType.latteMachiatto],
-  //           coffeeNames[CoffeeType.latteMachiatto],
-  //           "Cofster",
-  //           coffeePrices[CoffeeType.latteMachiatto],
-  //           coffeeDescription[CoffeeType.latteMachiatto],
-  //           true,
-  //           context),
-  //     ),
-  //     coffeeCard(
-  //       CoffeeCard(
-  //           coffeeImagePaths[CoffeeType.flatWhite],
-  //           coffeeNames[CoffeeType.flatWhite],
-  //           "Cofster",
-  //           coffeePrices[CoffeeType.flatWhite],
-  //           coffeeDescription[CoffeeType.flatWhite],
-  //           false,
-  //           context),
-  //     ),
-  //     coffeeCard(
-  //       CoffeeCard(
-  //           coffeeImagePaths[CoffeeType.coldEspresso],
-  //           coffeeNames[CoffeeType.coldEspresso],
-  //           "Cofster",
-  //           coffeePrices[CoffeeType.coldEspresso],
-  //           coffeeDescription[CoffeeType.coldEspresso],
-  //           false,
-  //           context),
-  //     ),
-  //     coffeeCard(
-  //       CoffeeCard(
-  //           coffeeImagePaths[CoffeeType.mocha],
-  //           coffeeNames[CoffeeType.mocha],
-  //           "Cofster",
-  //           coffeePrices[CoffeeType.mocha],
-  //           coffeeDescription[CoffeeType.mocha],
-  //           false,
-  //           context),
-  //     ),
-  //     coffeeCard(
-  //       CoffeeCard(
-  //           coffeeImagePaths[CoffeeType.coldBrew],
-  //           coffeeNames[CoffeeType.coldBrew],
-  //           "Cofster",
-  //           coffeePrices[CoffeeType.coldBrew],
-  //           coffeeDescription[CoffeeType.coldBrew],
-  //           false,
-  //           context),
-  //     ),
-  //     coffeeCard(
-  //       CoffeeCard(
-  //           coffeeImagePaths[CoffeeType.coretto],
-  //           coffeeNames[CoffeeType.coretto],
-  //           "Cofster",
-  //           coffeePrices[CoffeeType.coretto],
-  //           coffeeDescription[CoffeeType.coretto],
-  //           false,
-  //           context),
-  //     ),
-  //     coffeeCard(
-  //       CoffeeCard(
-  //           coffeeImagePaths[CoffeeType.irishCoffee],
-  //           coffeeNames[CoffeeType.irishCoffee],
-  //           "Cofster",
-  //           coffeePrices[CoffeeType.irishCoffee],
-  //           coffeeDescription[CoffeeType.irishCoffee],
-  //           false,
-  //           context),
-  //     ),
-  //   ];
-  // }
 }

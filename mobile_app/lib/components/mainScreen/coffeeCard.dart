@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:coffee_orderer/screens/detailsScreen.dart';
 import 'package:coffee_orderer/models/card.dart' show CoffeeCard;
 
-Padding coffeeCard(CoffeeCard card) {
+Padding coffeeCard(CoffeeCard card, [Function callback]) {
   return Padding(
       padding: EdgeInsets.only(left: 15.0, right: 15.0),
       child: Container(
@@ -60,7 +60,8 @@ Padding coffeeCard(CoffeeCard card) {
                               SizedBox(height: 10.0),
                               InkWell(
                                   onTap: () {
-                                    card.isFavorite = !card.isFavorite;
+                                    card.isFavorite = callback(card.isFavorite);
+                                    // card.isFavorite = !card.isFavorite;
                                   },
                                   child: Row(
                                     mainAxisAlignment:
