@@ -4,6 +4,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 <queries>
   <intent>
     <action android:name="android.intent.action.SENDTO" />
@@ -29,13 +31,22 @@
             <meta-data
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
-              />
+              /> 
+            <!-- added now -->
+            <meta-data
+              android:name="com.example.mobile_app.notification_channel_id"
+              android:value="channel_id_1" />
+            <meta-data
+              android:name="com.example.mobile_app.notification_channel_name"
+              android:value="Channel 1" />
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
      <activity
+           android:showWhenLocked="true"
            android:name="com.yalantis.ucrop.UCropActivity"
            android:screenOrientation="portrait"
            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>

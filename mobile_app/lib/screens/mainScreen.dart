@@ -55,12 +55,10 @@ class _HomePageState extends State<HomePage> {
           this._favouriteDrinks = List.from(favouriteDrinks);
           String favouriteDrink = this._favouriteDrinks.first;
           showPopup(context, favouriteDrink);
-          print("YES? 1");
           NotificationService().showNotification(
               title: "New user reward",
               body:
                   "You won a free ${favouriteDrink.toLowerCase()} coffee. Enjoy!");
-          print("YES? 2");
         });
       });
     });
