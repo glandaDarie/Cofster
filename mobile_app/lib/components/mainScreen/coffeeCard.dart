@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:coffee_orderer/screens/detailsScreen.dart';
 import 'package:coffee_orderer/models/card.dart' show CoffeeCard;
-import 'package:coffee_orderer/controllers/CoffeeCardController.dart'
-    show CoffeeCardController;
-import 'package:fluttertoast/fluttertoast.dart';
 
-Padding coffeeCard(CoffeeCard card, Function(int) callback) {
+Padding coffeeCard(CoffeeCard card) {
   return Padding(
       padding: EdgeInsets.only(left: 15.0, right: 15.0),
       child: Container(
@@ -61,33 +58,64 @@ Padding coffeeCard(CoffeeCard card, Function(int) callback) {
                                     color: Colors.white),
                               ),
                               SizedBox(height: 10.0),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text(
-                                    card.price,
-                                    style: TextStyle(
-                                        fontFamily: "varela",
-                                        fontSize: 25.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Color(0xFF473D3A)),
-                                  ),
-                                  Container(
-                                      height: 40.0,
-                                      width: 40.0,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(20.0),
-                                          color: Colors.white),
-                                      child: Center(
-                                          child: Icon(Icons.favorite,
-                                              color: card.isFavorite
-                                                  ? Colors.red
-                                                  : Colors.grey,
-                                              size: 15.0)))
-                                ],
-                              )
+                              InkWell(
+                                  onTap: () {
+                                    card.isFavorite = !card.isFavorite;
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Text(
+                                        card.price,
+                                        style: TextStyle(
+                                            fontFamily: "varela",
+                                            fontSize: 25.0,
+                                            fontWeight: FontWeight.bold,
+                                            color: Color(0xFF473D3A)),
+                                      ),
+                                      Container(
+                                          height: 40.0,
+                                          width: 40.0,
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0),
+                                              color: Colors.white),
+                                          child: Center(
+                                              child: Icon(Icons.favorite,
+                                                  color: card.isFavorite
+                                                      ? Colors.red
+                                                      : Colors.grey,
+                                                  size: 15.0)))
+                                    ],
+                                  )),
+                              // Row(
+                              //   mainAxisAlignment:
+                              //       MainAxisAlignment.spaceBetween,
+                              //   children: <Widget>[
+                              //     Text(
+                              //       card.price,
+                              //       style: TextStyle(
+                              //           fontFamily: "varela",
+                              //           fontSize: 25.0,
+                              //           fontWeight: FontWeight.bold,
+                              //           color: Color(0xFF473D3A)),
+                              //     ),
+                              //     Container(
+                              //         height: 40.0,
+                              //         width: 40.0,
+                              //         decoration: BoxDecoration(
+                              //             borderRadius:
+                              //                 BorderRadius.circular(20.0),
+                              //             color: Colors.white),
+                              //         child: Center(
+                              //             child: Icon(Icons.favorite,
+                              //                 color: card.isFavorite
+                              //                     ? Colors.red
+                              //                     : Colors.grey,
+                              //                 size: 15.0)))
+                              //   ],
+                              // )
                             ]))),
                 Positioned(
                     left: 60.0,
@@ -103,9 +131,6 @@ Padding coffeeCard(CoffeeCard card, Function(int) callback) {
               SizedBox(height: 20.0),
               InkWell(
                   onTap: () {
-                    // CoffeeCardController coffeeCardController =
-                    //     CoffeeCardController(card.context);
-                    // int coffeeCardNumber = callback(index);
                     print("Image path = ${card.imgPath}");
                     print("Image description = ${card.description}");
                     print("Actual coffee name = ${card.coffeeName}");
