@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:coffee_orderer/screens/detailsScreen.dart';
 import 'package:coffee_orderer/models/card.dart' show CoffeeCard;
+import '../../controllers/CoffeeCardController.dart';
 
-Padding coffeeCard(CoffeeCard card, [Function callback]) {
+Padding coffeeCard(CoffeeCard card,
+    [void Function(CoffeeCard, bool) callbackSetFavorite,
+    List<CoffeeCard> Function() callbackCoffeCards]) {
   return Padding(
       padding: EdgeInsets.only(left: 15.0, right: 15.0),
       child: Container(
@@ -60,8 +63,20 @@ Padding coffeeCard(CoffeeCard card, [Function callback]) {
                               SizedBox(height: 10.0),
                               InkWell(
                                   onTap: () {
-                                    card.isFavorite = callback(card.isFavorite);
-                                    // card.isFavorite = !card.isFavorite;
+                                    print(
+                                        "Pre card.isFavorite state = ${card.isFavorite}");
+                                    List<CoffeeCard> coffeeCards =
+                                        List.from(callbackCoffeCards());
+                                    for (CoffeeCard coffeeCard in coffeeCards) {
+                                      if (coffeeCard.coffeeName ==
+                                          card.coffeeName) {
+                                        callbackSetFavorite(
+                                            coffeeCard, card.isFavorite);
+                                        break;
+                                      }
+                                    }
+                                    print(
+                                        "Post card.isFavorite state = ${card.isFavorite}");
                                   },
                                   child: Row(
                                     mainAxisAlignment:
@@ -90,33 +105,6 @@ Padding coffeeCard(CoffeeCard card, [Function callback]) {
                                                   size: 15.0)))
                                     ],
                                   )),
-                              // Row(
-                              //   mainAxisAlignment:
-                              //       MainAxisAlignment.spaceBetween,
-                              //   children: <Widget>[
-                              //     Text(
-                              //       card.price,
-                              //       style: TextStyle(
-                              //           fontFamily: "varela",
-                              //           fontSize: 25.0,
-                              //           fontWeight: FontWeight.bold,
-                              //           color: Color(0xFF473D3A)),
-                              //     ),
-                              //     Container(
-                              //         height: 40.0,
-                              //         width: 40.0,
-                              //         decoration: BoxDecoration(
-                              //             borderRadius:
-                              //                 BorderRadius.circular(20.0),
-                              //             color: Colors.white),
-                              //         child: Center(
-                              //             child: Icon(Icons.favorite,
-                              //                 color: card.isFavorite
-                              //                     ? Colors.red
-                              //                     : Colors.grey,
-                              //                 size: 15.0)))
-                              //   ],
-                              // )
                             ]))),
                 Positioned(
                     left: 60.0,

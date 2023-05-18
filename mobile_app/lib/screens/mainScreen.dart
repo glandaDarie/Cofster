@@ -3,18 +3,13 @@ import 'package:coffee_orderer/controllers/CoffeeCardController.dart';
 import 'package:coffee_orderer/controllers/UserController.dart';
 import 'package:coffee_orderer/controllers/AuthController.dart';
 import 'package:coffee_orderer/controllers/QuestionnaireController.dart';
+import 'package:coffee_orderer/models/card.dart';
 import 'package:flutter/material.dart';
 import '../utils/coffeeFunFact.dart';
 import 'package:coffee_orderer/components/mainScreen/navigationBar.dart';
 import 'package:coffee_orderer/components/mainScreen/popupFreeDrink.dart'
     show showPopup;
-// import 'package:coffee_orderer/components/mainScreen/coffeeCard.dart'
-//     show coffeeCard;
-// import 'package:coffee_orderer/utils/cardProperties.dart'
-//     show coffeeImagePaths, coffeeNames, coffeeDescription, coffeePrices;
-// import 'package:coffee_orderer/enums/coffeeTypes.dart' show CoffeeType;
 import 'package:coffee_orderer/controllers/CoffeeCardFavouriteDrinksController.dart';
-// import 'package:coffee_orderer/models/card.dart' show CoffeeCard;
 import 'package:coffee_orderer/services/notificationService.dart'
     show NotificationService;
 
@@ -34,6 +29,7 @@ class _HomePageState extends State<HomePage> {
   NotificationService notificationService;
   int _navBarItemSelected;
   List<String> _favouriteDrinks;
+  List<CoffeeCard> coffeeCardObjects;
 
   _HomePageState() {
     this.userController = UserController();
@@ -41,14 +37,15 @@ class _HomePageState extends State<HomePage> {
     this.questionnaireController = QuestionnaireController();
     this.coffeeCardFavouriteDrinksController =
         CoffeeCardFavouriteDrinksController();
-    this._favouriteDrinks = [];
     this._navBarItemSelected = 0;
+    this._favouriteDrinks = [];
+    this.coffeeCardObjects = [];
   }
 
   @override
   void initState() {
     super.initState();
-    this.coffeeCardController = CoffeeCardController(context, onTapHeartLogo);
+    this.coffeeCardController = CoffeeCardController(context, _onTapHeartLogo);
     // this.authController.loadUserPhoto();
     WidgetsBinding.instance.addPostFrameCallback((Duration timeStamp) {
       this
@@ -69,17 +66,13 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void callbackSetFavouriteDrinks(List<String> favouriteDrinks) {
-    this._favouriteDrinks = List.from(favouriteDrinks);
-  }
-
-  void callbackNavBar(int newNavBarItemSelected) {
+  void _callbackNavBar(int newNavBarItemSelected) {
     setState(() => this._navBarItemSelected = newNavBarItemSelected);
   }
 
-  bool onTapHeartLogo(bool isFavourite) {
+  void _onTapHeartLogo(CoffeeCard coffeeCard, bool isFavourite) {
     setState(() {
-      return !isFavourite;
+      coffeeCard.isFavorite = !isFavourite;
     });
   }
 
@@ -252,7 +245,7 @@ class _HomePageState extends State<HomePage> {
                       height: 410.0,
                       child: ListView(
                         scrollDirection: Axis.horizontal,
-                        children: this.coffeeCardController.getAllCofeeCards(),
+                        children: this.coffeeCardController.getCoffeeCards(),
                       ),
                     ),
                     SizedBox(height: 15.0),
@@ -300,7 +293,7 @@ class _HomePageState extends State<HomePage> {
                   right: 0,
                   bottom: 0,
                   child:
-                      bottomNavigationBar(_navBarItemSelected, callbackNavBar),
+                      bottomNavigationBar(_navBarItemSelected, _callbackNavBar),
                 ),
               ],
             ),
