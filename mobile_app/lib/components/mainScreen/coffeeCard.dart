@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:coffee_orderer/screens/detailsScreen.dart';
 import 'package:coffee_orderer/models/card.dart' show CoffeeCard;
-import '../../controllers/CoffeeCardController.dart';
 
 Padding coffeeCard(CoffeeCard card,
     [void Function(CoffeeCard, bool) callbackSetFavorite,
@@ -62,49 +61,26 @@ Padding coffeeCard(CoffeeCard card,
                               ),
                               SizedBox(height: 10.0),
                               InkWell(
-                                  onTap: () {
-                                    print(
-                                        "Pre card.isFavorite state = ${card.isFavorite}");
-                                    List<CoffeeCard> coffeeCards =
-                                        List.from(callbackCoffeCards());
-                                    for (CoffeeCard coffeeCard in coffeeCards) {
-                                      if (coffeeCard.coffeeName ==
-                                          card.coffeeName) {
-                                        callbackSetFavorite(
-                                            coffeeCard, card.isFavorite);
-                                        break;
-                                      }
-                                    }
-                                    print(
-                                        "Post card.isFavorite state = ${card.isFavorite}");
-                                  },
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Text(
-                                        card.price,
-                                        style: TextStyle(
-                                            fontFamily: "varela",
-                                            fontSize: 25.0,
-                                            fontWeight: FontWeight.bold,
-                                            color: Color(0xFF473D3A)),
-                                      ),
-                                      Container(
-                                          height: 40.0,
-                                          width: 40.0,
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(20.0),
-                                              color: Colors.white),
-                                          child: Center(
-                                              child: Icon(Icons.favorite,
-                                                  color: card.isFavorite
-                                                      ? Colors.red
-                                                      : Colors.grey,
-                                                  size: 15.0)))
-                                    ],
-                                  )),
+                                onTap: () {
+                                  print(
+                                      "Pre card.isFavorite state = ${card.isFavorite}");
+                                  // List<CoffeeCard> coffeeCards =
+                                  //     List.from(callbackCoffeCards());
+                                  // for (CoffeeCard coffeeCard in coffeeCards) {
+                                  //   if (coffeeCard.coffeeName ==
+                                  //       card.coffeeName) {
+                                  //     callbackSetFavorite(
+                                  //         coffeeCard, card.isFavorite);
+                                  //     break;
+                                  //   }
+                                  // }
+                                  callbackSetFavorite(card, card.isFavorite);
+                                  print(
+                                      "Post card.isFavorite state = ${card.isFavorite}");
+                                  _hearIcon(card);
+                                },
+                                child: _hearIcon(card),
+                              ),
                             ]))),
                 Positioned(
                     left: 60.0,
@@ -141,4 +117,30 @@ Padding coffeeCard(CoffeeCard card,
                                   color: Colors.white)))))
             ],
           )));
+}
+
+Row _hearIcon(CoffeeCard card) {
+  print("card.isFavorite value inside: ${card.isFavorite}");
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: <Widget>[
+      Text(
+        card.price,
+        style: TextStyle(
+            fontFamily: "varela",
+            fontSize: 25.0,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF473D3A)),
+      ),
+      Container(
+          height: 40.0,
+          width: 40.0,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20.0), color: Colors.white),
+          child: Center(
+              child: Icon(Icons.favorite,
+                  color: card.isFavorite ? Colors.red : Colors.grey,
+                  size: 15.0)))
+    ],
+  );
 }

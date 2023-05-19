@@ -30,6 +30,7 @@ class _HomePageState extends State<HomePage> {
   int _navBarItemSelected;
   List<String> _favouriteDrinks;
   List<CoffeeCard> coffeeCardObjects;
+  GlobalKey<_HomePageState> widgetKeyHeartLogo = GlobalKey();
 
   _HomePageState() {
     this.userController = UserController();
@@ -70,10 +71,9 @@ class _HomePageState extends State<HomePage> {
     setState(() => this._navBarItemSelected = newNavBarItemSelected);
   }
 
-  void _onTapHeartLogo(CoffeeCard coffeeCard, bool isFavourite) {
-    setState(() {
-      coffeeCard.isFavorite = !isFavourite;
-    });
+  void _onTapHeartLogo(CoffeeCard coffeeCard, bool isFavorite) {
+    coffeeCard.isFavorite = !isFavorite;
+    setState(() {});
   }
 
   @override

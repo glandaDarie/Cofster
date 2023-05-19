@@ -1,9 +1,9 @@
 // temporary debugging
 import 'package:flutter/material.dart';
 import 'package:coffee_orderer/screens/questionnaireScreen.dart';
-// import 'package:coffee_orderer/services/notificationService.dart'
-    show NotificationService;
 import 'package:coffee_orderer/screens/authScreen.dart';
+import 'package:coffee_orderer/services/notificationService.dart'
+    show NotificationService;
 // import 'package:coffee_orderer/screens/mainScreen.dart';
 
 void main() {
