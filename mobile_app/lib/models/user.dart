@@ -20,7 +20,7 @@ class User {
   String get name => this._name;
   String get username => this._username;
   String get password => this._password;
-  List<String> get favouriteDrinks => this._favouriteDrinks;
+  List<String> get favouriteDrinks => List.from(this._favouriteDrinks);
   String get photo => this._photo;
 
   set id(int _value) => this._id = _value;

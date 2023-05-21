@@ -43,6 +43,13 @@ class UserController {
     return await this.userDaoGetUsers.getLastUser();
   }
 
+  Future<List<dynamic>> getDrinksFromNameAndUsername(
+      String name, String username) async {
+    return await this
+        .userDaoGetUsers
+        .getDrinksFromNameAndUsername(name, username);
+  }
+
   Future<dynamic> getUserNameFromCredentials(
       Map<dynamic, dynamic> params, Future<List<dynamic>> _users) async {
     List<dynamic> users = await _users;

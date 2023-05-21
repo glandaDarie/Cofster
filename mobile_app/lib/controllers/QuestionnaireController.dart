@@ -53,12 +53,22 @@ class QuestionnaireController {
   }
 
   Future<List<String>> loadDrinksFromDynamoDB() async {
-    return await userController.getLastUser();
+    String cacheStr = await loadUserInformationFromCache();
+    Map<String, String> cache = fromStringCachetoMapCache(cacheStr);
+    return (await userController.getDrinksFromNameAndUsername(
+            cache["name"], cache["username"]))
+        .cast<String>();
   }
 
   Future<List<String>> loadFavouriteDrinks() async {
     return await ((await drinksPresentInCache())
         ? loadDrinksFromCache()
         : loadDrinksFromDynamoDB());
+  }
+
+  Future<Map<String, List<String>>> loadFavouriteDrinksFrom() async {
+    return await ((await drinksPresentInCache()))
+        ? {"cache": await loadDrinksFromCache()}
+        : {"db": await loadDrinksFromDynamoDB()};
   }
 }

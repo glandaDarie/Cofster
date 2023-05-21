@@ -26,8 +26,20 @@ class DynamoDBUserDao {
 
   Future<dynamic> getLastUser() async {
     List<dynamic> users = await getAllUsers();
-    print("Length of users: ${users.length}");
     return users[users.length - 1];
+  }
+
+  Future<List<dynamic>> getDrinksFromNameAndUsername(
+      String name, String username) async {
+    List<dynamic> users = await getAllUsers();
+    if (username != null) {
+      for (dynamic user in users) {
+        if (name == user.name && username == user.username) {
+          return List.from(user.favouriteDrinks);
+        }
+      }
+    }
+    return [];
   }
 
   Future<dynamic> getUserNameFromUsername(String username) {
@@ -69,11 +81,20 @@ class DynamoDBUserDao {
       String username = _u["username"];
       String password = _u["password"];
       String photo = _u["photo"];
-      List<Map<String, String>> favouriteDrinksJson =
-          List<Map<String, String>>.from(_u["favouriteDrinks"]);
-      List<String> favouriteDrinks = favouriteDrinksJson
-          .map((favDrink) =>
-              favDrink["drink ${favouriteDrinksJson.indexOf(favDrink) + 1}"])
+      // List<Map<String, String>> favouriteDrinksJson =
+      //     List<Map<String, String>>.from(_u["favouriteDrinks"]);
+      // List<String> favouriteDrinks = favouriteDrinksJson
+      //     .map((favDrink) =>
+      //         favDrink["drink ${favouriteDrinksJson.indexOf(favDrink) + 1}"])
+      //     .toList();
+      List<dynamic> favouriteDrinksJson = _u["favouriteDrinks"];
+      List<Map<String, String>> favouriteDrinksConverted = favouriteDrinksJson
+          .map<Map<String, String>>(
+              (favDrink) => Map<String, String>.from(favDrink))
+          .toList();
+      List<String> favouriteDrinks = favouriteDrinksConverted
+          .map((favDrink) => favDrink[
+              "drink ${favouriteDrinksConverted.indexOf(favDrink) + 1}"])
           .toList();
       User user = User(id, name, username, password, photo, favouriteDrinks);
       usersInformation.add(user);

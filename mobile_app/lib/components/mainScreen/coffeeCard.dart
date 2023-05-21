@@ -120,7 +120,6 @@ Padding coffeeCard(CoffeeCard card,
 }
 
 Row _hearIcon(CoffeeCard card) {
-  print("card.isFavorite value inside: ${card.isFavorite}");
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: <Widget>[

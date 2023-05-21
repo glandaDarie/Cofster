@@ -36,7 +36,6 @@ class DynamoDBQuestionnaireDao {
     return outQuestions;
   }
 
-  // to be implemented in AWS
   Future<List<String>> postQuestionsToGetPredictedFavouriteDrinks(
       Map<String, String> content) async {
     dynamic jsonResponse = null;

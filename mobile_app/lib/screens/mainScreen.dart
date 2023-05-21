@@ -51,17 +51,22 @@ class _HomePageState extends State<HomePage> {
     WidgetsBinding.instance.addPostFrameCallback((Duration timeStamp) {
       this
           .questionnaireController
-          .loadFavouriteDrinks()
-          .then((List<String> favouriteDrinks) {
+          .loadFavouriteDrinksFrom()
+          .then((Map<String, List<String>> favouriteDrinks) {
         if (!mounted) return;
         setState(() {
-          this._favouriteDrinks = List.from(favouriteDrinks);
+          this._favouriteDrinks = favouriteDrinks.values.first;
+          String loadedFrom = favouriteDrinks.keys.first;
           String favouriteDrink = this._favouriteDrinks.first;
+          if (loadedFrom == "db") {
+            return;
+          }
           showPopup(context, favouriteDrink);
           NotificationService().showNotification(
-              title: "New user reward",
-              body:
-                  "You won a free ${favouriteDrink.toLowerCase()} coffee. Enjoy!");
+            title: "New user reward",
+            body:
+                "You won a free ${favouriteDrink.toLowerCase()} coffee. Enjoy!",
+          );
         });
       });
     });
@@ -78,9 +83,10 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<String>>(
-      future: this.questionnaireController.loadFavouriteDrinks(),
-      builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+    return FutureBuilder<Map<String, List<String>>>(
+      future: this.questionnaireController.loadFavouriteDrinksFrom(),
+      builder: (BuildContext context,
+          AsyncSnapshot<Map<String, List<String>>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
               child: CircularProgressIndicator(
@@ -88,7 +94,8 @@ class _HomePageState extends State<HomePage> {
         } else if (snapshot.hasError) {
           return Text("Error occured ${snapshot.error}");
         } else {
-          this._favouriteDrinks = List.from(snapshot.data);
+          Map<String, List<String>> favouriteDrinksMap = snapshot.data;
+          this._favouriteDrinks = List.from(favouriteDrinksMap.values.first);
           return Scaffold(
             body: Stack(
               children: [
