@@ -47,7 +47,6 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     this.coffeeCardController = CoffeeCardController(context, _onTapHeartLogo);
-    // this.authController.loadUserPhoto();
     WidgetsBinding.instance.addPostFrameCallback((Duration timeStamp) {
       this
           .questionnaireController
@@ -76,9 +75,10 @@ class _HomePageState extends State<HomePage> {
     setState(() => this._navBarItemSelected = newNavBarItemSelected);
   }
 
-  void _onTapHeartLogo(CoffeeCard coffeeCard, bool isFavorite) {
-    coffeeCard.isFavorite = !isFavorite;
-    setState(() {});
+  void _onTapHeartLogo(CoffeeCard coffeeCard, ValueNotifier<bool> isFavorite) {
+    // setState(() {
+    coffeeCard.isFavoriteNotifier.value = !isFavorite.value;
+    // });
   }
 
   @override

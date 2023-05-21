@@ -1,9 +1,10 @@
+import 'package:coffee_orderer/patterns/CoffeeCardSingleton.dart';
 import 'package:flutter/material.dart';
 import 'package:coffee_orderer/screens/detailsScreen.dart';
 import 'package:coffee_orderer/models/card.dart' show CoffeeCard;
 
 Padding coffeeCard(CoffeeCard card,
-    [void Function(CoffeeCard, bool) callbackSetFavorite,
+    [void Function(CoffeeCard, ValueNotifier<bool>) callbackSetFavorite,
     List<CoffeeCard> Function() callbackCoffeCards]) {
   return Padding(
       padding: EdgeInsets.only(left: 15.0, right: 15.0),
@@ -62,22 +63,18 @@ Padding coffeeCard(CoffeeCard card,
                               SizedBox(height: 10.0),
                               InkWell(
                                 onTap: () {
-                                  print(
-                                      "Pre card.isFavorite state = ${card.isFavorite}");
-                                  // List<CoffeeCard> coffeeCards =
-                                  //     List.from(callbackCoffeCards());
-                                  // for (CoffeeCard coffeeCard in coffeeCards) {
-                                  //   if (coffeeCard.coffeeName ==
-                                  //       card.coffeeName) {
-                                  //     callbackSetFavorite(
-                                  //         coffeeCard, card.isFavorite);
-                                  //     break;
-                                  //   }
-                                  // }
-                                  callbackSetFavorite(card, card.isFavorite);
-                                  print(
-                                      "Post card.isFavorite state = ${card.isFavorite}");
-                                  _hearIcon(card);
+                                  CoffeeCardSingleton coffeeCardInstance =
+                                      CoffeeCardSingleton(card.context);
+                                  List<CoffeeCard> coffeeCardObjects =
+                                      coffeeCardInstance.getCoffeeCardObjects();
+                                  for (CoffeeCard coffeeCardObject
+                                      in coffeeCardObjects) {
+                                    if (coffeeCardObject.coffeeName ==
+                                        card.coffeeName) {
+                                      callbackSetFavorite(coffeeCardObject,
+                                          card.isFavoriteNotifier);
+                                    }
+                                  }
                                 },
                                 child: _hearIcon(card),
                               ),
@@ -96,9 +93,6 @@ Padding coffeeCard(CoffeeCard card,
               SizedBox(height: 20.0),
               InkWell(
                   onTap: () {
-                    print("Image path = ${card.imgPath}");
-                    print("Image description = ${card.description}");
-                    print("Actual coffee name = ${card.coffeeName}");
                     Navigator.of(card.context).push(
                         MaterialPageRoute(builder: (context) => DetailsPage()));
                   },
@@ -126,20 +120,32 @@ Row _hearIcon(CoffeeCard card) {
       Text(
         card.price,
         style: TextStyle(
-            fontFamily: "varela",
-            fontSize: 25.0,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF473D3A)),
+          fontFamily: "varela",
+          fontSize: 25.0,
+          fontWeight: FontWeight.bold,
+          color: Color(0xFF473D3A),
+        ),
       ),
       Container(
-          height: 40.0,
-          width: 40.0,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20.0), color: Colors.white),
-          child: Center(
-              child: Icon(Icons.favorite,
-                  color: card.isFavorite ? Colors.red : Colors.grey,
-                  size: 15.0)))
+        height: 40.0,
+        width: 40.0,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20.0),
+          color: Colors.white,
+        ),
+        child: ValueListenableBuilder<bool>(
+          valueListenable: card.isFavoriteNotifier,
+          builder: (context, isFavorite, child) {
+            return Center(
+              child: Icon(
+                Icons.favorite,
+                color: isFavorite ? Colors.red : Colors.grey,
+                size: 15.0,
+              ),
+            );
+          },
+        ),
+      ),
     ],
   );
 }
