@@ -1,18 +1,66 @@
 import 'package:flutter/material.dart';
-import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
-FloatingNavbar bottomNavigationBar(int selectedIndex, Function callback) {
-  return FloatingNavbar(
-    currentIndex: selectedIndex,
-    onTap: (int index) {
-      callback(index);
-    },
-    backgroundColor: Color(0xFF473D3A),
-    items: [
-      FloatingNavbarItem(title: "Home", icon: Icons.home),
-      FloatingNavbarItem(title: "Profile", icon: Icons.person),
-      FloatingNavbarItem(title: "Orders", icon: Icons.history),
-      FloatingNavbarItem(title: "Settings", icon: Icons.settings)
+Widget buildBadgeWidget(int orderCount) {
+  return Stack(
+    children: [
+      Icon(Icons.history),
+      if (orderCount > 0)
+        Positioned(
+          top: 0,
+          right: -9,
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 14, vertical: 2),
+            decoration: BoxDecoration(
+              color: Colors.red,
+              shape: BoxShape.circle,
+            ),
+            constraints: BoxConstraints(
+              minWidth: 6,
+              minHeight: 6,
+            ),
+            child: Text(
+              orderCount.toString(),
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 10,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
     ],
+  );
+}
+
+ValueListenableBuilder bottomNavigationBar(
+    int selectedIndex, Function(int) callback,
+    [int orderCount = 0]) {
+  ValueNotifier<int> selectedIndexValueNotifier =
+      ValueNotifier<int>(selectedIndex);
+  return ValueListenableBuilder<int>(
+    valueListenable: selectedIndexValueNotifier,
+    builder: (BuildContext context, int selectedIndex, Widget child) {
+      return CurvedNavigationBar(
+        index: selectedIndex,
+        backgroundColor: Color(0xFF473D3A),
+        color: Colors.white,
+        buttonBackgroundColor: Colors.white,
+        height: 50,
+        items: [
+          Icon(Icons.home, color: Color.fromARGB(255, 69, 45, 36)),
+          Icon(Icons.person, color: Color.fromARGB(255, 69, 45, 36)),
+          GestureDetector(
+            onTap: () {
+              callback(selectedIndex);
+            },
+            child: buildBadgeWidget(orderCount),
+          ),
+          // buildBadgeWidget(orderCount),
+          Icon(Icons.settings, color: Color.fromARGB(255, 69, 45, 36)),
+        ],
+        onTap: callback,
+      );
+    },
   );
 }

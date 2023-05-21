@@ -6,21 +6,30 @@ import 'package:coffee_orderer/models/card.dart' show CoffeeCard;
 import 'package:flutter/material.dart';
 
 class CoffeeCardSingleton {
+  @required
   static CoffeeCardSingleton _instance;
-  static List<CoffeeCard> _coffeeCardObjectsInstance;
+  @required
+  static List<CoffeeCard> _coffeeCardObjects;
 
   CoffeeCardSingleton._();
 
   factory CoffeeCardSingleton(BuildContext context) {
     if (_instance == null) {
       _instance = CoffeeCardSingleton._();
-      _coffeeCardObjectsInstance = _instance._getCoffeeCardObjects(context);
+      _coffeeCardObjects = _instance._getCoffeeCardObjects(context);
     }
     return _instance;
   }
 
   List<CoffeeCard> getCoffeeCardObjects() {
-    return _coffeeCardObjectsInstance;
+    return _coffeeCardObjects;
+  }
+
+  int getNumberOfSetFavoriteCoffeeOnForCoffeeCardObjects() {
+    return _coffeeCardObjects
+        .where((CoffeeCard coffeeCardObject) =>
+            coffeeCardObject.isFavoriteNotifier.value)
+        .length;
   }
 
   List<CoffeeCard> _getCoffeeCardObjects(context) {

@@ -12,6 +12,7 @@ import 'package:coffee_orderer/components/mainScreen/popupFreeDrink.dart'
 import 'package:coffee_orderer/controllers/CoffeeCardFavouriteDrinksController.dart';
 import 'package:coffee_orderer/services/notificationService.dart'
     show NotificationService;
+import 'package:coffee_orderer/patterns/CoffeeCardSingleton.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);
@@ -30,7 +31,6 @@ class _HomePageState extends State<HomePage> {
   int _navBarItemSelected;
   List<String> _favouriteDrinks;
   List<CoffeeCard> coffeeCardObjects;
-  GlobalKey<_HomePageState> widgetKeyHeartLogo = GlobalKey();
 
   _HomePageState() {
     this.userController = UserController();
@@ -72,13 +72,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _callbackNavBar(int newNavBarItemSelected) {
-    setState(() => this._navBarItemSelected = newNavBarItemSelected);
+    this._navBarItemSelected = newNavBarItemSelected;
   }
 
   void _onTapHeartLogo(CoffeeCard coffeeCard, ValueNotifier<bool> isFavorite) {
-    // setState(() {
     coffeeCard.isFavoriteNotifier.value = !isFavorite.value;
-    // });
   }
 
   @override
