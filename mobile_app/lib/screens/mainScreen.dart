@@ -297,8 +297,8 @@ class _HomePageState extends State<HomePage> {
                   left: 0,
                   right: 0,
                   bottom: 0,
-                  child:
-                      bottomNavigationBar(_navBarItemSelected, _callbackNavBar),
+                  child: bottomNavigationBar(
+                      this._navBarItemSelected, _callbackNavBar),
                 ),
               ],
             ),
