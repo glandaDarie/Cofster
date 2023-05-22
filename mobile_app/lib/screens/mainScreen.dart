@@ -13,7 +13,6 @@ import 'package:coffee_orderer/controllers/CoffeeCardFavouriteDrinksController.d
 import 'package:coffee_orderer/services/notificationService.dart'
     show NotificationService;
 import 'package:coffee_orderer/patterns/CoffeeCardSingleton.dart';
-import 'package:coffee_orderer/components/mainScreen/coffeeCard.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);

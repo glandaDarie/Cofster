@@ -66,7 +66,6 @@ ValueListenableBuilder bottomNavigationBar(
                     orderCount = coffeeCardSingleton
                         .getNumberOfSetFavoriteFromCoffeeCardObjects();
                     orderCountValueNotifier = ValueNotifier<int>(orderCount);
-
                     return buildBadgeWidget(orderCount);
                   })),
           Icon(Icons.settings, color: Color.fromARGB(255, 69, 45, 36)),

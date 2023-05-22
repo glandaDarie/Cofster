@@ -2,6 +2,7 @@ import 'package:coffee_orderer/patterns/CoffeeCardSingleton.dart';
 import 'package:flutter/material.dart';
 import 'package:coffee_orderer/screens/detailsScreen.dart';
 import 'package:coffee_orderer/models/card.dart' show CoffeeCard;
+import 'package:coffee_orderer/utils/localUserInformation.dart';
 
 Padding coffeeCard(CoffeeCard card,
     [void Function(CoffeeCard, ValueNotifier<bool>) callbackSetFavorite,
@@ -92,7 +93,8 @@ Padding coffeeCard(CoffeeCard card,
               ]),
               SizedBox(height: 20.0),
               InkWell(
-                  onTap: () {
+                  onTap: () async {
+                    storeUserInformationInCache({"cardImgPath": card.imgPath});
                     Navigator.of(card.context).push(
                         MaterialPageRoute(builder: (context) => DetailsPage()));
                   },

@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:coffee_orderer/services/speechToTextService.dart'
+    show SpeechToTextService;
+import 'package:speech_to_text/speech_recognition_result.dart';
+import 'package:coffee_orderer/utils/localUserInformation.dart';
 
 class DetailsPage extends StatefulWidget {
   @override
@@ -7,6 +11,28 @@ class DetailsPage extends StatefulWidget {
 }
 
 class _DetailsPageState extends State<DetailsPage> {
+  SpeechToTextService speechToTextService;
+  String _rawTextFromSpeech;
+  _DetailsPageState() {
+    speechToTextService = SpeechToTextService(
+        () => setState(() {}),
+        (SpeechRecognitionResult result) => setState(() {
+              _rawTextFromSpeech = result.recognizedWords;
+            }));
+    this._rawTextFromSpeech = "";
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Future<ImageProvider> _getCardImagePathFromPreviousScreen() async {
+    String cacheStr = await loadUserInformationFromCache();
+    String cardImagePath = fromStringCachetoMapCache(cacheStr)["cardImgPath"];
+    return AssetImage(cardImagePath);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,7 +42,7 @@ class _DetailsPageState extends State<DetailsPage> {
           Container(
               height: MediaQuery.of(context).size.height - 20.0,
               width: MediaQuery.of(context).size.width,
-              color: Color(0xFFF3B2B7)),
+              color: Color(0xFFDAB68C)),
           Positioned(
               top: MediaQuery.of(context).size.height / 2,
               child: Container(
@@ -108,7 +134,6 @@ class _DetailsPageState extends State<DetailsPage> {
                                   Color(0xFFF8B870)),
                               SizedBox(width: 25.0)
                             ])),
-                    //Line
                     Padding(
                       padding: const EdgeInsets.only(right: 35.0),
                       child: Container(
@@ -187,12 +212,43 @@ class _DetailsPageState extends State<DetailsPage> {
                       ],
                     ),
                     SizedBox(height: 15.0),
-                    //Line
                     Padding(
                       padding: const EdgeInsets.only(right: 35.0),
                       child: Container(
                         height: 0.5,
                         color: Color(0xFFC6C4C4),
+                      ),
+                    ),
+                    SizedBox(height: 10.0),
+                    Padding(
+                      padding: EdgeInsets.only(right: 25.0),
+                      child: Container(
+                        height: 50.0,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(35.0),
+                          color: Color(0xFF473D3A),
+                        ),
+                        child: Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.mic,
+                                color: Colors.white,
+                              ),
+                              SizedBox(width: 10.0),
+                              Text(
+                                "Speech to Text",
+                                style: TextStyle(
+                                  fontFamily: "nunito",
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                     SizedBox(height: 10.0),
@@ -205,27 +261,56 @@ class _DetailsPageState extends State<DetailsPage> {
                               color: Color(0xFF473D3A)),
                           child: Center(
                             child: Text(
-                              'Make Order',
+                              "Make Order",
                               style: TextStyle(
-                                  fontFamily: 'nunito',
+                                  fontFamily: "nunito",
                                   fontSize: 14.0,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white),
                             ),
                           ),
                         )),
-                    SizedBox(height: 5.0)
+                    SizedBox(height: 20.0)
                   ]))),
+
           Positioned(
-              top: MediaQuery.of(context).size.height / 10,
-              left: 75.0,
-              child: Container(
-                  height: 400.0,
-                  width: 400.0,
-                  decoration: BoxDecoration(
+            top: MediaQuery.of(context).size.height / 8,
+            left: 130.0,
+            child: FutureBuilder<ImageProvider>(
+              future: _getCardImagePathFromPreviousScreen(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<ImageProvider> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Error loading image');
+                } else {
+                  return Container(
+                    height: 310.0,
+                    width: 310.0,
+                    decoration: BoxDecoration(
                       image: DecorationImage(
-                          image: AssetImage('assets/images/pinkcup.png'),
-                          fit: BoxFit.cover)))),
+                        image: snapshot.data,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  );
+                }
+              },
+            ),
+          ),
+
+          // Positioned(
+          //     top: MediaQuery.of(context).size.height / 8,
+          //     left: 130.0,
+          //     child: Container(
+          //         height: 310.0,
+          //         width: 310.0,
+          //         decoration: BoxDecoration(
+          //             image: DecorationImage(
+          //                 image:
+          //                     AssetImage('assets/images/coffee_americano.png'),
+          //                 fit: BoxFit.cover)))),
           Positioned(
               top: 25.0,
               left: 15.0,
@@ -309,7 +394,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                               borderRadius:
                                                   BorderRadius.circular(17.5),
                                               border: Border.all(
-                                                  color: Color(0xFFF3B2B7),
+                                                  color: Color(0xFFCEC7C4),
                                                   style: BorderStyle.solid,
                                                   width: 1.0),
                                               image: DecorationImage(
@@ -329,7 +414,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                                   'assets/images/model.jpg'),
                                               fit: BoxFit.cover),
                                           border: Border.all(
-                                              color: Color(0xFFF3B2B7),
+                                              color: Color(0xFFCEC7C4),
                                               style: BorderStyle.solid,
                                               width: 1.0)),
                                     ),
@@ -342,10 +427,10 @@ class _DetailsPageState extends State<DetailsPage> {
                                             BorderRadius.circular(17.5),
                                         image: DecorationImage(
                                             image: AssetImage(
-                                                'assets/images/model2.jpg'),
+                                                'assets/images/coffee_americano.png'),
                                             fit: BoxFit.cover),
                                         border: Border.all(
-                                            color: Color(0xFFF3B2B7),
+                                            color: Color(0xFFCEC7C4),
                                             style: BorderStyle.solid,
                                             width: 1.0)),
                                   ),
