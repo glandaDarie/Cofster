@@ -13,6 +13,7 @@ import 'package:coffee_orderer/controllers/CoffeeCardFavouriteDrinksController.d
 import 'package:coffee_orderer/services/notificationService.dart'
     show NotificationService;
 import 'package:coffee_orderer/patterns/CoffeeCardSingleton.dart';
+import 'package:coffee_orderer/components/mainScreen/coffeeCard.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);
@@ -31,6 +32,7 @@ class _HomePageState extends State<HomePage> {
   int _navBarItemSelected;
   List<String> _favouriteDrinks;
   List<CoffeeCard> coffeeCardObjects;
+  CoffeeCardSingleton coffeeCardSingleton;
 
   _HomePageState() {
     this.userController = UserController();
@@ -81,6 +83,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    this.coffeeCardSingleton = CoffeeCardSingleton(context);
     return FutureBuilder<Map<String, List<String>>>(
       future: this.questionnaireController.loadFavouriteDrinksFrom(),
       builder: (BuildContext context,
@@ -298,7 +301,11 @@ class _HomePageState extends State<HomePage> {
                   right: 0,
                   bottom: 0,
                   child: bottomNavigationBar(
-                      this._navBarItemSelected, _callbackNavBar),
+                      this._navBarItemSelected,
+                      _callbackNavBar,
+                      this
+                          .coffeeCardSingleton
+                          .getNumberOfSetFavoriteFromCoffeeCardObjects()),
                 ),
               ],
             ),

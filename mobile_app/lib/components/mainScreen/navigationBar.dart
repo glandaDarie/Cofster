@@ -1,3 +1,4 @@
+import 'package:coffee_orderer/patterns/CoffeeCardSingleton.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
@@ -34,10 +35,12 @@ Widget buildBadgeWidget(int orderCount) {
 }
 
 ValueListenableBuilder bottomNavigationBar(
-    int selectedIndex, Function(int) callback,
-    [int orderCount = 0]) {
+    int selectedIndex, Function(int) callbackSelectedIndex,
+    [int orderCount = 0,
+    ValueNotifier<int> Function(BuildContext context) callbackFavoritesOn]) {
   ValueNotifier<int> selectedIndexValueNotifier =
       ValueNotifier<int>(selectedIndex);
+  ValueNotifier<int> orderCountValueNotifier = ValueNotifier<int>(orderCount);
   return ValueListenableBuilder<int>(
     valueListenable: selectedIndexValueNotifier,
     builder: (BuildContext context, int selectedIndex, Widget child) {
@@ -51,15 +54,24 @@ ValueListenableBuilder bottomNavigationBar(
           Icon(Icons.home, color: Color.fromARGB(255, 69, 45, 36)),
           Icon(Icons.person, color: Color.fromARGB(255, 69, 45, 36)),
           GestureDetector(
-            onTap: () {
-              callback(selectedIndex);
-            },
-            child: buildBadgeWidget(orderCount),
-          ),
-          // buildBadgeWidget(orderCount),
+              onTap: () {
+                callbackSelectedIndex(selectedIndex);
+              },
+              child: ValueListenableBuilder<int>(
+                  valueListenable: orderCountValueNotifier,
+                  builder:
+                      (BuildContext context, int orderCount, Widget child) {
+                    CoffeeCardSingleton coffeeCardSingleton =
+                        CoffeeCardSingleton(context);
+                    orderCount = coffeeCardSingleton
+                        .getNumberOfSetFavoriteFromCoffeeCardObjects();
+                    orderCountValueNotifier = ValueNotifier<int>(orderCount);
+
+                    return buildBadgeWidget(orderCount);
+                  })),
           Icon(Icons.settings, color: Color.fromARGB(255, 69, 45, 36)),
         ],
-        onTap: callback,
+        onTap: callbackSelectedIndex,
       );
     },
   );
