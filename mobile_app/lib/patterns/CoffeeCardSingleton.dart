@@ -26,8 +26,6 @@ class CoffeeCardSingleton {
   }
 
   int getNumberOfSetFavoriteFromCoffeeCardObjects() {
-    print(
-        "Length = ${_coffeeCardObjects.where((CoffeeCard coffeeCardObject) => coffeeCardObject.isFavoriteNotifier.value).length}");
     return _coffeeCardObjects
         .where((CoffeeCard coffeeCardObject) =>
             coffeeCardObject.isFavoriteNotifier.value)

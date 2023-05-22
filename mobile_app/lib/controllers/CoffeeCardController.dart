@@ -39,4 +39,15 @@ class CoffeeCardController {
             this._onSendReferenceOfCoffeeCards),
     ].toList();
   }
+
+  static bool getParticularCoffeeCardIsFavoriteState(CoffeeCard card) {
+    CoffeeCardSingleton coffeeCardInstance = CoffeeCardSingleton(card.context);
+    List<CoffeeCard> coffeeCardObjects =
+        coffeeCardInstance.getCoffeeCardObjects();
+    CoffeeCard matchingCard = coffeeCardObjects.firstWhere(
+      (coffeeCardObject) => coffeeCardObject.coffeeName == card.coffeeName,
+      orElse: () => null,
+    );
+    return matchingCard.isFavoriteNotifier.value;
+  }
 }

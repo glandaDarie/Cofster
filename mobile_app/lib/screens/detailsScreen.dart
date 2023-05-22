@@ -27,10 +27,17 @@ class _DetailsPageState extends State<DetailsPage> {
     super.initState();
   }
 
-  Future<ImageProvider> _getCardImagePathFromPreviousScreen() async {
+  Future<dynamic> _getCoffeeCardInformationFromPreviousScreen(
+      String key) async {
     String cacheStr = await loadUserInformationFromCache();
-    String cardImagePath = fromStringCachetoMapCache(cacheStr)["cardImgPath"];
-    return AssetImage(cardImagePath);
+    String value = fromStringCachetoMapCache(cacheStr)[key];
+    if (key == "cardCoffeeName" || key == "cardDescription") {
+      value = value.replaceAll("-", " ");
+    }
+    if (key == "cardImgPath") {
+      return AssetImage(value);
+    }
+    return value;
   }
 
   @override
@@ -272,14 +279,13 @@ class _DetailsPageState extends State<DetailsPage> {
                         )),
                     SizedBox(height: 20.0)
                   ]))),
-
           Positioned(
             top: MediaQuery.of(context).size.height / 8,
             left: 130.0,
-            child: FutureBuilder<ImageProvider>(
-              future: _getCardImagePathFromPreviousScreen(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<ImageProvider> snapshot) {
+            child: FutureBuilder<dynamic>(
+              future:
+                  _getCoffeeCardInformationFromPreviousScreen("cardImgPath"),
+              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return CircularProgressIndicator();
                 } else if (snapshot.hasError) {
@@ -299,21 +305,9 @@ class _DetailsPageState extends State<DetailsPage> {
               },
             ),
           ),
-
-          // Positioned(
-          //     top: MediaQuery.of(context).size.height / 8,
-          //     left: 130.0,
-          //     child: Container(
-          //         height: 310.0,
-          //         width: 310.0,
-          //         decoration: BoxDecoration(
-          //             image: DecorationImage(
-          //                 image:
-          //                     AssetImage('assets/images/coffee_americano.png'),
-          //                 fit: BoxFit.cover)))),
           Positioned(
-              top: 25.0,
-              left: 15.0,
+              top: 30.0,
+              left: 10.0,
               child: Container(
                   height: 300.0,
                   width: 250.0,
@@ -326,34 +320,78 @@ class _DetailsPageState extends State<DetailsPage> {
                           children: <Widget>[
                             Container(
                               width: 150.0,
-                              child: Text('Caramel Macchiato',
-                                  style: TextStyle(
-                                      fontFamily: 'varela',
-                                      fontSize: 30.0,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white)),
+                              child: FutureBuilder<dynamic>(
+                                future:
+                                    _getCoffeeCardInformationFromPreviousScreen(
+                                        "cardCoffeeName"),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return CircularProgressIndicator();
+                                  } else if (snapshot.hasError) {
+                                    return Text('Error: ${snapshot.error}');
+                                  } else {
+                                    return Text(
+                                      snapshot.data ?? "",
+                                      style: TextStyle(
+                                        fontFamily: 'varela',
+                                        fontSize: 30.0,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    );
+                                  }
+                                },
+                              ),
                             ),
                             SizedBox(width: 15.0),
-                            Container(
-                                height: 40.0,
-                                width: 40.0,
-                                decoration: BoxDecoration(
+                            FutureBuilder<dynamic>(
+                              future: _getCoffeeCardInformationFromPreviousScreen(
+                                  "cardIsFavorite"), // Replace with your actual future function
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<dynamic> snapshot) {
+                                Color containerColor = snapshot.data == "false"
+                                    ? Colors.grey
+                                    : Colors.red;
+                                return Container(
+                                  height: 40.0,
+                                  width: 40.0,
+                                  decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(20.0),
-                                    color: Colors.white),
-                                child: Center(
+                                    color: Colors.white,
+                                  ),
+                                  child: Center(
                                     child: Icon(Icons.favorite,
-                                        size: 18.0, color: Colors.red)))
+                                        size: 18.0, color: containerColor),
+                                  ),
+                                );
+                              },
+                            )
                           ],
                         ),
                         SizedBox(height: 10.0),
                         Container(
                           width: 170.0,
-                          child: Text(
-                              'Freshly steamed milk with vanilla-flavored syrup is marked with espresso and topped with caramel drizzle for an oh-so-sweet finish.',
-                              style: TextStyle(
-                                  fontFamily: 'nunito',
-                                  fontSize: 13.0,
-                                  color: Colors.white)),
+                          child: FutureBuilder<dynamic>(
+                            future: _getCoffeeCardInformationFromPreviousScreen(
+                                "cardDescription"),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return CircularProgressIndicator();
+                              } else if (snapshot.hasError) {
+                                return Text('Error: ${snapshot.error}');
+                              } else {
+                                return Text(
+                                  snapshot.data ?? "",
+                                  style: TextStyle(
+                                      fontFamily: 'nunito',
+                                      fontSize: 13.0,
+                                      color: Colors.white),
+                                );
+                              }
+                            },
+                          ),
                         ),
                         SizedBox(height: 20.0),
                         Row(children: [
