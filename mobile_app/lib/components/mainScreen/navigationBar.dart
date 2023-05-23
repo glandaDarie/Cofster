@@ -40,6 +40,8 @@ ValueListenableBuilder bottomNavigationBar(
     void Function(int) callbackSelectedIndex,
     bool speechStatus,
     void Function(bool) callbackSpeechStatus,
+    bool startListening,
+    dynamic Function(bool) callbackToggleListeningState,
     [int orderCount = 0,
     ValueNotifier<int> Function(BuildContext context) callbackFavoritesOn]) {
   ValueNotifier<int> selectedIndexValueNotifier =
@@ -79,11 +81,15 @@ ValueListenableBuilder bottomNavigationBar(
             builder: (BuildContext context, bool speechStatus, Widget child) {
               return IconButton(
                 onPressed: () {
-                  print("CALLED?");
                   callbackSpeechStatus(speechStatus);
                   speechStatusValueNotifier.value = !speechStatus;
-                  voiceDialog(context, speechStatusValueNotifier.value,
-                      speechStatusValueNotifier, callbackSpeechStatus);
+                  voiceDialog(
+                      context,
+                      speechStatusValueNotifier.value,
+                      speechStatusValueNotifier,
+                      callbackSpeechStatus,
+                      startListening,
+                      callbackToggleListeningState);
                 },
                 icon: Icon(
                   speechStatus ? Icons.mic : Icons.mic_off,

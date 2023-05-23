@@ -1,58 +1,94 @@
+import 'package:flutter/foundation.dart';
 import 'package:material_dialogs/material_dialogs.dart';
 import 'package:flutter/material.dart';
 import '../../services/speechToTextService.dart';
+
+SpeechToTextService speechToTextService = SpeechToTextService();
 
 dynamic onPressFromPopup([dynamic data = null]) async {
   void Function(bool) callbackSpeechStatus;
   bool speechStatus;
   ValueNotifier<bool> speechStatusValueNotifier;
-  if (data != null) {
-    callbackSpeechStatus = data[0];
-    speechStatus = data[1];
-    speechStatusValueNotifier = data[2];
+  bool listeningState;
+  if (data is List) {
+    if (data.length > 1) {
+      callbackSpeechStatus = data[0];
+      speechStatus = data[1];
+      speechStatusValueNotifier = data[2];
+      callbackSpeechStatus(speechStatus);
+      speechStatusValueNotifier.value = !speechStatus;
+    } else {
+      listeningState = data[0];
+    }
   }
-  callbackSpeechStatus(speechStatus);
-  speechStatusValueNotifier.value = !speechStatus;
-  SpeechToTextService speechToTextService = SpeechToTextService();
-  await speechToTextService.init();
-  print("ENTERED HERE (1)");
-  await speechToTextService.startListening();
-  print("ENTERED HERE (2)");
-  await speechToTextService.stopListening();
-  print("ENTERED HERE (3)");
+  print("Listening state is: ${listeningState}");
+  if (listeningState) {
+    await speechToTextService.init();
+    await speechToTextService.startListening();
+  } else {
+    await speechToTextService.stopListening();
+  }
 }
 
 dynamic voiceDialog(
     BuildContext context,
     bool speechStatus,
     ValueNotifier<bool> speechStatusValueNotifier,
-    void Function(bool) callbackSpeechStatus) {
+    void Function(bool) callbackSpeechStatus,
+    bool startListening,
+    dynamic Function(bool) callbackToggleListeningState) {
+  ValueNotifier<bool> listeningStateValueNotifier =
+      ValueNotifier(startListening);
   Dialogs.materialDialog(
       color: Colors.white,
       msg: "Order the drink here please",
+      msgStyle: TextStyle(
+          color: Colors.brown, fontSize: 18.0, fontWeight: FontWeight.bold),
       title: "Tell us the drink that you want to order",
+      titleStyle: TextStyle(
+          color: Colors.brown, fontSize: 12.0, fontWeight: FontWeight.bold),
       context: context,
       barrierDismissible: true,
       actions: [
         Column(
           children: [
             Container(
-              width: 140,
-              height: 140,
-              child: IconButton(
-                onPressed: () async {
-                  // callbackSpeechStatus(speechStatus);
-                  // speechStatusValueNotifier.value = !speechStatus;
-                  // Navigator.pop(context);
-                  await onPressFromPopup();
-                },
-                icon: Icon(
-                  speechStatus ? Icons.mic : Icons.mic_off,
-                  color: Color.fromARGB(255, 69, 45, 36),
-                  size: 100,
+                width: 160,
+                height: 160,
+                child: ValueListenableBuilder<bool>(
+                    valueListenable: listeningStateValueNotifier,
+                    builder: (BuildContext context, bool listeningState,
+                        Widget child) {
+                      return IconButton(
+                          onPressed: () async {
+                            dynamic listeningState =
+                                callbackToggleListeningState(startListening);
+                            listeningStateValueNotifier =
+                                ValueNotifier<bool>(listeningState);
+                            await onPressFromPopup([listeningState]);
+                          },
+                          icon: Icon(
+                            speechStatus ? Icons.mic : Icons.mic_off,
+                            color: Color.fromARGB(255, 69, 45, 36),
+                            size: 100,
+                          ));
+                    })
+
+                // child: IconButton(
+                //   onPressed: () async {
+                //     dynamic listeningState =
+                //         callbackToggleListeningState(startListening);
+                //     listeningStateValueNotifier =
+                //         ValueNotifier<bool>(listeningState);
+                //     await onPressFromPopup([listeningState]);
+                //   },
+                //   icon: Icon(
+                //     speechStatus ? Icons.mic : Icons.mic_off,
+                //     color: Color.fromARGB(255, 69, 45, 36),
+                //     size: 100,
+                //   ),
+                // ),
                 ),
-              ),
-            ),
           ],
         ),
       ],

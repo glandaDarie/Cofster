@@ -38,6 +38,7 @@ class _HomePageState extends State<HomePage> {
   SpeechToTextService speechToTextService;
   String _rawTextFromSpeech;
   bool _speechState;
+  bool _listeningState;
 
   _HomePageState() {
     this.userController = UserController();
@@ -52,6 +53,7 @@ class _HomePageState extends State<HomePage> {
         SpeechToTextService(_onSpeechState, _onRerenderUI, _onSpeechResult);
     this._rawTextFromSpeech = "";
     this._speechState = false;
+    this._listeningState = false;
   }
 
   @override
@@ -109,6 +111,11 @@ class _HomePageState extends State<HomePage> {
 
   void _onTapHeartLogo(CoffeeCard coffeeCard, ValueNotifier<bool> isFavorite) {
     coffeeCard.isFavoriteNotifier.value = !isFavorite.value;
+  }
+
+  dynamic _onToggleListeningState(bool newListeningState) {
+    this._listeningState = !newListeningState;
+    return this._listeningState;
   }
 
   @override
@@ -335,6 +342,8 @@ class _HomePageState extends State<HomePage> {
                       _onSelectedIndicesNavBar,
                       this._speechState,
                       _onSpeechStateChanged,
+                      this._listeningState,
+                      _onToggleListeningState,
                       this
                           .coffeeCardSingleton
                           .getNumberOfSetFavoriteFromCoffeeCardObjects()),
