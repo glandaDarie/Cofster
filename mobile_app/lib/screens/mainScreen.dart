@@ -13,6 +13,9 @@ import 'package:coffee_orderer/controllers/CoffeeCardFavouriteDrinksController.d
 import 'package:coffee_orderer/services/notificationService.dart'
     show NotificationService;
 import 'package:coffee_orderer/patterns/CoffeeCardSingleton.dart';
+import 'package:coffee_orderer/services/speechToTextService.dart'
+    show SpeechToTextService;
+import 'package:speech_to_text/speech_recognition_result.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);
@@ -32,6 +35,9 @@ class _HomePageState extends State<HomePage> {
   List<String> _favouriteDrinks;
   List<CoffeeCard> coffeeCardObjects;
   CoffeeCardSingleton coffeeCardSingleton;
+  SpeechToTextService speechToTextService;
+  String _rawTextFromSpeech;
+  bool _speechState;
 
   _HomePageState() {
     this.userController = UserController();
@@ -42,6 +48,10 @@ class _HomePageState extends State<HomePage> {
     this._navBarItemSelected = 0;
     this._favouriteDrinks = [];
     this.coffeeCardObjects = [];
+    this.speechToTextService =
+        SpeechToTextService(_onSpeechState, _onRerenderUI, _onSpeechResult);
+    this._rawTextFromSpeech = "";
+    this._speechState = false;
   }
 
   @override
@@ -72,7 +82,28 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void _callbackNavBar(int newNavBarItemSelected) {
+  void _onSpeechStateChanged(bool newSpeechStatus) {
+    this._speechState = !newSpeechStatus;
+  }
+
+  void _onSpeechState(bool newSpeechState) {
+    setState(() {
+      this._speechState = newSpeechState;
+    });
+  }
+
+  void _onRerenderUI() {
+    setState(() {});
+  }
+
+  void _onSpeechResult(SpeechRecognitionResult result) {
+    setState(() {
+      this._rawTextFromSpeech = result.recognizedWords;
+      print(this._rawTextFromSpeech);
+    });
+  }
+
+  void _onSelectedIndicesNavBar(int newNavBarItemSelected) {
     this._navBarItemSelected = newNavBarItemSelected;
   }
 
@@ -301,7 +332,9 @@ class _HomePageState extends State<HomePage> {
                   bottom: 0,
                   child: bottomNavigationBar(
                       this._navBarItemSelected,
-                      _callbackNavBar,
+                      _onSelectedIndicesNavBar,
+                      this._speechState,
+                      _onSpeechStateChanged,
                       this
                           .coffeeCardSingleton
                           .getNumberOfSetFavoriteFromCoffeeCardObjects()),

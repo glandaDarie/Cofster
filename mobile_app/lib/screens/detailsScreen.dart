@@ -11,17 +11,6 @@ class DetailsPage extends StatefulWidget {
 }
 
 class _DetailsPageState extends State<DetailsPage> {
-  SpeechToTextService speechToTextService;
-  String _rawTextFromSpeech;
-  _DetailsPageState() {
-    speechToTextService = SpeechToTextService(
-        () => setState(() {}),
-        (SpeechRecognitionResult result) => setState(() {
-              _rawTextFromSpeech = result.recognizedWords;
-            }));
-    this._rawTextFromSpeech = "";
-  }
-
   @override
   void initState() {
     super.initState();
@@ -224,38 +213,6 @@ class _DetailsPageState extends State<DetailsPage> {
                       child: Container(
                         height: 0.5,
                         color: Color(0xFFC6C4C4),
-                      ),
-                    ),
-                    SizedBox(height: 10.0),
-                    Padding(
-                      padding: EdgeInsets.only(right: 25.0),
-                      child: Container(
-                        height: 50.0,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(35.0),
-                          color: Color(0xFF473D3A),
-                        ),
-                        child: Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.mic,
-                                color: Colors.white,
-                              ),
-                              SizedBox(width: 10.0),
-                              Text(
-                                "Speech to Text",
-                                style: TextStyle(
-                                  fontFamily: "nunito",
-                                  fontSize: 14.0,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
                       ),
                     ),
                     SizedBox(height: 10.0),

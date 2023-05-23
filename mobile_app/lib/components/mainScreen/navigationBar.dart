@@ -1,3 +1,4 @@
+import 'package:coffee_orderer/components/mainScreen/voiceDialog.dart';
 import 'package:coffee_orderer/patterns/CoffeeCardSingleton.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
@@ -35,12 +36,17 @@ Widget buildBadgeWidget(int orderCount) {
 }
 
 ValueListenableBuilder bottomNavigationBar(
-    int selectedIndex, Function(int) callbackSelectedIndex,
+    int selectedIndex,
+    void Function(int) callbackSelectedIndex,
+    bool speechStatus,
+    void Function(bool) callbackSpeechStatus,
     [int orderCount = 0,
     ValueNotifier<int> Function(BuildContext context) callbackFavoritesOn]) {
   ValueNotifier<int> selectedIndexValueNotifier =
       ValueNotifier<int>(selectedIndex);
   ValueNotifier<int> orderCountValueNotifier = ValueNotifier<int>(orderCount);
+  ValueNotifier<bool> speechStatusValueNotifier =
+      ValueNotifier<bool>(speechStatus);
   return ValueListenableBuilder<int>(
     valueListenable: selectedIndexValueNotifier,
     builder: (BuildContext context, int selectedIndex, Widget child) {
@@ -68,7 +74,24 @@ ValueListenableBuilder bottomNavigationBar(
                     orderCountValueNotifier = ValueNotifier<int>(orderCount);
                     return buildBadgeWidget(orderCount);
                   })),
-          Icon(Icons.settings, color: Color.fromARGB(255, 69, 45, 36)),
+          ValueListenableBuilder<bool>(
+            valueListenable: speechStatusValueNotifier,
+            builder: (BuildContext context, bool speechStatus, Widget child) {
+              return IconButton(
+                onPressed: () {
+                  print("CALLED?");
+                  callbackSpeechStatus(speechStatus);
+                  speechStatusValueNotifier.value = !speechStatus;
+                  voiceDialog(context, speechStatusValueNotifier.value,
+                      speechStatusValueNotifier, callbackSpeechStatus);
+                },
+                icon: Icon(
+                  speechStatus ? Icons.mic : Icons.mic_off,
+                  color: Color.fromARGB(255, 69, 45, 36),
+                ),
+              );
+            },
+          ),
         ],
         onTap: callbackSelectedIndex,
       );
