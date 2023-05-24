@@ -8,30 +8,30 @@ class SpeechToTextService {
 
   stt.SpeechToText speechToText;
   bool _speechStatus;
-  void Function(bool) _callbackToggleSpeechState;
   void Function() _callbackRerenderUI;
-  void Function(SpeechRecognitionResult result) _callbackSpeechResult;
+  void Function(SpeechRecognitionResult result) _callbackSetSpeechResult;
+  String Function() callbackGetSpeechResult;
 
   factory SpeechToTextService(
-      [void Function(bool) callbackToggleSpeechState,
-      void Function() callbackRerenderUI,
-      void Function(SpeechRecognitionResult result) callbackSpeechResult]) {
+      [void Function() callbackRerenderUI,
+      void Function(SpeechRecognitionResult result) callbackSetSpeechResult,
+      String Function() callbackGetSpeechResult]) {
     if (_instance == null) {
       _instance = SpeechToTextService._internal(
-          callbackToggleSpeechState, callbackRerenderUI, callbackSpeechResult);
+          callbackRerenderUI, callbackSetSpeechResult, callbackGetSpeechResult);
     }
     return _instance;
   }
 
   SpeechToTextService._internal(
-      void Function(bool) callbackToggleSpeechState,
       void Function() callbackRerenderUI,
-      void Function(SpeechRecognitionResult result) callbackSpeechResult) {
+      void Function(SpeechRecognitionResult result) callbackSetSpeechResult,
+      String Function() callbackGetSpeechResult) {
     this.speechToText = stt.SpeechToText();
     this._speechStatus = false;
-    this._callbackToggleSpeechState = callbackToggleSpeechState;
     this._callbackRerenderUI = callbackRerenderUI;
-    this._callbackSpeechResult = callbackSpeechResult;
+    this._callbackSetSpeechResult = callbackSetSpeechResult;
+    this.callbackGetSpeechResult = callbackGetSpeechResult;
   }
 
   Future<void> init() async {
@@ -70,7 +70,7 @@ class SpeechToTextService {
 
   Future<void> startListening() async {
     try {
-      await speechToText.listen(onResult: this._callbackSpeechResult);
+      await speechToText.listen(onResult: this._callbackSetSpeechResult);
     } catch (e) {
       Fluttertoast.showToast(
           msg: "Cannot start listening to users voice, error: ${e}",

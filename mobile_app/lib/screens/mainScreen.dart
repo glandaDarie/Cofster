@@ -49,8 +49,8 @@ class _HomePageState extends State<HomePage> {
     this._navBarItemSelected = 0;
     this._favouriteDrinks = [];
     this.coffeeCardObjects = [];
-    this.speechToTextService =
-        SpeechToTextService(_onSpeechState, _onRerenderUI, _onSpeechResult);
+    this.speechToTextService = SpeechToTextService(
+        _onRerenderUI, _onSetTextToSpeechResult, _onGetSpeechResult);
     this._rawTextFromSpeech = "";
     this._speechState = false;
     this._listeningState = false;
@@ -88,21 +88,19 @@ class _HomePageState extends State<HomePage> {
     this._speechState = !newSpeechStatus;
   }
 
-  void _onSpeechState(bool newSpeechState) {
-    setState(() {
-      this._speechState = newSpeechState;
-    });
-  }
-
   void _onRerenderUI() {
     setState(() {});
   }
 
-  void _onSpeechResult(SpeechRecognitionResult result) {
+  void _onSetTextToSpeechResult(SpeechRecognitionResult result) {
     setState(() {
       this._rawTextFromSpeech = result.recognizedWords;
       print(this._rawTextFromSpeech);
     });
+  }
+
+  String _onGetSpeechResult() {
+    return this._rawTextFromSpeech;
   }
 
   void _onSelectedIndicesNavBar(int newNavBarItemSelected) {
