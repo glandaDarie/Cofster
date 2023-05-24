@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:coffee_orderer/services/speechToTextService.dart'
-    show SpeechToTextService;
-import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:coffee_orderer/utils/localUserInformation.dart';
 
 class DetailsPage extends StatefulWidget {
@@ -237,8 +234,8 @@ class _DetailsPageState extends State<DetailsPage> {
                     SizedBox(height: 20.0)
                   ]))),
           Positioned(
-            top: MediaQuery.of(context).size.height / 8,
-            left: 130.0,
+            top: MediaQuery.of(context).size.height / 6,
+            left: 135.0,
             child: FutureBuilder<dynamic>(
               future:
                   _getCoffeeCardInformationFromPreviousScreen("cardImgPath"),
@@ -249,8 +246,8 @@ class _DetailsPageState extends State<DetailsPage> {
                   return Text('Error loading image');
                 } else {
                   return Container(
-                    height: 310.0,
-                    width: 310.0,
+                    height: 280.0,
+                    width: 280.0,
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         image: snapshot.data,

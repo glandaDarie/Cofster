@@ -42,6 +42,7 @@ dynamic voiceDialog(
                                 ValueNotifier<bool>(listeningState);
                             initializedSpeech = await VoiceDialogController
                                 .pressIconMicFromPopup([
+                              context,
                               SpeechToTextService(),
                               listeningState,
                               initializedSpeech
@@ -58,6 +59,7 @@ dynamic voiceDialog(
       ],
       onClose: (dynamic data) async {
         await VoiceDialogController.pressIconMicFromPopup([
+          context,
           SpeechToTextService(),
           callbackSpeechStatus,
           speechStatus,
