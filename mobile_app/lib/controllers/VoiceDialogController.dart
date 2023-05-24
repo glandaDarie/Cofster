@@ -60,6 +60,16 @@ class VoiceDialogController {
     CoffeeCard card = coffeeCardController
         .getParticularCoffeeCardGivenTheNameOfTheCoffeeFromSpeech(
             speechResult, threshold);
+    if (card == null) {
+      Fluttertoast.showToast(
+          msg:
+              "There is no coffee card in the list of coffee cards that has that name",
+          toastLength: Toast.LENGTH_SHORT,
+          backgroundColor: Color.fromARGB(255, 102, 33, 12),
+          textColor: Color.fromARGB(255, 220, 217, 216),
+          fontSize: 16);
+      return;
+    }
     storeUserInformationInCache({
       "cardCoffeeName": card.coffeeName.replaceAll(" ", "-"),
       "cardImgPath": card.imgPath,

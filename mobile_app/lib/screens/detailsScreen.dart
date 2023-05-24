@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:coffee_orderer/utils/localUserInformation.dart';
+import 'package:coffee_orderer/components/detailsScreen.dart/drinkCustomSelector.dart'
+    show customizer;
 
 class DetailsPage extends StatefulWidget {
   @override
@@ -214,23 +216,51 @@ class _DetailsPageState extends State<DetailsPage> {
                     ),
                     SizedBox(height: 10.0),
                     Padding(
-                        padding: EdgeInsets.only(right: 25.0),
-                        child: Container(
-                          height: 50.0,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(35.0),
-                              color: Color(0xFF473D3A)),
-                          child: Center(
-                            child: Text(
-                              "Make Order",
-                              style: TextStyle(
-                                  fontFamily: "nunito",
-                                  fontSize: 14.0,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white),
+                      padding: EdgeInsets.only(right: 25.0),
+                      child: InkWell(
+                          onTap: () {
+                            // Container(child: customizer(context));
+                            print("WHAT?");
+                            // showDialog(
+                            //     context: context,
+                            //     builder: (BuildContext context) {
+                            //       return AlertDialog(
+                            //         content: customizer(context),
+                            //       );
+                            //     });
+
+                            showModalBottomSheet(
+                              isScrollControlled: true,
+                              backgroundColor: Colors.white,
+                              isDismissible: true,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(25),
+                                ),
+                              ),
+                              context: context,
+                              builder: (context) {
+                                return customizer(context);
+                              },
+                            );
+                          },
+                          child: Container(
+                            height: 50.0,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(35.0),
+                                color: Color(0xFF473D3A)),
+                            child: Center(
+                              child: Text(
+                                "Make Order",
+                                style: TextStyle(
+                                    fontFamily: "nunito",
+                                    fontSize: 14.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white),
+                              ),
                             ),
-                          ),
-                        )),
+                          )),
+                    ),
                     SizedBox(height: 20.0)
                   ]))),
           Positioned(
@@ -300,8 +330,9 @@ class _DetailsPageState extends State<DetailsPage> {
                             ),
                             SizedBox(width: 15.0),
                             FutureBuilder<dynamic>(
-                              future: _getCoffeeCardInformationFromPreviousScreen(
-                                  "cardIsFavorite"), // Replace with your actual future function
+                              future:
+                                  _getCoffeeCardInformationFromPreviousScreen(
+                                      "cardIsFavorite"),
                               builder: (BuildContext context,
                                   AsyncSnapshot<dynamic> snapshot) {
                                 Color containerColor = snapshot.data == "false"

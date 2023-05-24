@@ -6,7 +6,6 @@ import 'package:coffee_orderer/patterns/CoffeeCardSingleton.dart'
     show CoffeeCardSingleton;
 import 'package:coffee_orderer/utils/stringSimiliarity.dart'
     show scoreProbability;
-import 'package:fluttertoast/fluttertoast.dart';
 
 class CoffeeCardController {
   BuildContext _context;
@@ -48,21 +47,12 @@ class CoffeeCardController {
       String coffeeNameSpeech,
       [double threshold = 0.6]) {
     for (CoffeeCard objectCoffeeCard in this._objectsCoffeeCards) {
-      print("Current drink = ${objectCoffeeCard.coffeeName}");
       double probability =
           scoreProbability(coffeeNameSpeech, objectCoffeeCard.coffeeName);
-      print("Score probability = ${probability}");
       if (probability >= threshold) {
         return objectCoffeeCard;
       }
     }
-    Fluttertoast.showToast(
-        msg:
-            "There is no coffee card in the list of coffee cards that has that name",
-        toastLength: Toast.LENGTH_SHORT,
-        backgroundColor: Color.fromARGB(255, 102, 33, 12),
-        textColor: Color.fromARGB(255, 220, 217, 216),
-        fontSize: 16);
     return null;
   }
 

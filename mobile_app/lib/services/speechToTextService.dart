@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 
 class SpeechToTextService {
   static SpeechToTextService _instance;
-
   stt.SpeechToText speechToText;
   bool _speechStatus;
   void Function() _callbackRerenderUI;
