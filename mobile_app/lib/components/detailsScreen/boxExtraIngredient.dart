@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-Row ExtraIngredientWidget(String title, String measurement, String image) {
+Row ExtraIngredientWidget(ValueNotifier<int> quantityNotifier, String title,
+    String measurement, String image) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     crossAxisAlignment: CrossAxisAlignment.center,
@@ -25,13 +26,15 @@ Row ExtraIngredientWidget(String title, String measurement, String image) {
           ],
         ),
       ),
-      Flexible(flex: 3, child: IngredientCounterWidget(measurement))
+      Flexible(
+          flex: 3,
+          child: IngredientCounterWidget(quantityNotifier, measurement))
     ],
   );
 }
 
-Container IngredientCounterWidget(String measure) {
-  int count = 1;
+Container IngredientCounterWidget(
+    ValueNotifier<int> quantityNotifier, String measure) {
   return Container(
     height: 50,
     padding: const EdgeInsets.all(1),
@@ -41,52 +44,64 @@ Container IngredientCounterWidget(String measure) {
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        TextButton(
-          child: CircleAvatar(
-            radius: 20,
-            backgroundColor: count >= 1 ? Colors.brown.shade200 : Colors.grey,
-            child: Text(
-              "-",
-              textScaleFactor: 1.5,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontFamily: 'varela', color: Colors.white)
-                  .copyWith(fontWeight: FontWeight.bold),
-            ),
-          ),
-          onPressed: () {
-            if (count > 0) {
-              // setState(() {
-              count--;
-              // });
+        InkWell(
+          child: ValueListenableBuilder<int>(
+              valueListenable: quantityNotifier,
+              builder: (BuildContext context, int quantity, Widget child) {
+                return CircleAvatar(
+                  radius: 20,
+                  backgroundColor:
+                      quantity >= 1 ? Colors.brown.shade200 : Colors.grey,
+                  child: Text(
+                    "-",
+                    textScaleFactor: 1.5,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                            fontFamily: 'varela', color: Colors.white)
+                        .copyWith(fontWeight: FontWeight.bold),
+                  ),
+                );
+              }),
+          onTap: () {
+            if (quantityNotifier.value > 0) {
+              quantityNotifier.value -= 1;
             }
           },
         ),
-        SizedBox(
-          child: Text(
-            "$count ${measure} ",
-            textAlign: TextAlign.center,
-            textScaleFactor: 1.6,
-            style:
-                const TextStyle(fontFamily: 'varela', color: Color(0xFF473D3A))
-                    .copyWith(fontWeight: FontWeight.bold),
+        ValueListenableBuilder<int>(
+            valueListenable: quantityNotifier,
+            builder: (BuildContext context, int quantity, Widget child) {
+              return SizedBox(
+                child: Text(
+                  "${quantity} ${measure} ",
+                  textAlign: TextAlign.center,
+                  textScaleFactor: 1.6,
+                  style: const TextStyle(
+                          fontFamily: 'varela', color: Color(0xFF473D3A))
+                      .copyWith(fontWeight: FontWeight.bold),
+                ),
+              );
+            }),
+        InkWell(
+          child: ValueListenableBuilder<int>(
+            valueListenable: quantityNotifier,
+            builder: (BuildContext context, int quantity, Widget child) {
+              return CircleAvatar(
+                radius: 20,
+                backgroundColor: Colors.brown.shade200,
+                child: Text(
+                  "+",
+                  textScaleFactor: 1.5,
+                  textAlign: TextAlign.center,
+                  style:
+                      const TextStyle(fontFamily: 'varela', color: Colors.white)
+                          .copyWith(fontWeight: FontWeight.bold),
+                ),
+              );
+            },
           ),
-        ),
-        TextButton(
-          child: CircleAvatar(
-            radius: 20,
-            backgroundColor: Colors.brown.shade200,
-            child: Text(
-              "+",
-              textScaleFactor: 1.5,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontFamily: 'varela', color: Colors.white)
-                  .copyWith(fontWeight: FontWeight.bold),
-            ),
-          ),
-          onPressed: () {
-            // setState(() {
-            count++;
-            // });
+          onTap: () {
+            quantityNotifier.value += 1;
           },
         ),
       ],
@@ -94,8 +109,8 @@ Container IngredientCounterWidget(String measure) {
   );
 }
 
-Row ExtraIngredientWidgetBinary(String title, String image) {
-  int count = 1;
+Row ExtraIngredientWidgetBinary(
+    ValueNotifier<int> creamNotifier, String title, String image) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     crossAxisAlignment: CrossAxisAlignment.center,
@@ -134,57 +149,66 @@ Row ExtraIngredientWidgetBinary(String title, String image) {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              TextButton(
-                child: CircleAvatar(
-                  radius: 20,
-                  backgroundColor:
-                      count == 1 ? Colors.brown.shade200 : Colors.grey,
-                  child: Text(
-                    "-",
-                    textScaleFactor: 1.5,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                            fontFamily: 'varela', color: Colors.white)
-                        .copyWith(fontWeight: FontWeight.bold),
-                  ),
-                ),
-                onPressed: () {
-                  if (count == 1) {
-                    // setState(() {
-                    count--;
-                    // });
+              InkWell(
+                child: ValueListenableBuilder<int>(
+                    valueListenable: creamNotifier,
+                    builder: (BuildContext context, int cream, Widget child) {
+                      print("Cream = ${cream}");
+                      return CircleAvatar(
+                        radius: 20,
+                        backgroundColor:
+                            cream == 1 ? Colors.brown.shade200 : Colors.grey,
+                        child: Text(
+                          "-",
+                          textScaleFactor: 1.5,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                                  fontFamily: 'varela', color: Colors.white)
+                              .copyWith(fontWeight: FontWeight.bold),
+                        ),
+                      );
+                    }),
+                onTap: () {
+                  if (creamNotifier.value == 1) {
+                    creamNotifier.value -= 1;
                   }
                 },
               ),
-              SizedBox(
-                child: Text(
-                  count == 0 ? "No" : "Yes",
-                  textAlign: TextAlign.center,
-                  textScaleFactor: 1.6,
-                  style: const TextStyle(
-                          fontFamily: 'varela', color: Color(0xFF473D3A))
-                      .copyWith(fontWeight: FontWeight.bold),
-                ),
-              ),
-              TextButton(
-                child: CircleAvatar(
-                  radius: 20,
-                  backgroundColor:
-                      count == 0 ? Colors.brown.shade200 : Colors.grey,
-                  child: Text(
-                    "+",
-                    textScaleFactor: 1.5,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                            fontFamily: 'varela', color: Colors.white)
-                        .copyWith(fontWeight: FontWeight.bold),
-                  ),
-                ),
-                onPressed: () {
-                  if (count == 0) {
-                    // setState(() {
-                    count++;
-                    // });
+              ValueListenableBuilder(
+                  valueListenable: creamNotifier,
+                  builder: (BuildContext context, int cream, Widget child) {
+                    return SizedBox(
+                      child: Text(
+                        cream == 0 ? "No" : "Yes",
+                        textAlign: TextAlign.center,
+                        textScaleFactor: 1.6,
+                        style: const TextStyle(
+                                fontFamily: 'varela', color: Color(0xFF473D3A))
+                            .copyWith(fontWeight: FontWeight.bold),
+                      ),
+                    );
+                  }),
+              InkWell(
+                child: ValueListenableBuilder<int>(
+                    valueListenable: creamNotifier,
+                    builder: (BuildContext context, int cream, Widget child) {
+                      return CircleAvatar(
+                        radius: 20,
+                        backgroundColor:
+                            cream == 0 ? Colors.brown.shade200 : Colors.grey,
+                        child: Text(
+                          "+",
+                          textScaleFactor: 1.5,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                                  fontFamily: 'varela', color: Colors.white)
+                              .copyWith(fontWeight: FontWeight.bold),
+                        ),
+                      );
+                    }),
+                onTap: () {
+                  if (creamNotifier.value == 0) {
+                    creamNotifier.value += 1;
                   }
                 },
               ),

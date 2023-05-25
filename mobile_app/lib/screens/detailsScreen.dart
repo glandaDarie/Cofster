@@ -10,6 +10,13 @@ class DetailsPage extends StatefulWidget {
 }
 
 class _DetailsPageState extends State<DetailsPage> {
+  bool hotSelected;
+  ValueNotifier<bool> hotSelectedNotifier;
+
+  _DetailsPageState() {
+    this.hotSelectedNotifier = ValueNotifier<bool>(false);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -241,7 +248,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                 color: Color(0xFF473D3A)),
                             child: Center(
                               child: Text(
-                                "Customize drink",
+                                "Create coffee drink",
                                 style: TextStyle(
                                     fontFamily: "nunito",
                                     fontSize: 14.0,

@@ -1,13 +1,6 @@
 import 'package:flutter/material.dart';
 
-Widget boxTemperature() {
-  bool hotSelected = true;
-  toggleTemp() {
-    // setState(() {
-    hotSelected = !hotSelected;
-    // });
-  }
-
+Widget boxTemperature(ValueNotifier<bool> hotSelectedNotifier) {
   return Column(
     mainAxisAlignment: MainAxisAlignment.center,
     children: [
@@ -30,23 +23,32 @@ Widget boxTemperature() {
           children: [
             InkWell(
                 onTap: () {
-                  toggleTemp();
+                  hotSelectedNotifier.value = true;
                 },
                 child: AnimatedSwitcher(
-                  duration: const Duration(seconds: 1),
-                  child: hotSelected
-                      ? SelectedTempChip("Hot")
-                      : UnselectedTempChip("Hot"),
-                )),
+                    duration: const Duration(seconds: 1),
+                    child: ValueListenableBuilder<bool>(
+                        valueListenable: hotSelectedNotifier,
+                        builder: (BuildContext context, bool hotSelected,
+                            Widget child) {
+                          return hotSelected
+                              ? SelectedTempChip("Hot")
+                              : UnselectedTempChip("Hot");
+                        }))),
             InkWell(
               onTap: () {
-                toggleTemp();
+                hotSelectedNotifier.value = false;
               },
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 300),
-                child: hotSelected
-                    ? UnselectedTempChip("Cold")
-                    : SelectedTempChip("Cold"),
+                child: ValueListenableBuilder<bool>(
+                    valueListenable: hotSelectedNotifier,
+                    builder:
+                        (BuildContext context, bool hotSelected, Widget child) {
+                      return hotSelected
+                          ? UnselectedTempChip("Cold")
+                          : SelectedTempChip("Cold");
+                    }),
               ),
             ),
           ],

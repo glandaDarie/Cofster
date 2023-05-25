@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:coffee_orderer/utils/boxProperties.dart' show sizes;
 
-Widget boxSizes() {
-  String selectedSize = "M";
-  List sizesAvailable = ["S", "M", "L"];
+Widget boxSizes(ValueNotifier selectedSizeNotifier) {
+  List<String> sizesAvailable = sizes.keys.cast<String>().toList();
   return Row(
     children: [
       Text(
@@ -18,14 +18,11 @@ Widget boxSizes() {
             padding: EdgeInsets.symmetric(horizontal: 20),
             child: InkWell(
               onTap: () {
-                if (selectedSize != e) {
-                  //callback here
-                  // setState(() {
-                  selectedSize = e;
-                  // });
+                if (selectedSizeNotifier != e) {
+                  selectedSizeNotifier.value = e;
                 }
               },
-              child: SizeLabel(selectedSize, e),
+              child: SizeLabel(selectedSizeNotifier, e),
             ),
           );
         }).toList(),
@@ -34,14 +31,20 @@ Widget boxSizes() {
   );
 }
 
-Widget SizeLabel(final String selectedSize, final String size) {
-  return Text(
-    size,
-    style: selectedSize == size
-        ? const TextStyle(fontFamily: 'varela', color: Color(0xFF473D3A))
-            .copyWith(fontSize: 22, fontWeight: FontWeight.w700)
-        : const TextStyle(
-                fontFamily: 'varela', color: Color.fromARGB(255, 177, 160, 152))
-            .copyWith(fontSize: 16, fontWeight: FontWeight.w700),
-  );
+Widget SizeLabel(
+    final ValueNotifier<String> selectedSizeNotifier, final String size) {
+  return ValueListenableBuilder(
+      valueListenable: selectedSizeNotifier,
+      builder: (BuildContext context, String selectedSize, Widget child) {
+        return Text(
+          size,
+          style: selectedSize == size
+              ? const TextStyle(fontFamily: 'varela', color: Color(0xFF473D3A))
+                  .copyWith(fontSize: 22, fontWeight: FontWeight.w700)
+              : const TextStyle(
+                      fontFamily: 'varela',
+                      color: Color.fromARGB(255, 177, 160, 152))
+                  .copyWith(fontSize: 16, fontWeight: FontWeight.w700),
+        );
+      });
 }

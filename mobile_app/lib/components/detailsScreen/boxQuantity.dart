@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-Column boxQuantity() {
-  int count = 1;
+Column boxQuantity(ValueNotifier<int> quantityCountNotifier) {
   return Column(
     children: [
       Text(
@@ -12,23 +11,27 @@ Column boxQuantity() {
       Row(
         children: [
           TextButton(
-            child: CircleAvatar(
-              radius: 16,
-              backgroundColor: count >= 2 ? Colors.brown.shade200 : Colors.grey,
-              child: Text(
-                "-",
-                textScaleFactor: 1.5,
-                textAlign: TextAlign.center,
-                style:
-                    const TextStyle(fontFamily: 'varela', color: Colors.white)
+            child: ValueListenableBuilder<int>(
+              valueListenable: quantityCountNotifier,
+              builder: (BuildContext context, int quantityCount, Widget child) {
+                return CircleAvatar(
+                  radius: 16,
+                  backgroundColor:
+                      quantityCount >= 2 ? Colors.brown.shade200 : Colors.grey,
+                  child: Text(
+                    "-",
+                    textScaleFactor: 1.5,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                            fontFamily: "varela", color: Colors.white)
                         .copyWith(fontWeight: FontWeight.bold),
-              ),
+                  ),
+                );
+              },
             ),
             onPressed: () {
-              if (count > 1) {
-                // setState(() {
-                count--;
-                // });
+              if (quantityCountNotifier.value > 1) {
+                quantityCountNotifier.value -= 1;
               }
             },
           ),
@@ -46,11 +49,17 @@ Column boxQuantity() {
                 ),
               );
             },
-            child: Text(
-              count.toString(),
-              textScaleFactor: 2.0,
-              style: TextStyle(fontFamily: 'varela', color: Color(0xFF473D3A))
-                  .copyWith(fontWeight: FontWeight.bold),
+            child: ValueListenableBuilder<int>(
+              valueListenable: quantityCountNotifier,
+              builder: (BuildContext context, int quantityCount, Widget child) {
+                return Text(
+                  quantityCount.toString(),
+                  textScaleFactor: 2.0,
+                  style:
+                      TextStyle(fontFamily: 'varela', color: Color(0xFF473D3A))
+                          .copyWith(fontWeight: FontWeight.bold),
+                );
+              },
             ),
           ),
           TextButton(
@@ -67,9 +76,7 @@ Column boxQuantity() {
               ),
             ),
             onPressed: () {
-              // setState(() {
-              count++;
-              // });
+              quantityCountNotifier.value += 1;
             },
           ),
         ],
