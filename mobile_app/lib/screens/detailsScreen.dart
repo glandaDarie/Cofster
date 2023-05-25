@@ -3,6 +3,7 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:coffee_orderer/utils/localUserInformation.dart';
 import 'package:coffee_orderer/components/detailsScreen/drinkCustomSelector.dart'
     show customizeDrink;
+import '../components/detailsScreen/ratingBar.dart';
 
 class DetailsPage extends StatefulWidget {
   @override
@@ -12,9 +13,13 @@ class DetailsPage extends StatefulWidget {
 class _DetailsPageState extends State<DetailsPage> {
   bool hotSelected;
   ValueNotifier<bool> hotSelectedNotifier;
+  ValueNotifier<bool> placedOrderNotifier;
+  ValueNotifier<double> ratingBarNotifier;
 
   _DetailsPageState() {
     this.hotSelectedNotifier = ValueNotifier<bool>(false);
+    this.placedOrderNotifier = ValueNotifier<bool>(false);
+    this.ratingBarNotifier = ValueNotifier<double>(0.0);
   }
 
   @override
@@ -78,6 +83,20 @@ class _DetailsPageState extends State<DetailsPage> {
                           fontSize: 14.0,
                           color: Color(0xFFC6C4C4)),
                     ),
+                    SizedBox(height: 10.0),
+                    ValueListenableBuilder(
+                        valueListenable: this.placedOrderNotifier,
+                        builder: (BuildContext context, bool placedOrder,
+                            Widget child) {
+                          Future.delayed(Duration(seconds: 30), () {});
+                          return Visibility(
+                              visible: placedOrder,
+                              child: Positioned(
+                                  bottom: 25,
+                                  right: 70,
+                                  child: RatingBarDrink.ratingBar(
+                                      ratingBarNotifier, placedOrderNotifier)));
+                        }),
                     SizedBox(height: 10.0),
                     Padding(
                       padding: const EdgeInsets.only(right: 35.0),
@@ -237,7 +256,8 @@ class _DetailsPageState extends State<DetailsPage> {
                               ),
                               context: context,
                               builder: (context) {
-                                return customizeDrink(context);
+                                return customizeDrink(
+                                    context, this.placedOrderNotifier);
                               },
                             );
                           },

@@ -9,15 +9,18 @@ import 'package:coffee_orderer/components/detailsScreen/boxExtraIngredient.dart'
     show ExtraIngredientWidget, ExtraIngredientWidgetBinary;
 import 'package:coffee_orderer/utils/boxProperties.dart'
     show sizes, additionalTopings;
-import 'package:coffee_orderer/services/mergedNotifierService.dart';
+import 'package:coffee_orderer/services/mergeNotifierService.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import '../../utils/localUserInformation.dart';
 
-SizedBox customizeDrink(BuildContext context) {
+SizedBox customizeDrink(
+    BuildContext context, ValueNotifier<bool> placedOrderNotifier) {
   double deafultPrice = 5.50;
   double price;
   ValueNotifier<int> valueQuantityNotifier = ValueNotifier<int>(1);
   ValueNotifier<String> selectedSizeNotifier = ValueNotifier<String>("M");
   ValueNotifier<bool> hotSelectedNotifier = ValueNotifier<bool>(false);
-  ValueNotifier<int> sugarQuantityNotifier = ValueNotifier<int>(1);
+  ValueNotifier<int> sugarQuantityNotifier = ValueNotifier<int>(0);
   ValueNotifier<int> iceQuantityNotifier = ValueNotifier<int>(1);
   ValueNotifier<int> creamNotifier = ValueNotifier<int>(1);
 
@@ -207,8 +210,21 @@ SizedBox customizeDrink(BuildContext context) {
                   height: 60,
                   width: 250,
                   child: ElevatedButton(
-                    onPressed: () {
-                      print("Price = ${price.toStringAsFixed(2)}");
+                    onPressed: () async {
+                      String cacheStr = await loadUserInformationFromCache();
+                      Map<String, String> cache =
+                          fromStringCachetoMapCache(cacheStr);
+                      Fluttertoast.showToast(
+                          msg:
+                              "Successfully placed the order for the ${cache['cardCoffeeName']}",
+                          toastLength: Toast.LENGTH_SHORT,
+                          backgroundColor: Color.fromARGB(255, 102, 33, 12),
+                          textColor: Color.fromARGB(255, 220, 217, 216),
+                          fontSize: 16);
+                      Future.delayed(Duration(seconds: 30), () {
+                        placedOrderNotifier.value = true;
+                      });
+                      Navigator.of(context).pop();
                     },
                     style: ButtonStyle(
                       backgroundColor:
@@ -227,7 +243,7 @@ SizedBox customizeDrink(BuildContext context) {
                               .copyWith(fontWeight: FontWeight.w700),
                     ),
                   ),
-                )
+                ),
               ],
             ),
           )

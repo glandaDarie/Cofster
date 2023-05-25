@@ -1,0 +1,200 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.example.mobile_app"
+4    android:versionCode="1"
+5    android:versionName="1.0.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="16"
+9        android:targetSdkVersion="33" />
+10    <!--
+11         The INTERNET permission is required for development. Specifically,
+12         the Flutter tool needs it to communicate with the running application
+13         to allow setting breakpoints, to provide hot reload, etc.
+14    -->
+15    <uses-permission android:name="android.permission.INTERNET" />
+15-->C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\android\app\src\main\AndroidManifest.xml:3:5-66
+15-->C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\android\app\src\main\AndroidManifest.xml:3:22-64
+16    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+16-->C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\android\app\src\main\AndroidManifest.xml:4:5-81
+16-->C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\android\app\src\main\AndroidManifest.xml:4:22-78
+17    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+17-->C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\android\app\src\main\AndroidManifest.xml:5:5-80
+17-->C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\android\app\src\main\AndroidManifest.xml:5:22-77
+18    <uses-permission android:name="android.permission.CAMERA" />
+18-->C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\android\app\src\main\AndroidManifest.xml:6:5-65
+18-->C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\android\app\src\main\AndroidManifest.xml:6:22-62
+19    <uses-permission android:name="android.permission.VIBRATE" />
+19-->C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\android\app\src\main\AndroidManifest.xml:7:5-66
+19-->C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\android\app\src\main\AndroidManifest.xml:7:22-63
+20    <uses-permission android:name="android.permission.WAKE_LOCK" />
+20-->C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\android\app\src\main\AndroidManifest.xml:8:5-68
+20-->C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\android\app\src\main\AndroidManifest.xml:8:22-65
+21
+22    <queries>
+22-->C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\android\app\src\main\AndroidManifest.xml:9:1-14:11
+23        <intent>
+23-->C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\android\app\src\main\AndroidManifest.xml:10:3-13:12
+24            <action android:name="android.intent.action.SENDTO" />
+24-->C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\android\app\src\main\AndroidManifest.xml:11:5-59
+24-->C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\android\app\src\main\AndroidManifest.xml:11:13-56
+25
+26            <data android:scheme="mailto" />
+26-->C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\android\app\src\main\AndroidManifest.xml:12:5-37
+26-->C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\android\app\src\main\AndroidManifest.xml:12:11-34
+27        </intent>
+28    </queries>
+29
+30    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+30-->[:flutter_local_notifications] C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\build\flutter_local_notifications\intermediates\merged_manifest\debug\AndroidManifest.xml:9:5-81
+30-->[:flutter_local_notifications] C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\build\flutter_local_notifications\intermediates\merged_manifest\debug\AndroidManifest.xml:9:22-78
+31    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+31-->[:flutter_local_notifications] C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\build\flutter_local_notifications\intermediates\merged_manifest\debug\AndroidManifest.xml:11:5-81
+31-->[:flutter_local_notifications] C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\build\flutter_local_notifications\intermediates\merged_manifest\debug\AndroidManifest.xml:11:22-78
+32    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+32-->[:flutter_local_notifications] C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\build\flutter_local_notifications\intermediates\merged_manifest\debug\AndroidManifest.xml:12:5-79
+32-->[:flutter_local_notifications] C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\build\flutter_local_notifications\intermediates\merged_manifest\debug\AndroidManifest.xml:12:22-76
+33    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+33-->[:flutter_local_notifications] C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\build\flutter_local_notifications\intermediates\merged_manifest\debug\AndroidManifest.xml:13:5-77
+33-->[:flutter_local_notifications] C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\build\flutter_local_notifications\intermediates\merged_manifest\debug\AndroidManifest.xml:13:22-74
+34
+35    <permission
+35-->[androidx.core:core:1.9.0] C:\Users\darie\.gradle\caches\transforms-3\70ebfde98deddbbf7206abff949c3f46\transformed\core-1.9.0\AndroidManifest.xml:22:5-24:47
+36        android:name="com.example.mobile_app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+36-->[androidx.core:core:1.9.0] C:\Users\darie\.gradle\caches\transforms-3\70ebfde98deddbbf7206abff949c3f46\transformed\core-1.9.0\AndroidManifest.xml:23:9-81
+37        android:protectionLevel="signature" />
+37-->[androidx.core:core:1.9.0] C:\Users\darie\.gradle\caches\transforms-3\70ebfde98deddbbf7206abff949c3f46\transformed\core-1.9.0\AndroidManifest.xml:24:9-44
+38
+39    <uses-permission android:name="com.example.mobile_app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+39-->[androidx.core:core:1.9.0] C:\Users\darie\.gradle\caches\transforms-3\70ebfde98deddbbf7206abff949c3f46\transformed\core-1.9.0\AndroidManifest.xml:26:5-97
+39-->[androidx.core:core:1.9.0] C:\Users\darie\.gradle\caches\transforms-3\70ebfde98deddbbf7206abff949c3f46\transformed\core-1.9.0\AndroidManifest.xml:26:22-94
+40
+41    <application
+42        android:name="android.app.Application"
+43        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+43-->[androidx.core:core:1.9.0] C:\Users\darie\.gradle\caches\transforms-3\70ebfde98deddbbf7206abff949c3f46\transformed\core-1.9.0\AndroidManifest.xml:28:18-86
+44        android:debuggable="true"
+45        android:icon="@mipmap/ic_launcher"
+46        android:label="mobile_app" >
+47        <activity
+48            android:name="com.example.mobile_app.MainActivity"
+49            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+50            android:exported="true"
+51            android:hardwareAccelerated="true"
+52            android:launchMode="singleTop"
+53            android:theme="@style/LaunchTheme"
+54            android:windowSoftInputMode="adjustResize" >
+55
+56            <!--
+57                 Specifies an Android theme to apply to this Activity as soon as
+58                 the Android process has started. This theme is visible to the user
+59                 while the Flutter UI initializes. After that, this theme continues
+60                 to determine the Window background behind the Flutter UI.
+61            -->
+62            <meta-data
+63                android:name="io.flutter.embedding.android.NormalTheme"
+64                android:resource="@style/NormalTheme" />
+65            <!-- added now -->
+66            <meta-data
+67                android:name="com.example.mobile_app.notification_channel_id"
+68                android:value="channel_id_1" />
+69            <meta-data
+70                android:name="com.example.mobile_app.notification_channel_name"
+71                android:value="Channel 1" />
+72
+73            <intent-filter>
+74                <action android:name="android.intent.action.MAIN" />
+75
+76                <category android:name="android.intent.category.LAUNCHER" />
+77            </intent-filter>
+78        </activity>
+79        <activity
+80            android:name="com.yalantis.ucrop.UCropActivity"
+81            android:screenOrientation="portrait"
+82            android:showWhenLocked="true"
+83            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+84        <!--
+85             Don't delete the meta-data below.
+86             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java
+87        -->
+88        <meta-data
+89            android:name="flutterEmbedding"
+90            android:value="2" />
+91
+92        <provider
+92-->[:image_picker_android] C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\build\image_picker_android\intermediates\merged_manifest\debug\AndroidManifest.xml:10:9-18:20
+93            android:name="io.flutter.plugins.imagepicker.ImagePickerFileProvider"
+93-->[:image_picker_android] C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\build\image_picker_android\intermediates\merged_manifest\debug\AndroidManifest.xml:11:13-82
+94            android:authorities="com.example.mobile_app.flutter.image_provider"
+94-->[:image_picker_android] C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\build\image_picker_android\intermediates\merged_manifest\debug\AndroidManifest.xml:12:13-74
+95            android:exported="false"
+95-->[:image_picker_android] C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\build\image_picker_android\intermediates\merged_manifest\debug\AndroidManifest.xml:13:13-37
+96            android:grantUriPermissions="true" >
+96-->[:image_picker_android] C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\build\image_picker_android\intermediates\merged_manifest\debug\AndroidManifest.xml:14:13-47
+97            <meta-data
+97-->[:image_picker_android] C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\build\image_picker_android\intermediates\merged_manifest\debug\AndroidManifest.xml:15:13-17:75
+98                android:name="android.support.FILE_PROVIDER_PATHS"
+98-->[:image_picker_android] C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\build\image_picker_android\intermediates\merged_manifest\debug\AndroidManifest.xml:16:17-67
+99                android:resource="@xml/flutter_image_picker_file_paths" />
+99-->[:image_picker_android] C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\build\image_picker_android\intermediates\merged_manifest\debug\AndroidManifest.xml:17:17-72
+100        </provider>
+101
+102        <receiver
+102-->[:flutter_local_notifications] C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\build\flutter_local_notifications\intermediates\merged_manifest\debug\AndroidManifest.xml:16:9-18:40
+103            android:name="com.dexterous.flutterlocalnotifications.ActionBroadcastReceiver"
+103-->[:flutter_local_notifications] C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\build\flutter_local_notifications\intermediates\merged_manifest\debug\AndroidManifest.xml:17:13-91
+104            android:exported="false" />
+104-->[:flutter_local_notifications] C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\build\flutter_local_notifications\intermediates\merged_manifest\debug\AndroidManifest.xml:18:13-37
+105        <receiver
+105-->[:flutter_local_notifications] C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\build\flutter_local_notifications\intermediates\merged_manifest\debug\AndroidManifest.xml:19:9-21:40
+106            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver"
+106-->[:flutter_local_notifications] C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\build\flutter_local_notifications\intermediates\merged_manifest\debug\AndroidManifest.xml:20:13-97
+107            android:exported="false" />
+107-->[:flutter_local_notifications] C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\build\flutter_local_notifications\intermediates\merged_manifest\debug\AndroidManifest.xml:21:13-37
+108        <receiver
+108-->[:flutter_local_notifications] C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\build\flutter_local_notifications\intermediates\merged_manifest\debug\AndroidManifest.xml:22:9-31:20
+109            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver"
+109-->[:flutter_local_notifications] C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\build\flutter_local_notifications\intermediates\merged_manifest\debug\AndroidManifest.xml:23:13-101
+110            android:exported="false" >
+110-->[:flutter_local_notifications] C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\build\flutter_local_notifications\intermediates\merged_manifest\debug\AndroidManifest.xml:24:13-37
+111            <intent-filter>
+111-->[:flutter_local_notifications] C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\build\flutter_local_notifications\intermediates\merged_manifest\debug\AndroidManifest.xml:25:13-30:29
+112                <action android:name="android.intent.action.BOOT_COMPLETED" />
+112-->[:flutter_local_notifications] C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\build\flutter_local_notifications\intermediates\merged_manifest\debug\AndroidManifest.xml:26:17-79
+112-->[:flutter_local_notifications] C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\build\flutter_local_notifications\intermediates\merged_manifest\debug\AndroidManifest.xml:26:25-76
+113                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+113-->[:flutter_local_notifications] C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\build\flutter_local_notifications\intermediates\merged_manifest\debug\AndroidManifest.xml:27:17-84
+113-->[:flutter_local_notifications] C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\build\flutter_local_notifications\intermediates\merged_manifest\debug\AndroidManifest.xml:27:25-81
+114                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+114-->[:flutter_local_notifications] C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\build\flutter_local_notifications\intermediates\merged_manifest\debug\AndroidManifest.xml:28:17-82
+114-->[:flutter_local_notifications] C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\build\flutter_local_notifications\intermediates\merged_manifest\debug\AndroidManifest.xml:28:25-79
+115                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
+115-->[:flutter_local_notifications] C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\build\flutter_local_notifications\intermediates\merged_manifest\debug\AndroidManifest.xml:29:17-82
+115-->[:flutter_local_notifications] C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\build\flutter_local_notifications\intermediates\merged_manifest\debug\AndroidManifest.xml:29:25-79
+116            </intent-filter>
+117        </receiver>
+118
+119        <activity
+119-->[:url_launcher_android] C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\build\url_launcher_android\intermediates\merged_manifest\debug\AndroidManifest.xml:10:9-13:74
+120            android:name="io.flutter.plugins.urllauncher.WebViewActivity"
+120-->[:url_launcher_android] C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\build\url_launcher_android\intermediates\merged_manifest\debug\AndroidManifest.xml:11:13-74
+121            android:exported="false"
+121-->[:url_launcher_android] C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\build\url_launcher_android\intermediates\merged_manifest\debug\AndroidManifest.xml:12:13-37
+122            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+122-->[:url_launcher_android] C:\Users\darie\OneDrive\Documents\faculty\MCCA\code\Cofster\mobile_app\build\url_launcher_android\intermediates\merged_manifest\debug\AndroidManifest.xml:13:13-71
+123
+124        <uses-library
+124-->[androidx.window:window:1.0.0-beta04] C:\Users\darie\.gradle\caches\transforms-3\30b18f3988413d28fa7ff440a21417f2\transformed\jetified-window-1.0.0-beta04\AndroidManifest.xml:25:9-27:40
+125            android:name="androidx.window.extensions"
+125-->[androidx.window:window:1.0.0-beta04] C:\Users\darie\.gradle\caches\transforms-3\30b18f3988413d28fa7ff440a21417f2\transformed\jetified-window-1.0.0-beta04\AndroidManifest.xml:26:13-54
+126            android:required="false" />
+126-->[androidx.window:window:1.0.0-beta04] C:\Users\darie\.gradle\caches\transforms-3\30b18f3988413d28fa7ff440a21417f2\transformed\jetified-window-1.0.0-beta04\AndroidManifest.xml:27:13-37
+127        <uses-library
+127-->[androidx.window:window:1.0.0-beta04] C:\Users\darie\.gradle\caches\transforms-3\30b18f3988413d28fa7ff440a21417f2\transformed\jetified-window-1.0.0-beta04\AndroidManifest.xml:28:9-30:40
+128            android:name="androidx.window.sidecar"
+128-->[androidx.window:window:1.0.0-beta04] C:\Users\darie\.gradle\caches\transforms-3\30b18f3988413d28fa7ff440a21417f2\transformed\jetified-window-1.0.0-beta04\AndroidManifest.xml:29:13-51
+129            android:required="false" />
+129-->[androidx.window:window:1.0.0-beta04] C:\Users\darie\.gradle\caches\transforms-3\30b18f3988413d28fa7ff440a21417f2\transformed\jetified-window-1.0.0-beta04\AndroidManifest.xml:30:13-37
+130    </application>
+131
+132</manifest>

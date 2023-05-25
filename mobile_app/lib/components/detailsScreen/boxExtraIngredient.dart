@@ -153,7 +153,6 @@ Row ExtraIngredientWidgetBinary(
                 child: ValueListenableBuilder<int>(
                     valueListenable: creamNotifier,
                     builder: (BuildContext context, int cream, Widget child) {
-                      print("Cream = ${cream}");
                       return CircleAvatar(
                         radius: 20,
                         backgroundColor:
