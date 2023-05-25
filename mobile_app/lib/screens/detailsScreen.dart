@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:coffee_orderer/utils/localUserInformation.dart';
-import 'package:coffee_orderer/components/detailsScreen.dart/drinkCustomSelector.dart'
-    show customizer;
+import 'package:coffee_orderer/components/detailsScreen/drinkCustomSelector.dart'
+    show customizeDrink;
 
 class DetailsPage extends StatefulWidget {
   @override
@@ -219,16 +219,6 @@ class _DetailsPageState extends State<DetailsPage> {
                       padding: EdgeInsets.only(right: 25.0),
                       child: InkWell(
                           onTap: () {
-                            // Container(child: customizer(context));
-                            print("WHAT?");
-                            // showDialog(
-                            //     context: context,
-                            //     builder: (BuildContext context) {
-                            //       return AlertDialog(
-                            //         content: customizer(context),
-                            //       );
-                            //     });
-
                             showModalBottomSheet(
                               isScrollControlled: true,
                               backgroundColor: Colors.white,
@@ -240,7 +230,7 @@ class _DetailsPageState extends State<DetailsPage> {
                               ),
                               context: context,
                               builder: (context) {
-                                return customizer(context);
+                                return customizeDrink(context);
                               },
                             );
                           },
@@ -251,7 +241,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                 color: Color(0xFF473D3A)),
                             child: Center(
                               child: Text(
-                                "Make Order",
+                                "Customize drink",
                                 style: TextStyle(
                                     fontFamily: "nunito",
                                     fontSize: 14.0,
@@ -264,7 +254,7 @@ class _DetailsPageState extends State<DetailsPage> {
                     SizedBox(height: 20.0)
                   ]))),
           Positioned(
-            top: MediaQuery.of(context).size.height / 6,
+            top: MediaQuery.of(context).size.height / 8,
             left: 135.0,
             child: FutureBuilder<dynamic>(
               future:
@@ -276,8 +266,8 @@ class _DetailsPageState extends State<DetailsPage> {
                   return Text('Error loading image');
                 } else {
                   return Container(
-                    height: 280.0,
-                    width: 280.0,
+                    height: 310.0,
+                    width: 310.0,
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         image: snapshot.data,
@@ -298,7 +288,6 @@ class _DetailsPageState extends State<DetailsPage> {
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        //use a row with crossaxis as end
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: <Widget>[
