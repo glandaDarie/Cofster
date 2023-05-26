@@ -24,6 +24,9 @@ class RatingBarDrink {
               color: Colors.amber,
             ),
         onRatingUpdate: (double ratingBar) async {
+          Future.delayed(Duration(seconds: 4), () {
+            placedOrderNotifier.value = true;
+          });
           String cacheStr = await loadUserInformationFromCache();
           Map<String, String> cache = fromStringCachetoMapCache(cacheStr);
           Fluttertoast.showToast(
