@@ -16,6 +16,7 @@ import 'package:coffee_orderer/patterns/CoffeeCardSingleton.dart';
 import 'package:coffee_orderer/services/speechToTextService.dart'
     show SpeechToTextService;
 import 'package:speech_to_text/speech_recognition_result.dart';
+import 'package:coffee_orderer/screens/mapScreen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);
@@ -322,15 +323,41 @@ class _HomePageState extends State<HomePage> {
                       child: ListView(
                         scrollDirection: Axis.horizontal,
                         children: [
-                          _buildImage("assets/images/coffee.jpg"),
-                          _buildImage("assets/images/coffee2.jpg"),
-                          _buildImage("assets/images/coffee3.jpg"),
+                          InkWell(
+                              onTap: () async {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => GoogleMapPage(
+                                        coffeeStoreName: "Camera din Fata"),
+                                  ),
+                                );
+                              },
+                              child: _buildImage("assets/images/coffee.jpg")),
+                          InkWell(
+                              onTap: () async {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => GoogleMapPage(
+                                            coffeeStoreName: "Cafe D-Arte")));
+                              },
+                              child: _buildImage("assets/images/coffee2.jpg")),
+                          InkWell(
+                              onTap: () async {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => GoogleMapPage(
+                                            coffeeStoreName: "La Fabrique")));
+                              },
+                              child: _buildImage("assets/images/coffee3.jpg"))
                         ],
                       ),
                     ),
+                    SizedBox(height: 50.0)
                   ],
                 ),
-                SizedBox(height: 50.0),
                 Positioned(
                   left: 0,
                   right: 0,
