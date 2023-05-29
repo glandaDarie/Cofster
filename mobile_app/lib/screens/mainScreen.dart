@@ -340,7 +340,7 @@ class _HomePageState extends State<HomePage> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => GoogleMapPage(
-                                            coffeeStoreName: "Cafe D-Arte")));
+                                            coffeeStoreName: "Cafe D'Arte")));
                               },
                               child: _buildImage("assets/images/coffee2.jpg")),
                           InkWell(
