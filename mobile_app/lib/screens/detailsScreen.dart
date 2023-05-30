@@ -1,9 +1,11 @@
+import 'package:coffee_orderer/controllers/DrinksInformationController.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:coffee_orderer/utils/localUserInformation.dart';
 import 'package:coffee_orderer/components/detailsScreen/drinkCustomSelector.dart'
     show customizeDrink;
 import '../components/detailsScreen/ratingBar.dart';
+import 'package:coffee_orderer/models/information.dart';
 
 class DetailsPage extends StatefulWidget {
   @override
@@ -15,16 +17,40 @@ class _DetailsPageState extends State<DetailsPage> {
   ValueNotifier<bool> hotSelectedNotifier;
   ValueNotifier<bool> placedOrderNotifier;
   ValueNotifier<double> ratingBarNotifier;
+  DrinksInformationController drinkInformationController;
+  String _coffeeName;
+  List<String> _ingridients;
+  String _preparationTime;
+  List<String> _nutritionInfo;
 
   _DetailsPageState() {
     this.hotSelectedNotifier = ValueNotifier<bool>(false);
     this.placedOrderNotifier = ValueNotifier<bool>(false);
     this.ratingBarNotifier = ValueNotifier<double>(0.0);
+    this.drinkInformationController = DrinksInformationController();
+    this._coffeeName = null;
+    this._ingridients = [];
+    this._preparationTime = null;
+    this._nutritionInfo = [];
   }
 
   @override
   void initState() {
     super.initState();
+    _getCoffeeCardInformationFromPreviousScreen("cardCoffeeName").then((value) {
+      setState(() {
+        this._coffeeName = value;
+        drinkInformationController
+            .getInformationFromRespectiveDrink(this._coffeeName)
+            .then((value) {
+          this._ingridients = value.ingredients;
+          this._preparationTime = value.preparationTime;
+          this._nutritionInfo = value.nutritionInformation;
+          print(
+              "Ingredients : ${value.ingredients}, Preparation time : ${value.preparationTime}, nutritionInfo : ${value.nutritionInformation}");
+        });
+      });
+    });
   }
 
   Future<dynamic> _getCoffeeCardInformationFromPreviousScreen(
@@ -77,6 +103,7 @@ class _DetailsPageState extends State<DetailsPage> {
                     ),
                     SizedBox(height: 7.0),
                     Text(
+                      // "${this._preparationTime}"
                       '5min',
                       style: TextStyle(
                           fontFamily: 'nunito',

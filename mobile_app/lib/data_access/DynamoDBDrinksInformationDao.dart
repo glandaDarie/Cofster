@@ -13,6 +13,7 @@ class DynamoDBDrinksInformationDao {
 
   Future<Information> getInformationFromRespectiveDrink() async {
     Information information;
+    this._url = this._url.trim();
     http.Response response = await http.get(Uri.parse(this._url));
     if (response.statusCode == 200) {
       information = this._parseJsonDrinkInformation(jsonDecode(response.body));
@@ -34,17 +35,17 @@ class DynamoDBDrinksInformationDao {
     List<dynamic> body = json["body"];
     if (body.isNotEmpty) {
       Map<String, dynamic> drinkInfo = body[0];
-      List<dynamic> ingredients = drinkInfo["ingredients"];
+      dynamic ingredients = drinkInfo["ingredients"][0];
       String preparationTime = drinkInfo["Preparation time"];
-      List<dynamic> nutritionInfo = drinkInfo["Nutrition Information"];
-      List<String> parsedIngredients = ingredients
-          .map((ingredient) => ingredient.values.first)
-          .toList()
-          .cast<String>();
-      List<String> parsedNutritionInfo = nutritionInfo
-          .map((info) => info.values.first)
-          .toList()
-          .cast<String>();
+      dynamic nutritionInfo = drinkInfo["Nutrition Information"][0];
+      List<String> parsedIngredients = [];
+      for (String key in ingredients.keys) {
+        parsedIngredients.add(ingredients[key].toString());
+      }
+      List<String> parsedNutritionInfo = [];
+      for (String key in nutritionInfo.keys) {
+        parsedNutritionInfo.add(nutritionInfo[key].toString());
+      }
       return Information(
           parsedIngredients, preparationTime, parsedNutritionInfo);
     }
