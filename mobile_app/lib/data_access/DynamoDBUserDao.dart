@@ -139,7 +139,6 @@ class DynamoDBUserDao {
     return msg;
   }
 
-  // comment for better integration testing
   Future<String> uploadUsersPhotoToS3(Map<String, String> content) async {
     String msg = null;
     Map<String, dynamic> requestBody = {"body": content};
@@ -158,7 +157,6 @@ class DynamoDBUserDao {
     return msg;
   }
 
-  // //comment for better integration testing
   Future<String> getUsersPhotoFromS3() async {
     String msg = null;
     String photoBase64 = null;
