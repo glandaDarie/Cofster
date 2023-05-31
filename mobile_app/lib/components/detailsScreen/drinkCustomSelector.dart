@@ -202,13 +202,13 @@ SizedBox customizeDrink(
                                       fontFamily: 'varela',
                                       color: Color(0xFF473D3A))
                                   .copyWith(fontWeight: FontWeight.w900),
-                              textScaleFactor: 1.9);
+                              textScaleFactor: 1.2);
                         }),
                   ],
                 ),
                 SizedBox(
                   height: 60,
-                  width: 250,
+                  width: 225,
                   child: ElevatedButton(
                     onPressed: () async {
                       String cacheStr = await loadUserInformationFromCache();
@@ -231,7 +231,7 @@ SizedBox customizeDrink(
                           MaterialStateProperty.all<Color>(Color(0xFF473D3A)),
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50),
+                          borderRadius: BorderRadius.circular(25),
                         ),
                       ),
                     ),

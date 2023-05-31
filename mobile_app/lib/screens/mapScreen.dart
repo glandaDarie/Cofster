@@ -50,11 +50,11 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
 
   @override
   void dispose() {
+    super.dispose();
     controllerCompleter.future.then((GoogleMapController controller) {
       controller.dispose();
     });
     controllerCompleter = null;
-    super.dispose();
   }
 
   @override

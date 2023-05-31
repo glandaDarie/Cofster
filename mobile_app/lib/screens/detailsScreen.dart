@@ -94,9 +94,6 @@ class _DetailsPageState extends State<DetailsPage> {
                       snapshotInformationDrink.data.preparationTime;
                   this._nutritionInfo =
                       snapshotInformationDrink.data.nutritionInformation;
-                  print("Got 1: ${this._preparationTime}");
-                  print("Got 2: ${this._nutritionInfo}");
-                  print("Got 3: ${this._ingridients}");
                   return Scaffold(
                       body: ListView(children: [
                     Stack(
@@ -366,8 +363,8 @@ class _DetailsPageState extends State<DetailsPage> {
                                 return Text('Error loading image');
                               } else {
                                 return Container(
-                                  height: 310.0,
-                                  width: 310.0,
+                                  height: 270.0,
+                                  width: 270.0,
                                   decoration: BoxDecoration(
                                     image: DecorationImage(
                                       image: snapshot.data,
