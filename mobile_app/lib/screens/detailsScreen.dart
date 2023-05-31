@@ -363,8 +363,8 @@ class _DetailsPageState extends State<DetailsPage> {
                                 return Text('Error loading image');
                               } else {
                                 return Container(
-                                  height: 270.0,
-                                  width: 270.0,
+                                  height: 310.0,
+                                  width: 310.0,
                                   decoration: BoxDecoration(
                                     image: DecorationImage(
                                       image: snapshot.data,

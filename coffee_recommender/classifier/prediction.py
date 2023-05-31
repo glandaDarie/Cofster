@@ -60,7 +60,7 @@ def predict(responses : Dict[str, str] = None, k : int = 5) -> str|int:
         y_test_probs : torch.Tensor = torch.softmax(test_logits, dim=1)
         if k == 1:
             prediction : torch.Tensor = y_test_probs.argmax(dim=1).to(torch.float32)
-            return int(prediction.item()) 
+            return int(prediction.item())  
         top_predictions : Tuple[torch.Tensor, torch.Tensor] = torch.topk(y_test_probs, k=k, dim=1)
         _, top_predicted_indecies = top_predictions 
     return top_predicted_indecies.tolist()[0]

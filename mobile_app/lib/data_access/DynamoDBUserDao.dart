@@ -81,12 +81,6 @@ class DynamoDBUserDao {
       String username = _u["username"];
       String password = _u["password"];
       String photo = _u["photo"];
-      // List<Map<String, String>> favouriteDrinksJson =
-      //     List<Map<String, String>>.from(_u["favouriteDrinks"]);
-      // List<String> favouriteDrinks = favouriteDrinksJson
-      //     .map((favDrink) =>
-      //         favDrink["drink ${favouriteDrinksJson.indexOf(favDrink) + 1}"])
-      //     .toList();
       List<dynamic> favouriteDrinksJson = _u["favouriteDrinks"];
       List<Map<String, String>> favouriteDrinksConverted = favouriteDrinksJson
           .map<Map<String, String>>(

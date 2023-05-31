@@ -202,13 +202,13 @@ SizedBox customizeDrink(
                                       fontFamily: 'varela',
                                       color: Color(0xFF473D3A))
                                   .copyWith(fontWeight: FontWeight.w900),
-                              textScaleFactor: 1.2);
+                              textScaleFactor: 1.9);
                         }),
                   ],
                 ),
                 SizedBox(
                   height: 60,
-                  width: 225,
+                  width: 250,
                   child: ElevatedButton(
                     onPressed: () async {
                       String cacheStr = await loadUserInformationFromCache();

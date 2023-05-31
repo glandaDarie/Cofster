@@ -12,6 +12,7 @@ import 'package:coffee_orderer/credentials/EmailCredentials.dart';
 import 'package:coffee_orderer/services/passwordGeneratorService.dart';
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:steel_crypt/steel_crypt.dart';
 
 class AuthController extends ValidateCredentialsService {
   Duration get loginTime => Duration(milliseconds: 2250);
@@ -99,8 +100,20 @@ class AuthController extends ValidateCredentialsService {
 
   Future<String> sendEmail(String recipientEmail,
       [String lock = "verification_code"]) async {
-    String usernameSender = emailCredentials["username"];
-    String passwordSender = emailCredentials["password"];
+    String usernameFortunaKey = emailCredentials["usernameFortunaKey"];
+    String username = emailCredentials["username"];
+    String usernameIV = emailCredentials["usernameIV"];
+    String passwordFortunaKey = emailCredentials["passwordFortunaKey"];
+    String password = emailCredentials["password"];
+    String passwordIV = emailCredentials["passwordIV"];
+    AesCrypt aesDecrypterUsername =
+        AesCrypt(key: usernameFortunaKey, padding: PaddingAES.pkcs7);
+    AesCrypt aesDecrypterPassword =
+        AesCrypt(key: passwordFortunaKey, padding: PaddingAES.pkcs7);
+    String usernameSender =
+        aesDecrypterUsername.gcm.decrypt(enc: username, iv: usernameIV);
+    String passwordSender =
+        aesDecrypterPassword.gcm.decrypt(enc: password, iv: passwordIV);
     SmtpServer smtpServer = null;
     try {
       smtpServer = SmtpServer("smtp-mail.outlook.com",
@@ -225,7 +238,6 @@ class AuthController extends ValidateCredentialsService {
     return null;
   }
 
-  // comment for better integration testing
   Future<Uint8List> loadUserPhoto() async {
     String cacheStr;
     try {
