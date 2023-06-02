@@ -1,11 +1,12 @@
 import 'package:coffee_orderer/controllers/DrinksInformationController.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:coffee_orderer/utils/localUserInformation.dart';
 import 'package:coffee_orderer/components/detailsScreen/drinkCustomSelector.dart'
     show customizeDrink;
 import '../components/detailsScreen/ratingBar.dart';
 import 'package:coffee_orderer/models/information.dart';
+import 'package:coffee_orderer/controllers/IngredientController.dart'
+    show IngredientController;
 
 class DetailsPage extends StatefulWidget {
   @override
@@ -18,7 +19,8 @@ class _DetailsPageState extends State<DetailsPage> {
   ValueNotifier<bool> placedOrderNotifier;
   ValueNotifier<double> ratingBarNotifier;
   DrinksInformationController drinkInformationController;
-  List<String> _ingridients;
+  IngredientController ingredientsController;
+  List<String> _ingredients;
   String _preparationTime;
   List<String> _nutritionInfo;
 
@@ -27,7 +29,8 @@ class _DetailsPageState extends State<DetailsPage> {
     this.placedOrderNotifier = ValueNotifier<bool>(false);
     this.ratingBarNotifier = ValueNotifier<double>(0.0);
     this.drinkInformationController = DrinksInformationController();
-    this._ingridients = [];
+    this.ingredientsController = IngredientController();
+    this._ingredients = [];
     this._preparationTime = null;
     this._nutritionInfo = [];
   }
@@ -66,7 +69,7 @@ class _DetailsPageState extends State<DetailsPage> {
         } else if (snapshotPreviousScreenData.hasError) {
           return Center(
             child: Text(
-                'Error (snapshotPreviousScreenData): ${snapshotPreviousScreenData.error}'),
+                "Error (snapshotPreviousScreenData): ${snapshotPreviousScreenData.error}"),
           );
         } else if (snapshotPreviousScreenData.hasData) {
           dynamic coffeeName =
@@ -86,10 +89,10 @@ class _DetailsPageState extends State<DetailsPage> {
                 } else if (snapshotInformationDrink.hasError) {
                   return Center(
                     child: Text(
-                        'Error (snapshotInformationDrink): ${snapshotInformationDrink.error}'),
+                        "Error (snapshotInformationDrink): ${snapshotInformationDrink.error}"),
                   );
                 } else if (snapshotInformationDrink.hasData) {
-                  this._ingridients = snapshotInformationDrink.data.ingredients;
+                  this._ingredients = snapshotInformationDrink.data.ingredients;
                   this._preparationTime =
                       snapshotInformationDrink.data.preparationTime;
                   this._nutritionInfo =
@@ -123,9 +126,9 @@ class _DetailsPageState extends State<DetailsPage> {
                                 width: MediaQuery.of(context).size.width,
                                 child: ListView(children: [
                                   Text(
-                                    'Preparation time',
+                                    "Preparation time",
                                     style: TextStyle(
-                                        fontFamily: 'nunito',
+                                        fontFamily: "nunito",
                                         fontSize: 14.0,
                                         fontWeight: FontWeight.bold,
                                         color: Color(0xFF726B68)),
@@ -134,7 +137,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                   Text(
                                     "${this._preparationTime}",
                                     style: TextStyle(
-                                        fontFamily: 'nunito',
+                                        fontFamily: "nunito",
                                         fontSize: 14.0,
                                         color: Color(0xFFC6C4C4)),
                                   ),
@@ -164,9 +167,9 @@ class _DetailsPageState extends State<DetailsPage> {
                                   ),
                                   SizedBox(height: 10.0),
                                   Text(
-                                    'Ingredients',
+                                    "Ingredients",
                                     style: TextStyle(
-                                        fontFamily: 'nunito',
+                                        fontFamily: "nunito",
                                         fontSize: 14.0,
                                         fontWeight: FontWeight.bold,
                                         color: Color(0xFF726B68)),
@@ -175,52 +178,12 @@ class _DetailsPageState extends State<DetailsPage> {
                                   Container(
                                       height: 110.0,
                                       child: ListView(
-                                          scrollDirection: Axis.horizontal,
-                                          children: [
-                                            buildIngredientItem(
-                                                'Water',
-                                                Icon(Feather.droplet,
-                                                    size: 10.0,
-                                                    color: Colors.white),
-                                                Color(0xFF6FC5DA)),
-                                            buildIngredientItem(
-                                                'Brewed Espresso',
-                                                Icon(Feather.target,
-                                                    size: 18.0,
-                                                    color: Colors.white),
-                                                Color(0xFF615955)),
-                                            buildIngredientItem(
-                                                'Sugar',
-                                                Icon(Feather.box,
-                                                    size: 18.0,
-                                                    color: Colors.white),
-                                                Color(0xFFF39595)),
-                                            buildIngredientItem(
-                                                'Toffee Nut Syrup',
-                                                Icon(
-                                                    MaterialCommunityIcons
-                                                        .peanut_outline,
-                                                    size: 18.0,
-                                                    color: Colors.white),
-                                                Color(0xFF8FC28A)),
-                                            buildIngredientItem(
-                                                'Natural Flavors',
-                                                Icon(
-                                                    MaterialCommunityIcons
-                                                        .leaf_maple,
-                                                    size: 18.0,
-                                                    color: Colors.white),
-                                                Color(0xFF3B8079)),
-                                            buildIngredientItem(
-                                                'Vanilla Syrup',
-                                                Icon(
-                                                    MaterialCommunityIcons
-                                                        .flower_tulip_outline,
-                                                    size: 18.0,
-                                                    color: Colors.white),
-                                                Color(0xFFF8B870)),
-                                            SizedBox(width: 25.0)
-                                          ])),
+                                        scrollDirection: Axis.horizontal,
+                                        children: this
+                                            .ingredientsController
+                                            .filterIngredientsGivenSelectedDrink(
+                                                this._ingredients),
+                                      )),
                                   Padding(
                                     padding: const EdgeInsets.only(right: 35.0),
                                     child: Container(
@@ -230,9 +193,9 @@ class _DetailsPageState extends State<DetailsPage> {
                                   ),
                                   SizedBox(height: 10.0),
                                   Text(
-                                    'Nutrition Information',
+                                    "Nutrition Information",
                                     style: TextStyle(
-                                        fontFamily: 'nunito',
+                                        fontFamily: "nunito",
                                         fontSize: 14.0,
                                         fontWeight: FontWeight.bold,
                                         color: Color(0xFF726B68)),
@@ -240,9 +203,9 @@ class _DetailsPageState extends State<DetailsPage> {
                                   SizedBox(height: 10.0),
                                   Row(children: [
                                     Text(
-                                      'Calories',
+                                      "Calories",
                                       style: TextStyle(
-                                          fontFamily: 'nunito',
+                                          fontFamily: "nunito",
                                           fontSize: 14.0,
                                           color: Color(0xFFD4D3D2)),
                                     ),
@@ -250,7 +213,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                     Text(
                                       this._nutritionInfo[1],
                                       style: TextStyle(
-                                          fontFamily: 'nunito',
+                                          fontFamily: "nunito",
                                           fontSize: 12.0,
                                           fontWeight: FontWeight.bold,
                                           color: Color(0xFF716966)),
@@ -260,9 +223,9 @@ class _DetailsPageState extends State<DetailsPage> {
                                   Row(
                                     children: <Widget>[
                                       Text(
-                                        'Proteins',
+                                        "Proteins",
                                         style: TextStyle(
-                                            fontFamily: 'nunito',
+                                            fontFamily: "nunito",
                                             fontSize: 14.0,
                                             color: Color(0xFFD4D3D2)),
                                       ),
@@ -270,7 +233,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                       Text(
                                         this._nutritionInfo[0],
                                         style: TextStyle(
-                                            fontFamily: 'nunito',
+                                            fontFamily: "nunito",
                                             fontSize: 12.0,
                                             fontWeight: FontWeight.bold,
                                             color: Color(0xFF716966)),
@@ -281,9 +244,9 @@ class _DetailsPageState extends State<DetailsPage> {
                                   Row(
                                     children: <Widget>[
                                       Text(
-                                        'Caffeine',
+                                        "Caffeine",
                                         style: TextStyle(
-                                            fontFamily: 'nunito',
+                                            fontFamily: "nunito",
                                             fontSize: 14.0,
                                             color: Color(0xFFD4D3D2)),
                                       ),
@@ -291,7 +254,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                       Text(
                                         this._nutritionInfo[2],
                                         style: TextStyle(
-                                            fontFamily: 'nunito',
+                                            fontFamily: "nunito",
                                             fontSize: 12.0,
                                             fontWeight: FontWeight.bold,
                                             color: Color(0xFF716966)),
@@ -360,7 +323,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                   ConnectionState.waiting) {
                                 return CircularProgressIndicator();
                               } else if (snapshot.hasError) {
-                                return Text('Error loading image');
+                                return Text("Error loading image");
                               } else {
                                 return Container(
                                   height: 310.0,
@@ -402,12 +365,12 @@ class _DetailsPageState extends State<DetailsPage> {
                                                   return CircularProgressIndicator();
                                                 } else if (snapshot.hasError) {
                                                   return Text(
-                                                      'Error: ${snapshot.error}');
+                                                      "Error: ${snapshot.error}");
                                                 } else {
                                                   return Text(
                                                     snapshot.data ?? "",
                                                     style: TextStyle(
-                                                      fontFamily: 'varela',
+                                                      fontFamily: "varela",
                                                       fontSize: 30.0,
                                                       fontWeight:
                                                           FontWeight.bold,
@@ -462,12 +425,12 @@ class _DetailsPageState extends State<DetailsPage> {
                                               return CircularProgressIndicator();
                                             } else if (snapshot.hasError) {
                                               return Text(
-                                                  'Error: ${snapshot.error}');
+                                                  "Error: ${snapshot.error}");
                                             } else {
                                               return Text(
                                                 snapshot.data ?? "",
                                                 style: TextStyle(
-                                                    fontFamily: 'nunito',
+                                                    fontFamily: "nunito",
                                                     fontSize: 13.0,
                                                     color: Colors.white),
                                               );
@@ -489,14 +452,14 @@ class _DetailsPageState extends State<DetailsPage> {
                                               mainAxisAlignment:
                                                   MainAxisAlignment.center,
                                               children: <Widget>[
-                                                Text('4.2',
+                                                Text("4.2",
                                                     style: TextStyle(
-                                                        fontFamily: 'nunito',
+                                                        fontFamily: "nunito",
                                                         fontSize: 13.0,
                                                         color: Colors.white)),
-                                                Text('/5',
+                                                Text("/5",
                                                     style: TextStyle(
-                                                        fontFamily: 'nunito',
+                                                        fontFamily: "nunito",
                                                         fontSize: 13.0,
                                                         color:
                                                             Color(0xFF7C7573))),
@@ -528,7 +491,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                                                 width: 1.0),
                                                             image: DecorationImage(
                                                                 image: AssetImage(
-                                                                    'assets/images/man.jpg'),
+                                                                    "assets/images/man.jpg"),
                                                                 fit: BoxFit
                                                                     .cover)))),
                                                 Positioned(
@@ -542,7 +505,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                                                 .circular(17.5),
                                                         image: DecorationImage(
                                                             image: AssetImage(
-                                                                'assets/images/model.jpg'),
+                                                                "assets/images/model.jpg"),
                                                             fit: BoxFit.cover),
                                                         border: Border.all(
                                                             color: Color(
@@ -561,7 +524,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                                               17.5),
                                                       image: DecorationImage(
                                                           image: AssetImage(
-                                                              'assets/images/coffee_americano.png'),
+                                                              "assets/images/coffee_americano.png"),
                                                           fit: BoxFit.cover),
                                                       border: Border.all(
                                                           color:
@@ -573,9 +536,9 @@ class _DetailsPageState extends State<DetailsPage> {
                                               ]),
                                               SizedBox(height: 3.0),
                                               Text(
-                                                '+ 27 more',
+                                                "+ 27 more",
                                                 style: TextStyle(
-                                                    fontFamily: 'nunito',
+                                                    fontFamily: "nunito",
                                                     fontSize: 12.0,
                                                     color: Colors.white),
                                               )
@@ -587,39 +550,16 @@ class _DetailsPageState extends State<DetailsPage> {
                   ]));
                 } else {
                   return Center(
-                    child: Text('No data available'),
+                    child: Text("No data available"),
                   );
                 }
               });
         } else {
           return Center(
-            child: Text('No data available'),
+            child: Text("No data available"),
           );
         }
       },
     ));
-  }
-
-  buildIngredientItem(String name, Icon iconName, Color bgColor) {
-    return Padding(
-        padding: EdgeInsets.only(right: 10.0),
-        child: Column(children: [
-          Container(
-              height: 50.0,
-              width: 50.0,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15.0), color: bgColor),
-              child: Center(child: iconName)),
-          SizedBox(height: 4.0),
-          Container(
-              width: 60.0,
-              child: Center(
-                  child: Text(name,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontFamily: 'nunito',
-                          fontSize: 12.0,
-                          color: Color(0xFFC2C0C0)))))
-        ]));
   }
 }
