@@ -66,10 +66,10 @@ exports.handler = async (event) => {
     };
     
     try {
-         await database.put(putParams).promise();
-         return {
-             statusCode : 200, 
-             body : "Successfully updated the favouriteDrinks of user: "+ name
+        await database.put(putParams).promise();
+        return {
+            statusCode : 200, 
+            body : "Successfully updated the favouriteDrinks of user: "+ name
          }
     } catch(e) {
         return {

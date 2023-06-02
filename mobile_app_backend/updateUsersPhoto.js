@@ -63,10 +63,10 @@ exports.handler = async(event, context) => {
         };
     
     try {
-         await database.put(putParams).promise();
-         return {
-             statusCode : 201, 
-             body : "Successfully updated the photo of user: "+ name
+        await database.put(putParams).promise();
+        return {
+            statusCode : 201, 
+            body : "Successfully updated the photo of user: "+ name
          }
     } catch(e) {
         return {

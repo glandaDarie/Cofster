@@ -40,24 +40,24 @@ exports.handler = async(event, context) => {
     users[positionOldPassword]["password"] = newPassword;
     
     const putParams = {
-            TableName : "usersCredentials",
-            Item : {
-                "usersInformation": "info",
-                "users": [
-                    {
-                        "partitionKey": "74382347",
-                        "user": users
-                    }
-                ]
-            },
-            ReturnValues: "ALL_OLD"
-        };
-    
+        TableName : "usersCredentials",
+        Item : {
+            "usersInformation": "info",
+            "users": [
+                {
+                    "partitionKey": "74382347",
+                    "user": users
+                }
+            ]
+        },
+        ReturnValues: "ALL_OLD"
+    };
+
     try {
-         await database.put(putParams).promise();
-         return {
-             statusCode : 200, 
-             body : "Successfully updated the password for username "+ username
+        await database.put(putParams).promise();
+        return {
+            statusCode : 200, 
+            body : "Successfully updated the password for username "+ username
          }
     } catch(e) {
         return {

@@ -7,7 +7,7 @@ exports.handler = async(event, context) => {
 		TableName : "drinkQuestionnaire",
 		KeyConditionExpression : "questionId = :questionId",
 		ExpressionAttributeValues : {
-				":questionId" : event.questionId
+			":questionId" : event.questionId
 		}
 	};
 	try 

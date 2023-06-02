@@ -7,8 +7,8 @@ exports.handler = async (event, context) => {
     requestBody = event.body;
   } catch(e) {
       return {
-          statusCode: 400,
-          body: "When parsing the event body, exception is: "+ e
+        statusCode: 400,
+        body: "When parsing the event body, exception is: "+ e
       }
   }
   
@@ -17,8 +17,8 @@ exports.handler = async (event, context) => {
   const photoData = requestBody["photo"];
   
   const params = {
-      Bucket: bucketName,
-      Key: "users/"+filename
+    Bucket: bucketName,
+    Key: "users/"+filename
   };
   
    try {
@@ -28,10 +28,7 @@ exports.handler = async (event, context) => {
       body: "File already exists. Not creating new file."
     };
   } catch (err) {
-    if (err.code === "NotFound") {
-        
-      console.log("File doesn't exist. Creating file...");
-      
+    if (err.code === "NotFound") {      
       try {
         const params = {
          Bucket: bucketName,

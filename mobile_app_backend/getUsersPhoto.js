@@ -5,11 +5,11 @@ exports.handler = async (event, context) => {
     
   let requestBody = null;
   try {
-     requestBody = event.queryStringParameters;
+    requestBody = event.queryStringParameters;
   } catch(e) {
       return {
-          statusCode: 400,
-          body: "When parsing the event body, exception is: "+ e
+        statusCode: 400,
+        body: "When parsing the event body, exception is: "+ e
       }
   }    
     
@@ -33,18 +33,17 @@ exports.handler = async (event, context) => {
         };
         const data = await s3.getObject(s3Params).promise();
         encodedData = data.Body.toString();
-        
       }
     }
     if(encodedData === null) {
-        return {
-          statusCode: 200,
-          body: "The user " + name + " does not have such a photo",
-        };
+      return {
+        statusCode: 200,
+        body: "The user " + name + " does not have such a photo",
+      };
     }
     return {
-        statusCode: 200,
-        body: encodedData
+      statusCode: 200,
+      body: encodedData
     };
   } catch (err) {
     return {
