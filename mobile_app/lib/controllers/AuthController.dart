@@ -98,8 +98,7 @@ class AuthController extends ValidateCredentialsService {
     });
   }
 
-  Future<String> sendEmail(String recipientEmail,
-      [String lock = "verification_code"]) async {
+  List<String> decryptCredentials() {
     String usernameFortunaKey = emailCredentials["usernameFortunaKey"];
     String username = emailCredentials["username"];
     String usernameIV = emailCredentials["usernameIV"];
@@ -114,6 +113,14 @@ class AuthController extends ValidateCredentialsService {
         aesDecrypterUsername.gcm.decrypt(enc: username, iv: usernameIV);
     String passwordSender =
         aesDecrypterPassword.gcm.decrypt(enc: password, iv: passwordIV);
+    return [usernameSender, passwordSender];
+  }
+
+  Future<String> sendEmail(String recipientEmail,
+      [String lock = "verification_code"]) async {
+    List<String> credentialsSender = decryptCredentials();
+    String usernameSender = credentialsSender[0];
+    String passwordSender = credentialsSender[1];
     SmtpServer smtpServer = null;
     try {
       smtpServer = SmtpServer("smtp-mail.outlook.com",
