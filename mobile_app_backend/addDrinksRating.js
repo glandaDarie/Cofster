@@ -2,31 +2,29 @@ const AWS = require("aws-sdk");
 AWS.config.update({ region: "us-east-1" });
 
 exports.handler = async (event) => {
-  const requestBody = event.body;
-
   try {
     const database = new AWS.DynamoDB.DocumentClient({ region: "us-east-1" });
     const getParams = {
       TableName: "drinksRatings",
       KeyConditionExpression: "drinksId = :drinksId",
       ExpressionAttributeValues: {
-        ":drinksId": requestBody["drinksId"],
+        ":drinksId": event.drinksId
       },
     };
 
     const response = await database.query(getParams).promise();
     let data = response.Items;
     const drinks = data[0]?.drinks || [];
-
+    
     for (const [drinkName, drinkDetails] of Object.entries(drinks[0] || {})) {
       if (
-        drinkName.trim().toLowerCase() === requestBody.drink.trim().toLowerCase()
+        drinkName.trim().toLowerCase() === event.drink.trim().toLowerCase()
       ) {
         const details = drinkDetails[0];
         const R = +details.rating;
         let n = +details.number_rating_responses;
-        const x = +requestBody.drink_rating;
-        const R_hat = ((R * n + x) / (n + 1)).toString();
+        const x = +event.drink_rating;
+        const R_hat = ((R * n + x) / (n + 1)).toFixed(1).toString();
         n = (n + 1).toString();
         
         const newDrinkData = [
@@ -73,4 +71,3 @@ exports.handler = async (event) => {
     };
   }
 };
-
