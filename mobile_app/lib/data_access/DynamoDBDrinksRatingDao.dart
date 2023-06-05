@@ -1,4 +1,5 @@
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class DynamoDBDrinksRatingDao {
   String _url;
@@ -27,7 +28,8 @@ class DynamoDBDrinksRatingDao {
     try {
       http.Response response = await http.get(Uri.parse(this._url));
       if (response.statusCode == 200) {
-        data = response.body;
+        Map<String, dynamic> jsonData = jsonDecode(response.body);
+        data = jsonData["body"]["rating"];
       }
     } catch (error) {
       data = error.toString();

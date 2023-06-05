@@ -7,6 +7,7 @@ import '../components/detailsScreen/ratingBar.dart';
 import 'package:coffee_orderer/models/information.dart';
 import 'package:coffee_orderer/controllers/IngredientController.dart'
     show IngredientController;
+import 'package:coffee_orderer/controllers/RatingController.dart';
 
 class DetailsPage extends StatefulWidget {
   @override
@@ -20,6 +21,7 @@ class _DetailsPageState extends State<DetailsPage> {
   ValueNotifier<double> ratingBarNotifier;
   DrinksInformationController drinkInformationController;
   IngredientController ingredientsController;
+  RatingController ratingController;
   List<String> _ingredients;
   String _preparationTime;
   List<String> _nutritionInfo;
@@ -30,6 +32,7 @@ class _DetailsPageState extends State<DetailsPage> {
     this.ratingBarNotifier = ValueNotifier<double>(0.0);
     this.drinkInformationController = DrinksInformationController();
     this.ingredientsController = IngredientController();
+    this.ratingController = RatingController();
     this._ingredients = [];
     this._preparationTime = null;
     this._nutritionInfo = [];
@@ -447,24 +450,61 @@ class _DetailsPageState extends State<DetailsPage> {
                                                 borderRadius:
                                                     BorderRadius.circular(30.0),
                                                 color: Color(0xFF473D3A)),
-                                            child: Center(
-                                                child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: <Widget>[
-                                                Text("4.2",
+                                            child: FutureBuilder<String>(
+                                              future: this
+                                                  .ratingController
+                                                  .getDrinkRating(coffeeName),
+                                              builder: (BuildContext context,
+                                                  AsyncSnapshot<String>
+                                                      snapshot) {
+                                                if (snapshot.connectionState ==
+                                                    ConnectionState.waiting) {
+                                                  return Center(
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                            color: Colors.brown,
+                                                            backgroundColor:
+                                                                Colors.white),
+                                                  );
+                                                } else if (snapshot.hasError) {
+                                                  return Text(
+                                                    "Error: ${snapshot.error}",
                                                     style: TextStyle(
-                                                        fontFamily: "nunito",
-                                                        fontSize: 13.0,
-                                                        color: Colors.white)),
-                                                Text("/5",
-                                                    style: TextStyle(
-                                                        fontFamily: "nunito",
-                                                        fontSize: 13.0,
-                                                        color:
-                                                            Color(0xFF7C7573))),
-                                              ],
-                                            ))),
+                                                      fontFamily: "nunito",
+                                                      fontSize: 13.0,
+                                                      color: Colors.white,
+                                                    ),
+                                                  );
+                                                } else {
+                                                  String rating =
+                                                      snapshot.data ?? "0.0";
+                                                  return Center(
+                                                      child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: <Widget>[
+                                                      Text(
+                                                        "${rating}",
+                                                        style: TextStyle(
+                                                          fontFamily: "nunito",
+                                                          fontSize: 13.0,
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+                                                      Text("/5",
+                                                          style: TextStyle(
+                                                            fontFamily:
+                                                                'nunito',
+                                                            fontSize: 13.0,
+                                                            color: Color(
+                                                                0xFF7C7573),
+                                                          ))
+                                                    ],
+                                                  ));
+                                                }
+                                              },
+                                            )),
                                         SizedBox(width: 15.0),
                                         Column(
                                             crossAxisAlignment:
