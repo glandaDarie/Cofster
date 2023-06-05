@@ -6,7 +6,7 @@ exports.handler = async (event) => {
 
   try {
     const database = new AWS.DynamoDB.DocumentClient({ region: "us-east-1" });
-    const params = {
+    const getParams = {
       TableName: "drinksRatings",
       KeyConditionExpression: "drinksId = :drinksId",
       ExpressionAttributeValues: {
@@ -14,21 +14,54 @@ exports.handler = async (event) => {
       },
     };
 
-    const response = await database.query(params).promise();
-    const data = response.Items;
+    const response = await database.query(getParams).promise();
+    let data = response.Items;
     const drinks = data[0]?.drinks || [];
 
     for (const [drinkName, drinkDetails] of Object.entries(drinks[0] || {})) {
       if (
-        drinkName.trim().toLowerCase() === requestBody["drink"].trim().toLowerCase()
+        drinkName.trim().toLowerCase() === requestBody.drink.trim().toLowerCase()
       ) {
-        return {
-          statusCode: 200,
-          body: Object.values(drinkDetails),
+        const details = drinkDetails[0];
+        const R = +details.rating;
+        let n = +details.number_rating_responses;
+        const x = +requestBody.drink_rating;
+        const R_hat = ((R * n + x) / (n + 1)).toString();
+        n = (n + 1).toString();
+        
+        const newDrinkData = [
+          {
+            "rating": R_hat,
+            "number_rating_responses": n
+          },
+        ];
+        
+        if (data[0]?.drinks[0] && drinkName in data[0]?.drinks[0]) {
+          data[0].drinks[0][drinkName] = newDrinkData;
+        }
+        
+        const putParams = {
+          TableName: "drinksRatings",
+          Item: {
+            "drinksId": data[0].drinksId,
+            "drinks": data[0].drinks
+          }
         };
+        
+        try {
+          await database.put(putParams).promise();
+          return {
+             statusCode : 201, 
+             body : "Successfully added the new user rating to all the ratings"
+          }
+        } catch(error) {
+          return {
+            statusCode: 500,
+            body: "Error when adding a new user rating to the ratings: "+ error
+          };
+        }
       }
     }
-
     return {
       statusCode: 400,
       body: "No drink with that respective name is present in the database.",
