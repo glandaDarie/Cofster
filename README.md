@@ -60,7 +60,7 @@ Include screenshots here to showcase the user interface of the mobile applicatio
   <img src="mobile_app_images/formular_screen.png" width="300" alt="Formular screen">
 </p>
 
-<p align="center" style="pading-left: 20px">
+<p align="center" style="pading-left: 40px">
   <img src="mobile_app_images/main_notifications_screen.png" width="340" alt="Formular notification screen">
 </p>
 
