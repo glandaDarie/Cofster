@@ -19,7 +19,7 @@ Include screenshots here to showcase the user interface of the mobile applicatio
  <div style="text-align: center;">
   <div style="display: inline-block">
     <img src="mobile_app_images/login_screen.png" width="300" alt="Login screen">
-   <img src="mobile_app_images/register_screen.png" width="300" alt="Register screen" style="padding-left: 20px">
+   <img src="mobile_app_images/register_screen.png" width="300" alt="Register screen" style="padding-left: 100px">
   </div>
 
   <div style="display: inline-block">
