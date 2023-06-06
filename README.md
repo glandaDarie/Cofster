@@ -33,7 +33,7 @@ Include screenshots here to showcase the user interface of the mobile applicatio
 
 <div style="text-align: left;">
   <img src="mobile_app_images/details_screen.png" style="width: 300px; display: inline-block;" alt="Details screen">
-  <img src="mobile_app_images/details_order_screen.png" style="width: 330px; display: inline-block;" alt="Details order screen">
+  <img src="mobile_app_images/details_order_screen.png" style="width: 325px; display: inline-block;" alt="Details order screen">
 </div>
 
 ## Getting Started
