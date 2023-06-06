@@ -28,13 +28,13 @@ Include screenshots here to showcase the user interface of the mobile applicatio
   </div>
 
   <div style="display: inline-block; padding-left: 60px;">
-    <img src="mobile_app_images/main_screen.png" width="540" alt="Main screen">
-    <img src="mobile_app_images/main_voice_assistance_screen.png" width="360" alt="Main voice assistance screen"> 
+    <img src="mobile_app_images/main_screen.png" width="300" alt="Main screen">
+    <img src="mobile_app_images/main_voice_assistance_screen.png" width="300" alt="Main voice assistance screen"> 
   </div>
 
   <div style="display: inline-block;">
     <img src="mobile_app_images/details_screen.png" width="300" alt="Details screen">
-    <img src="mobile_app_images/details_order_screen.png" width="325" alt="Details order screen">
+    <img src="mobile_app_images/details_order_screen.png" width="300" alt="Details order screen">
  </div>
 </div>
 
