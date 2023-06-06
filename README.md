@@ -27,8 +27,8 @@ Include screenshots here to showcase the user interface of the mobile applicatio
 </div>
 
 <div style="text-align: left;">
-  <img src="mobile_app_images/main_screen.png" style="width: 550px; display: inline-block;" alt="Main screen">
-  <img src="mobile_app_images/main_voice_assistance_screen.png" style="width: 350px; display: inline-block;" alt="Main voice assistance screen"> 
+  <img src="mobile_app_images/main_screen.png" style="width: 520px; display: inline-block;" alt="Main screen">
+  <img src="mobile_app_images/main_voice_assistance_screen.png" style="width: 320px; display: inline-block;" alt="Main voice assistance screen"> 
 </div>
 
 <div style="text-align: left;">
