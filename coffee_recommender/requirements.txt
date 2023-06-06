@@ -1,0 +1,12 @@
+numpy
+pandas
+matplotlib
+torch
+future
+google-api-python-client
+httplib2
+oauth2client
+typing
+boto3
+flask
+scikit-learn
