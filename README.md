@@ -29,7 +29,7 @@ Include screenshots here to showcase the user interface of the mobile applicatio
 </p> -->
 
 <div style="display: flex; justify-content: center;">
-  <img src="mobile_app_images/login_screen.png" width="450" alt="Login screen">
+  <img src="mobile_app_images/login_screen.png" width="380" alt="Login screen">
   <img src="mobile_app_images/register_screen.png" width="300" alt="Register screen">
   <img src="mobile_app_images/main_notifications_screen.png" width="300" alt="Free drink notification">
 </div>
