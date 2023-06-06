@@ -22,9 +22,9 @@ Include screenshots here to showcase the user interface of the mobile applicatio
   <img src="mobile_app_images/register_screen.png" width="350" alt="Register screen">
 </div> -->
 
-<div style="display: flex; align-items: flex-start;">
-  <img src="mobile_app_images/login_screen.png" style="width: 455px; margin-right: 20px;" alt="Login screen">
-  <img src="mobile_app_images/register_screen.png" style="width: 350px;" alt="Register screen">
+<div style="text-align: left;">
+  <img src="mobile_app_images/login_screen.png" style="width: 455px; display: inline-block;" alt="Login screen">
+  <img src="mobile_app_images/register_screen.png" style="width: 350px; display: inline-block;" alt="Register screen">
 </div>
 
 
