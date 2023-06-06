@@ -19,12 +19,12 @@ Include screenshots here to showcase the user interface of the mobile applicatio
  <div style="text-align: center;">
   <div style="display: inline-block">
     <img src="mobile_app_images/login_screen.png" width="300" alt="Login screen">
-   <img src="mobile_app_images/register_screen.png" width="300" alt="Register screen">
+   <img src="mobile_app_images/register_screen.png" width="300" alt="Register screen" style="padding-left: 20px">
   </div>
 
   <div style="display: inline-block">
     <img src="mobile_app_images/formular_screen.png" width="300" alt="Formular screen">
-    <img src="mobile_app_images/main_notifications_screen.png" width="340" alt="Formular notification screen" style="padding-left: 20px">
+    <img src="mobile_app_images/main_notifications_screen.png" width="340" alt="Formular notification screen">
   </div>
 
   <div style="display: inline-block; padding-left: 60px;">
