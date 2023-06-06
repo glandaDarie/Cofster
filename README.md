@@ -16,26 +16,26 @@ Cofster is a sophisticated and innovative solution that combines cutting-edge te
 
 Include screenshots here to showcase the user interface of the mobile application. You can add images to the `screenshots` folder and reference them like this:
 
- <div style="text-align: center;">
-  <div style="display: inline-block; padding-right: 100px">
-    <img src="mobile_app_images/login_screen.png" width="300" alt="Login screen">
-   <img src="mobile_app_images/register_screen.png" width="300" alt="Register screen">
+<div style="text-align: center;">
+  <div style="display: inline-block; padding-right: 100px; text-align: center;">
+    <img src="mobile_app_images/register_screen.png" width="300" alt="Register screen">
+    <img src="mobile_app_images/login_screen.png" width="345" alt="Login screen">
   </div>
 
-  <div style="display: inline-block">
+  <div style="display: inline-block; text-align: center;">
     <img src="mobile_app_images/formular_screen.png" width="300" alt="Formular screen">
-    <img src="mobile_app_images/main_notifications_screen.png" width="340" alt="Formular notification screen">
+    <img src="mobile_app_images/main_notifications_screen.png" width="300" alt="Formular notification screen">
   </div>
 
-  <div style="display: inline-block; padding-left: 60px;">
-    <img src="mobile_app_images/main_screen.png" width="540" alt="Main screen">
-    <img src="mobile_app_images/main_voice_assistance_screen.png" width="360" alt="Main voice assistance screen"> 
+  <div style="display: inline-block; padding-left: 60px; text-align: center;">
+    <img src="mobile_app_images/main_screen.png" width="300" alt="Main screen">
+    <img src="mobile_app_images/main_voice_assistance_screen.png" width="413" alt="Main voice assistance screen"> 
   </div>
 
-  <div style="display: inline-block;">
+  <div style="display: inline-block; text-align: center;">
     <img src="mobile_app_images/details_screen.png" width="300" alt="Details screen">
-    <img src="mobile_app_images/details_order_screen.png" width="325" alt="Details order screen">
- </div>
+    <img src="mobile_app_images/details_order_screen.png" width="300" alt="Details order screen">
+  </div>
 </div>
 
 ## Getting Started
@@ -43,7 +43,7 @@ Include screenshots here to showcase the user interface of the mobile applicatio
 Follow these steps to set up the Smart Coffee Machine System:
 
 1. Clone the repository: `git clone https://github.com/your-username/smart-coffee-machine.git`
-2. Install the required dependencies: `npm install` or `pip install -r requirements.txt`
+2. Install the required dependencies: `pip install -r requirements.txt`
 3. Configure the necessary cloud services and APIs by following the instructions provided in the documentation.
 4. Connect the hardware components as specified in the hardware setup guide.
 
