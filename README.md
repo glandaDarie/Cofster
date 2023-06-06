@@ -28,9 +28,11 @@ Include screenshots here to showcase the user interface of the mobile applicatio
   <img src="mobile_app_images/formular_screen.png" width="300" alt="Formular screen">
 </p>
 
-<p align="center">
-  <img src="mobile_app_images/main_notifications_screen.png" width="343" alt="Free drink notification screen" style="padding-left: 20px;">
-</p>
+<div style="text-align: center; padding-left: 20px;">
+ <div style="display: inline-block;">
+   <img src="mobile_app_images/main_notifications_screen.png" width="343" alt="Free drink notification screen">
+ </p>
+</div>
 
 <p align="center">
   <img src="mobile_app_images/main_screen.png" width="520" alt="Main screen">
