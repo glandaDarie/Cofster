@@ -16,7 +16,7 @@ Cofster is a sophisticated and innovative solution that combines cutting-edge te
 
 Include screenshots here to showcase the user interface of the mobile application. You can add images to the `screenshots` folder and reference them like this:
 
-<div style="display: flex; align-items: flex-start; padding-left: 100px;">
+<div style="display: flex; align-items: flex-start; padding-left: 400px;">
   <img src="mobile_app_images/login_screen.png" width="455" alt="Login screen">
   <img src="mobile_app_images/register_screen.png" width="350" alt="Register screen">
 </div>
