@@ -19,35 +19,24 @@ Include screenshots here to showcase the user interface of the mobile applicatio
  <div style="text-align: center;">
   <div style="display: inline-block; padding-right: 30px;">
     <img src="mobile_app_images/login_screen.png" width="300" alt="Login screen">
-  </div>
-
-  <div style="display: inline-block; padding-right: 30px;"> 
-    <img src="mobile_app_images/register_screen.png" width="300" alt="Register screen">
+   <img src="mobile_app_images/register_screen.png" width="300" alt="Register screen">
   </div>
 
   <div style="display: inline-block">
     <img src="mobile_app_images/formular_screen.png" width="300" alt="Formular screen">
-  </div>
-
-  <div style="display: inline-block; padding-left: 20px;">
     <img src="mobile_app_images/main_notifications_screen.png" width="340" alt="Formular notification screen">
+   
   </div>
 
   <div style="display: inline-block; padding-left: 60px;">
     <img src="mobile_app_images/main_screen.png" width="540" alt="Main screen">
-  </div>
-
-  <div style="display: inline-block;">
     <img src="mobile_app_images/main_voice_assistance_screen.png" width="360" alt="Main voice assistance screen"> 
   </div>
 
   <div style="display: inline-block;">
     <img src="mobile_app_images/details_screen.png" width="300" alt="Details screen">
-  </div>
-
-  <div style="display: inline-block;">
     <img src="mobile_app_images/details_order_screen.png" width="325" alt="Details order screen">
-  </div>
+ </div>
 </div>
 
 ## Getting Started
