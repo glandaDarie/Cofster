@@ -16,39 +16,44 @@ Cofster is a sophisticated and innovative solution that combines cutting-edge te
 
 Include screenshots here to showcase the user interface of the mobile application. You can add images to the `screenshots` folder and reference them like this:
  
-<!--  <p align="center">
-  <img src="mobile_app_images/login_screen.png" width="300" alt="Login screen">
-</p>
+ 
+ 
+ <div style="text-align: center;">
+  <div style="display: inline-block">
+    <img src="mobile_app_images/login_screen.png" width="300" alt="Login screen">
+  </div>
 
-<p align="center"> 
-  <img src="mobile_app_images/register_screen.png" width="300" alt="Register screen">
- </p>
+  <div style="display: inline-block"> 
+    <img src="mobile_app_images/register_screen.png" width="300" alt="Register screen">
+  </div>
 
-<p align="center">
-  <img src="mobile_app_images/formular_screen.png" width="300" alt="Formular screen">
-</p>
+  <div style="display: inline-block">
+    <img src="mobile_app_images/formular_screen.png" width="300" alt="Formular screen">
+  </div>
 
-<p align="center">
-  <img src="mobile_app_images/main_notifications_screen.png" width="340" alt="Formular notification screen">
-</p>
+  <div style="display: inline-block; padding-left: 20px;">
+    <img src="mobile_app_images/main_notifications_screen.png" width="340" alt="Formular notification screen">
+  </div>
 
-<p align="center">
-  <img src="mobile_app_images/main_screen.png" width="520" alt="Main screen">
-</p>
+  <div style="display: inline-block; padding-left: 60px;">
+    <img src="mobile_app_images/main_screen.png" width="520" alt="Main screen">
+  </div>
 
-<p align="center">
-  <img src="mobile_app_images/main_voice_assistance_screen.png" width="320" alt="Main voice assistance screen"> 
-</p>
+  <div style="display: inline-block;">
+    <img src="mobile_app_images/main_voice_assistance_screen.png" width="320" alt="Main voice assistance screen"> 
+  </div>
 
-<p align="center">
-  <img src="mobile_app_images/details_screen.png" width="300" alt="Details screen">
-</p>
+  <div style="display: inline-block;">
+    <img src="mobile_app_images/details_screen.png" width="300" alt="Details screen">
+  </div>
 
-<p align="center">
-  <img src="mobile_app_images/details_order_screen.png" width="325" alt="Details order screen">
-</p> -->
+  <div style="display: inline-block;">
+    <img src="mobile_app_images/details_order_screen.png" width="325" alt="Details order screen">
+  </div>
+</div>
 
-<p align="center">
+
+<!-- <p align="center">
   <img src="mobile_app_images/login_screen.png" width="300" alt="Login screen">
 </p>
 
@@ -78,7 +83,7 @@ Include screenshots here to showcase the user interface of the mobile applicatio
 
 <p align="center">
   <img src="mobile_app_images/details_order_screen.png" width="325" alt="Details order screen">
-</p>
+</p> -->
 
 
 ## Getting Started
