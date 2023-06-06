@@ -16,7 +16,7 @@ Cofster is a sophisticated and innovative solution that combines cutting-edge te
 
 Include screenshots here to showcase the user interface of the mobile application. You can add images to the `screenshots` folder and reference them like this:
 
-![Home Screen](screenshots/home.png)
+![Login Screen](mobile_app_images/login_screen.png)
 ![Drink Selection](screenshots/drink_selection.png)
 
 ## Getting Started
