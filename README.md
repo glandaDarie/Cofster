@@ -24,7 +24,7 @@ Include screenshots here to showcase the user interface of the mobile applicatio
 
   <div style="display: inline-block">
     <img src="mobile_app_images/formular_screen.png" width="300" alt="Formular screen">
-    <img src="mobile_app_images/main_notifications_screen.png" width="310" alt="Formular notification screen">
+    <img src="mobile_app_images/main_notifications_screen.png" width="300" alt="Formular notification screen">
   </div>
 
   <div style="display: inline-block; padding-left: 60px;">
