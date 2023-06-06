@@ -64,7 +64,7 @@ Include screenshots here to showcase the user interface of the mobile applicatio
   <img src="mobile_app_images/main_notifications_screen.png" width="340" alt="Formular notification screen">
 </p>
 
-<p align="center">
+<p align="center" style="pading-left: 20px">
   <img src="mobile_app_images/main_screen.png" width="520" alt="Main screen">
 </p>
 
