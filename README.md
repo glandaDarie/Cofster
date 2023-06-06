@@ -23,24 +23,23 @@ Include screenshots here to showcase the user interface of the mobile applicatio
 </div> -->
 
 <div style="text-align: left;">
-  <img src="mobile_app_images/login_screen.png" style="width: 455px; display: inline-block;" alt="Login screen">
-  <img src="mobile_app_images/register_screen.png" style="width: 350px; display: inline-block;" alt="Register screen">
+  <img src="mobile_app_images/login_screen.png" style="width: 300px; display: inline-block;" alt="Login screen">
+  <img src="mobile_app_images/register_screen.png" style="width: 300px; display: inline-block;" alt="Register screen">
 </div>
 
-
-<div style="display: flex; justify-content: center;">
-  <img src="mobile_app_images/formular_screen.png" width="300" alt="Formular screen">
-  <img src="mobile_app_images/main_notifications_screen.png" width="300" alt="Free drink notification screen">
+<div style="text-align: left;">
+  <img src="mobile_app_images/formular_screen.png" style="width: 300px; display: inline-block;" alt="Formular screen">
+  <img src="mobile_app_images/main_notifications_screen.png" style="width: 300px; display: inline-block;" alt="Free drink notification screen">
 </div>
 
-<div style="display: flex; justify-content: center;">
-  <img src="mobile_app_images/main_screen.png" width="300" alt="Main screen">
-  <img src="mobile_app_images/main_voice_assistance_screen.png" width="300" alt="Main voice assistance screen"> 
+<div style="text-align: left;">
+  <img src="mobile_app_images/main_screen.png" style="width: 300px; display: inline-block;" alt="Main screen">
+  <img src="mobile_app_images/main_voice_assistance_screen.png" style="width: 300px; display: inline-block;" alt="Main voice assistance screen"> 
 </div>
 
-<div style="display: flex; justify-content: center;">
-  <img src="mobile_app_images/details_screen.png" width="300" alt="Details screen">
-  <img src="mobile_app_images/details_order_screen.png" width="300" alt="Details order screen">
+<div style="text-align: left;">
+  <img src="mobile_app_images/details_screen.png" style="width: 300px; display: inline-block;" alt="Details screen">
+  <img src="mobile_app_images/details_order_screen.png" style="width: 300px; display: inline-block;" alt="Details order screen">
 </div>
 
 ## Getting Started
