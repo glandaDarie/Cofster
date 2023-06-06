@@ -16,22 +16,10 @@ Cofster is a sophisticated and innovative solution that combines cutting-edge te
 
 Include screenshots here to showcase the user interface of the mobile application. You can add images to the `screenshots` folder and reference them like this:
 
-<!-- <p align="center">
-  <img src="mobile_app_images/login_screen.png" width="400" alt="Image">
-  <br>
-  <span style="text-align: center; font-size: 14px; color: #333;">Login screen</span>
-</p>
-
-<p align="center">
-  <img src="mobile_app_images/register_screen.png" width="400" alt="Image">
-  <br>
-  <span style="text-align: center; font-size: 14px; color: #333;">Register screen</span>
-</p> -->
-
 <div style="display: flex; justify-content: center;">
-  <img src="mobile_app_images/login_screen.png" width="380" alt="Login screen">
-  <img src="mobile_app_images/register_screen.png" width="300" alt="Register screen">
-  <img src="mobile_app_images/main_notifications_screen.png" width="300" alt="Free drink notification">
+  <img src="mobile_app_images/login_screen.png" width="300" height="75" alt="Login screen">
+  <img src="mobile_app_images/register_screen.png" width="300" height="75" alt="Register screen">
+  <img src="mobile_app_images/main_notifications_screen.png" width="300" height="75" alt="Free drink notification">
 </div>
 
 ## Getting Started
