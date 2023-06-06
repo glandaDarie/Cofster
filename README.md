@@ -16,12 +16,6 @@ Cofster is a sophisticated and innovative solution that combines cutting-edge te
 
 Include screenshots here to showcase the user interface of the mobile application. You can add images to the `screenshots` folder and reference them like this:
 
-
-<!-- <div style="display: flex; align-items: flex-start; padding-left: 400px;">
-  <img src="mobile_app_images/login_screen.png" width="455" alt="Login screen">
-  <img src="mobile_app_images/register_screen.png" width="350" alt="Register screen">
-</div> -->
-
 <div style="text-align: left;">
   <img src="mobile_app_images/login_screen.png" style="width: 300px; display: inline-block;" alt="Login screen">
   <img src="mobile_app_images/register_screen.png" style="width: 300px; display: inline-block;" alt="Register screen">
@@ -29,17 +23,17 @@ Include screenshots here to showcase the user interface of the mobile applicatio
 
 <div style="text-align: left;">
   <img src="mobile_app_images/formular_screen.png" style="width: 300px; display: inline-block;" alt="Formular screen">
-  <img src="mobile_app_images/main_notifications_screen.png" style="width: 300px; display: inline-block;" alt="Free drink notification screen">
+  <img src="mobile_app_images/main_notifications_screen.png" style="width: 350px; display: inline-block;" alt="Free drink notification screen">
 </div>
 
 <div style="text-align: left;">
-  <img src="mobile_app_images/main_screen.png" style="width: 300px; display: inline-block;" alt="Main screen">
-  <img src="mobile_app_images/main_voice_assistance_screen.png" style="width: 300px; display: inline-block;" alt="Main voice assistance screen"> 
+  <img src="mobile_app_images/main_screen.png" style="width: 900px; display: inline-block;" alt="Main screen">
+  <img src="mobile_app_images/main_voice_assistance_screen.png" style="width: 400px; display: inline-block;" alt="Main voice assistance screen"> 
 </div>
 
 <div style="text-align: left;">
   <img src="mobile_app_images/details_screen.png" style="width: 300px; display: inline-block;" alt="Details screen">
-  <img src="mobile_app_images/details_order_screen.png" style="width: 300px; display: inline-block;" alt="Details order screen">
+  <img src="mobile_app_images/details_order_screen.png" style="width: 350px; display: inline-block;" alt="Details order screen">
 </div>
 
 ## Getting Started
