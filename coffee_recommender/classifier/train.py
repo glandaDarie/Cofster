@@ -9,7 +9,7 @@ from model import DrinkClassifier
 from collections import OrderedDict
 from torch.utils.data import DataLoader
 from hyperparameters import params_dict
-from caching_utils import put_content_in_cache, empty_cache, load_content_from_cache, read_standard_scalar_params
+from caching_utils import put_content_in_cache, empty_cache, load_content_from_cache
 
 process : Preprocessing = Preprocessing("coffee_dataset.txt")
 cache_path : str = os.path.join(os.path.dirname(__file__), "cache_preprocessing.pickle") 
@@ -65,24 +65,21 @@ def train_model() -> None:
         loaders : Tuple[DataLoader, DataLoader] = preprocess()
         train_dataloader, test_dataloader = cast(Tuple[DataLoader, DataLoader], loaders)
     print("------Model------")
-    device = "cuda" if torch.cuda.is_available() else "cpu"
+    device : str = "cuda" if torch.cuda.is_available() else "cpu"
     print(f"Model training is set on {device}")
     nr_features : Tuple[int, int, int, int, int, int, int] = len(process.data.columns)-1, 128, 256, 128, 256, 128, 10
     in_features, hid_features_hid_in, hid_features_hid_hid, hid_features_hid_hid_second, \
         hid_features_hid_hid_third, hid_features_hid_hid_fourth, out_features_hid_out = \
         cast(Tuple[int, int, int, int, int, int, int], nr_features)
-
     model : DrinkClassifier = DrinkClassifier(in_features=in_features, hid_features_hid_in=hid_features_hid_in, 
                                                 hid_features_hid_hid=hid_features_hid_hid, 
                                                 hid_features_hid_hid_second=hid_features_hid_hid_second,
                                                 hid_features_hid_hid_third=hid_features_hid_hid_third,
                                                 hid_features_hid_hid_fourth=hid_features_hid_hid_fourth, 
                                                 out_features_hid_out=out_features_hid_out).to(device)
-
     loss_fn : torch.nn.modules.loss.CrossEntropyLoss = nn.CrossEntropyLoss()
     optimizer : torch.optim.SGD = torch.optim.SGD(params=model.parameters(), lr=params_dict["LEARNING_RATE"], 
                                                   weight_decay=params_dict["WEIGHT_DECAY"])
-    
     for epoch in range(params_dict["EPOCHS"]):
         model.train()
         train_loss : int = 0
@@ -102,7 +99,6 @@ def train_model() -> None:
             optimizer.step()
         train_loss /= len(train_dataloader)
         train_acc /= len(train_dataloader)
-
         model.eval()
         test_loss : int = 0
         test_acc : int = 0
@@ -116,9 +112,7 @@ def train_model() -> None:
                 test_acc += accuracy_fn(y_true=y_test, y_pred=test_pred)
             test_loss /= len(test_dataloader)
             test_acc /= len(test_dataloader)
-
         if (epoch+1) % 100 == 0:
             print(f"Epoch: {epoch} | train loss: {train_loss:.5f}, train acc: {train_acc:.2f}% | test Loss: {test_loss:.5f}, test Acc: {test_acc:.2f}%")
-    
     path : str = os.path.join(os.path.dirname(__file__), "model_parameters.pickle") 
     print(save_params(path, model))
