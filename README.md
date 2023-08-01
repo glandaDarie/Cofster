@@ -51,7 +51,7 @@ For detailed installation instructions, usage guidelines, and API documentation,
 
 ## Contributing
 
-Contributions are welcome! If you encounter any issues or have ideas for improvements, please open an issue or submit a pull request. We appreciate your feedback and contributions to make the Smart Coffee Machine System even better.
+Contributions are welcome! If you encounter any issues or have ideas for improvements, please open an issue or submit a pull request. I appreciate your feedback and contributions to make the Cofster even better.
 
 ## License
 
