@@ -5,7 +5,7 @@ import torch
 import cv2
 from flask import Flask
 from utils.helpers import create_path
-from utils.data import window_name
+from utils.data import window_name, threshold_score
 import ultralytics
 from ultralytics import YOLO
 from ultralytics.yolo.utils.plotting import Annotator 
@@ -35,14 +35,19 @@ def detect_cup() -> Dict[str, str]:
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
         results : List[ultralytics.yolo.engine.results.Results] = model.predict(frame)
+        has_bounding_box : bool = False
         for r in results:
             annotator : Annotator = Annotator(frame)
             boxes : ultralytics.yolo.engine.results.Boxes = r.boxes
             for box in boxes:
                 box_coordinates : torch.Tensor = box.xyxy[0]
                 classes_index : int = int(box.cls)
-                annotator.box_label(box_coordinates, model.names[classes_index])
-        frame : np.ndarray = annotator.result()  
+                score : float = float(box.conf)
+                if score > threshold_score:
+                    has_bounding_box : bool = True
+                    annotator.box_label(box_coordinates, f"{model.names[classes_index]}:{score:.2f}")
+        if has_bounding_box:
+            frame : np.ndarray = annotator.result()  
         cv2.imshow(window_name, frame)
         success, frame = camera.read()
     camera.release()
