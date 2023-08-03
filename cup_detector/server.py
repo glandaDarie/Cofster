@@ -1,20 +1,22 @@
 from typing import Dict, List
-import numpy as np
 import json
 import torch
 import cv2
+import numpy as np
 from flask import Flask
-from utils.helpers import create_path
-from utils.data import window_name, threshold_score
 import ultralytics
 from ultralytics import YOLO
 from ultralytics.yolo.utils.plotting import Annotator 
+from utils.helpers import create_path
+from utils.model_data import CAMERA_INDEX, WINDOW_NAME, THRESHOLD_SCORE
 
 app : object = Flask(__name__)
 
+# need to change the code to work in my raspberry pi for cup detection and use instead of a http request, rabbitMQ or Kafka to send data in real time
+
 @app.route("/cup_detection", methods=["GET"])
 def detect_cup() -> Dict[str, str]:
-    camera : object = cv2.VideoCapture(0)
+    camera : object = cv2.VideoCapture(CAMERA_INDEX) 
     if not camera.isOpened():
         return json.dumps(
             {
@@ -31,7 +33,7 @@ def detect_cup() -> Dict[str, str]:
             }
         ) 
     model : YOLO = YOLO(create_path(["C:\\", "Users", "darie", "Downloads", "best.pt"]))
-    while success or frame is not None:
+    while success:
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
         results : List[ultralytics.yolo.engine.results.Results] = model.predict(frame)
@@ -43,12 +45,12 @@ def detect_cup() -> Dict[str, str]:
                 box_coordinates : torch.Tensor = box.xyxy[0]
                 classes_index : int = int(box.cls)
                 score : float = float(box.conf)
-                if score > threshold_score:
+                if score > THRESHOLD_SCORE:
                     has_bounding_box : bool = True
                     annotator.box_label(box_coordinates, f"{model.names[classes_index]}:{score:.2f}")
         if has_bounding_box:
             frame : np.ndarray = annotator.result()  
-        cv2.imshow(window_name, frame)
+        cv2.imshow(WINDOW_NAME, frame)
         success, frame = camera.read()
     camera.release()
     cv2.destroyAllWindows()
