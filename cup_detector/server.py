@@ -9,10 +9,9 @@ from ultralytics import YOLO
 from ultralytics.yolo.utils.plotting import Annotator 
 from utils.helpers import create_path
 from utils.model_data import CAMERA_INDEX, WINDOW_NAME, THRESHOLD_SCORE
+from message_broker.producer import kafka_producer
 
 app : object = Flask(__name__)
-
-# need to change the code to work in my raspberry pi for cup detection and use instead of a http request, rabbitMQ or Kafka to send data in real time
 
 @app.route("/cup_detection", methods=["GET"])
 def detect_cup() -> Dict[str, str]:
@@ -33,6 +32,7 @@ def detect_cup() -> Dict[str, str]:
             }
         ) 
     model : YOLO = YOLO(create_path(["C:\\", "Users", "darie", "Downloads", "best.pt"]))
+    frame_number : int = 1
     while success:
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
@@ -49,9 +49,13 @@ def detect_cup() -> Dict[str, str]:
                     has_bounding_box : bool = True
                     annotator.box_label(box_coordinates, f"{model.names[classes_index]}:{score:.2f}")
         if has_bounding_box:
-            frame : np.ndarray = annotator.result()  
+            frame : np.ndarray = annotator.result()
+        frame_data : str = "Bounding box present" if has_bounding_box else "Bounding box isn't present"
+        kafka_producer(frame_data=frame_data, frame_number=frame_number, \
+                       topic="cup-detector", bootstrap_servers="localhost:9092")  
         cv2.imshow(WINDOW_NAME, frame)
         success, frame = camera.read()
+        frame_number += 1
     camera.release()
     cv2.destroyAllWindows()
     return json.dumps(
