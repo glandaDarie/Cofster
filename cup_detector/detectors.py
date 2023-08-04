@@ -11,7 +11,7 @@ class Detectors:
         pass
 
     @staticmethod
-    def detector(frame : np.ndarray = np.ndarray | None, model : YOLO = None, path : str = None) -> YOLO | Tuple[YOLO, np.ndarray]:
+    def detector(frame : np.ndarray = np.ndarray | None, model : YOLO = None, path : str = None) -> YOLO | Tuple[YOLO, np.ndarray, bool]:
         if model is None:
             model : YOLO = YOLO(path)
             return model
@@ -27,4 +27,4 @@ class Detectors:
                 if score > THRESHOLD_SCORE:
                     has_bounding_box : bool = True
                     annotator.box_label(box_coordinates, f"{model.names[classes_index]}:{score:.2f}")
-        return model, annotator.result() if has_bounding_box else model, None
+        return (model, annotator.result(), has_bounding_box) if has_bounding_box else (model, frame, has_bounding_box)

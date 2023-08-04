@@ -2,7 +2,7 @@ from typing import Dict
 from confluent_kafka import Producer
 
 def kafka_producer(body : Dict[str, str], topic : str | None = None, \
-                   bootstrap_servers : str | None = None) -> str:
+                   bootstrap_servers : str | None = None) -> str | Exception:
     producer_config : Dict[str, str] = {
         "bootstrap.servers": bootstrap_servers,
     }

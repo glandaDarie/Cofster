@@ -1,7 +1,7 @@
 from typing import Dict
 from confluent_kafka import Consumer, KafkaError
 
-def kafka_consumer(topic : str | None, bootstrap_servers : str | None, **options : Dict[str, str]) -> str:
+def kafka_consumer(topic : str | None, bootstrap_servers : str | None, **options : Dict[str, str]) -> None:
     consumer_config : Dict[str, str] = {
         "bootstrap.servers": bootstrap_servers,
         "group.id": options.get("group_id", "my-group"),

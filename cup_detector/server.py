@@ -1,13 +1,14 @@
 from typing import Dict
-import os
 import json
 import cv2
 from flask import Flask
 from ultralytics import YOLO
 from utils.model_data import CAMERA_INDEX, WINDOW_NAME
 from utils.paths import PATH_MODEL_CUP_DETECTION, PATH_MODEL_TARGET_DETECTION
-from message_broker.producer import kafka_producer
 from detectors import Detectors
+from message_broker.producer import kafka_producer
+from message_broker.consumer import kafka_consumer 
+import threading
 
 app : object = Flask(__name__)
 
@@ -30,14 +31,19 @@ def environment() -> json:
             }
         ) 
     frame_number : int = 1
-    cup_detection_model : YOLO = Detectors().detector(PATH_MODEL_CUP_DETECTION)
-    target_detection_model : YOLO = Detectors.detector(PATH_MODEL_TARGET_DETECTION)
+    print(f"PATH_MODEL_CUP_DETECTION: {PATH_MODEL_CUP_DETECTION}")
+    cup_detection_model : YOLO = Detectors().detector(path=PATH_MODEL_CUP_DETECTION)
+    # target_detection_model : YOLO = Detectors.detector(path=PATH_MODEL_TARGET_DETECTION)
+    
+    # test if the consumer subscribed to the topic recieves messages back
+    consumer_thread : threading.Thread = threading.Thread(target=kafka_consumer)
+    consumer_thread.start()
     while success:
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
-        cup_detection_model, frame = Detectors().detector(frame, cup_detection_model) 
-        target_detection_model, frame = Detectors().detector(frame, target_detection_model) 
-        frame_data : str = "Bounding box for cup present" if frame else "Bounding box for cup isn't present"
+        cup_detection_model, frame, has_bounding_box = Detectors().detector(frame=frame, model=cup_detection_model) 
+        # target_detection_model, frame = Detectors().detector(frame=frame, model=target_detection_model) 
+        frame_data : str = "Bounding box for cup present" if has_bounding_box else "Bounding box for cup isn't present"
         kafka_body : Dict[str, str] = {
             "frame_data": frame_data,
             "frame_number": str(frame_number)
