@@ -1,58 +1,48 @@
-from typing import Dict, List
+from typing import Dict
+import os
 import json
-import torch
 import cv2
-import numpy as np
 from flask import Flask
-import ultralytics
 from ultralytics import YOLO
-from ultralytics.yolo.utils.plotting import Annotator 
-from utils.helpers import create_path
-from utils.model_data import CAMERA_INDEX, WINDOW_NAME, THRESHOLD_SCORE
+from utils.model_data import CAMERA_INDEX, WINDOW_NAME
+from utils.paths import PATH_MODEL_CUP_DETECTION, PATH_MODEL_TARGET_DETECTION
 from message_broker.producer import kafka_producer
+from detectors import Detectors
 
 app : object = Flask(__name__)
 
 @app.route("/cup_detection", methods=["GET"])
-def detect_cup() -> Dict[str, str]:
+def environment() -> json:
     camera : object = cv2.VideoCapture(CAMERA_INDEX) 
     if not camera.isOpened():
         return json.dumps(
             {
-                "statusCode": "500",
-                "body": "Failed to open the camera" 
+                "statusCode": 500,
+                "body": "Failed to open the Raspberry Pi Camera" 
             }
         )
     success, frame = camera.read()
     if not success or frame is None:
         return json.dumps(
             {
-                "statusCode": "500",
-                "body": "Failed to read the frame from OpenCV camera"
+                "statusCode": 500,
+                "body": "Failed to read the frame from OpenCV Camera"
             }
         ) 
-    model : YOLO = YOLO(create_path(["C:\\", "Users", "darie", "Downloads", "best.pt"]))
     frame_number : int = 1
+    cup_detection_model : YOLO = Detectors().detector(PATH_MODEL_CUP_DETECTION)
+    target_detection_model : YOLO = Detectors.detector(PATH_MODEL_TARGET_DETECTION)
     while success:
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
-        results : List[ultralytics.yolo.engine.results.Results] = model.predict(frame)
-        has_bounding_box : bool = False
-        for r in results:
-            annotator : Annotator = Annotator(frame)
-            boxes : ultralytics.yolo.engine.results.Boxes = r.boxes
-            for box in boxes:
-                box_coordinates : torch.Tensor = box.xyxy[0]
-                classes_index : int = int(box.cls)
-                score : float = float(box.conf)
-                if score > THRESHOLD_SCORE:
-                    has_bounding_box : bool = True
-                    annotator.box_label(box_coordinates, f"{model.names[classes_index]}:{score:.2f}")
-        if has_bounding_box:
-            frame : np.ndarray = annotator.result()
-        frame_data : str = "Bounding box present" if has_bounding_box else "Bounding box isn't present"
-        kafka_producer(frame_data=frame_data, frame_number=frame_number, \
-                       topic="cup-detector", bootstrap_servers="localhost:9092")  
+        cup_detection_model, frame = Detectors().detector(frame, cup_detection_model) 
+        target_detection_model, frame = Detectors().detector(frame, target_detection_model) 
+        frame_data : str = "Bounding box for cup present" if frame else "Bounding box for cup isn't present"
+        kafka_body : Dict[str, str] = {
+            "frame_data": frame_data,
+            "frame_number": str(frame_number)
+        }
+        kafka_producer(body=kafka_body, topic="cup-detector", bootstrap_servers="localhost:9092")
         cv2.imshow(WINDOW_NAME, frame)
         success, frame = camera.read()
         frame_number += 1
@@ -60,10 +50,11 @@ def detect_cup() -> Dict[str, str]:
     cv2.destroyAllWindows()
     return json.dumps(
         {
-            "statusCode": "200",
+            "statusCode": 200,
             "body": "Successfully returned the state of the cup"
         }
     )
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000)
+
