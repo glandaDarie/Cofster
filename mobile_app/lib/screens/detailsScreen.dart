@@ -288,7 +288,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                               ),
                                             ),
                                             context: context,
-                                            builder: (context) {
+                                            builder: (BuildContext context) {
                                               return customizeDrink(context,
                                                   this.placedOrderNotifier);
                                             },

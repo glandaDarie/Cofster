@@ -1,2 +1,3 @@
 apiKeys.dart
 credentials/EmailCredentials.dart
+.env
