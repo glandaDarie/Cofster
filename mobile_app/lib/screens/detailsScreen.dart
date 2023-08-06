@@ -8,6 +8,8 @@ import 'package:coffee_orderer/models/information.dart';
 import 'package:coffee_orderer/controllers/IngredientController.dart'
     show IngredientController;
 import 'package:coffee_orderer/controllers/RatingController.dart';
+import 'package:coffee_orderer/services/paymentService.dart'
+    show PaymentService;
 
 class DetailsPage extends StatefulWidget {
   @override
@@ -25,6 +27,7 @@ class _DetailsPageState extends State<DetailsPage> {
   List<String> _ingredients;
   String _preparationTime;
   List<String> _nutritionInfo;
+  PaymentService _paymentService;
 
   _DetailsPageState() {
     this.hotSelectedNotifier = ValueNotifier<bool>(false);
@@ -58,6 +61,7 @@ class _DetailsPageState extends State<DetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+    this._paymentService = PaymentService(context);
     return Scaffold(
         body: FutureBuilder<dynamic>(
       future: _getCoffeeCardInformationFromPreviousScreen("cardCoffeeName"),
@@ -289,8 +293,10 @@ class _DetailsPageState extends State<DetailsPage> {
                                             ),
                                             context: context,
                                             builder: (BuildContext context) {
-                                              return customizeDrink(context,
-                                                  this.placedOrderNotifier);
+                                              return customizeDrink(
+                                                  context,
+                                                  this.placedOrderNotifier,
+                                                  this._paymentService);
                                             },
                                           );
                                         },

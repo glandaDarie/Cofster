@@ -5,19 +5,22 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 
 class PaymentService {
-  BuildContext _context;
+  BuildContext _contextPaymentPage;
   Map<String, dynamic> _paymentIntent;
-  PaymentService(BuildContext context) {
-    this._context = context;
+  PaymentService(BuildContext contextPaymentPage) {
+    this._contextPaymentPage = contextPaymentPage;
     this._paymentIntent = null;
   }
 
-  Future<void> makePayment(
+  Future<String> makePayment(BuildContext contextPopupDrinkChooser,
       String amount, String coffeeName, String currency) async {
-    String error_msg =
-        "Payment has been done successfully. Payed: ${amount} for ${coffeeName}";
-    await dotenv.load(fileName: "assets/.env");
-    Stripe.publishableKey = dotenv.env['PUBLISHABLE_KEY'];
+    String msg = "success";
+    try {
+      await dotenv.load(fileName: "assets/.env");
+      Stripe.publishableKey = dotenv.env['PUBLISHABLE_KEY'];
+    } catch (error) {
+      return "Error when trying to load the credentials: $error";
+    }
     try {
       this._paymentIntent = await this._createPaymentIntent(amount, currency);
       await Stripe.instance
@@ -28,15 +31,16 @@ class PaymentService {
                   style: ThemeMode.dark,
                   merchantDisplayName: "Ikay"))
           .then((PaymentSheetPaymentOption value) {});
+      Navigator.of(contextPopupDrinkChooser).pop();
       String errorResponseDisplayPaymentSheet =
-          await this._displayPaymentSheet();
+          await this._displayPaymentSheet(amount, coffeeName);
       if (errorResponseDisplayPaymentSheet != null) {
-        return "Can't display payment sheet: $errorResponseDisplayPaymentSheet";
+        return "Error when trying to display the payment sheet: $errorResponseDisplayPaymentSheet";
       }
     } catch (error) {
-      return "Error when trying to pay: ${error}";
+      return "Error when trying to make the payment: ${error}";
     }
-    return error_msg;
+    return msg;
   }
 
   Future<dynamic> _createPaymentIntent(String amount, String currency) async {
@@ -46,27 +50,26 @@ class PaymentService {
         "currency": currency,
       };
       http.Response response = await http.post(
-        Uri.parse("https://api.stripe.com/v1/payment_intents"),
-        headers: {
-          "Authorization": "Bearer ${dotenv.env['SECRET_KEY']}",
-          "Content-Type": "application/x-www-form-urlencoded"
-        },
-        body: body,
-      );
+          Uri.parse("https://api.stripe.com/v1/payment_intents"),
+          body: body,
+          headers: {
+            "Authorization": "Bearer ${dotenv.env['SECRET_KEY']}",
+            "Content-Type": "application/x-www-form-urlencoded"
+          });
       return json.decode(response.body);
     } catch (error) {
       throw Exception(error.toString());
     }
   }
 
-  Future<String> _displayPaymentSheet() async {
+  Future<String> _displayPaymentSheet(String amount, String coffeeName) async {
     String error_msg = null;
     try {
       await Stripe.instance
           .presentPaymentSheet()
           .then((PaymentSheetPaymentOption value) {
         showDialog(
-            context: _context,
+            context: _contextPaymentPage,
             builder: (BuildContext _) => AlertDialog(
                   content: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -77,7 +80,8 @@ class PaymentService {
                         size: 100.0,
                       ),
                       SizedBox(height: 10.0),
-                      Text("Payment Successful!"),
+                      Text(
+                          "Payment has been done successfully. Payed: ${amount} for ${coffeeName}"),
                     ],
                   ),
                 ));

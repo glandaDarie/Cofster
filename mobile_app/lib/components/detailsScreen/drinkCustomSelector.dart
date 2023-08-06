@@ -12,9 +12,12 @@ import 'package:coffee_orderer/utils/boxProperties.dart'
 import 'package:coffee_orderer/services/mergeNotifierService.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../../utils/localUserInformation.dart';
+import 'package:coffee_orderer/services/paymentService.dart'
+    show PaymentService;
+import 'package:coffee_orderer/utils/appAssets.dart' show AppAssets;
 
-SizedBox customizeDrink(
-    BuildContext context, ValueNotifier<bool> placedOrderNotifier) {
+SizedBox customizeDrink(BuildContext context,
+    ValueNotifier<bool> placedOrderNotifier, PaymentService paymentService) {
   double deafultPrice = 5.50;
   double price;
   ValueNotifier<int> valueQuantityNotifier = ValueNotifier<int>(1);
@@ -127,30 +130,29 @@ SizedBox customizeDrink(
                 height: 80,
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: ExtraIngredientWidget(
-                  sugarQuantityNotifier,
-                  "Sugar",
-                  "cubes",
-                  AssetImage("assets/images/sugar.png").assetName,
-                ),
+                    sugarQuantityNotifier,
+                    "Sugar",
+                    "cubes",
+                    AssetImage(AppAssets.extraIngredeints.IMAGE_SUGAR)
+                        .assetName),
               ),
               Container(
                 height: 80,
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: ExtraIngredientWidget(
-                  iceQuantityNotifier,
-                  "Ice",
-                  "cubes",
-                  AssetImage("assets/images/ice.png").assetName,
-                ),
+                    iceQuantityNotifier,
+                    "Ice",
+                    "cubes",
+                    AssetImage(AppAssets.extraIngredeints.IMAGE_ICE).assetName),
               ),
               Container(
                 height: 80,
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: ExtraIngredientWidgetBinary(
-                  creamNotifier,
-                  "Cream",
-                  AssetImage("assets/images/cream.png").assetName,
-                ),
+                    creamNotifier,
+                    "Cream",
+                    AssetImage(AppAssets.extraIngredeints.IMAGE_CREAM)
+                        .assetName),
               ),
             ],
           ),
@@ -214,6 +216,21 @@ SizedBox customizeDrink(
                       String cacheStr = await loadUserInformationFromCache();
                       Map<String, String> cache =
                           fromStringCachetoMapCache(cacheStr);
+                      String paymentResponse = await paymentService.makePayment(
+                          context,
+                          (price * 100).toInt().toStringAsFixed(0),
+                          cache["cardCoffeeName"],
+                          "USD");
+                      if (paymentResponse != null) {
+                        Fluttertoast.showToast(
+                            msg: paymentResponse,
+                            toastLength: Toast.LENGTH_SHORT,
+                            backgroundColor: Color.fromARGB(255, 102, 33, 12),
+                            textColor: Color.fromARGB(255, 220, 217, 216),
+                            fontSize: 16);
+                        return;
+                      }
+                      // Navigator.of(context).pop();
                       Fluttertoast.showToast(
                           msg:
                               "Successfully placed the order for the ${cache['cardCoffeeName']}",
@@ -221,10 +238,10 @@ SizedBox customizeDrink(
                           backgroundColor: Color.fromARGB(255, 102, 33, 12),
                           textColor: Color.fromARGB(255, 220, 217, 216),
                           fontSize: 16);
+                      // this should run on a separated thread and also make it globally to appear on any of the windows
                       Future.delayed(Duration(seconds: 30), () {
                         placedOrderNotifier.value = true;
                       });
-                      Navigator.of(context).pop();
                     },
                     style: ButtonStyle(
                       backgroundColor:
