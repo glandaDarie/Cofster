@@ -13,7 +13,8 @@ class PaymentService {
   }
 
   Future<String> makePayment(BuildContext contextPopupDrinkChooser,
-      String amount, String coffeeName, String currency) async {
+      String amount, String coffeeName, String currency,
+      {int numberOfCoffeeDrinks = 1}) async {
     String msg = "success";
     try {
       await dotenv.load(fileName: "assets/.env");
@@ -32,8 +33,9 @@ class PaymentService {
                   merchantDisplayName: "Ikay"))
           .then((PaymentSheetPaymentOption value) {});
       Navigator.of(contextPopupDrinkChooser).pop();
-      String errorResponseDisplayPaymentSheet =
-          await this._displayPaymentSheet(amount, coffeeName);
+      String errorResponseDisplayPaymentSheet = await this._displayPaymentSheet(
+          amount, coffeeName,
+          numberOfCoffeeDrinks: numberOfCoffeeDrinks);
       if (errorResponseDisplayPaymentSheet != null) {
         return "Error when trying to display the payment sheet: $errorResponseDisplayPaymentSheet";
       }
@@ -62,7 +64,8 @@ class PaymentService {
     }
   }
 
-  Future<String> _displayPaymentSheet(String amount, String coffeeName) async {
+  Future<String> _displayPaymentSheet(String amount, String coffeeName,
+      {int numberOfCoffeeDrinks = 1}) async {
     String error_msg = null;
     try {
       await Stripe.instance
@@ -81,7 +84,12 @@ class PaymentService {
                       ),
                       SizedBox(height: 10.0),
                       Text(
-                          "Payment has been done successfully. Payed: ${amount} for ${coffeeName}"),
+                        "Payment has been done successfully.\nPayed: ${(int.parse(amount) / 100).toStringAsFixed(2)} for ${numberOfCoffeeDrinks} ${numberOfCoffeeDrinks == 1 ? coffeeName : "${coffeeName}s"}",
+                        textScaleFactor: 1.2,
+                        style: TextStyle(
+                                fontFamily: 'varela', color: Colors.black54)
+                            .copyWith(fontWeight: FontWeight.w700),
+                      ),
                     ],
                   ),
                 ));

@@ -15,11 +15,14 @@ import '../../utils/localUserInformation.dart';
 import 'package:coffee_orderer/services/paymentService.dart'
     show PaymentService;
 import 'package:coffee_orderer/utils/appAssets.dart' show AppAssets;
+import 'package:coffee_orderer/services/notificationService.dart'
+    show NotificationService;
+import 'package:coffee_orderer/utils/constants.dart' show DEFAULT_PRICE;
 
 SizedBox customizeDrink(BuildContext context,
     ValueNotifier<bool> placedOrderNotifier, PaymentService paymentService) {
-  double deafultPrice = 5.50;
-  double price;
+  int _quantityCount = 1;
+  double _price;
   ValueNotifier<int> valueQuantityNotifier = ValueNotifier<int>(1);
   ValueNotifier<String> selectedSizeNotifier = ValueNotifier<String>("M");
   ValueNotifier<bool> hotSelectedNotifier = ValueNotifier<bool>(false);
@@ -192,14 +195,15 @@ SizedBox customizeDrink(BuildContext context,
                           final int sugarCubes = notifiers.sugarQuantity;
                           final int iceCubes = notifiers.iceQuantity;
                           final int hasCream = notifiers.creamNotifier;
-                          price = deafultPrice;
-                          price = (price *
+                          _quantityCount = quantityCount;
+                          _price = DEFAULT_PRICE;
+                          _price = (_price *
                                   quantityCount *
                                   sizes[selectedValue]) +
                               ((sugarCubes - 1) * additionalTopings["sugar"]) +
                               ((iceCubes - 1) * additionalTopings["ice"]) +
                               (hasCream == 1 ? additionalTopings["cream"] : 0);
-                          return Text("\$${price.toStringAsFixed(2)}",
+                          return Text("\$${_price.toStringAsFixed(2)}",
                               style: TextStyle(
                                       fontFamily: 'varela',
                                       color: Color(0xFF473D3A))
@@ -218,26 +222,33 @@ SizedBox customizeDrink(BuildContext context,
                           fromStringCachetoMapCache(cacheStr);
                       String paymentResponse = await paymentService.makePayment(
                           context,
-                          (price * 100).toInt().toStringAsFixed(0),
+                          (_price * 100).toInt().toStringAsFixed(0),
                           cache["cardCoffeeName"],
-                          "USD");
-                      if (paymentResponse != null) {
+                          "USD",
+                          numberOfCoffeeDrinks: _quantityCount);
+                      if (paymentResponse != "success") {
                         Fluttertoast.showToast(
                             msg: paymentResponse,
                             toastLength: Toast.LENGTH_SHORT,
-                            backgroundColor: Color.fromARGB(255, 102, 33, 12),
+                            backgroundColor: Color.fromARGB(255, 71, 66, 65),
                             textColor: Color.fromARGB(255, 220, 217, 216),
                             fontSize: 16);
                         return;
                       }
-                      // Navigator.of(context).pop();
-                      Fluttertoast.showToast(
-                          msg:
-                              "Successfully placed the order for the ${cache['cardCoffeeName']}",
-                          toastLength: Toast.LENGTH_SHORT,
-                          backgroundColor: Color.fromARGB(255, 102, 33, 12),
-                          textColor: Color.fromARGB(255, 220, 217, 216),
-                          fontSize: 16);
+                      // dummy time for testing, this will be estimated using a neural network or some calculations
+                      String userName =
+                          cache.containsKey("name") ? cache["name"] : "Guest";
+                      String drinkPlural = _quantityCount == 1
+                          ? cache["cardCoffeeName"]
+                          : "${cache['cardCoffeeName']}s";
+                      String title =
+                          "${_quantityCount == 1 ? "Order is" : "Orders are"} in progress!";
+                      String body =
+                          "$userName, your $_quantityCount $drinkPlural ${_quantityCount == 1 ? "is" : "are"} in preparation. Please put a coffee cup near the machine.";
+                      NotificationService().showNotification(
+                        title: title,
+                        body: body,
+                      );
                       // this should run on a separated thread and also make it globally to appear on any of the windows
                       Future.delayed(Duration(seconds: 30), () {
                         placedOrderNotifier.value = true;

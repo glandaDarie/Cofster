@@ -32,7 +32,7 @@ class NotificationService {
             (NotificationResponse notificationResponse) async {});
   }
 
-  NotificationDetails notificationDetails() {
+  NotificationDetails _notificationDetails() {
     return const NotificationDetails(
         android: AndroidNotificationDetails("channel_id_1", "Channel 1",
             importance: Importance.max),
@@ -42,6 +42,6 @@ class NotificationService {
   Future<dynamic> showNotification(
       {int id = 0, String title, String body, String payLoad}) async {
     return notificationsPlugin.show(
-        id, title, body, await notificationDetails());
+        id, title, body, await _notificationDetails());
   }
 }

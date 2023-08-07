@@ -31,7 +31,6 @@ class _HomePageState extends State<HomePage> {
   QuestionnaireController questionnaireController;
   CoffeeCardController coffeeCardController;
   CoffeeCardFavouriteDrinksController coffeeCardFavouriteDrinksController;
-  NotificationService notificationService;
   int _navBarItemSelected;
   List<String> _favouriteDrinks;
   List<CoffeeCard> coffeeCardObjects;
