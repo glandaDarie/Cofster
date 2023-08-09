@@ -40,6 +40,27 @@ class FirebaseCommunicationSubscriberService
     return databaseReference;
   }
 
+  String _estimatedOrderTime() {
+    DateTime currentTime = DateTime.now();
+    DateTime estimatedTime = currentTime.add(Duration(seconds: 30));
+    return "${estimatedTime.hour}:${estimatedTime.minute}:${estimatedTime.second}";
+  }
+
+  Future<CommunicationSubscriberService> publish(
+      Map<String, dynamic> content) async {
+    DatabaseReference reference =
+        FirebaseDatabase.instance.ref().child("Orders");
+    // .child("id_${_generateRandomNumber().toString()}");
+    await reference.set(content);
+    return this;
+    // await ref.set({
+    //   "communication": this._second.text,
+    //   "coffeeName": this._third.text,
+    //   "coffeeStatus": this._fourth.text,
+    //   "coffeeFinishTimeEstimation": _estimatedOrderTime()
+    // });
+  }
+
   @override
   Future<CommunicationSubscriberService> listen() async {
     this._databaseReference =
