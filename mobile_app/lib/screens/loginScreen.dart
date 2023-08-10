@@ -1,8 +1,10 @@
+import 'package:coffee_orderer/models/orderInformation.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:coffee_orderer/screens/addNoteScreen.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:coffee_orderer/data_access/FirebaseOrderInformationDao.dart'
+    show FirebaseOrderInformationDao;
 
 class Home extends StatefulWidget {
   @override
@@ -65,15 +67,13 @@ class _HomeState extends State<Home> {
               "");
           g.trim();
           l = g.split(',');
-
-          Fluttertoast.showToast(
-              msg: "v: ${v.toString()}",
-              toastLength: Toast.LENGTH_SHORT,
-              backgroundColor: Color.fromARGB(255, 71, 66, 65),
-              textColor: Color.fromARGB(255, 220, 217, 216),
-              fontSize: 16);
-          print("v: ${v.toString()}");
-
+          // Fluttertoast.showToast(
+          //     msg: "v: ${v.toString()}",
+          //     toastLength: Toast.LENGTH_SHORT,
+          //     backgroundColor: Color.fromARGB(255, 71, 66, 65),
+          //     textColor: Color.fromARGB(255, 220, 217, 216),
+          //     fontSize: 16);
+          // print("v: ${v.toString()}");
           return GestureDetector(
             onTap: () {
               setState(() {
@@ -117,8 +117,14 @@ class _HomeState extends State<Home> {
                     ),
                     MaterialButton(
                       onPressed: () async {
-                        await update();
-                        Navigator.of(ctx).pop();
+                        List<OrderInformation> ordersList =
+                            await FirebaseOrderInformationDao
+                                .getAllOrdersInformation("Orders");
+                        for (OrderInformation order in ordersList) {
+                          print(order.coffeeName);
+                        }
+                        // await update();
+                        // Navigator.of(ctx).pop();
                       },
                       color: const Color.fromARGB(255, 0, 22, 145),
                       child: const Text(

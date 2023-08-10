@@ -1,24 +1,11 @@
-// import 'package:coffee_orderer/services/communicationSubscriberService.dart';
-// import 'package:firebase_database/firebase_database.dart';
-// import 'package:firebase_core/firebase_core.dart';
-
-// class FirebaseCommunicationSubscriberService
-//     implements CommunicationSubscriberService {
-//   DatabaseReference _databaseReference;
-
-//   FirebaseCommunicationSubscriberService(this._databaseReference);
-
-//   @override
-//   Future<CommunicationSubscriberService> start_listening() async {
-//     await Firebase.initializeApp();
-
-//     return this;
-//   }
-// }
-
+import 'package:flutter/material.dart';
+import 'package:coffee_orderer/models/orderInformation.dart';
 import 'package:coffee_orderer/services/communicationSubscriberService.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:coffee_orderer/services/passwordGeneratorService.dart'
+    show generateNewPassword;
 
 class FirebaseCommunicationSubscriberService
     implements CommunicationSubscriberService {
@@ -40,19 +27,30 @@ class FirebaseCommunicationSubscriberService
     return databaseReference;
   }
 
-  String _estimatedOrderTime() {
-    DateTime currentTime = DateTime.now();
-    DateTime estimatedTime = currentTime.add(Duration(seconds: 30));
-    return "${estimatedTime.hour}:${estimatedTime.minute}:${estimatedTime.second}";
-  }
-
   Future<CommunicationSubscriberService> publish(
-      Map<String, dynamic> content) async {
-    DatabaseReference reference =
-        FirebaseDatabase.instance.ref().child("Orders");
-    // .child("id_${_generateRandomNumber().toString()}");
-    await reference.set(content);
+      OrderInformation content) async {
+    DatabaseReference reference;
+    try {
+      String id = generateNewPassword();
+      reference = FirebaseDatabase.instance
+          .ref()
+          .child("oder_id_${id}")
+          .child("Orders");
+      await reference.set(content);
+    } catch (error) {
+      Fluttertoast.showToast(
+          msg: "Error when publishing the data to the broker: ${error}",
+          toastLength: Toast.LENGTH_SHORT,
+          backgroundColor: Color.fromARGB(255, 71, 66, 65),
+          textColor: Color.fromARGB(255, 220, 217, 216),
+          fontSize: 16);
+      return null;
+    }
+
     return this;
+
+    // .child("id_${_generateRandomNumber().toString()}");
+
     // await ref.set({
     //   "communication": this._second.text,
     //   "coffeeName": this._third.text,

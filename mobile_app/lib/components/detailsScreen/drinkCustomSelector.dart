@@ -1,3 +1,4 @@
+import 'package:coffee_orderer/models/information.dart';
 import 'package:flutter/material.dart';
 import 'package:coffee_orderer/components/detailsScreen/boxSizes.dart'
     show boxSizes;
@@ -18,6 +19,14 @@ import 'package:coffee_orderer/utils/appAssets.dart' show AppAssets;
 import 'package:coffee_orderer/services/notificationService.dart'
     show NotificationService;
 import 'package:coffee_orderer/utils/constants.dart' show DEFAULT_PRICE;
+import 'package:coffee_orderer/controllers/OrderInformationController.dart'
+    show OrderInformationController;
+import 'package:coffee_orderer/enums/orderStatusTypes.dart'
+    show CoffeeOrderState;
+import 'package:coffee_orderer/services/timeOrdererService.dart'
+    show timeOfOrder;
+import 'package:coffee_orderer/controllers/DrinksInformationController.dart'
+    show DrinksInformationController;
 
 SizedBox customizeDrink(BuildContext context,
     ValueNotifier<bool> placedOrderNotifier, PaymentService paymentService) {
@@ -249,7 +258,49 @@ SizedBox customizeDrink(BuildContext context,
                         title: title,
                         body: body,
                       );
+                      DrinksInformationController drinkInformationController =
+                          DrinksInformationController();
+                      Information information = await drinkInformationController
+                          .getInformationFromRespectiveDrink(
+                              cache["cardCoffeeName"]);
+                      int preparationTime;
+                      try {
+                        preparationTime = int.parse(
+                            information.preparationTime.split(" ")[0]);
+                      } catch (error) {
+                        Fluttertoast.showToast(
+                            msg: error,
+                            toastLength: Toast.LENGTH_SHORT,
+                            backgroundColor: Color.fromARGB(255, 71, 66, 65),
+                            textColor: Color.fromARGB(255, 220, 217, 216),
+                            fontSize: 16);
+                        return;
+                      }
+                      String postOrderResponse =
+                          await OrderInformationController
+                              .postOrderToOrdersInformation("Orders", {
+                        "coffeeName": cache["cardCoffeeName"],
+                        "coffeePrice": "${_price}\$",
+                        "quantity": _quantityCount,
+                        "communication": "broadcast",
+                        "coffeeStatus": CoffeeOrderState.ORDER_PLACED.index,
+                        "coffeeOrderTime": timeOfOrder(),
+                        "coffeeFinishTimeEstimation": timeOfOrder(
+                            secondsDelay: preparationTime * _quantityCount)
+                      });
+                      if (postOrderResponse != null) {
+                        Fluttertoast.showToast(
+                            msg: postOrderResponse,
+                            toastLength: Toast.LENGTH_SHORT,
+                            backgroundColor: Color.fromARGB(255, 71, 66, 65),
+                            textColor: Color.fromARGB(255, 220, 217, 216),
+                            fontSize: 16);
+                        return;
+                      }
+
+                      // CommunicationSubscriberService communicationSubService = FirebaseCommunicationSubscriberService().publish(content);
                       // this should run on a separated thread and also make it globally to appear on any of the windows
+
                       Future.delayed(Duration(seconds: 30), () {
                         placedOrderNotifier.value = true;
                       });

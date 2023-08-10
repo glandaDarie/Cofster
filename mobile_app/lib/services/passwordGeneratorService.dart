@@ -2,13 +2,15 @@ import 'package:random_password_generator/random_password_generator.dart';
 import 'dart:math';
 
 String generateNewPassword(
-    {double passwordLength = 10, double strengthPasswordThreshold = 0.7}) {
+    {double passwordLength = 10,
+    double strengthPasswordThreshold = 0.7,
+    bool checkPassword = true,
+    bool letters = true,
+    bool uppercase = true,
+    bool numbers = true,
+    bool specialChar = true}) {
   String newPassword = null;
   RandomPasswordGenerator password = RandomPasswordGenerator();
-  bool letters = true;
-  bool uppercase = true;
-  bool numbers = true;
-  bool specialChar = true;
   while (true) {
     String newGeneratedPassword = password.randomPassword(
         letters: letters,
@@ -16,9 +18,11 @@ String generateNewPassword(
         numbers: numbers,
         specialChar: specialChar,
         passwordLength: passwordLength);
-    if (!(RegExp(r"(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)")
-        .hasMatch(newGeneratedPassword))) {
-      continue;
+    if (checkPassword) {
+      if (!(RegExp(r"(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)")
+          .hasMatch(newGeneratedPassword))) {
+        continue;
+      }
     }
     double passwordStrength =
         password.checkPassword(password: newGeneratedPassword);

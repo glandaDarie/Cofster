@@ -76,7 +76,7 @@ class _DetailsPageState extends State<DetailsPage> {
         } else if (snapshotPreviousScreenData.hasError) {
           return Center(
             child: Text(
-                "Error (snapshotPreviousScreenData): ${snapshotPreviousScreenData.error}"),
+                "Error from snapshotPreviousScreenData: ${snapshotPreviousScreenData.error}"),
           );
         } else if (snapshotPreviousScreenData.hasData) {
           dynamic coffeeName =
@@ -96,7 +96,7 @@ class _DetailsPageState extends State<DetailsPage> {
                 } else if (snapshotInformationDrink.hasError) {
                   return Center(
                     child: Text(
-                        "Error (snapshotInformationDrink): ${snapshotInformationDrink.error}"),
+                        "Error from snapshotInformationDrink: ${snapshotInformationDrink.error}"),
                   );
                 } else if (snapshotInformationDrink.hasData) {
                   this._ingredients = snapshotInformationDrink.data.ingredients;

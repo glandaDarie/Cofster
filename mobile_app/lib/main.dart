@@ -1,10 +1,8 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 // import 'package:coffee_orderer/screens/authScreen.dart';
 // import 'package:coffee_orderer/screens/questionnaireScreen.dart';
-// import 'package:coffee_orderer/screens/mainScreen.dart';
-import 'package:coffee_orderer/screens/loginScreen.dart';
+import 'package:coffee_orderer/screens/mainScreen.dart';
+// import 'package:coffee_orderer/screens/loginScreen.dart';
 import 'package:coffee_orderer/services/notificationService.dart'
     show NotificationService;
 import 'package:firebase_core/firebase_core.dart';
@@ -33,8 +31,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       // home: AuthPage(),
       // home: QuestionnairePage(),
-      // home: HomePage(),
-      home: Home(),
+      home: HomePage(),
+      // home: Home(),
       debugShowCheckedModeBanner: false,
     );
   }

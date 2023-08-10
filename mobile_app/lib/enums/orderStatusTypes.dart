@@ -1,0 +1,6 @@
+enum CoffeeOrderState {
+  ORDER_PLACED,
+  ORDER_STOPPED,
+  ORDER_IN_PROGRESS,
+  ORDER_FINISHED,
+}
