@@ -27,6 +27,9 @@ import 'package:coffee_orderer/services/timeOrdererService.dart'
     show timeOfOrder;
 import 'package:coffee_orderer/controllers/DrinksInformationController.dart'
     show DrinksInformationController;
+import 'package:coffee_orderer/services/updateProviderService.dart'
+    show UpdateProvider;
+import 'package:provider/provider.dart';
 
 SizedBox customizeDrink(BuildContext context,
     ValueNotifier<bool> placedOrderNotifier, PaymentService paymentService) {
@@ -297,6 +300,9 @@ SizedBox customizeDrink(BuildContext context,
                             fontSize: 16);
                         return;
                       }
+
+                      Provider.of<UpdateProvider>(context, listen: false)
+                          .triggerUpdate();
 
                       // CommunicationSubscriberService communicationSubService = FirebaseCommunicationSubscriberService().publish(content);
                       // this should run on a separated thread and also make it globally to appear on any of the windows
