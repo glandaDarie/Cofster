@@ -300,7 +300,6 @@ SizedBox customizeDrink(BuildContext context,
                             fontSize: 16);
                         return;
                       }
-
                       Provider.of<UpdateProvider>(context, listen: false)
                           .triggerUpdate();
 
