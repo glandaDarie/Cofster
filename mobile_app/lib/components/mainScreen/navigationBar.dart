@@ -2,50 +2,21 @@ import 'package:coffee_orderer/components/mainScreen/voiceDialog.dart';
 import 'package:coffee_orderer/patterns/CoffeeCardSingleton.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-
-Widget buildBadgeWidget(int orderCount) {
-  return Stack(
-    children: [
-      Icon(Icons.history),
-      if (orderCount > 0)
-        Positioned(
-          top: 0,
-          right: -9,
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 14, vertical: 2),
-            decoration: BoxDecoration(
-              color: Colors.red,
-              shape: BoxShape.circle,
-            ),
-            constraints: BoxConstraints(
-              minWidth: 6,
-              minHeight: 6,
-            ),
-            child: Text(
-              orderCount.toString(),
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 10,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ),
-    ],
-  );
-}
+import 'package:coffee_orderer/components/mainScreen/badgeNumberOfFavorites.dart'
+    show buildBadgeWidget;
+import 'package:coffee_orderer/components/mainScreen/profileInformation.dart'
+    show profileInformation;
 
 ValueListenableBuilder bottomNavigationBar(
-    int selectedIndex,
+    ValueNotifier<int> selectedIndexValueNotifier,
     void Function(int) callbackSelectedIndex,
     bool speechStatus,
     void Function(bool) callbackSpeechStatus,
     bool startListening,
     dynamic Function(bool) callbackToggleListeningState,
-    [int orderCount = 0,
-    ValueNotifier<int> Function(BuildContext context) callbackFavoritesOn]) {
-  ValueNotifier<int> selectedIndexValueNotifier =
-      ValueNotifier<int>(selectedIndex);
+    {int orderCount = 0,
+    ValueNotifier<int> Function(BuildContext context) callbackFavoritesOn,
+    void Function() callbackResetUI}) {
   ValueNotifier<int> orderCountValueNotifier = ValueNotifier<int>(orderCount);
   ValueNotifier<bool> speechStatusValueNotifier =
       ValueNotifier<bool>(speechStatus);
@@ -59,11 +30,28 @@ ValueListenableBuilder bottomNavigationBar(
         buttonBackgroundColor: Colors.white,
         height: 50,
         items: [
-          Icon(Icons.home, color: Color.fromARGB(255, 69, 45, 36)),
-          Icon(Icons.person, color: Color.fromARGB(255, 69, 45, 36)),
+          GestureDetector(
+            onTap: () {
+              callbackSelectedIndex(0);
+            },
+            child: Icon(
+              Icons.home,
+              color: Color.fromARGB(255, 69, 45, 36),
+            ),
+          ),
+          GestureDetector(
+            onTap: () async {
+              callbackSelectedIndex(1);
+              await profileInformation(context);
+            },
+            child: Icon(
+              Icons.person,
+              color: Color.fromARGB(255, 69, 45, 36),
+            ),
+          ),
           GestureDetector(
               onTap: () {
-                callbackSelectedIndex(selectedIndex);
+                callbackSelectedIndex(2);
               },
               child: ValueListenableBuilder<int>(
                   valueListenable: orderCountValueNotifier,

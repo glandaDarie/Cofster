@@ -8,17 +8,17 @@ import 'package:coffee_orderer/utils/labelConversionHandler.dart' show classes;
 import 'package:coffee_orderer/utils/cardProperties.dart' show coffeeImagePaths;
 import 'package:coffee_orderer/enums/coffeeTypes.dart' show CoffeeType;
 
-class Home extends StatefulWidget {
+class OrderPage extends StatefulWidget {
   @override
-  _HomeState createState() => _HomeState();
+  _OrderPageState createState() => _OrderPageState();
 }
 
-class _HomeState extends State<Home> {
+class _OrderPageState extends State<OrderPage> {
   List<dynamic> _orderList;
   var g;
   var k;
 
-  _HomeState() {
+  _OrderPageState() {
     this._orderList = null;
   }
 

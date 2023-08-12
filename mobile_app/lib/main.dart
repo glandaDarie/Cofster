@@ -31,7 +31,6 @@ void main() async {
       child: MyApp(),
     ),
   );
-  // runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {

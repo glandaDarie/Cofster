@@ -1,8 +1,5 @@
-import 'dart:math';
-
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:coffee_orderer/screens/loginScreen.dart';
+import 'package:coffee_orderer/screens/orderScreen.dart';
 import 'package:coffee_orderer/controllers/OrderInformationController.dart'
     show OrderInformationController;
 
@@ -20,11 +17,6 @@ class _AddNoteState extends State<AddNotePage> {
     this._second = TextEditingController();
     this._third = TextEditingController();
     this._fourth = TextEditingController();
-  }
-
-  int _generateRandomNumber() {
-    var random = Random();
-    return random.nextInt(10000);
   }
 
   String _estimatedOrderTime() {
@@ -102,7 +94,7 @@ class _AddNoteState extends State<AddNotePage> {
                 OrderInformationController.postOrderToOrdersInformation(
                     "Orders", content);
                 Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (_) => Home()));
+                    context, MaterialPageRoute(builder: (_) => OrderPage()));
               },
               child: Text(
                 "save",

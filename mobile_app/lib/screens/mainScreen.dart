@@ -31,7 +31,8 @@ class _HomePageState extends State<HomePage> {
   QuestionnaireController questionnaireController;
   CoffeeCardController coffeeCardController;
   CoffeeCardFavouriteDrinksController coffeeCardFavouriteDrinksController;
-  int _navBarItemSelected;
+  // int _navBarItemSelected;
+  ValueNotifier<int> _navBarItemSelected;
   List<String> _favouriteDrinks;
   List<CoffeeCard> coffeeCardObjects;
   CoffeeCardSingleton coffeeCardSingleton;
@@ -46,7 +47,8 @@ class _HomePageState extends State<HomePage> {
     this.questionnaireController = QuestionnaireController();
     this.coffeeCardFavouriteDrinksController =
         CoffeeCardFavouriteDrinksController();
-    this._navBarItemSelected = 0;
+    // this._navBarItemSelected = 0;
+    this._navBarItemSelected = ValueNotifier<int>(0);
     this._favouriteDrinks = [];
     this.coffeeCardObjects = [];
     this.speechToTextService = SpeechToTextService(
@@ -103,8 +105,12 @@ class _HomePageState extends State<HomePage> {
     return this._rawTextFromSpeech;
   }
 
+  // void _onSelectedIndicesNavBar(int newNavBarItemSelected) {
+  //   this._navBarItemSelected = newNavBarItemSelected;
+  // }
+
   void _onSelectedIndicesNavBar(int newNavBarItemSelected) {
-    this._navBarItemSelected = newNavBarItemSelected;
+    this._navBarItemSelected.value = newNavBarItemSelected;
   }
 
   void _onTapHeartLogo(CoffeeCard coffeeCard, ValueNotifier<bool> isFavorite) {
@@ -368,9 +374,10 @@ class _HomePageState extends State<HomePage> {
                       _onSpeechStateChanged,
                       this._listeningState,
                       _onToggleListeningState,
-                      this
+                      orderCount: this
                           .coffeeCardSingleton
-                          .getNumberOfSetFavoriteFromCoffeeCardObjects()),
+                          .getNumberOfSetFavoriteFromCoffeeCardObjects(),
+                      callbackResetUI: _onRerenderUI),
                 ),
               ],
             ),
