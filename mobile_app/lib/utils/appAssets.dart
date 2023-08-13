@@ -2,6 +2,7 @@ class AppAssets {
   static HomePageAssets homePageAssets = const HomePageAssets();
   static PeopleAssets peopleAssets = const PeopleAssets();
   static ExtraIngredeints extraIngredeints = const ExtraIngredeints();
+  static FooterImages footerImages = const FooterImages();
 }
 
 class HomePageAssets {
@@ -24,4 +25,11 @@ class ExtraIngredeints {
   final String IMAGE_SUGAR = "assets/images/sugar.png";
   final String IMAGE_ICE = "assets/images/ice.png";
   final String IMAGE_CREAM = "assets/images/cream.png";
+}
+
+class FooterImages {
+  const FooterImages();
+  final String COFFEE_IMAGE_1 = "assets/images/coffee.jpg";
+  final String COFFEE_IMAGE_2 = "assets/images/coffee2.jpg";
+  final String COFFEE_IMAGE_3 = "assets/images/coffee3.jpg";
 }

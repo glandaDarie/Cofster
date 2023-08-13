@@ -17,6 +17,11 @@ import 'package:coffee_orderer/services/speechToTextService.dart'
     show SpeechToTextService;
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:coffee_orderer/screens/mapScreen.dart';
+import 'package:coffee_orderer/components/mainScreen/userImage.dart'
+    show buildUserImage;
+import 'package:coffee_orderer/components/mainScreen/footerImage.dart'
+    show buildFooterImage;
+import 'package:coffee_orderer/utils/appAssets.dart' show AppAssets;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);
@@ -31,7 +36,6 @@ class _HomePageState extends State<HomePage> {
   QuestionnaireController questionnaireController;
   CoffeeCardController coffeeCardController;
   CoffeeCardFavouriteDrinksController coffeeCardFavouriteDrinksController;
-  // int _navBarItemSelected;
   ValueNotifier<int> _navBarItemSelected;
   List<String> _favouriteDrinks;
   List<CoffeeCard> coffeeCardObjects;
@@ -47,7 +51,6 @@ class _HomePageState extends State<HomePage> {
     this.questionnaireController = QuestionnaireController();
     this.coffeeCardFavouriteDrinksController =
         CoffeeCardFavouriteDrinksController();
-    // this._navBarItemSelected = 0;
     this._navBarItemSelected = ValueNotifier<int>(0);
     this._favouriteDrinks = [];
     this.coffeeCardObjects = [];
@@ -97,17 +100,14 @@ class _HomePageState extends State<HomePage> {
   void _onSetTextToSpeechResult(SpeechRecognitionResult result) {
     setState(() {
       this._rawTextFromSpeech = result.recognizedWords;
-      print(this._rawTextFromSpeech);
+      // debugging
+      // print(this._rawTextFromSpeech);
     });
   }
 
   String _onGetSpeechResult() {
     return this._rawTextFromSpeech;
   }
-
-  // void _onSelectedIndicesNavBar(int newNavBarItemSelected) {
-  //   this._navBarItemSelected = newNavBarItemSelected;
-  // }
 
   void _onSelectedIndicesNavBar(int newNavBarItemSelected) {
     this._navBarItemSelected.value = newNavBarItemSelected;
@@ -182,21 +182,7 @@ class _HomePageState extends State<HomePage> {
                             future: this.authController.loadUserPhoto(),
                             builder: (BuildContext context,
                                 AsyncSnapshot<Uint8List> snapshot) {
-                              if (snapshot.hasData) {
-                                return Container(
-                                  height: 60.0,
-                                  width: 60.0,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(30.0),
-                                    image: DecorationImage(
-                                      image: MemoryImage(snapshot.data),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                );
-                              } else {
-                                return Container();
-                              }
+                              return buildUserImage(snapshot);
                             },
                           ),
                         ),
@@ -338,7 +324,8 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 );
                               },
-                              child: _buildImage("assets/images/coffee.jpg")),
+                              child: buildFooterImage(
+                                  AppAssets.footerImages.COFFEE_IMAGE_1)),
                           InkWell(
                               onTap: () async {
                                 Navigator.push(
@@ -347,7 +334,8 @@ class _HomePageState extends State<HomePage> {
                                         builder: (context) => GoogleMapPage(
                                             coffeeStoreName: "Cafe D'Arte")));
                               },
-                              child: _buildImage("assets/images/coffee2.jpg")),
+                              child: buildFooterImage(
+                                  AppAssets.footerImages.COFFEE_IMAGE_2)),
                           InkWell(
                               onTap: () async {
                                 Navigator.push(
@@ -356,7 +344,8 @@ class _HomePageState extends State<HomePage> {
                                         builder: (context) => GoogleMapPage(
                                             coffeeStoreName: "La Fabrique")));
                               },
-                              child: _buildImage("assets/images/coffee3.jpg"))
+                              child: buildFooterImage(
+                                  AppAssets.footerImages.COFFEE_IMAGE_3)),
                         ],
                       ),
                     ),
@@ -368,16 +357,16 @@ class _HomePageState extends State<HomePage> {
                   right: 0,
                   bottom: 0,
                   child: bottomNavigationBar(
-                      this._navBarItemSelected,
-                      _onSelectedIndicesNavBar,
-                      this._speechState,
-                      _onSpeechStateChanged,
-                      this._listeningState,
-                      _onToggleListeningState,
-                      orderCount: this
-                          .coffeeCardSingleton
-                          .getNumberOfSetFavoriteFromCoffeeCardObjects(),
-                      callbackResetUI: _onRerenderUI),
+                    this._navBarItemSelected,
+                    _onSelectedIndicesNavBar,
+                    this._speechState,
+                    _onSpeechStateChanged,
+                    this._listeningState,
+                    _onToggleListeningState,
+                    orderCount: this
+                        .coffeeCardSingleton
+                        .getNumberOfSetFavoriteFromCoffeeCardObjects(),
+                  ),
                 ),
               ],
             ),
@@ -385,17 +374,5 @@ class _HomePageState extends State<HomePage> {
         }
       },
     );
-  }
-
-  Padding _buildImage(String imgPath) {
-    return Padding(
-        padding: EdgeInsets.only(right: 15.0),
-        child: Container(
-            height: 100.0,
-            width: 175.0,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15.0),
-                image: DecorationImage(
-                    image: AssetImage(imgPath), fit: BoxFit.cover))));
   }
 }

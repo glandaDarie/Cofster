@@ -15,8 +15,7 @@ ValueListenableBuilder bottomNavigationBar(
     bool startListening,
     dynamic Function(bool) callbackToggleListeningState,
     {int orderCount = 0,
-    ValueNotifier<int> Function(BuildContext context) callbackFavoritesOn,
-    void Function() callbackResetUI}) {
+    ValueNotifier<int> Function(BuildContext context) callbackFavoritesOn}) {
   ValueNotifier<int> orderCountValueNotifier = ValueNotifier<int>(orderCount);
   ValueNotifier<bool> speechStatusValueNotifier =
       ValueNotifier<bool>(speechStatus);
@@ -42,7 +41,9 @@ ValueListenableBuilder bottomNavigationBar(
           GestureDetector(
             onTap: () async {
               callbackSelectedIndex(1);
-              await profileInformation(context);
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => profileInformation(),
+              ));
             },
             child: Icon(
               Icons.person,
