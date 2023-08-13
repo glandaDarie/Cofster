@@ -1,4 +1,5 @@
 import 'package:coffee_orderer/components/mainScreen/voiceDialog.dart';
+import 'package:coffee_orderer/controllers/AuthController.dart';
 import 'package:coffee_orderer/patterns/CoffeeCardSingleton.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
@@ -42,7 +43,8 @@ ValueListenableBuilder bottomNavigationBar(
             onTap: () async {
               callbackSelectedIndex(1);
               Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => profileInformation(),
+                builder: (context) =>
+                    profileInformation(context, AuthController()),
               ));
             },
             child: Icon(

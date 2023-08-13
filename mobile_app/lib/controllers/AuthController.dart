@@ -253,6 +253,9 @@ class AuthController extends ValidateCredentialsService {
       return null;
     }
     Map<String, String> cache = fromStringCachetoMapCache(cacheStr);
+    if (!cache.containsKey("name")) {
+      return null;
+    }
     Map<String, String> content = {"name": cache["name"].toLowerCase()};
     String photoBase64 = await this.userController.getUsersPhotoFromS3(content);
     Uint8List photoBytes = base64.decode(photoBase64);
