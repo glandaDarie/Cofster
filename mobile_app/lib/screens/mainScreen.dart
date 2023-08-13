@@ -21,7 +21,7 @@ import 'package:coffee_orderer/components/mainScreen/userImage.dart'
     show buildUserImage;
 import 'package:coffee_orderer/components/mainScreen/footerImage.dart'
     show buildFooterImage;
-import 'package:coffee_orderer/utils/appAssets.dart' show AppAssets;
+import 'package:coffee_orderer/utils/appAssets.dart' show FooterImages;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);
@@ -325,7 +325,7 @@ class _HomePageState extends State<HomePage> {
                                 );
                               },
                               child: buildFooterImage(
-                                  AppAssets.footerImages.COFFEE_IMAGE_1)),
+                                  FooterImages.COFFEE_IMAGE_1)),
                           InkWell(
                               onTap: () async {
                                 Navigator.push(
@@ -335,7 +335,7 @@ class _HomePageState extends State<HomePage> {
                                             coffeeStoreName: "Cafe D'Arte")));
                               },
                               child: buildFooterImage(
-                                  AppAssets.footerImages.COFFEE_IMAGE_2)),
+                                  FooterImages.COFFEE_IMAGE_2)),
                           InkWell(
                               onTap: () async {
                                 Navigator.push(
@@ -345,7 +345,7 @@ class _HomePageState extends State<HomePage> {
                                             coffeeStoreName: "La Fabrique")));
                               },
                               child: buildFooterImage(
-                                  AppAssets.footerImages.COFFEE_IMAGE_3)),
+                                  FooterImages.COFFEE_IMAGE_3)),
                         ],
                       ),
                     ),
