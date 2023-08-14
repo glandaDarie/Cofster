@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'dart:typed_data';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:coffee_orderer/controllers/AuthController.dart';
+import 'package:coffee_orderer/services/loggedInService.dart'
+    show LoggedInService;
+import 'package:coffee_orderer/utils/paths.dart' show Paths;
+import 'package:coffee_orderer/screens/authScreen.dart' show AuthPage;
 
 Widget profileInformation(BuildContext context, AuthController authController) {
   return FutureBuilder<Uint8List>(
@@ -42,8 +47,8 @@ Widget profileInformation(BuildContext context, AuthController authController) {
                       Expanded(
                         child: ListView(
                           children: [
-                            _buildProfileCard(
-                                "Privacy", Icons.privacy_tip_sharp, () {
+                            _buildProfileCard("Orders", Icons.privacy_tip_sharp,
+                                () {
                               print("Privacy");
                             }),
                             _buildProfileCard("Purchase History", Icons.history,
@@ -63,8 +68,24 @@ Widget profileInformation(BuildContext context, AuthController authController) {
                                 () {
                               print("Invite a Friend");
                             }),
-                            _buildProfileCard("Logout", Icons.logout, () {
-                              print("Logout");
+                            _buildProfileCard("Logout", Icons.logout, () async {
+                              String loggingStatusResponse =
+                                  await LoggedInService.changeLoggingStatus(
+                                      Paths.PATH_TO_FILE_KEEP_ME_LOGGED_IN);
+                              if (loggingStatusResponse != null) {
+                                Fluttertoast.showToast(
+                                    msg: loggingStatusResponse,
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    backgroundColor:
+                                        Color.fromARGB(255, 102, 33, 12),
+                                    textColor:
+                                        Color.fromARGB(255, 220, 217, 216),
+                                    fontSize: 16);
+                                return null;
+                              }
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => AuthPage(),
+                              ));
                             }),
                           ],
                         ),

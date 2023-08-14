@@ -1,3 +1,4 @@
+import 'package:coffee_orderer/screens/authScreen.dart';
 import 'package:flutter/material.dart';
 // import 'package:coffee_orderer/screens/authScreen.dart';
 // import 'package:coffee_orderer/screens/questionnaireScreen.dart';
@@ -10,6 +11,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:coffee_orderer/services/updateProviderService.dart'
     show UpdateProvider;
+import 'package:coffee_orderer/services/loggedInService.dart'
+    show LoggedInService;
+import 'package:coffee_orderer/utils/paths.dart' show Paths;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,12 +40,22 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      // home: AuthPage(),
-      // home: QuestionnairePage(),
-      home: HomePage(),
-      // home: Home(),
-      debugShowCheckedModeBanner: false,
-    );
+    return FutureBuilder(
+        future: LoggedInService.getLoggingStatus(
+            Paths.PATH_TO_FILE_KEEP_ME_LOGGED_IN),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          dynamic data = snapshot.data;
+          if (data is String) {
+            return Text(data);
+          }
+          return MaterialApp(
+            // home: AuthPage(),
+            // home: QuestionnairePage(),
+            // home: Home(),
+            // home: HomePage(),
+            home: data ? HomePage() : AuthPage(),
+            debugShowCheckedModeBanner: false,
+          );
+        });
   }
 }
