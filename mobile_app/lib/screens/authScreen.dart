@@ -104,8 +104,19 @@ class _AuthPageState extends State<AuthPage> {
               return "Name is not written correctly";
             }
             await this.authController.singupCompletedSuccessfully(name, data);
-            await LoggedInService.changeLoggingStatus(
-                Paths.PATH_TO_FILE_KEEP_ME_LOGGED_IN);
+            String loggingStatusResponse =
+                await LoggedInService.changeLoggingStatus(
+                    Paths.PATH_TO_FILE_KEEP_ME_LOGGED_IN);
+            if (loggingStatusResponse != null) {
+              Fluttertoast.showToast(
+                  msg:
+                      "Problems when chaining the logging status: ${loggingStatusResponse}",
+                  toastLength: Toast.LENGTH_SHORT,
+                  backgroundColor: Color.fromARGB(255, 102, 33, 12),
+                  textColor: Color.fromARGB(255, 220, 217, 216),
+                  fontSize: 16);
+              return null;
+            }
             Navigator.of(context).pushReplacement(
                 MaterialPageRoute(builder: (context) => ProfilePhotoPage()));
             return null;

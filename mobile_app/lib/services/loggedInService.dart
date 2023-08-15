@@ -38,7 +38,6 @@ class LoggedInService {
         return "Logging status is not written correctly in the logging file.";
       }
       return lines.last;
-      // return lines.contains("false") ? "false" : "true";
     } catch (error) {
       return "Error when trying to get the logging status: $error";
     }
