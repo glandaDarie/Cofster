@@ -27,15 +27,21 @@ Widget profileInformation(BuildContext context, AuthController authController) {
                         future: authController.getNameFromCache(),
                         builder:
                             (BuildContext context, AsyncSnapshot snapshot) {
-                          return Center(
-                            child: Text(
-                              snapshot.data ?? "Guest",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w900,
-                                  fontSize: 26,
-                                  color: Colors.white),
-                            ),
-                          );
+                          if (snapshot.hasData) {
+                            return Center(
+                              child: Text(
+                                snapshot.data ?? "Guest",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w900,
+                                    fontSize: 26,
+                                    color: Colors.white),
+                              ),
+                            );
+                          } else {
+                            return CircularProgressIndicator(
+                                color: Colors.brown,
+                                backgroundColor: Colors.white);
+                          }
                         },
                       ),
                       Center(

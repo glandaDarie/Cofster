@@ -172,7 +172,9 @@ class _HomePageState extends State<HomePage> {
                             } else if (snapshot.hasError) {
                               return Text("Error: ${snapshot.error}");
                             } else {
-                              return CircularProgressIndicator();
+                              return CircularProgressIndicator(
+                                  color: Colors.brown,
+                                  backgroundColor: Colors.white);
                             }
                           },
                         ),
@@ -209,7 +211,9 @@ class _HomePageState extends State<HomePage> {
                             } else if (snapshot.hasError) {
                               return Text("Error: ${snapshot.error}");
                             } else {
-                              return CircularProgressIndicator();
+                              return CircularProgressIndicator(
+                                  color: Colors.brown,
+                                  backgroundColor: Colors.white);
                             }
                           },
                         ),

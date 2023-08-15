@@ -56,7 +56,8 @@ class _ProfilePhotoPageState extends State<ProfilePhotoPage>
                       ),
                     );
                   } else {
-                    return CircularProgressIndicator();
+                    return CircularProgressIndicator(
+                        color: Colors.brown, backgroundColor: Colors.white);
                   }
                 }),
             const SizedBox(

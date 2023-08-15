@@ -38,7 +38,6 @@ class AuthController extends ValidateCredentialsService {
   }
 
   Future<String> authUser(LoginData data) async {
-    // write information necesssary for login/register to cache
     await storeUserInformationInCache(
         {"username": data.name, "password": data.password});
     List<dynamic> users = await getUsers();
@@ -249,8 +248,8 @@ class AuthController extends ValidateCredentialsService {
     String cacheStr;
     try {
       cacheStr = await loadUserInformationFromCache();
-    } catch (e) {
-      return null;
+    } catch (error) {
+      throw "Error when trying to load user information from cache: ${error}";
     }
     Map<String, String> cache = fromStringCachetoMapCache(cacheStr);
     if (!cache.containsKey("name")) {

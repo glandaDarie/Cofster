@@ -11,9 +11,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:coffee_orderer/services/updateProviderService.dart'
     show UpdateProvider;
+import 'package:coffee_orderer/utils/paths.dart' show Paths;
 import 'package:coffee_orderer/services/loggedInService.dart'
     show LoggedInService;
-import 'package:coffee_orderer/utils/paths.dart' show Paths;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,18 +44,25 @@ class MyApp extends StatelessWidget {
         future: LoggedInService.getLoggingStatus(
             Paths.PATH_TO_FILE_KEEP_ME_LOGGED_IN),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
-          dynamic data = snapshot.data;
-          if (data is String) {
-            return Text(data);
+          if (snapshot.hasData) {
+            dynamic loggingStatusResponse = snapshot.data;
+            if (loggingStatusResponse != "false" &&
+                loggingStatusResponse != "true") {
+              return Text(loggingStatusResponse);
+            }
+            return MaterialApp(
+              // home: AuthPage(),
+              // home: QuestionnairePage(),
+              // home: Home(),
+              // home: HomePage(),
+              home: loggingStatusResponse == "true" ? HomePage() : AuthPage(),
+              debugShowCheckedModeBanner: false,
+            );
+          } else if (snapshot.hasError) {
+            return Text("Error: ${snapshot.error}");
+          } else {
+            return CircularProgressIndicator();
           }
-          return MaterialApp(
-            // home: AuthPage(),
-            // home: QuestionnairePage(),
-            // home: Home(),
-            // home: HomePage(),
-            home: data ? HomePage() : AuthPage(),
-            debugShowCheckedModeBanner: false,
-          );
         });
   }
 }

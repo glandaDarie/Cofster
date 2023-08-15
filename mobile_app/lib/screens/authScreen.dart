@@ -5,6 +5,9 @@ import 'package:flutter_login/flutter_login.dart';
 import 'package:coffee_orderer/controllers/AuthController.dart';
 import 'package:coffee_orderer/utils/localUserInformation.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:coffee_orderer/utils/paths.dart' show Paths;
+import 'package:coffee_orderer/services/loggedInService.dart'
+    show LoggedInService;
 
 class AuthPage extends StatefulWidget {
   @override
@@ -51,13 +54,17 @@ class _AuthPageState extends State<AuthPage> {
           theme: LoginTheme(
               primaryColor: Color.fromARGB(255, 140, 111, 81),
               accentColor: Color.fromARGB(255, 232, 233, 236)),
-          onLogin: authController.authUser,
+          onLogin: (LoginData data) async {
+            await LoggedInService.changeLoggingStatus(
+                Paths.PATH_TO_FILE_KEEP_ME_LOGGED_IN);
+            return authController.authUser(data);
+          },
           onSignup: (SignupData signupData) async {
             // comment for easier debugging in the code
-            // String unique =
+            // String uniqueUsernameResponse =
             //     await authController.usernameUniqueOnSingup(signupData.name);
-            // if (unique != null) {
-            //   return unique;
+            // if (uniqueUsernameResponse != null) {
+            //   return uniqueUsernameResponse;
             // }
             setState(() {
               name = signupData.additionalSignupData["1"];
@@ -97,6 +104,8 @@ class _AuthPageState extends State<AuthPage> {
               return "Name is not written correctly";
             }
             await this.authController.singupCompletedSuccessfully(name, data);
+            await LoggedInService.changeLoggingStatus(
+                Paths.PATH_TO_FILE_KEEP_ME_LOGGED_IN);
             Navigator.of(context).pushReplacement(
                 MaterialPageRoute(builder: (context) => ProfilePhotoPage()));
             return null;

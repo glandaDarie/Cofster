@@ -330,7 +330,9 @@ class _DetailsPageState extends State<DetailsPage> {
                                 AsyncSnapshot<dynamic> snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
-                                return CircularProgressIndicator();
+                                return CircularProgressIndicator(
+                                    color: Colors.brown,
+                                    backgroundColor: Colors.white);
                               } else if (snapshot.hasError) {
                                 return Text("Error loading image");
                               } else {
@@ -371,7 +373,10 @@ class _DetailsPageState extends State<DetailsPage> {
                                               builder: (context, snapshot) {
                                                 if (snapshot.connectionState ==
                                                     ConnectionState.waiting) {
-                                                  return CircularProgressIndicator();
+                                                  return CircularProgressIndicator(
+                                                      color: Colors.brown,
+                                                      backgroundColor:
+                                                          Colors.white);
                                                 } else if (snapshot.hasError) {
                                                   return Text(
                                                       "Error: ${snapshot.error}");
@@ -431,7 +436,10 @@ class _DetailsPageState extends State<DetailsPage> {
                                           builder: (context, snapshot) {
                                             if (snapshot.connectionState ==
                                                 ConnectionState.waiting) {
-                                              return CircularProgressIndicator();
+                                              return CircularProgressIndicator(
+                                                  color: Colors.brown,
+                                                  backgroundColor:
+                                                      Colors.white);
                                             } else if (snapshot.hasError) {
                                               return Text(
                                                   "Error: ${snapshot.error}");
