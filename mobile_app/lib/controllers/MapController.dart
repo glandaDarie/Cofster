@@ -13,10 +13,10 @@ class MapController {
   void Function(BitmapDescriptor) _callbackSetSourceIcon;
   void Function(BitmapDescriptor) _callbackSetDestinationIcon;
   MapController(
-      [String shopName = null,
+      {String shopName = null,
       void Function() callbackSetState,
       void Function(BitmapDescriptor) callbackSetSourceIcon,
-      void Function(BitmapDescriptor) callbackSetDestinationIcon]) {
+      void Function(BitmapDescriptor) callbackSetDestinationIcon}) {
     this.shopName = shopName;
     this._callbackSetState = callbackSetState;
     this._callbackSetSourceIcon = callbackSetSourceIcon;
@@ -44,7 +44,8 @@ class MapController {
   }
 
   Future<List<LatLng>> getPolylinePoints(
-      LatLng sourceLocation, LatLng destinationLocation) async {
+      LatLng sourceLocation, LatLng destinationLocation,
+      {bool refreshScreen = true}) async {
     List<LatLng> polylineCoordinates = [];
     PolylinePoints polylinePoints = PolylinePoints();
     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
@@ -57,7 +58,9 @@ class MapController {
       result.points.forEach((PointLatLng point) {
         polylineCoordinates.add(LatLng(point.latitude, point.longitude));
       });
-      this._callbackSetState();
+      if (refreshScreen) {
+        this._callbackSetState();
+      }
     }
     return polylineCoordinates;
   }

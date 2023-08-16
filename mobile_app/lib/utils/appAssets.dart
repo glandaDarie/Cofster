@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class AppAssets {
   static HomePageAssets homePageAssets = const HomePageAssets();
   static PeopleAssets peopleAssets = const PeopleAssets();
@@ -27,7 +29,7 @@ class ExtraIngredeints {
 }
 
 class FooterImages {
-  const FooterImages();
+  const FooterImages._();
   static final String COFFEE_IMAGE_1 = "assets/images/coffee.jpg";
   static final String COFFEE_IMAGE_2 = "assets/images/coffee2.jpg";
   static final String COFFEE_IMAGE_3 = "assets/images/coffee3.jpg";

@@ -6,6 +6,9 @@ import 'package:coffee_orderer/services/loggedInService.dart'
     show LoggedInService;
 import 'package:coffee_orderer/utils/paths.dart' show Paths;
 import 'package:coffee_orderer/screens/authScreen.dart' show AuthPage;
+import 'package:coffee_orderer/services/inviteAFriendService.dart'
+    show InvitieAFriendService;
+import 'package:geolocator/geolocator.dart';
 
 Widget profileInformation(BuildContext context, AuthController authController) {
   return FutureBuilder<Uint8List>(
@@ -53,7 +56,8 @@ Widget profileInformation(BuildContext context, AuthController authController) {
                       Expanded(
                         child: ListView(
                           children: [
-                            _buildProfileCard("Orders", Icons.privacy_tip_sharp,
+                            _buildProfileCard(
+                                "Orders In Progress", Icons.history_edu_sharp,
                                 () {
                               print("Privacy");
                             }),
@@ -62,17 +66,24 @@ Widget profileInformation(BuildContext context, AuthController authController) {
                               print("Purchase History");
                             }),
                             _buildProfileCard(
-                                "Help & Support", Icons.help_outline, () {
+                                "Help & Support", Icons.privacy_tip_sharp, () {
                               print("Help & Support");
                             }),
-                            _buildProfileCard(
-                                "Settings", Icons.privacy_tip_sharp, () {
+                            _buildProfileCard("Settings", Icons.help_outline,
+                                () {
                               print("Settings");
                             }),
                             _buildProfileCard(
                                 "Invite a Friend", Icons.add_reaction_sharp,
-                                () {
+                                () async {
                               print("Invite a Friend");
+                              InvitieAFriendService invitieAFriendService =
+                                  InvitieAFriendService(
+                                      coffeeStoreName: "Cofster");
+                              Position position = await invitieAFriendService
+                                  .getUsersCurrentLocation();
+                              print(
+                                  "Latitude: ${position.latitude}, longitude: ${position.longitude}");
                             }),
                             _buildProfileCard("Logout", Icons.logout, () async {
                               String loggingStatusResponse =
@@ -90,7 +101,7 @@ Widget profileInformation(BuildContext context, AuthController authController) {
                                 return null;
                               }
                               Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => AuthPage(),
+                                builder: (BuildContext context) => AuthPage(),
                               ));
                             }),
                           ],

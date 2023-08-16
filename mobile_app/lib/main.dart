@@ -32,12 +32,12 @@ void main() async {
   runApp(
     ChangeNotifierProvider(
       create: (context) => UpdateProvider(),
-      child: MyApp(),
+      child: CofsterPage(),
     ),
   );
 }
 
-class MyApp extends StatelessWidget {
+class CofsterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(

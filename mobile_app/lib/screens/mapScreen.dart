@@ -22,18 +22,21 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
   List<LatLng> polylineCoordinates;
   BitmapDescriptor sourceIcon;
   BitmapDescriptor destinationIcon;
-  Completer<GoogleMapController> controllerCompleter;
+  Completer<GoogleMapController> completerController;
 
   _GoogleMapPageState(String coffeeStoreName) {
     this.coffeeStoreName = coffeeStoreName;
-    this.mapController = MapController(this.coffeeStoreName, onReloadUI,
-        onSetSourceIcon, onSetDestinationIcon);
+    this.mapController = MapController(
+        shopName: this.coffeeStoreName,
+        callbackSetState: onReloadUI,
+        callbackSetSourceIcon: onSetSourceIcon,
+        callbackSetDestinationIcon: onSetDestinationIcon);
     this.sourceLocation = null;
     this.destinationLocation =
         this.mapController.getCoffeeShopCoordinatesForMap();
     this.sourceIcon = BitmapDescriptor.defaultMarker;
     this.destinationIcon = BitmapDescriptor.defaultMarker;
-    this.controllerCompleter = Completer();
+    this.completerController = Completer();
   }
 
   void onSetSourceIcon(BitmapDescriptor sourceIcon) {
@@ -51,10 +54,10 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
   @override
   void dispose() {
     super.dispose();
-    controllerCompleter.future.then((GoogleMapController controller) {
+    completerController.future.then((GoogleMapController controller) {
       controller.dispose();
     });
-    controllerCompleter = null;
+    completerController = null;
   }
 
   @override
@@ -86,8 +89,8 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
                   if (snapshotPolyLines.hasData) {
                     polylineCoordinates = snapshotPolyLines.data;
                     return GoogleMap(
-                      onMapCreated: (GoogleMapController controller) {
-                        controllerCompleter.complete(controller);
+                      onMapCreated: (GoogleMapController googleMapController) {
+                        completerController.complete(googleMapController);
                       },
                       initialCameraPosition: CameraPosition(
                         target: sourceLocation ?? LatLng(0, 0),
