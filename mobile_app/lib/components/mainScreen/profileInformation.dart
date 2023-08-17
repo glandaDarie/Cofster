@@ -8,7 +8,7 @@ import 'package:coffee_orderer/utils/paths.dart' show Paths;
 import 'package:coffee_orderer/screens/authScreen.dart' show AuthPage;
 import 'package:coffee_orderer/services/inviteAFriendService.dart'
     show InvitieAFriendService;
-import 'package:geolocator/geolocator.dart';
+import 'package:coffee_orderer/utils/catchPhrases.dart' show CatchPhrases;
 
 Widget profileInformation(BuildContext context, AuthController authController) {
   return FutureBuilder<Uint8List>(
@@ -76,14 +76,11 @@ Widget profileInformation(BuildContext context, AuthController authController) {
                             _buildProfileCard(
                                 "Invite a Friend", Icons.add_reaction_sharp,
                                 () async {
-                              print("Invite a Friend");
-                              InvitieAFriendService invitieAFriendService =
-                                  InvitieAFriendService(
-                                      coffeeStoreName: "Cofster");
-                              Position position = await invitieAFriendService
-                                  .getUsersCurrentLocation();
-                              print(
-                                  "Latitude: ${position.latitude}, longitude: ${position.longitude}");
+                              await InvitieAFriendService
+                                  .displayCofsterLocationMap(
+                                      Paths.PATH_TO_COFSTER_LOCATION,
+                                      catchPhrase:
+                                          CatchPhrases.CATCH_PHRASE_COFSTER);
                             }),
                             _buildProfileCard("Logout", Icons.logout, () async {
                               String loggingStatusResponse =
