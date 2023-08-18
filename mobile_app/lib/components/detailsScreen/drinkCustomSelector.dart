@@ -232,6 +232,7 @@ SizedBox customizeDrink(BuildContext context,
                       String cacheStr = await loadUserInformationFromCache();
                       Map<String, String> cache =
                           fromStringCachetoMapCache(cacheStr);
+                      print("Local storage cache: ${cache}");
                       String paymentResponse = await paymentService.makePayment(
                           context,
                           (_price * 100).toInt().toStringAsFixed(0),

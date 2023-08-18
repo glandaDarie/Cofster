@@ -28,13 +28,19 @@ Widget profileInformation(BuildContext context, AuthController authController) {
                       _buildUserImageInProfileInformation(snapshot),
                       SizedBox(height: 15),
                       FutureBuilder(
-                        future: authController.getNameFromCache(),
+                        future: Future.delayed(Duration(seconds: 3))
+                            .then((_) => authController.getNameFromCache()),
                         builder:
                             (BuildContext context, AsyncSnapshot snapshot) {
-                          if (snapshot.hasData) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return CircularProgressIndicator(
+                                color: Colors.brown,
+                                backgroundColor: Colors.white);
+                          } else if (snapshot.hasData) {
                             return Center(
                               child: Text(
-                                snapshot.data ?? "Guest",
+                                snapshot.data,
                                 style: TextStyle(
                                     fontWeight: FontWeight.w900,
                                     fontSize: 26,
@@ -42,9 +48,16 @@ Widget profileInformation(BuildContext context, AuthController authController) {
                               ),
                             );
                           } else {
-                            return CircularProgressIndicator(
-                                color: Colors.brown,
-                                backgroundColor: Colors.white);
+                            return Center(
+                              child: Text(
+                                "Guest",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w900,
+                                    fontSize: 26,
+                                    color: Colors.white),
+                              ),
+                            );
+                            ;
                           }
                         },
                       ),
@@ -83,8 +96,9 @@ Widget profileInformation(BuildContext context, AuthController authController) {
                             }),
                             _buildProfileCard("Logout", Icons.logout, () async {
                               String loggingStatusResponse =
-                                  await LoggedInService.changeLoggingStatus(
-                                      Paths.PATH_TO_FILE_KEEP_ME_LOGGED_IN);
+                                  // await LoggedInService.changeLoggingStatus(
+                                  //     Paths.PATH_TO_FILE_KEEP_ME_LOGGED_IN);
+                                  await LoggedInService.changeLoggingStatus();
                               if (loggingStatusResponse != null) {
                                 Fluttertoast.showToast(
                                     msg: loggingStatusResponse,

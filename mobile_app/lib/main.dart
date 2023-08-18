@@ -11,9 +11,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:coffee_orderer/services/updateProviderService.dart'
     show UpdateProvider;
-import 'package:coffee_orderer/utils/paths.dart' show Paths;
 import 'package:coffee_orderer/services/loggedInService.dart'
     show LoggedInService;
+// import 'package:coffee_orderer/utils/paths.dart' show Paths;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,11 +28,15 @@ void main() async {
         fontSize: 16);
     return;
   }
+
   NotificationService().initNotification("coffee_cappuccino");
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => UpdateProvider(),
-      child: CofsterPage(),
+    MaterialApp(
+      home: ChangeNotifierProvider(
+        create: (context) => UpdateProvider(),
+        child: CofsterPage(),
+      ),
+      debugShowCheckedModeBanner: false,
     ),
   );
 }
@@ -41,21 +45,22 @@ class CofsterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: LoggedInService.getLoggingStatus(
-            Paths.PATH_TO_FILE_KEEP_ME_LOGGED_IN),
+        // future: LoggedInService.getLoggingStatus(
+        //     Paths.PATH_TO_FILE_KEEP_ME_LOGGED_IN),
+        future: LoggedInService.getLoggingStatus(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
             dynamic loggingStatusResponse = snapshot.data;
-            if (loggingStatusResponse != "false" &&
-                loggingStatusResponse != "true") {
-              return Text(loggingStatusResponse);
+            if (!(loggingStatusResponse is bool)) {
+              return Text("${loggingStatusResponse}");
             }
             return MaterialApp(
               // home: AuthPage(),
               // home: QuestionnairePage(),
               // home: Home(),
               // home: HomePage(),
-              home: loggingStatusResponse == "true" ? HomePage() : AuthPage(),
+              // home: loggingStatusResponse == "true" ? HomePage() : AuthPage(),
+              home: loggingStatusResponse ? HomePage() : AuthPage(),
               debugShowCheckedModeBanner: false,
             );
           } else if (snapshot.hasError) {

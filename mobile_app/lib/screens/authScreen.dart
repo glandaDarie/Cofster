@@ -55,8 +55,11 @@ class _AuthPageState extends State<AuthPage> {
               primaryColor: Color.fromARGB(255, 140, 111, 81),
               accentColor: Color.fromARGB(255, 232, 233, 236)),
           onLogin: (LoginData data) async {
-            await LoggedInService.changeLoggingStatus(
-                Paths.PATH_TO_FILE_KEEP_ME_LOGGED_IN);
+            // await LoggedInService.changeLoggingStatus(
+            //     Paths.PATH_TO_FILE_KEEP_ME_LOGGED_IN);
+            String changedLoggingStatus =
+                await LoggedInService.changeLoggingStatus();
+            print("Changed logging status: ${changedLoggingStatus}");
             return authController.authUser(data);
           },
           onSignup: (SignupData signupData) async {
@@ -105,8 +108,9 @@ class _AuthPageState extends State<AuthPage> {
             }
             await this.authController.singupCompletedSuccessfully(name, data);
             String loggingStatusResponse =
-                await LoggedInService.changeLoggingStatus(
-                    Paths.PATH_TO_FILE_KEEP_ME_LOGGED_IN);
+                // await LoggedInService.changeLoggingStatus(
+                //     Paths.PATH_TO_FILE_KEEP_ME_LOGGED_IN);
+                await LoggedInService.changeLoggingStatus();
             if (loggingStatusResponse != null) {
               Fluttertoast.showToast(
                   msg:
