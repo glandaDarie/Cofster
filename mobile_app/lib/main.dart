@@ -13,7 +13,6 @@ import 'package:coffee_orderer/services/updateProviderService.dart'
     show UpdateProvider;
 import 'package:coffee_orderer/services/loggedInService.dart'
     show LoggedInService;
-// import 'package:coffee_orderer/utils/paths.dart' show Paths;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,7 +27,9 @@ void main() async {
         fontSize: 16);
     return;
   }
-
+  if (!(await LoggedInService.checkIfLoggingStatusIsPresent())) {
+    LoggedInService.setDefaultLoggingStatus();
+  }
   NotificationService().initNotification("coffee_cappuccino");
   runApp(
     MaterialApp(
@@ -45,8 +46,6 @@ class CofsterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        // future: LoggedInService.getLoggingStatus(
-        //     Paths.PATH_TO_FILE_KEEP_ME_LOGGED_IN),
         future: LoggedInService.getLoggingStatus(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
@@ -59,7 +58,6 @@ class CofsterPage extends StatelessWidget {
               // home: QuestionnairePage(),
               // home: Home(),
               // home: HomePage(),
-              // home: loggingStatusResponse == "true" ? HomePage() : AuthPage(),
               home: loggingStatusResponse ? HomePage() : AuthPage(),
               debugShowCheckedModeBanner: false,
             );

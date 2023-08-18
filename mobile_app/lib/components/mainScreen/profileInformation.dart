@@ -96,8 +96,6 @@ Widget profileInformation(BuildContext context, AuthController authController) {
                             }),
                             _buildProfileCard("Logout", Icons.logout, () async {
                               String loggingStatusResponse =
-                                  // await LoggedInService.changeLoggingStatus(
-                                  //     Paths.PATH_TO_FILE_KEEP_ME_LOGGED_IN);
                                   await LoggedInService.changeLoggingStatus();
                               if (loggingStatusResponse != null) {
                                 Fluttertoast.showToast(
