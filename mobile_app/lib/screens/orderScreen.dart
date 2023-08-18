@@ -5,8 +5,11 @@ import 'package:coffee_orderer/services/updateProviderService.dart'
     show UpdateProvider;
 import 'package:provider/provider.dart';
 import 'package:coffee_orderer/utils/labelConversionHandler.dart' show classes;
-import 'package:coffee_orderer/utils/cardProperties.dart' show coffeeImagePaths;
 import 'package:coffee_orderer/enums/coffeeTypes.dart' show CoffeeType;
+import 'package:coffee_orderer/components/orderScreen/frontOfCard.dart'
+    show buildFrontCardContent;
+import 'package:coffee_orderer/components/orderScreen/backOfCard.dart'
+    show buildBackCardContent;
 
 class OrderPage extends StatefulWidget {
   @override
@@ -15,11 +18,32 @@ class OrderPage extends StatefulWidget {
 
 class _OrderPageState extends State<OrderPage> {
   List<dynamic> _orderList;
-  var g;
-  var k;
+  Map<String, bool> _isFlippedMap;
 
   _OrderPageState() {
     this._orderList = null;
+    _isFlippedMap = Map.fromEntries(
+      List.generate(
+        100,
+        (int index) => MapEntry("isFlipped${index}", false),
+      ),
+    );
+  }
+
+  void _flipCard(int index) {
+    setState(() {
+      this._isFlippedMap["isFlipped${index}"] =
+          !this._isFlippedMap["isFlipped${index}"];
+    });
+    Future.delayed(Duration(seconds: 5), () {
+      setState(() {
+        this._isFlippedMap["isFlipped${index}"] = false;
+      });
+    });
+  }
+
+  bool _isCardFlipped(int index) {
+    return this._isFlippedMap["isFlipped${index}"];
   }
 
   @override
@@ -31,7 +55,7 @@ class _OrderPageState extends State<OrderPage> {
         return Scaffold(
           appBar: AppBar(
             title: const Text(
-              '                   Orders',
+              '            Orders',
               style: TextStyle(
                 fontSize: 30,
                 color: Colors.white,
@@ -45,73 +69,33 @@ class _OrderPageState extends State<OrderPage> {
             shrinkWrap: true,
             itemBuilder: (BuildContext context, DataSnapshot snapshot,
                 Animation<double> animation, int index) {
-              String v = snapshot.value.toString();
-              g = v.replaceAll(
-                  RegExp(
-                      "{|}|coffeeFinishTimeEstimation: |coffeeName: |coffeeOrderTime: |coffeePrice: |coffeeStatus: |communication: |quantity: "),
-                  "");
-              g.trim();
-              this._orderList = g.split(',');
+              String coffeeInfromation = snapshot.value.toString();
+              String parsedCoffeeInformation = coffeeInfromation
+                  .replaceAll(
+                      RegExp(
+                          "{|}|coffeeFinishTimeEstimation: |coffeeName: |coffeeOrderTime: |coffeePrice: |coffeeStatus: |communication: |quantity: "),
+                      "")
+                  .trim();
+              this._orderList = parsedCoffeeInformation.split(",");
               CoffeeType coffeeType = CoffeeType.values.firstWhere(
                   (CoffeeType type) =>
                       type.index == classes[this._orderList[0].toLowerCase()],
                   orElse: () => null);
               return GestureDetector(
                 onTap: () {
-                  setState(() {
-                    k = snapshot.key;
-                  });
+                  _flipCard(index);
                 },
                 child: Container(
-                  padding: const EdgeInsets.all(16.0),
-                  margin: const EdgeInsets.symmetric(
-                      vertical: 8.0, horizontal: 16.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    color: Colors.brown.shade400,
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 80,
-                        height: 80,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(40),
-                          image: DecorationImage(
-                            image: AssetImage(coffeeImagePaths[coffeeType]),
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              "${this._orderList[0]}",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(height: 8),
-                            Text(
-                              "Quantity: ${this._orderList[1]}\nEstimated Order: ${this._orderList[2]}\nCoffee Status: ${this._orderList[3]}\nPrice: ${this._orderList[5]}\nOrder Placed: ${this._orderList[6]}",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                    padding: const EdgeInsets.all(16.0),
+                    margin: const EdgeInsets.symmetric(
+                        vertical: 8.0, horizontal: 16.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      color: Colors.brown.shade400,
+                    ),
+                    child: _isCardFlipped(index)
+                        ? buildBackCardContent()
+                        : buildFrontCardContent(this._orderList, coffeeType)),
               );
             },
           ),

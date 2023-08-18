@@ -247,7 +247,6 @@ SizedBox customizeDrink(BuildContext context,
                             fontSize: 16);
                         return;
                       }
-                      // dummy time for testing, this will be estimated using a neural network or some calculations
                       String userName =
                           cache.containsKey("name") ? cache["name"] : "Guest";
                       String drinkPlural = _quantityCount == 1
@@ -283,7 +282,7 @@ SizedBox customizeDrink(BuildContext context,
                           await OrderInformationController
                               .postOrderToOrdersInformation("Orders", {
                         "coffeeName": cache["cardCoffeeName"],
-                        "coffeePrice": "${_price}\$",
+                        "coffeePrice": "${_price.toStringAsFixed(2)}\$",
                         "quantity": _quantityCount,
                         "communication": "broadcast",
                         "coffeeStatus": CoffeeOrderState.ORDER_PLACED.index,
@@ -302,10 +301,6 @@ SizedBox customizeDrink(BuildContext context,
                       }
                       Provider.of<UpdateProvider>(context, listen: false)
                           .triggerUpdate();
-
-                      // CommunicationSubscriberService communicationSubService = FirebaseCommunicationSubscriberService().publish(content);
-                      // this should run on a separated thread and also make it globally to appear on any of the windows
-
                       Future.delayed(Duration(seconds: 30), () {
                         placedOrderNotifier.value = true;
                       });

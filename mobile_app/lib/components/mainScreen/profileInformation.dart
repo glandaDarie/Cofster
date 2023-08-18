@@ -9,6 +9,7 @@ import 'package:coffee_orderer/screens/authScreen.dart' show AuthPage;
 import 'package:coffee_orderer/services/inviteAFriendService.dart'
     show InvitieAFriendService;
 import 'package:coffee_orderer/utils/catchPhrases.dart' show CatchPhrases;
+import 'package:coffee_orderer/screens/orderScreen.dart' show OrderPage;
 
 Widget profileInformation(BuildContext context, AuthController authController) {
   return FutureBuilder<Uint8List>(
@@ -22,7 +23,7 @@ Widget profileInformation(BuildContext context, AuthController authController) {
                   child: Column(
                     children: [
                       SizedBox(
-                        height: 70,
+                        height: 90,
                       ),
                       _buildUserImageInProfileInformation(snapshot),
                       SizedBox(height: 15),
@@ -59,7 +60,9 @@ Widget profileInformation(BuildContext context, AuthController authController) {
                             _buildProfileCard(
                                 "Orders In Progress", Icons.history_edu_sharp,
                                 () {
-                              print("Privacy");
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) => OrderPage(),
+                              ));
                             }),
                             _buildProfileCard("Purchase History", Icons.history,
                                 () {
@@ -68,10 +71,6 @@ Widget profileInformation(BuildContext context, AuthController authController) {
                             _buildProfileCard(
                                 "Help & Support", Icons.privacy_tip_sharp, () {
                               print("Help & Support");
-                            }),
-                            _buildProfileCard("Settings", Icons.help_outline,
-                                () {
-                              print("Settings");
                             }),
                             _buildProfileCard(
                                 "Invite a Friend", Icons.add_reaction_sharp,
@@ -125,7 +124,7 @@ Center _buildUserImageInProfileInformation(AsyncSnapshot snapshot) {
 Card _buildProfileCard(String name, IconData icon, VoidCallback onTapCallback) {
   return Card(
     color: Colors.white,
-    margin: const EdgeInsets.symmetric(horizontal: 35, vertical: 10),
+    margin: const EdgeInsets.symmetric(horizontal: 35, vertical: 15),
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
     child: ListTile(
       onTap: onTapCallback,
