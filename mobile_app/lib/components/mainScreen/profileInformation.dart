@@ -28,8 +28,9 @@ Widget profileInformation(BuildContext context, AuthController authController) {
                       _buildUserImageInProfileInformation(snapshot),
                       SizedBox(height: 15),
                       FutureBuilder(
-                        future: Future.delayed(Duration(seconds: 3))
-                            .then((_) => authController.getNameFromCache()),
+                        future: Future.delayed(Duration(seconds: 3)).then((_) =>
+                            LoggedInService.getSharedPreferenceValue(
+                                "<nameUser>")),
                         builder:
                             (BuildContext context, AsyncSnapshot snapshot) {
                           if (snapshot.connectionState ==
@@ -98,6 +99,19 @@ Widget profileInformation(BuildContext context, AuthController authController) {
                               String loggingStatusResponse =
                                   await LoggedInService.changeLoggingStatus();
                               if (loggingStatusResponse != null) {
+                                Fluttertoast.showToast(
+                                    msg: loggingStatusResponse,
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    backgroundColor:
+                                        Color.fromARGB(255, 102, 33, 12),
+                                    textColor:
+                                        Color.fromARGB(255, 220, 217, 216),
+                                    fontSize: 16);
+                                return null;
+                              }
+                              String responseRemovingKey = await LoggedInService
+                                  .removeSharedPreferenceKey("<nameUser>");
+                              if (responseRemovingKey != null) {
                                 Fluttertoast.showToast(
                                     msg: loggingStatusResponse,
                                     toastLength: Toast.LENGTH_SHORT,

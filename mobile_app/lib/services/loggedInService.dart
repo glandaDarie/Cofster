@@ -1,7 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoggedInService {
-  LoggedInService();
+  LoggedInService._();
 
   static Future<String> changeLoggingStatus() async {
     try {
@@ -32,5 +32,55 @@ class LoggedInService {
       return "Error when trying to set default logging status, error: ${error}";
     }
     return "Successfully set default logging status";
+  }
+
+  static Future<String> setSharedPreferenceValue(String key,
+      {String nameUser}) async {
+    try {
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      if (key == "<keepMeLoggedIn>") {
+        preferences.setBool("keepMeLoggedIn", false);
+      } else if (key == "<nameUser>") {
+        preferences.setString("nameUser", nameUser);
+      } else {
+        return "Error, the key provided is invalid";
+      }
+    } catch (error) {
+      return "Error when trying to set default logging status, error: ${error}";
+    }
+    return null;
+  }
+
+  static Future<dynamic> getSharedPreferenceValue(String key) async {
+    dynamic value;
+    try {
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      if (key == "<keepMeLoggedIn>") {
+        value = preferences.getBool(key);
+      } else if (key == "<nameUser>") {
+        value = preferences.getString(key);
+      } else {
+        return "Error, the key provided is invalid";
+      }
+    } catch (error) {
+      return "Error when trying to get the value from ${key}, ${error}";
+    }
+    return value;
+  }
+
+  static Future<String> removeSharedPreferenceKey(String key) async {
+    try {
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      if (key == "<keepMeLoggedIn>") {
+        preferences.remove(key);
+      } else if (key == "<nameUser>") {
+        preferences.remove(key);
+      } else {
+        return "Error, the key provided is invalid";
+      }
+    } catch (error) {
+      return "Error when trying to remove the key: ${key}, ${error}";
+    }
+    return null;
   }
 }

@@ -268,7 +268,7 @@ class AuthController extends ValidateCredentialsService {
       Map<String, String> cache = fromStringCachetoMapCache(cacheStr);
       cacheNameValue = cache["name"];
       if (cacheNameValue == null) {
-        cacheNameValue = "User";
+        cacheNameValue = "Guest";
       }
     } catch (e) {
       return "Error loading name: ${e}";

@@ -22,6 +22,8 @@ import 'package:coffee_orderer/components/mainScreen/userImage.dart'
 import 'package:coffee_orderer/components/mainScreen/footerImage.dart'
     show buildFooterImage;
 import 'package:coffee_orderer/utils/appAssets.dart' show FooterImages;
+import 'package:coffee_orderer/services/loggedInService.dart'
+    show LoggedInService;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);
@@ -148,10 +150,17 @@ class _HomePageState extends State<HomePage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        FutureBuilder<String>(
-                          future: this.authController.loadName(),
+                        FutureBuilder<dynamic>(
+                          // future: this.authController.loadName(),
+                          future: () async {
+                            dynamic nameFromPreferences =
+                                await LoggedInService.getSharedPreferenceValue(
+                                    "<nameUser>");
+                            return nameFromPreferences ??
+                                this.authController.loadName();
+                          }(),
                           builder: (BuildContext context,
-                              AsyncSnapshot<String> snapshot) {
+                              AsyncSnapshot<dynamic> snapshot) {
                             if (snapshot.hasData) {
                               return Text(
                                 "Hello, ${snapshot.data}",

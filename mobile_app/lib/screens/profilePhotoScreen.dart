@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:coffee_orderer/controllers/AuthController.dart';
 import 'package:coffee_orderer/controllers/UserController.dart';
+import 'package:coffee_orderer/services/loggedInService.dart';
 import 'package:flutter/material.dart';
 import 'package:coffee_orderer/services/chooseUserPhotoService.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -126,8 +127,22 @@ class _ProfilePhotoPageState extends State<ProfilePhotoPage>
                   "photo": base64Photo,
                 };
                 await this.userController.uploadUsersPhotoToS3(content);
+
+                // save name of the person in shared preferences
+                String preferenceValueResponse =
+                    await LoggedInService.setSharedPreferenceValue("<nameUser>",
+                        nameUser: cache["name"]);
+                if (preferenceValueResponse != null) {
+                  Fluttertoast.showToast(
+                      msg: preferenceValueResponse.toString(),
+                      toastLength: Toast.LENGTH_SHORT,
+                      backgroundColor: Color.fromARGB(255, 71, 66, 65),
+                      textColor: Color.fromARGB(255, 220, 217, 216),
+                      fontSize: 16);
+                  return;
+                }
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) => QuestionnairePage()));
+                    builder: (BuildContext context) => QuestionnairePage()));
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
