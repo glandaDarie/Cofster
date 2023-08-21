@@ -3,27 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class LoggedInService {
   LoggedInService._();
 
-  // static Future<bool> getLoggingStatus() async {
-  //   SharedPreferences preferences = await SharedPreferences.getInstance();
-  //   return preferences.getBool("keepMeLoggedIn");
-  // }
-
-  // static Future<bool> checkIfLoggingStatusIsPresent() async {
-  //   SharedPreferences preferences = await SharedPreferences.getInstance();
-  //   return preferences.containsKey("keepMeLoggedIn");
-  // }
-
-  // static Future<String> setDefaultLoggingStatus() async {
-  //   try {
-  //     SharedPreferences preferences = await SharedPreferences.getInstance();
-  //     preferences.setBool("keepMeLoggedIn", false);
-  //   } catch (error) {
-  //     return "Error when trying to set default logging status, error: ${error}";
-  //   }
-  //   return "Successfully set default logging status";
-  // }
-
-  static Future<String> changeLoggingStatus() async {
+  static Future<String> changeSharedPreferenceLoggingStatus() async {
     try {
       SharedPreferences preferences = await SharedPreferences.getInstance();
       bool keepMeLoggedIn = !preferences.getBool("keepMeLoggedIn");
@@ -45,9 +25,9 @@ class LoggedInService {
     try {
       SharedPreferences preferences = await SharedPreferences.getInstance();
       if (key == "<keepMeLoggedIn>") {
-        preferences.setBool("keepMeLoggedIn", false);
+        preferences.setBool(key.substring(1, key.length - 1), false);
       } else if (key == "<nameUser>") {
-        preferences.setString("nameUser", nameUser);
+        preferences.setString(key.substring(1, key.length - 1), nameUser);
       } else {
         return "Error, the key provided is invalid";
       }
@@ -62,9 +42,9 @@ class LoggedInService {
     try {
       SharedPreferences preferences = await SharedPreferences.getInstance();
       if (key == "<keepMeLoggedIn>") {
-        value = preferences.getBool(key);
+        value = preferences.getBool(key.substring(1, key.length - 1));
       } else if (key == "<nameUser>") {
-        value = preferences.getString(key);
+        value = preferences.getString(key.substring(1, key.length - 1));
       } else {
         return "Error, the key provided is invalid";
       }
@@ -78,9 +58,9 @@ class LoggedInService {
     try {
       SharedPreferences preferences = await SharedPreferences.getInstance();
       if (key == "<keepMeLoggedIn>") {
-        preferences.remove(key);
+        preferences.remove(key.substring(1, key.length - 1));
       } else if (key == "<nameUser>") {
-        preferences.remove(key);
+        preferences.remove(key.substring(1, key.length - 1));
       } else {
         return "Error, the key provided is invalid";
       }

@@ -97,7 +97,8 @@ Widget profileInformation(BuildContext context, AuthController authController) {
                             }),
                             _buildProfileCard("Logout", Icons.logout, () async {
                               String loggingStatusResponse =
-                                  await LoggedInService.changeLoggingStatus();
+                                  await LoggedInService
+                                      .changeSharedPreferenceLoggingStatus();
                               if (loggingStatusResponse != null) {
                                 Fluttertoast.showToast(
                                     msg: loggingStatusResponse,
