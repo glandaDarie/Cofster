@@ -1,6 +1,5 @@
-import 'package:coffee_orderer/screens/authScreen.dart';
 import 'package:flutter/material.dart';
-// import 'package:coffee_orderer/screens/authScreen.dart';
+import 'package:coffee_orderer/screens/authScreen.dart';
 // import 'package:coffee_orderer/screens/questionnaireScreen.dart';
 // import 'package:coffee_orderer/screens/loginScreen.dart';
 import 'package:coffee_orderer/screens/mainScreen.dart';
@@ -27,8 +26,9 @@ void main() async {
         fontSize: 16);
     return;
   }
-  if (!(await LoggedInService.checkIfLoggingStatusIsPresent())) {
-    LoggedInService.setDefaultLoggingStatus();
+  if (!(await LoggedInService.checkSharedPreferenceExistence(
+      "<keepMeLoggedIn>"))) {
+    LoggedInService.setSharedPreferenceValue("<keepMeLoggedIn>");
   }
   NotificationService().initNotification("coffee_cappuccino");
   runApp(
@@ -46,7 +46,7 @@ class CofsterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: LoggedInService.getLoggingStatus(),
+        future: LoggedInService.getSharedPreferenceValue("<keepMeLoggedIn>"),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
             dynamic loggingStatusResponse = snapshot.data;
