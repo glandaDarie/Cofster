@@ -54,7 +54,18 @@ class _AuthPageState extends State<AuthPage> {
               primaryColor: Color.fromARGB(255, 140, 111, 81),
               accentColor: Color.fromARGB(255, 232, 233, 236)),
           onLogin: (LoginData data) async {
-            await LoggedInService.changeSharedPreferenceLoggingStatus();
+            String loggingStatusResponse =
+                await LoggedInService.changeSharedPreferenceLoggingStatus();
+            if (loggingStatusResponse != null) {
+              Fluttertoast.showToast(
+                  msg:
+                      "Problems when changing the logging status: ${loggingStatusResponse}",
+                  toastLength: Toast.LENGTH_SHORT,
+                  backgroundColor: Color.fromARGB(255, 102, 33, 12),
+                  textColor: Color.fromARGB(255, 220, 217, 216),
+                  fontSize: 16);
+              return null;
+            }
             return authController.authUser(data);
           },
           onSignup: (SignupData signupData) async {
@@ -107,7 +118,7 @@ class _AuthPageState extends State<AuthPage> {
             if (loggingStatusResponse != null) {
               Fluttertoast.showToast(
                   msg:
-                      "Problems when chaining the logging status: ${loggingStatusResponse}",
+                      "Problems when changing the logging status: ${loggingStatusResponse}",
                   toastLength: Toast.LENGTH_SHORT,
                   backgroundColor: Color.fromARGB(255, 102, 33, 12),
                   textColor: Color.fromARGB(255, 220, 217, 216),

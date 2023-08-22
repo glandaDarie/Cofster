@@ -16,8 +16,7 @@ class LoggedInService {
 
   static Future<bool> checkSharedPreferenceExistence(String key) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    key = key.substring(0, key.length);
-    return preferences.containsKey(key);
+    return preferences.containsKey(key.substring(1, key.length - 1));
   }
 
   static Future<String> setSharedPreferenceValue(String key,

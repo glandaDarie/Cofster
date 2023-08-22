@@ -12,6 +12,8 @@ import 'package:coffee_orderer/utils/catchPhrases.dart' show CatchPhrases;
 import 'package:coffee_orderer/screens/orderScreen.dart' show OrderPage;
 import 'package:coffee_orderer/controllers/AuthController.dart'
     show AuthController;
+import 'package:coffee_orderer/screens/helpAndSupportScreen.dart'
+    show HelpAndSupportPage;
 
 class ProfileInformationPage extends StatefulWidget {
   final void Function(int) callbackSelectedIndex;
@@ -37,7 +39,8 @@ class _ProfileInformationPageState extends State<ProfileInformationPage> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        _callbackSelectedIndex(0);
+        _callbackSelectedIndex(
+            0); // change animation on NavBar back to the deafult home screen
         Navigator.of(context).push(
             MaterialPageRoute(builder: (BuildContext context) => HomePage()));
         return;
@@ -117,6 +120,10 @@ class _ProfileInformationPageState extends State<ProfileInformationPage> {
                                     "Help & Support", Icons.privacy_tip_sharp,
                                     () {
                                   print("Help & Support");
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        HelpAndSupportPage(),
+                                  ));
                                 }),
                                 _buildProfileCard(
                                     "Invite a Friend", Icons.add_reaction_sharp,
@@ -171,134 +178,6 @@ class _ProfileInformationPageState extends State<ProfileInformationPage> {
         },
       ),
     );
-    // return Scaffold(
-    //     body: FutureBuilder<Uint8List>(
-    //   future: _authController.loadUserPhoto(),
-    //   builder: (BuildContext context, AsyncSnapshot snapshot) {
-    //     return MaterialApp(
-    //         debugShowCheckedModeBanner: false,
-    //         home: Scaffold(
-    //             body: Container(
-    //                 color: Colors.brown.shade700,
-    //                 child: Column(
-    //                   children: [
-    //                     SizedBox(
-    //                       height: 90,
-    //                     ),
-    //                     _buildUserImageInProfileInformation(snapshot),
-    //                     SizedBox(height: 15),
-    //                     FutureBuilder(
-    //                       future: Future.delayed(Duration(seconds: 3)).then(
-    //                           (_) => LoggedInService.getSharedPreferenceValue(
-    //                               "<nameUser>")),
-    //                       builder:
-    //                           (BuildContext context, AsyncSnapshot snapshot) {
-    //                         if (snapshot.connectionState ==
-    //                             ConnectionState.waiting) {
-    //                           return CircularProgressIndicator(
-    //                               color: Colors.brown,
-    //                               backgroundColor: Colors.white);
-    //                         } else if (snapshot.hasData) {
-    //                           return Center(
-    //                             child: Text(
-    //                               snapshot.data,
-    //                               style: TextStyle(
-    //                                   fontWeight: FontWeight.w900,
-    //                                   fontSize: 26,
-    //                                   color: Colors.white),
-    //                             ),
-    //                           );
-    //                         } else {
-    //                           return Center(
-    //                             child: Text(
-    //                               "Guest",
-    //                               style: TextStyle(
-    //                                   fontWeight: FontWeight.w900,
-    //                                   fontSize: 26,
-    //                                   color: Colors.white),
-    //                             ),
-    //                           );
-    //                           ;
-    //                         }
-    //                       },
-    //                     ),
-    //                     Center(
-    //                       child: Text(
-    //                         "@cofster",
-    //                         style: TextStyle(fontSize: 18, color: Colors.white),
-    //                       ),
-    //                     ),
-    //                     Expanded(
-    //                       child: ListView(
-    //                         children: [
-    //                           _buildProfileCard(
-    //                               "Orders In Progress", Icons.history_edu_sharp,
-    //                               () {
-    //                             Navigator.of(context).push(MaterialPageRoute(
-    //                               builder: (BuildContext context) =>
-    //                                   OrderPage(),
-    //                             ));
-    //                           }),
-    //                           _buildProfileCard(
-    //                               "Purchase History", Icons.history, () {
-    //                             print("Purchase History");
-    //                           }),
-    //                           _buildProfileCard(
-    //                               "Help & Support", Icons.privacy_tip_sharp,
-    //                               () {
-    //                             print("Help & Support");
-    //                           }),
-    //                           _buildProfileCard(
-    //                               "Invite a Friend", Icons.add_reaction_sharp,
-    //                               () async {
-    //                             await InvitieAFriendService
-    //                                 .displayCofsterLocationMap(
-    //                                     Paths.PATH_TO_COFSTER_LOCATION,
-    //                                     catchPhrase:
-    //                                         CatchPhrases.CATCH_PHRASE_COFSTER);
-    //                           }),
-    //                           _buildProfileCard("Logout", Icons.logout,
-    //                               () async {
-    //                             String loggingStatusResponse =
-    //                                 await LoggedInService
-    //                                     .changeSharedPreferenceLoggingStatus();
-    //                             if (loggingStatusResponse != null) {
-    //                               Fluttertoast.showToast(
-    //                                   msg: loggingStatusResponse,
-    //                                   toastLength: Toast.LENGTH_SHORT,
-    //                                   backgroundColor:
-    //                                       Color.fromARGB(255, 102, 33, 12),
-    //                                   textColor:
-    //                                       Color.fromARGB(255, 220, 217, 216),
-    //                                   fontSize: 16);
-    //                               return null;
-    //                             }
-    //                             String responseRemovingKey =
-    //                                 await LoggedInService
-    //                                     .removeSharedPreferenceKey(
-    //                                         "<nameUser>");
-    //                             if (responseRemovingKey != null) {
-    //                               Fluttertoast.showToast(
-    //                                   msg: loggingStatusResponse,
-    //                                   toastLength: Toast.LENGTH_SHORT,
-    //                                   backgroundColor:
-    //                                       Color.fromARGB(255, 102, 33, 12),
-    //                                   textColor:
-    //                                       Color.fromARGB(255, 220, 217, 216),
-    //                                   fontSize: 16);
-    //                               return null;
-    //                             }
-    //                             Navigator.of(context).push(MaterialPageRoute(
-    //                               builder: (BuildContext context) => AuthPage(),
-    //                             ));
-    //                           }),
-    //                         ],
-    //                       ),
-    //                     ),
-    //                   ],
-    //                 ))));
-    //   },
-    // ));
   }
 }
 

@@ -1,13 +1,10 @@
 import 'package:coffee_orderer/components/mainScreen/voiceDialog.dart';
-import 'package:coffee_orderer/controllers/AuthController.dart';
 import 'package:coffee_orderer/patterns/CoffeeCardSingleton.dart';
 import 'package:coffee_orderer/screens/profileInformationScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:coffee_orderer/components/mainScreen/badgeNumberOfFavorites.dart'
     show buildBadgeWidget;
-import 'package:coffee_orderer/components/mainScreen/profileInformation.dart'
-    show profileInformation;
 
 ValueListenableBuilder bottomNavigationBar(
     ValueNotifier<int> selectedIndexValueNotifier,
@@ -43,12 +40,6 @@ ValueListenableBuilder bottomNavigationBar(
           GestureDetector(
             onTap: () async {
               callbackSelectedIndex(1);
-              // Navigator.of(context).push(MaterialPageRoute(
-              //   builder: (BuildContext context) =>
-              //       profileInformation(context, AuthController()),
-              // ));
-
-              // change this from function to a new screen so I can use button back
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (BuildContext context) => ProfileInformationPage(
                       callbackSelectedIndex: callbackSelectedIndex)));
