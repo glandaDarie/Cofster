@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:coffee_orderer/utils/constants.dart' show PHONE_NUMBER;
+import 'package:coffee_orderer/utils/constants.dart'
+    show PHONE_NUMBER, EMAIL_ADDRESS;
 import 'package:url_launcher/url_launcher.dart';
 
 class HelpAndSupportPage extends StatelessWidget {
@@ -17,12 +18,19 @@ class HelpAndSupportPage extends StatelessWidget {
 }
 
 class _HelpAndSupportPageState extends StatelessWidget {
+  String encodeQueryParameters(Map<String, String> params) {
+    return params.entries
+        .map((MapEntry<String, String> e) =>
+            '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+        .join('&');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "      Help and Support",
+          "Help and Support",
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 24,
@@ -60,16 +68,12 @@ class _HelpAndSupportPageState extends StatelessWidget {
                 color: Colors.brown[800],
               ),
               title: Text(
-                "Email: cofster2023@outlook.com",
+                "Email: ${EMAIL_ADDRESS}",
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.brown[800],
                 ),
               ),
-              onTap: () {
-                // Open email client with pre-filled recipient
-                // You might need to use a package like 'url_launcher'
-              },
             ),
             ListTile(
               leading: Icon(
@@ -84,10 +88,9 @@ class _HelpAndSupportPageState extends StatelessWidget {
                 ),
               ),
               onTap: () async {
-                final UriLaunchCall = Uri(scheme: "tel", path: PHONE_NUMBER);
-                await launchUrl(UriLaunchCall);
-                // Initiate a phone call
-                // You might need to use a package like 'url_launcher'
+                final Uri UriLaunchSupportCall =
+                    Uri(scheme: "tel", path: PHONE_NUMBER);
+                await launchUrl(UriLaunchSupportCall);
               },
             ),
             SizedBox(height: 25),
@@ -111,6 +114,17 @@ class _HelpAndSupportPageState extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                // GestureDetector(
+                //     onTap: () async {
+                //       final Uri uriLaunchFacebookProfile =
+                //           Uri(path: "https://www.facebook.com/darie.glanda");
+                //       launchUrl(uriLaunchFacebookProfile);
+                //     },
+                //     child: FaIcon(
+                //       FontAwesomeIcons.facebook,
+                //       color: Colors.brown,
+                //       size: 40,
+                //     )),
                 FaIcon(
                   FontAwesomeIcons.facebook,
                   color: Colors.brown,
@@ -124,7 +138,7 @@ class _HelpAndSupportPageState extends StatelessWidget {
                 ),
                 SizedBox(width: 40),
                 FaIcon(
-                  FontAwesomeIcons.twitter,
+                  FontAwesomeIcons.reddit,
                   color: Colors.brown,
                   size: 40,
                 ),
