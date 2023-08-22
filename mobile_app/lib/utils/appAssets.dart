@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class AppAssets {
   static HomePageAssets homePageAssets = const HomePageAssets();
   static PeopleAssets peopleAssets = const PeopleAssets();

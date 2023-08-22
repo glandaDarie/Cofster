@@ -16,6 +16,7 @@
     <data android:scheme="mailto" />
      <!-- <action android:name="android.speech.RecognitionService" /> -->
   </intent>
+
 </queries>
    <application
         android:label="mobile_app"
