@@ -8,6 +8,12 @@ class OrderInformation {
   String _coffeeOrderTime;
   String _coffeeEstimationTime;
 
+  String _coffeeCupSize;
+  String _coffeeTemperature;
+  int _numberOfSugarCubes;
+  int _numberOfIceCubes;
+  bool _hasCream;
+
   OrderInformation(
       this._keyId,
       this._coffeeName,
@@ -27,6 +33,12 @@ class OrderInformation {
   String get coffeeOrderTime => this._coffeeOrderTime;
   String get coffeeEstimationTime => this._coffeeEstimationTime;
 
+  String get coffeeCupSize => this._coffeeCupSize;
+  String get coffeeTemperature => this._coffeeTemperature;
+  int get numberOfSugarCubes => this._numberOfSugarCubes;
+  int get numberOfIceCubes => this._numberOfIceCubes;
+  bool get hasCream => this._hasCream;
+
   void set keyId(String keyId) => this._keyId = keyId;
   void set coffeeName(String coffeeName) => this._coffeeName = coffeeName;
   void set coffeePrice(String coffeePrice) => this._coffeePrice = coffeePrice;
@@ -38,6 +50,16 @@ class OrderInformation {
       this._coffeeOrderTime = coffeeOrderTime;
   void set coffeeEstimationTime(String coffeeEstimationTime) =>
       this._coffeeEstimationTime = coffeeEstimationTime;
+
+  void set coffeeCupSize(String coffeeCupSize) =>
+      this._coffeeCupSize = coffeeCupSize;
+  void set coffeeTemperature(String coffeeTemperature) =>
+      this._coffeeTemperature = coffeeTemperature;
+  void set numberOfSugarCubes(int numberOfSugarCubes) =>
+      this._numberOfSugarCubes = numberOfSugarCubes;
+  void set numberOfIceCubes(int numberOfIceCubes) =>
+      this._numberOfIceCubes = numberOfIceCubes;
+  void set hasCream(bool hasCream) => this._hasCream = hasCream;
 
   @override
   String toString() {
