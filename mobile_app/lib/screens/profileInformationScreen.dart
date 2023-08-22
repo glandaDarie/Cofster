@@ -40,7 +40,7 @@ class _ProfileInformationPageState extends State<ProfileInformationPage> {
     return WillPopScope(
       onWillPop: () async {
         _callbackSelectedIndex(
-            0); // change animation on NavBar back to the deafult home screen
+            0); // change animation on NavBar back to the default HomePage
         Navigator.of(context).push(
             MaterialPageRoute(builder: (BuildContext context) => HomePage()));
         return;
@@ -119,7 +119,6 @@ class _ProfileInformationPageState extends State<ProfileInformationPage> {
                                 _buildProfileCard(
                                     "Help & Support", Icons.privacy_tip_sharp,
                                     () {
-                                  print("Help & Support");
                                   Navigator.of(context).push(MaterialPageRoute(
                                     builder: (BuildContext context) =>
                                         HelpAndSupportPage(),
