@@ -18,13 +18,6 @@ class HelpAndSupportPage extends StatelessWidget {
 }
 
 class _HelpAndSupportPageState extends StatelessWidget {
-  String encodeQueryParameters(Map<String, String> params) {
-    return params.entries
-        .map((MapEntry<String, String> e) =>
-            '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
-        .join('&');
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

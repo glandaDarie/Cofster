@@ -22,7 +22,12 @@ class OrderInformation {
       this._communication,
       this._coffeeStatus,
       this._coffeeOrderTime,
-      this._coffeeEstimationTime);
+      this._coffeeEstimationTime,
+      this._coffeeCupSize,
+      this._coffeeTemperature,
+      this._numberOfSugarCubes,
+      this._numberOfIceCubes,
+      this._hasCream);
 
   String get keyId => this._keyId;
   String get coffeeName => this._coffeeName;

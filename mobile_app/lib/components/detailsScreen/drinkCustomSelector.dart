@@ -34,6 +34,11 @@ import 'package:provider/provider.dart';
 SizedBox customizeDrink(BuildContext context,
     ValueNotifier<bool> placedOrderNotifier, PaymentService paymentService) {
   int _quantityCount = 1;
+  String _coffeeCupSize;
+  String _coffeeTemperature;
+  int _numberOfSugarCubes;
+  int _numberOfIceCubes;
+  bool _hasCream;
   double _price;
   ValueNotifier<int> valueQuantityNotifier = ValueNotifier<int>(1);
   ValueNotifier<String> selectedSizeNotifier = ValueNotifier<String>("M");
@@ -203,7 +208,8 @@ SizedBox customizeDrink(BuildContext context,
                         builder: (BuildContext context,
                             MergeNotifiers notifiers, Widget child) {
                           final int quantityCount = notifiers.quantity;
-                          final String selectedValue = notifiers.selectedValue;
+                          final String selectedCoffeeSize =
+                              notifiers.selectedValue;
                           final int sugarCubes = notifiers.sugarQuantity;
                           final int iceCubes = notifiers.iceQuantity;
                           final int hasCream = notifiers.creamNotifier;
@@ -211,10 +217,16 @@ SizedBox customizeDrink(BuildContext context,
                           _price = DEFAULT_PRICE;
                           _price = (_price *
                                   quantityCount *
-                                  sizes[selectedValue]) +
+                                  sizes[selectedCoffeeSize]) +
                               ((sugarCubes - 1) * additionalTopings["sugar"]) +
                               ((iceCubes - 1) * additionalTopings["ice"]) +
                               (hasCream == 1 ? additionalTopings["cream"] : 0);
+                          _coffeeCupSize = selectedCoffeeSize;
+                          _coffeeTemperature =
+                              "Cold"; // machine will be made initialy just for cold drinks
+                          _numberOfSugarCubes = sugarCubes;
+                          _numberOfIceCubes = iceCubes;
+                          _hasCream = hasCream == 1 ? true : false;
                           return Text("\$${_price.toStringAsFixed(2)}",
                               style: TextStyle(
                                       fontFamily: 'varela',
@@ -289,7 +301,12 @@ SizedBox customizeDrink(BuildContext context,
                         "coffeeStatus": CoffeeOrderState.ORDER_PLACED.index,
                         "coffeeOrderTime": timeOfOrder(),
                         "coffeeFinishTimeEstimation": timeOfOrder(
-                            secondsDelay: preparationTime * _quantityCount)
+                            secondsDelay: preparationTime * _quantityCount),
+                        "coffeeCupSize": _coffeeCupSize,
+                        "coffeeTemperature": _coffeeTemperature,
+                        "numberOfSugarCubes": _numberOfSugarCubes,
+                        "numberOfIceCubes": _numberOfIceCubes,
+                        "hasCream": _hasCream
                       });
                       if (postOrderResponse != null) {
                         Fluttertoast.showToast(

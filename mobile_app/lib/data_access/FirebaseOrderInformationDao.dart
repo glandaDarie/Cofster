@@ -39,14 +39,25 @@ class FirebaseOrderInformationDao {
               order["coffeeStatus"],
               order["coffeeOrderTime"],
               order["coffeeFinishTimeEstimation"],
+              order.containsKey("coffeeCupSize")
+                  ? order["coffeeCupSize"]
+                  : null,
+              order.containsKey("coffeeTemperature")
+                  ? order["coffeeTemperature"]
+                  : null,
+              order.containsKey("numberOfSugarCubes")
+                  ? order["numberOfSugarCubes"]
+                  : null,
+              order.containsKey("numberOfIceCubes")
+                  ? order["numberOfIceCubes"]
+                  : null,
+              order.containsKey("hasCream") ? order["hasCream"] : null,
             ))
         .toList();
   }
 
   static Future<String> postOrderToOrdersInformation(
       String endpoint, Map<String, dynamic> content) async {
-    print("content: ${content}");
-    print("endpoint: ${endpoint}");
     try {
       DatabaseReference reference = FirebaseDatabase.instance
           .ref()
@@ -57,7 +68,7 @@ class FirebaseOrderInformationDao {
             checkPassword: false,
             specialChar: false,
           )}");
-      await reference.set({
+      Map<String, dynamic> orderData = {
         "coffeeName": content["coffeeName"],
         "coffeePrice": content["coffeePrice"],
         "quantity": content["quantity"],
@@ -65,7 +76,19 @@ class FirebaseOrderInformationDao {
         "coffeeStatus": content["coffeeStatus"],
         "coffeeOrderTime": content["coffeeOrderTime"],
         "coffeeFinishTimeEstimation": content["coffeeFinishTimeEstimation"],
-      });
+      };
+      if (content.length > 7) {
+        // checks if the card is a flash card or normal card (the back of the card)
+        orderData = {
+          ...orderData,
+          "coffeeCupSize": content["coffeeCupSize"],
+          "coffeeTemperature": content["coffeeTemperature"],
+          "numberOfSugarCubes": content["numberOfSugarCubes"],
+          "numberOfIceCubes": content["numberOfIceCubes"],
+          "hasCream": content["hasCream"]
+        };
+      }
+      await reference.set(orderData);
     } catch (error) {
       return "Error when inserting data into firebase: ${error}";
     }
