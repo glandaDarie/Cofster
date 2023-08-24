@@ -81,6 +81,7 @@ class _DetailsPageState extends State<DetailsPage> {
         } else if (snapshotPreviousScreenData.hasData) {
           dynamic coffeeName =
               snapshotPreviousScreenData.data.replaceAll(" ", "");
+          print("coffeeName: ${coffeeName}");
           return FutureBuilder<Information>(
               future: this
                   .drinkInformationController

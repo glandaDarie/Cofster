@@ -10,6 +10,8 @@ import 'package:coffee_orderer/components/orderScreen/frontOfCard.dart'
     show buildFrontCardContent;
 import 'package:coffee_orderer/components/orderScreen/backOfCard.dart'
     show buildBackCardContent;
+import 'package:coffee_orderer/utils/coffeeNameToClassConvertor.dart'
+    show coffeeNameToClassKey;
 
 class OrderPage extends StatefulWidget {
   @override
@@ -48,14 +50,14 @@ class _OrderPageState extends State<OrderPage> {
 
   @override
   Widget build(BuildContext context) {
-    final reference = FirebaseDatabase.instance.ref().child('Orders');
+    final reference = FirebaseDatabase.instance.ref().child("Orders");
     return Consumer<UpdateProvider>(
       builder:
           (BuildContext context, UpdateProvider updateProvider, Widget child) {
         return Scaffold(
           appBar: AppBar(
             title: const Text(
-              '            Orders',
+              "            Orders",
               style: TextStyle(
                 fontSize: 30,
                 color: Colors.white,
@@ -73,14 +75,18 @@ class _OrderPageState extends State<OrderPage> {
               String parsedCoffeeInformation = coffeeInfromation
                   .replaceAll(
                       RegExp(
-                          "{|}|coffeeFinishTimeEstimation: |coffeeName: |coffeeOrderTime: |coffeePrice: |coffeeStatus: |communication: |quantity: "),
+                          "{|}|coffeeCupSize: |coffeeFinishTimeEstimation: |coffeeName: |coffeeOrderTime: |coffeePrice: |coffeeStatus: |coffeeTemperature: |communication: |hasCream: |numberOfIceCubes: |numberOfSugarCubes: |quantity: "),
                       "")
                   .trim();
               this._orderList = parsedCoffeeInformation.split(",");
+              this._orderList[2] =
+                  coffeeNameToClassKey(this._orderList[2]).toLowerCase();
               CoffeeType coffeeType = CoffeeType.values.firstWhere(
                   (CoffeeType type) =>
-                      type.index == classes[this._orderList[0].toLowerCase()],
+                      type.index == classes[this._orderList[2]],
                   orElse: () => null);
+              this._orderList[2] = this._orderList[2][0].toUpperCase() +
+                  this._orderList[2].substring(1);
               return GestureDetector(
                 onTap: () {
                   _flipCard(index);
