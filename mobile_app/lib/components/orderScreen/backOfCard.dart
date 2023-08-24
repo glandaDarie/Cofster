@@ -42,7 +42,10 @@ Row buildBackCardContent(List<dynamic> orderList, CoffeeType coffeeType) {
             ),
             SizedBox(height: 8),
             Text(
-              "     Temperature: ${orderList[0]}\n     Cream: ${orderList[1]}\n     Sugar cubes: ${orderList[7]}\n     Ice cubes: ${orderList[4]}",
+              "     Temperature: ${orderList[0]}\n"
+              "     Cream: ${orderList[1].trim() == 'true' ? 'Yes' : 'No'}\n"
+              "     Sugar cubes: ${orderList[7]}\n"
+              "     Ice cubes: ${orderList[4]}",
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16,

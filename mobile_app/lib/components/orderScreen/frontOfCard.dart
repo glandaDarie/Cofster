@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:coffee_orderer/utils/cardProperties.dart' show coffeeImagePaths;
 import 'package:coffee_orderer/enums/coffeeTypes.dart' show CoffeeType;
+import 'package:coffee_orderer/enums/orderStatusTypes.dart'
+    show CoffeeOrderState;
 
 Row buildFrontCardContent(List<dynamic> orderList, CoffeeType coffeeType) {
   return Row(
@@ -17,7 +19,7 @@ Row buildFrontCardContent(List<dynamic> orderList, CoffeeType coffeeType) {
           ),
         ),
       ),
-      SizedBox(width: 16),
+      const SizedBox(width: 16),
       Expanded(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -31,9 +33,14 @@ Row buildFrontCardContent(List<dynamic> orderList, CoffeeType coffeeType) {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(
-              "Price: ${orderList[10]}\nQuantity: ${orderList[3]}\nSize: ${orderList[5]}\nCoffee Status: ${orderList[8]}\nOrder Placed: ${orderList[11]}\nEstimated Order: ${orderList[6]}",
+              "Price: ${orderList[10]}\n"
+              "Quantity: ${orderList[3]}\n"
+              "Size: ${orderList[5]}\n"
+              "Coffee Status: ${CoffeeOrderState.values[int.parse(orderList[8])].toString().split('.').last.split('_').join(' ')}\n"
+              "Order Placed: ${orderList[11]}\n"
+              "Estimated Order: ${orderList[6]}",
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16,
