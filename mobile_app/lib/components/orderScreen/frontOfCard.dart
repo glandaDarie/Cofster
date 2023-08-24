@@ -24,7 +24,7 @@ Row buildFrontCardContent(List<dynamic> orderList, CoffeeType coffeeType) {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              "${orderList[0]}",
+              "${orderList[2]}",
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 20,
@@ -33,7 +33,7 @@ Row buildFrontCardContent(List<dynamic> orderList, CoffeeType coffeeType) {
             ),
             SizedBox(height: 8),
             Text(
-              "Quantity: ${orderList[1]}\nEstimated Order: ${orderList[2]}\nCoffee Status: ${orderList[3]}\nPrice: ${orderList[5]}\nOrder Placed: ${orderList[6]}",
+              "Price: ${orderList[10]}\nQuantity: ${orderList[3]}\nSize: ${orderList[5]}\nCoffee Status: ${orderList[8]}\nOrder Placed: ${orderList[11]}\nEstimated Order: ${orderList[6]}",
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16,

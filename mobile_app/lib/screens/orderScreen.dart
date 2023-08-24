@@ -100,7 +100,7 @@ class _OrderPageState extends State<OrderPage> {
                       color: Colors.brown.shade400,
                     ),
                     child: _isCardFlipped(index)
-                        ? buildBackCardContent()
+                        ? buildBackCardContent(this._orderList, coffeeType)
                         : buildFrontCardContent(this._orderList, coffeeType)),
               );
             },

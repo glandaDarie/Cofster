@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:coffee_orderer/utils/localUserInformation.dart';
 import 'package:coffee_orderer/components/detailsScreen/drinkCustomSelector.dart'
     show customizeDrink;
-import '../components/detailsScreen/ratingBar.dart';
+import 'package:coffee_orderer/components/detailsScreen/ratingBar.dart';
 import 'package:coffee_orderer/models/information.dart';
 import 'package:coffee_orderer/controllers/IngredientController.dart'
     show IngredientController;
@@ -81,7 +81,6 @@ class _DetailsPageState extends State<DetailsPage> {
         } else if (snapshotPreviousScreenData.hasData) {
           dynamic coffeeName =
               snapshotPreviousScreenData.data.replaceAll(" ", "");
-          print("coffeeName: ${coffeeName}");
           return FutureBuilder<Information>(
               future: this
                   .drinkInformationController
