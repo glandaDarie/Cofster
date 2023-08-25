@@ -244,7 +244,6 @@ SizedBox customizeDrink(BuildContext context,
                       String cacheStr = await loadUserInformationFromCache();
                       Map<String, String> cache =
                           fromStringCachetoMapCache(cacheStr);
-                      print("Local storage cache: ${cache}");
                       String paymentResponse = await paymentService.makePayment(
                           context,
                           (_price * 100).toInt().toStringAsFixed(0),
@@ -273,11 +272,16 @@ SizedBox customizeDrink(BuildContext context,
                         title: title,
                         body: body,
                       );
+                      String coffeeName = cache["cardCoffeeName"]
+                          .split("-")
+                          .map((String word) =>
+                              "${word[0].toUpperCase()}${word.substring(1)}")
+                          .toList()
+                          .join();
                       DrinksInformationController drinkInformationController =
                           DrinksInformationController();
                       Information information = await drinkInformationController
-                          .getInformationFromRespectiveDrink(
-                              cache["cardCoffeeName"]);
+                          .getInformationFromRespectiveDrink(coffeeName);
                       int preparationTime;
                       try {
                         preparationTime = int.parse(
@@ -294,7 +298,7 @@ SizedBox customizeDrink(BuildContext context,
                       String postOrderResponse =
                           await OrderInformationController
                               .postOrderToOrdersInformation("Orders", {
-                        "coffeeName": cache["cardCoffeeName"],
+                        "coffeeName": coffeeName,
                         "coffeePrice": "${_price.toStringAsFixed(2)}\$",
                         "quantity": _quantityCount,
                         "communication": "broadcast",
