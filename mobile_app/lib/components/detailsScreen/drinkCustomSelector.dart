@@ -12,7 +12,7 @@ import 'package:coffee_orderer/utils/boxProperties.dart'
     show sizes, additionalTopings;
 import 'package:coffee_orderer/services/mergeNotifierService.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import '../../utils/localUserInformation.dart';
+import 'package:coffee_orderer/utils/localUserInformation.dart';
 import 'package:coffee_orderer/services/paymentService.dart'
     show PaymentService;
 import 'package:coffee_orderer/utils/appAssets.dart' show AppAssets;
