@@ -14,17 +14,15 @@ class AuthPage extends StatefulWidget {
 }
 
 class _AuthPageState extends State<AuthPage> {
-  AuthController authController;
-  final TextEditingController nameController = TextEditingController();
-  String name;
+  AuthController _authController;
+  String _name;
 
   _AuthPageState() {
-    this.authController = AuthController();
+    this._authController = AuthController();
   }
 
   @override
   void dispose() {
-    nameController.dispose();
     super.dispose();
   }
 
@@ -39,17 +37,17 @@ class _AuthPageState extends State<AuthPage> {
                 keyName: "1",
                 displayName: "Name",
                 icon: Icon(Icons.person),
-                fieldValidator: this.authController.validateNameSurname,
+                fieldValidator: this._authController.validateNameSurname,
                 userType: LoginUserType.name),
             UserFormField(
                 keyName: "2",
                 displayName: "Surname",
                 icon: Icon(Icons.person),
-                fieldValidator: this.authController.validateNameSurname,
+                fieldValidator: this._authController.validateNameSurname,
                 userType: LoginUserType.name),
           ],
           scrollable: true,
-          logo: AssetImage('assets/images/cold_coffee.jpg'),
+          logo: AssetImage("assets/images/cold_coffee.jpg"),
           theme: LoginTheme(
               primaryColor: Color.fromARGB(255, 140, 111, 81),
               accentColor: Color.fromARGB(255, 232, 233, 236)),
@@ -66,7 +64,7 @@ class _AuthPageState extends State<AuthPage> {
                   fontSize: 16);
               return null;
             }
-            return authController.authUser(data);
+            return this._authController.authUser(data);
           },
           onSignup: (SignupData signupData) async {
             // comment for easier debugging in the code
@@ -76,19 +74,20 @@ class _AuthPageState extends State<AuthPage> {
             //   return uniqueUsernameResponse;
             // }
             setState(() {
-              name = signupData.additionalSignupData["1"];
+              _name = signupData.additionalSignupData["1"];
             });
             String surname = signupData.additionalSignupData["2"];
-            String response =
-                await authController.signupUser(signupData, name, surname);
+            String response = await this
+                ._authController
+                .signupUser(signupData, _name, surname);
             storeUserInformationInCache({"code": response});
             return null;
           },
-          userValidator: this.authController.validateUsername,
-          passwordValidator: this.authController.validatePassword,
+          userValidator: this._authController.validateUsername,
+          passwordValidator: this._authController.validatePassword,
           onSubmitAnimationCompleted: () async {
             String errorMsg =
-                await this.authController.loginCompletedSuccessfully();
+                await this._authController.loginCompletedSuccessfully();
             if (errorMsg != null) {
               Fluttertoast.showToast(
                   msg:
@@ -104,15 +103,15 @@ class _AuthPageState extends State<AuthPage> {
           },
           onConfirmSignup: (String verificationCode, LoginData data) async {
             String response = await this
-                .authController
+                ._authController
                 .compareVerificationCode(verificationCode);
             if (response != null) {
               return "Code is not written correctly";
             }
-            if (name == null) {
+            if (_name == null) {
               return "Name is not written correctly";
             }
-            await this.authController.singupCompletedSuccessfully(name, data);
+            await this._authController.singupCompletedSuccessfully(_name, data);
             String loggingStatusResponse =
                 await LoggedInService.changeSharedPreferenceLoggingStatus();
             if (loggingStatusResponse != null) {
@@ -131,11 +130,11 @@ class _AuthPageState extends State<AuthPage> {
           },
           onResendCode: (SignupData signupData) async {
             String response =
-                await this.authController.sendEmail(signupData.name);
+                await this._authController.sendEmail(signupData.name);
             storeUserInformationInCache({"code": response});
             return null;
           },
-          onRecoverPassword: this.authController.recoverPassword,
+          onRecoverPassword: this._authController.recoverPassword,
         ),
       ),
     );

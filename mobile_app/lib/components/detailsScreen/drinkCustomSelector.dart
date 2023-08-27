@@ -321,6 +321,7 @@ SizedBox customizeDrink(BuildContext context,
                             fontSize: 16);
                         return;
                       }
+                      // needs to appear on the main page after some time you had the order (give reference back from the drink selected after loading that page)
                       Provider.of<UpdateProvider>(context, listen: false)
                           .triggerUpdate();
                       Future.delayed(Duration(seconds: 30), () {
