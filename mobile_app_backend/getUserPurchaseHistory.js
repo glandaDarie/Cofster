@@ -16,28 +16,29 @@ exports.handler = async (event) => {
   
   const getParams = {
     TableName: TABLE_NAME
-  };
+	};
 	
   try {
         const database = new AWS.DynamoDB.DocumentClient({region: REGION});
-        const scanResult = await database.scan(getParams).promise();
-        const emails = scanResult.Items[0]["emails"];
-        
-        for(let i = 0; i < emails.length; ++i) {
-            if(emails[i]["email"] === requestBody["email"]) {
-                return {
-                    statusCode: 200,
-                    body: {
-                    email: requestBody["email"],
-                    orderInformation: emails[i]["orderInformation"]
-                    }
-                };
-            }
-        }
-        return {
-            statusCode: 404,
-		    body: "No order information found for the user"
-        }
+	    const scanResult = await database.scan(getParams).promise();
+	    const emails = scanResult.Items[0]["emails"];
+	    
+	    for(let i = 0; i < emails.length; ++i) {
+	      if(emails[i]["email"] === requestBody["email"]) {
+	        return {
+	          statusCode: 200,
+	          body: {
+	            email: requestBody["email"],
+	            positionFound: +i,
+	            orderInformation: emails[i]["orderInformation"]
+	          }
+	        };
+	      }
+	    }
+	    return {
+	      statusCode: 404,
+	      body: "No order information found for the user"
+	    }
     } catch(error) {
         return {
             statusCode: 500,
