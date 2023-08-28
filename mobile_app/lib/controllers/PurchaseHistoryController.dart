@@ -1,0 +1,27 @@
+import 'package:coffee_orderer/data_access/DynamoDBPurchaseHistoryDao.dart';
+import 'package:coffee_orderer/data_transfer/PurchaseHistoryDto.dart'
+    show PurchaseHistoryDto;
+import 'package:coffee_orderer/services/urlService.dart';
+
+class PurchaseHistoryController {
+  UrlService _urlServicePurchase;
+  String _urlPurchase;
+  DynamoDBPurchaseHistoryDao _userDaoPurchase;
+
+  Future<PurchaseHistoryDto> getUsersPurchaseHistory(String email) async {
+    this._urlServicePurchase = UrlService("url", "endpoint", {
+      email: email
+    }); // path and endpoint will be added once I create the API Gateway in AWS
+    this._urlPurchase = this._urlServicePurchase.createUrl();
+    this._userDaoPurchase = DynamoDBPurchaseHistoryDao(this._urlPurchase);
+    return await this._userDaoPurchase.getUsersPurchaseHistory(email);
+  }
+
+  Future<String> postUsersPurchase(
+      PurchaseHistoryDto purchaseHistoryDto) async {
+    this._urlServicePurchase = UrlService("url", "endpoint");
+    this._urlPurchase = this._urlServicePurchase.createUrl();
+    this._userDaoPurchase = DynamoDBPurchaseHistoryDao(this._urlPurchase);
+    return await this._userDaoPurchase.postUsersPurchase(purchaseHistoryDto);
+  }
+}

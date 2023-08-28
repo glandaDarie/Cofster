@@ -5,7 +5,7 @@ import 'package:coffee_orderer/controllers/AuthController.dart';
 import 'package:coffee_orderer/controllers/QuestionnaireController.dart';
 import 'package:coffee_orderer/models/card.dart';
 import 'package:flutter/material.dart';
-import '../utils/coffeeFunFact.dart';
+import 'package:coffee_orderer/utils/coffeeFunFact.dart';
 import 'package:coffee_orderer/components/mainScreen/navigationBar.dart';
 import 'package:coffee_orderer/components/mainScreen/popupFreeDrink.dart'
     show showPopup;

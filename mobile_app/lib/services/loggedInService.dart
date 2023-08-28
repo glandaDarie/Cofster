@@ -20,13 +20,15 @@ class LoggedInService {
   }
 
   static Future<String> setSharedPreferenceValue(String key,
-      {String nameUser}) async {
+      {String value}) async {
     try {
       SharedPreferences preferences = await SharedPreferences.getInstance();
       if (key == "<keepMeLoggedIn>") {
         preferences.setBool(key.substring(1, key.length - 1), false);
       } else if (key == "<nameUser>") {
-        preferences.setString(key.substring(1, key.length - 1), nameUser);
+        preferences.setString(key.substring(1, key.length - 1), value);
+      } else if (key == "<username>") {
+        preferences.setString(key.substring(1, key.length - 1), value);
       } else {
         return "Error, the key provided is invalid";
       }
@@ -44,6 +46,8 @@ class LoggedInService {
         value = preferences.getBool(key.substring(1, key.length - 1));
       } else if (key == "<nameUser>") {
         value = preferences.getString(key.substring(1, key.length - 1));
+      } else if (key == "<username>") {
+        value = preferences.getString(key.substring(1, key.length - 1));
       } else {
         return "Error, the key provided is invalid";
       }
@@ -59,6 +63,8 @@ class LoggedInService {
       if (key == "<keepMeLoggedIn>") {
         preferences.remove(key.substring(1, key.length - 1));
       } else if (key == "<nameUser>") {
+        preferences.remove(key.substring(1, key.length - 1));
+      } else if (key == "<username>") {
         preferences.remove(key.substring(1, key.length - 1));
       } else {
         return "Error, the key provided is invalid";

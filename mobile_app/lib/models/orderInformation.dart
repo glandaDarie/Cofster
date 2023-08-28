@@ -7,7 +7,6 @@ class OrderInformation {
   int _coffeeStatus;
   String _coffeeOrderTime;
   String _coffeeEstimationTime;
-
   String _coffeeCupSize;
   String _coffeeTemperature;
   int _numberOfSugarCubes;
@@ -37,7 +36,6 @@ class OrderInformation {
   int get coffeStatus => this._coffeeStatus;
   String get coffeeOrderTime => this._coffeeOrderTime;
   String get coffeeEstimationTime => this._coffeeEstimationTime;
-
   String get coffeeCupSize => this._coffeeCupSize;
   String get coffeeTemperature => this._coffeeTemperature;
   int get numberOfSugarCubes => this._numberOfSugarCubes;
@@ -55,7 +53,6 @@ class OrderInformation {
       this._coffeeOrderTime = coffeeOrderTime;
   void set coffeeEstimationTime(String coffeeEstimationTime) =>
       this._coffeeEstimationTime = coffeeEstimationTime;
-
   void set coffeeCupSize(String coffeeCupSize) =>
       this._coffeeCupSize = coffeeCupSize;
   void set coffeeTemperature(String coffeeTemperature) =>

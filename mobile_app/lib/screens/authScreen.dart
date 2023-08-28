@@ -64,12 +64,28 @@ class _AuthPageState extends State<AuthPage> {
                   fontSize: 16);
               return null;
             }
+            const String usernameKey = "<username>";
+            String setUsernameStatusResponse =
+                await LoggedInService.setSharedPreferenceValue(usernameKey,
+                    value: data.name);
+            if (setUsernameStatusResponse != null) {
+              Fluttertoast.showToast(
+                msg: "Problems when setting the key: "
+                    "${usernameKey.substring(1, usernameKey.length - 1)} to : ${data.name}, "
+                    "error: ${setUsernameStatusResponse}",
+                toastLength: Toast.LENGTH_SHORT,
+                backgroundColor: Color.fromARGB(255, 102, 33, 12),
+                textColor: Color.fromARGB(255, 220, 217, 216),
+                fontSize: 16,
+              );
+              return null;
+            }
             return this._authController.authUser(data);
           },
           onSignup: (SignupData signupData) async {
             // comment for easier debugging in the code
             // String uniqueUsernameResponse =
-            //     await authController.usernameUniqueOnSingup(signupData.name);
+            //     await this._authController.usernameUniqueOnSingup(signupData.name);
             // if (uniqueUsernameResponse != null) {
             //   return uniqueUsernameResponse;
             // }

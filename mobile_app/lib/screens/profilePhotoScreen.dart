@@ -131,7 +131,7 @@ class _ProfilePhotoPageState extends State<ProfilePhotoPage>
                 // save name of the person in shared preferences
                 String preferenceValueResponse =
                     await LoggedInService.setSharedPreferenceValue("<nameUser>",
-                        nameUser: cache["name"]);
+                        value: cache["name"]);
                 if (preferenceValueResponse != null) {
                   Fluttertoast.showToast(
                       msg: preferenceValueResponse.toString(),
