@@ -19,7 +19,7 @@ exports.handler = async (event) => {
 	};
 	
   try {
-        const database = new AWS.DynamoDB.DocumentClient({region: REGION});
+      const database = new AWS.DynamoDB.DocumentClient({region: REGION});
 	    const scanResult = await database.scan(getParams).promise();
 	    const emails = scanResult.Items[0]["emails"];
 	    
@@ -35,7 +35,14 @@ exports.handler = async (event) => {
 	        };
 	      }
 	    }
-	    return {
+	    
+	    return requestBody["showOrderHistory"] === 1 ? 
+	    {
+	      statusCode: 404,
+	      showOrderHistory: scanResult.Items,
+	      body: "No order information found for the user"
+	    } : 
+	    {
 	      statusCode: 404,
 	      body: "No order information found for the user"
 	    }

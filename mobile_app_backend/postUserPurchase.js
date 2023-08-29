@@ -80,7 +80,6 @@ exports.handler = async (event) => {
         body: "Could not add new purchase to purchase history, error: " + error,
       };
     }
-    
     return {
       statusCode: 201,
       body: "Successfully added new purchase to purchase history",
