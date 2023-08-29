@@ -9,9 +9,10 @@ class PurchaseHistoryController {
   DynamoDBPurchaseHistoryDao _userDaoPurchase;
 
   Future<PurchaseHistoryDto> getUsersPurchaseHistory(final String email) async {
-    this._urlServicePurchase = UrlService("url", "endpoint", {
-      email: email
-    }); // path and endpoint will be added once I create the API Gateway in AWS
+    this._urlServicePurchase = UrlService(
+        "https://24qmzbehi3.execute-api.us-east-1.amazonaws.com/prod/",
+        "purchase",
+        {email: email});
     this._urlPurchase = this._urlServicePurchase.createUrl();
     this._userDaoPurchase = DynamoDBPurchaseHistoryDao(this._urlPurchase);
     return await this._userDaoPurchase.getUsersPurchaseHistory();
@@ -19,7 +20,7 @@ class PurchaseHistoryController {
 
   Future<String> postUsersPurchase(
       PurchaseHistoryDto purchaseHistoryDto) async {
-    this._urlServicePurchase = UrlService("url", "endpoint");
+    this._urlServicePurchase = UrlService("url", "endpoint"); //dummy for now
     this._urlPurchase = this._urlServicePurchase.createUrl();
     this._userDaoPurchase = DynamoDBPurchaseHistoryDao(this._urlPurchase);
     return await this._userDaoPurchase.postUsersPurchase(purchaseHistoryDto);
