@@ -10,7 +10,7 @@ class DynamoDBPurchaseHistoryDao {
 
   DynamoDBPurchaseHistoryDao(String url) : this._url = url.trim();
 
-  Future<PurchaseHistoryDto> getUsersPurchaseHistory(final String email) async {
+  Future<PurchaseHistoryDto> getUsersPurchaseHistory() async {
     try {
       http.Response response = await http.get(Uri.parse(this._url));
       if (response.statusCode == 200) {

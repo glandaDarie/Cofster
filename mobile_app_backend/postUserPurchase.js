@@ -15,10 +15,8 @@ exports.handler = async (event) => {
   }
 
   const payload = {
-    body: {
-      email: requestBody["email"],
-      "showOrderHistory": 1
-    }
+    email: requestBody["email"],
+    showOrderHistory: 1
   };
 
   const getPurchaseHistoryFunctionParams = {
@@ -88,7 +86,6 @@ exports.handler = async (event) => {
     };
   } else {
     const orderHistory = JSON.parse(response.Payload)["showOrderHistory"];
-    console.log(JSON.stringify(orderHistory));
     const purchasesOfUsers = orderHistory[0]["emails"];
 
     const newPurchase = {

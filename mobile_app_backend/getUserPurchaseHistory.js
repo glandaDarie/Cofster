@@ -4,16 +4,6 @@ const TABLE_NAME = "purchaseHistory";
 AWS.config.update({ region: REGION });
 
 exports.handler = async (event) => {
-  let requestBody = null;
-  try {
-    requestBody = event.body;
-  } catch (error) {
-    return {
-      statusCode: 400,
-      body: "Invalid request body " + error
-    };
-  }
-
   const getParams = {
     TableName: TABLE_NAME
   };
@@ -24,11 +14,11 @@ exports.handler = async (event) => {
     const emails = scanResult.Items[0]["emails"];
 
     for (let i = 0; i < emails.length; ++i) {
-      if (emails[i]["email"] === requestBody["email"]) {
+      if (emails[i]["email"] === event["email"]) {
         return {
           statusCode: 200,
           body: {
-            email: requestBody["email"],
+            email: event["email"],
             positionFound: +i,
             orderInformation: emails[i]["orderInformation"]
           }
@@ -36,7 +26,7 @@ exports.handler = async (event) => {
       }
     }
 
-    return requestBody["showOrderHistory"] === 1 ?
+    return event["showOrderHistory"] === 1 ?
       {
         statusCode: 404,
         showOrderHistory: scanResult.Items,
