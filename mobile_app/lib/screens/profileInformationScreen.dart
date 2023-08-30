@@ -14,6 +14,8 @@ import 'package:coffee_orderer/controllers/AuthController.dart'
     show AuthController;
 import 'package:coffee_orderer/screens/helpAndSupportScreen.dart'
     show HelpAndSupportPage;
+import 'package:coffee_orderer/utils/localUserInformation.dart'
+    show loadUserInformationFromCache, fromStringCachetoMapCache;
 
 class ProfileInformationPage extends StatefulWidget {
   final void Function(int) callbackSelectedIndex;
@@ -113,8 +115,14 @@ class _ProfileInformationPageState extends State<ProfileInformationPage> {
                                   ));
                                 }),
                                 _buildProfileCard(
-                                    "Purchase History", Icons.history, () {
+                                    "Purchase History", Icons.history,
+                                    () async {
                                   print("Purchase History");
+                                  String cacheStr =
+                                      await loadUserInformationFromCache();
+                                  Map<String, String> cache =
+                                      fromStringCachetoMapCache(cacheStr);
+                                  print("Cache data: ${cache}");
                                 }),
                                 _buildProfileCard(
                                     "Help & Support", Icons.privacy_tip_sharp,

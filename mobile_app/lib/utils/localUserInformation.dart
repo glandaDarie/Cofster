@@ -54,9 +54,13 @@ Map<String, String> fromStringCachetoMapCache(String stringCache) {
 Future<void> appendInformationInCache(
     Map<String, String> cache, Map<String, String> newData) async {
   try {
-    for (MapEntry<String, String> entry in newData.entries) {
-      cache[entry.key] = entry.value;
+    if (cache == null) {
+    } else {
+      for (MapEntry<String, String> entry in newData.entries) {
+        cache[entry.key] = entry.value;
+      }
     }
+
     await storeUserInformationInCache(cache);
   } catch (e) {
     Fluttertoast.showToast(

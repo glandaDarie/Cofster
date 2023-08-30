@@ -190,19 +190,19 @@ class AuthController extends ValidateCredentialsService {
     }
     nameUser =
         await this.userController.getUserNameFromCredentials(cache, getUsers());
-    await appendInformationInCache(cache, {"name": nameUser});
+    await storeUserInformationInCache({"name": nameUser});
     return errorMsg;
   }
 
   Future<String> singupCompletedSuccessfully(
       String name, LoginData data) async {
-    Map<String, String> cache = {
+    Map<String, String> content = {
       "name": name,
       "username": data.name,
       "password": encryptPassword(data.password)
     };
-    storeUserInformationInCache(cache);
-    String response = await this.userController.insertNewUser(cache);
+    storeUserInformationInCache({"name": content["name"]});
+    String response = await this.userController.insertNewUser(content);
     if (response != null) {
       Fluttertoast.showToast(
           msg: "Exception : ${response}",

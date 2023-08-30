@@ -127,7 +127,6 @@ class _ProfilePhotoPageState extends State<ProfilePhotoPage>
                   "photo": base64Photo,
                 };
                 await this.userController.uploadUsersPhotoToS3(content);
-
                 // save name of the person in shared preferences
                 String preferenceValueResponse =
                     await LoggedInService.setSharedPreferenceValue("<nameUser>",
