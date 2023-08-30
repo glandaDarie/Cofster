@@ -12,7 +12,7 @@ class PurchaseHistoryController {
     this._urlServicePurchase = UrlService(
         "https://24qmzbehi3.execute-api.us-east-1.amazonaws.com/prod/",
         "purchase",
-        {email: email});
+        {"email": email});
     this._urlPurchase = this._urlServicePurchase.createUrl();
     this._userDaoPurchase = DynamoDBPurchaseHistoryDao(this._urlPurchase);
     return await this._userDaoPurchase.getUsersPurchaseHistory();

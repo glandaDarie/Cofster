@@ -14,8 +14,10 @@ import 'package:coffee_orderer/controllers/AuthController.dart'
     show AuthController;
 import 'package:coffee_orderer/screens/helpAndSupportScreen.dart'
     show HelpAndSupportPage;
-import 'package:coffee_orderer/utils/localUserInformation.dart'
-    show loadUserInformationFromCache, fromStringCachetoMapCache;
+import 'package:coffee_orderer/controllers/PurchaseHistoryController.dart'
+    show PurchaseHistoryController;
+import 'package:coffee_orderer/data_transfer/PurchaseHistoryDto.dart'
+    show PurchaseHistoryDto;
 
 class ProfileInformationPage extends StatefulWidget {
   final void Function(int) callbackSelectedIndex;
@@ -93,7 +95,6 @@ class _ProfileInformationPageState extends State<ProfileInformationPage> {
                                         color: Colors.white),
                                   ),
                                 );
-                                ;
                               }
                             },
                           ),
@@ -118,11 +119,16 @@ class _ProfileInformationPageState extends State<ProfileInformationPage> {
                                     "Purchase History", Icons.history,
                                     () async {
                                   print("Purchase History");
-                                  String cacheStr =
-                                      await loadUserInformationFromCache();
-                                  Map<String, String> cache =
-                                      fromStringCachetoMapCache(cacheStr);
-                                  print("Cache data: ${cache}");
+                                  String email = await LoggedInService
+                                      .getSharedPreferenceValue("<username>");
+                                  PurchaseHistoryController
+                                      purchaseHistoryController =
+                                      PurchaseHistoryController();
+                                  PurchaseHistoryDto purchaseHistory =
+                                      await purchaseHistoryController
+                                          .getUsersPurchaseHistory(email);
+                                  print(
+                                      "purchases: ${purchaseHistory.toJsonString()}");
                                 }),
                                 _buildProfileCard(
                                     "Help & Support", Icons.privacy_tip_sharp,
