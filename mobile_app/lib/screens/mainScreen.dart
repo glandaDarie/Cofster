@@ -4,7 +4,6 @@ import 'package:coffee_orderer/controllers/UserController.dart';
 import 'package:coffee_orderer/controllers/AuthController.dart';
 import 'package:coffee_orderer/controllers/QuestionnaireController.dart';
 import 'package:coffee_orderer/models/card.dart';
-import 'package:coffee_orderer/utils/localUserInformation.dart';
 import 'package:flutter/material.dart';
 import 'package:coffee_orderer/utils/coffeeFunFact.dart';
 import 'package:coffee_orderer/components/mainScreen/navigationBar.dart';
@@ -129,19 +128,6 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     this.coffeeCardSingleton = CoffeeCardSingleton(context);
     return FutureBuilder<Map<String, List<String>>>(
-      // future: () async {
-      //   Map<String, List<String>> favouriteDrinks =
-      //       await this.questionnaireController.loadFavouriteDrinksFrom();
-      //   String cacheStr = await loadUserInformationFromCache();
-      //   Map<String, String> cache = await fromStringCachetoMapCache(cacheStr);
-      //   print("Cached data: ${cache}");
-      //   if (cache.containsKey("cache")) {
-      //     cache["db"] = cache["cache"];
-      //     cache.remove("cache");
-      //     await storeUserInformationInCache(cache);
-      //   }
-      //   return favouriteDrinks;
-      // }(),
       future: this
           .questionnaireController
           .loadFavoriteDrinksAndRemoveContentFromCache(),

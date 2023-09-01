@@ -127,8 +127,17 @@ class _ProfileInformationPageState extends State<ProfileInformationPage> {
                                   List<PurchaseHistoryDto> purchaseHistory =
                                       await purchaseHistoryController
                                           .getUsersPurchaseHistory(email);
-                                  // print(
-                                  //     "purchases: ${purchaseHistory.toJsonString()}");
+                                  // debugging
+                                  for (int i = 0;
+                                      i < purchaseHistory.length;
+                                      ++i) {
+                                    print(
+                                        "coffeeName: ${purchaseHistory[i].coffeeName}");
+                                    print(
+                                        "coffeePrice: ${purchaseHistory[i].coffeePrice}");
+                                    print(
+                                        "coffeeQuantity: ${purchaseHistory[i].coffeeQuantity}");
+                                  }
                                 }),
                                 _buildProfileCard(
                                     "Help & Support", Icons.privacy_tip_sharp,

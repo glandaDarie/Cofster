@@ -37,17 +37,27 @@ class DynamoDBPurchaseHistoryDao {
   List<PurchaseHistoryDto> _parseJsonUsersPurchaseHistory(
       dynamic jsonPurchaseHistory) {
     List<PurchaseHistoryDto> purchasesHistoryDto = [];
-    dynamic orderInformations =
-        jsonPurchaseHistory["body"]["orderInformation"][0];
-    orderInformations.map((String orderInformationKey,
-            Map<String, String> orderInformationValue) =>
-        {
-          orderInformationValue.forEach((String _, String value) {
-            print("Value: ${value}");
-            // purchaseHistoryDto = PurchaseHistoryDto.fromOrderInformationModel({OrderInformation());
-            // purchasesHistoryDto.add(purchaseHistoryDto);
-          })
-        });
+    final dynamic orderInformations =
+        jsonPurchaseHistory["body"]["orderInformation"];
+    final String email = jsonPurchaseHistory["body"]["email"];
+    for (int index = 0; index < orderInformations.length; ++index) {
+      final Map<String, dynamic> orderInformation = orderInformations[index];
+      final Map<String, dynamic> order =
+          Map<String, dynamic>.from(orderInformation["purchase_${index + 1}"]);
+      final dynamic purchaseHistoryDto =
+          PurchaseHistoryDto.fromOrderInformationModel(
+              OrderInformation(
+                  coffeeName: order["coffeeName"],
+                  coffeePrice: order["coffeePrice"],
+                  quantity: order["coffeeQuantity"],
+                  coffeeCupSize: order["coffeeCupSize"],
+                  numberOfIceCubes: order["coffeeNumberOfIceCubes"],
+                  numberOfSugarCubes: order["coffeeNumberOfSugarCubes"],
+                  coffeeTemperature: order["coffeeTemperature"],
+                  hasCream: order["hasCoffeeCream"] == 0 ? false : true),
+              email);
+      purchasesHistoryDto.add(purchaseHistoryDto);
+    }
     return purchasesHistoryDto;
   }
 

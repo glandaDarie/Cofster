@@ -31,27 +31,28 @@ class FirebaseOrderInformationDao {
     }
     return ordersList
         .map((Map<String, dynamic> order) => OrderInformation(
-              order["key"],
-              order["coffeeName"],
-              order["coffeePrice"],
-              order["quantity"],
-              order["communication"],
-              order["coffeeStatus"],
-              order["coffeeOrderTime"],
-              order["coffeeFinishTimeEstimation"],
-              order.containsKey("coffeeCupSize")
+              keyId: order["key"],
+              coffeeName: order["coffeeName"],
+              coffeePrice: order["coffeePrice"],
+              quantity: order["quantity"],
+              communication: order["communication"],
+              coffeeStatus: order["coffeeStatus"],
+              coffeeOrderTime: order["coffeeOrderTime"],
+              coffeeEstimationTime: order["coffeeFinishTimeEstimation"],
+              coffeeCupSize: order.containsKey("coffeeCupSize")
                   ? order["coffeeCupSize"]
                   : null,
-              order.containsKey("coffeeTemperature")
+              coffeeTemperature: order.containsKey("coffeeTemperature")
                   ? order["coffeeTemperature"]
                   : null,
-              order.containsKey("numberOfSugarCubes")
+              numberOfSugarCubes: order.containsKey("numberOfSugarCubes")
                   ? order["numberOfSugarCubes"]
                   : null,
-              order.containsKey("numberOfIceCubes")
+              numberOfIceCubes: order.containsKey("numberOfIceCubes")
                   ? order["numberOfIceCubes"]
                   : null,
-              order.containsKey("hasCream") ? order["hasCream"] : null,
+              hasCream:
+                  order.containsKey("hasCream") ? order["hasCream"] : null,
             ))
         .toList();
   }
