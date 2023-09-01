@@ -120,13 +120,15 @@ class _ProfilePhotoPageState extends State<ProfilePhotoPage>
               onPressed: () async {
                 String cacheStr = await loadUserInformationFromCache();
                 Map<String, String> cache = fromStringCachetoMapCache(cacheStr);
-                List<int> photoToBytes = await this.imageFile.readAsBytes();
-                String base64Photo = base64Encode(photoToBytes);
-                Map<String, String> content = {
-                  "filename": "${cache['name'].toLowerCase()}_photo.jpg",
-                  "photo": base64Photo,
-                };
-                await this.userController.uploadUsersPhotoToS3(content);
+                if (this.imageFile != null) {
+                  List<int> photoToBytes = await this.imageFile.readAsBytes();
+                  String base64Photo = base64Encode(photoToBytes);
+                  Map<String, String> content = {
+                    "filename": "${cache['name'].toLowerCase()}_photo.jpg",
+                    "photo": base64Photo,
+                  };
+                  await this.userController.uploadUsersPhotoToS3(content);
+                }
                 // save name of the person in shared preferences
                 String preferenceValueResponse =
                     await LoggedInService.setSharedPreferenceValue("<nameUser>",

@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:coffee_orderer/components/mainScreen/coffeeCardFavouriteDrinks.dart'
     show coffeeCardFavouriteDrink;
 import 'package:coffee_orderer/utils/labelConversionHandler.dart' show classes;
+import 'package:coffee_orderer/utils/coffeeNameShortener.dart'
+    show shortenCoffeeNameIfNeeded;
+import 'package:coffee_orderer/utils/constants.dart' show COFFEE_PLACE_NAME;
 
 class CoffeeCardFavouriteDrinksController {
   List<Padding> _cardsFavouriteDrinks;
@@ -18,62 +21,62 @@ class CoffeeCardFavouriteDrinksController {
     return [
       coffeeCardFavouriteDrink(CoffeeCard(
         coffeeImagePaths[CoffeeType.cortado],
-        coffeeNames[CoffeeType.cortado],
-        "Cofster",
+        shortenCoffeeNameIfNeeded(coffeeNames[CoffeeType.cortado]),
+        COFFEE_PLACE_NAME,
         coffeePrices[CoffeeType.cortado],
       )),
       coffeeCardFavouriteDrink(CoffeeCard(
         coffeeImagePaths[CoffeeType.americano],
-        coffeeNames[CoffeeType.americano],
-        "Cofster",
+        shortenCoffeeNameIfNeeded(coffeeNames[CoffeeType.americano]),
+        COFFEE_PLACE_NAME,
         coffeePrices[CoffeeType.americano],
       )),
       coffeeCardFavouriteDrink(CoffeeCard(
         coffeeImagePaths[CoffeeType.cappuccino],
-        coffeeNames[CoffeeType.cappuccino],
-        "Cofster",
+        shortenCoffeeNameIfNeeded(coffeeNames[CoffeeType.cappuccino]),
+        COFFEE_PLACE_NAME,
         coffeePrices[CoffeeType.cappuccino],
       )),
       coffeeCardFavouriteDrink(CoffeeCard(
         coffeeImagePaths[CoffeeType.latteMachiatto],
-        coffeeNames[CoffeeType.latteMachiatto],
-        "Cofster",
+        shortenCoffeeNameIfNeeded(coffeeNames[CoffeeType.latteMachiatto]),
+        COFFEE_PLACE_NAME,
         coffeePrices[CoffeeType.latteMachiatto],
       )),
       coffeeCardFavouriteDrink(CoffeeCard(
         coffeeImagePaths[CoffeeType.flatWhite],
-        coffeeNames[CoffeeType.flatWhite],
-        "Cofster",
+        shortenCoffeeNameIfNeeded(coffeeNames[CoffeeType.flatWhite]),
+        COFFEE_PLACE_NAME,
         coffeePrices[CoffeeType.flatWhite],
       )),
       coffeeCardFavouriteDrink(CoffeeCard(
         coffeeImagePaths[CoffeeType.coldEspresso],
-        coffeeNames[CoffeeType.coldEspresso],
-        "Cofster",
+        shortenCoffeeNameIfNeeded(coffeeNames[CoffeeType.coldEspresso]),
+        COFFEE_PLACE_NAME,
         coffeePrices[CoffeeType.coldEspresso],
       )),
       coffeeCardFavouriteDrink(CoffeeCard(
         coffeeImagePaths[CoffeeType.mocha],
-        coffeeNames[CoffeeType.mocha],
-        "Cofster",
+        shortenCoffeeNameIfNeeded(coffeeNames[CoffeeType.mocha]),
+        COFFEE_PLACE_NAME,
         coffeePrices[CoffeeType.mocha],
       )),
       coffeeCardFavouriteDrink(CoffeeCard(
         coffeeImagePaths[CoffeeType.coldBrew],
-        coffeeNames[CoffeeType.coldBrew],
-        "Cofster",
+        shortenCoffeeNameIfNeeded(coffeeNames[CoffeeType.coldBrew]),
+        COFFEE_PLACE_NAME,
         coffeePrices[CoffeeType.coldBrew],
       )),
       coffeeCardFavouriteDrink(CoffeeCard(
         coffeeImagePaths[CoffeeType.coretto],
-        coffeeNames[CoffeeType.coretto],
-        "Cofster",
+        shortenCoffeeNameIfNeeded(coffeeNames[CoffeeType.coretto]),
+        COFFEE_PLACE_NAME,
         coffeePrices[CoffeeType.coretto],
       )),
       coffeeCardFavouriteDrink(CoffeeCard(
         coffeeImagePaths[CoffeeType.irishCoffee],
-        coffeeNames[CoffeeType.irishCoffee],
-        "Cofster",
+        shortenCoffeeNameIfNeeded(coffeeNames[CoffeeType.irishCoffee]),
+        COFFEE_PLACE_NAME,
         coffeePrices[CoffeeType.irishCoffee],
       )),
     ];

@@ -6,8 +6,8 @@ import 'package:coffee_orderer/controllers/CoffeeCardController.dart'
     show CoffeeCardController;
 import 'package:coffee_orderer/utils/localUserInformation.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:coffee_orderer/utils/constants.dart'
-    show COFFEE_DRINKS_WITH_LONG_NAMES;
+import 'package:coffee_orderer/utils/coffeeNameShortener.dart'
+    show shortenCoffeeNameIfNeeded;
 
 Padding coffeeCard(CoffeeCard card,
     [void Function(CoffeeCard, ValueNotifier<bool>) callbackSetFavorite,
@@ -50,10 +50,7 @@ Padding coffeeCard(CoffeeCard card,
                               SizedBox(height: 3.0),
                               Center(
                                   child: Text(
-                                COFFEE_DRINKS_WITH_LONG_NAMES
-                                        .contains(card.coffeeName)
-                                    ? card.coffeeName.split(" ")[1]
-                                    : card.coffeeName,
+                                shortenCoffeeNameIfNeeded(card.coffeeName),
                                 style: TextStyle(
                                     fontFamily: "varela",
                                     fontSize: 32.0,

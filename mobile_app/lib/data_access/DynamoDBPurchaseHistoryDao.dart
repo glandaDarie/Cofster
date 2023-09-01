@@ -1,3 +1,4 @@
+import 'package:coffee_orderer/models/orderInformation.dart';
 import 'package:flutter/material.dart';
 import 'package:coffee_orderer/data_transfer/PurchaseHistoryDto.dart'
     show PurchaseHistoryDto;
@@ -10,11 +11,11 @@ class DynamoDBPurchaseHistoryDao {
 
   DynamoDBPurchaseHistoryDao(String url) : this._url = url.trim();
 
-  Future<PurchaseHistoryDto> getUsersPurchaseHistory() async {
+  Future<List<PurchaseHistoryDto>> getUsersPurchaseHistory() async {
     try {
       http.Response response = await http.get(Uri.parse(this._url));
       if (response.statusCode == 200) {
-        PurchaseHistoryDto purchaseHistory =
+        List<PurchaseHistoryDto> purchaseHistory =
             this._parseJsonUsersPurchaseHistory(jsonDecode(response.body));
         if (purchaseHistory == null) {
           Fluttertoast.showToast(
@@ -33,8 +34,21 @@ class DynamoDBPurchaseHistoryDao {
     return null;
   }
 
-  PurchaseHistoryDto _parseJsonUsersPurchaseHistory(dynamic json) {
-    return null; // dummy for now
+  List<PurchaseHistoryDto> _parseJsonUsersPurchaseHistory(
+      dynamic jsonPurchaseHistory) {
+    List<PurchaseHistoryDto> purchasesHistoryDto = [];
+    dynamic orderInformations =
+        jsonPurchaseHistory["body"]["orderInformation"][0];
+    orderInformations.map((String orderInformationKey,
+            Map<String, String> orderInformationValue) =>
+        {
+          orderInformationValue.forEach((String _, String value) {
+            print("Value: ${value}");
+            // purchaseHistoryDto = PurchaseHistoryDto.fromOrderInformationModel({OrderInformation());
+            // purchasesHistoryDto.add(purchaseHistoryDto);
+          })
+        });
+    return purchasesHistoryDto;
   }
 
   Future<String> postUsersPurchase(

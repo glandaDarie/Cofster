@@ -14,12 +14,15 @@ class DynamoDBUserDao {
   Future<List<dynamic>> getAllUsers() async {
     List<dynamic> information = [];
     List<dynamic> usersInformation = [];
-    http.Response response = await http.get(Uri.parse(this.url));
-    if (response.statusCode == 200) {
-      information = jsonDecode(response.body);
-      usersInformation = parseJson(information);
-    } else {
-      throw Exception("Failed to fetch data");
+    try {
+      http.Response response = await http.get(Uri.parse(this.url));
+      if (response.statusCode == 200) {
+        information = jsonDecode(response.body);
+        usersInformation = parseJson(information);
+      }
+    } catch (error) {
+      throw Exception(
+          "Could not fetch all the users information, error: ${error}");
     }
     return usersInformation;
   }

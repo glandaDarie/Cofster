@@ -8,7 +8,8 @@ class PurchaseHistoryController {
   String _urlPurchase;
   DynamoDBPurchaseHistoryDao _userDaoPurchase;
 
-  Future<PurchaseHistoryDto> getUsersPurchaseHistory(final String email) async {
+  Future<List<PurchaseHistoryDto>> getUsersPurchaseHistory(
+      final String email) async {
     this._urlServicePurchase = UrlService(
         "https://24qmzbehi3.execute-api.us-east-1.amazonaws.com/prod/",
         "purchase",

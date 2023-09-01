@@ -201,7 +201,7 @@ class AuthController extends ValidateCredentialsService {
       "username": data.name,
       "password": encryptPassword(data.password)
     };
-    storeUserInformationInCache({"name": content["name"]});
+    await storeUserInformationInCache({"name": content["name"]});
     String response = await this.userController.insertNewUser(content);
     if (response != null) {
       Fluttertoast.showToast(
@@ -227,7 +227,7 @@ class AuthController extends ValidateCredentialsService {
     List<dynamic> users = await this.userController.getAllUsers();
     for (dynamic user in users) {
       if (username == user.username) {
-        return "Username = ${username} is already\npresent in the database";
+        return "Username : ${username} is already\npresent in the database";
       }
     }
     return null;
