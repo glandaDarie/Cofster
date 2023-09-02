@@ -33,6 +33,17 @@ exports.handler = async (event) => {
   const statusCode = JSON.parse(response.Payload)["statusCode"];
   let database = new AWS.DynamoDB.DocumentClient({ region: REGION });
 
+  let coffeeProperties = {
+    coffeeCupSize: requestBody["coffeeCupSize"],
+    coffeeName: requestBody["coffeeName"],
+    coffeeNumberOfIceCubes: requestBody["coffeeNumberOfIceCubes"],
+    coffeeNumberOfSugarCubes: requestBody["coffeeNumberOfSugarCubes"],
+    coffeePrice: requestBody["coffeePrice"],
+    coffeeQuantity: requestBody["coffeeQuantity"],
+    coffeeTemperature: requestBody["coffeeTemperature"],
+    hasCoffeeCream: requestBody["hasCoffeeCream"]
+  };
+
   if (statusCode === 200) {
     const positionFound = JSON.parse(response.Payload).body["positionFound"];
     let historyPurchase = JSON.parse(response.Payload).body["orderInformation"];
@@ -44,14 +55,7 @@ exports.handler = async (event) => {
     let newPurchaseKey = [lastKeyName, lastKeyIndex].join("_");
 
     const newPurchase = {
-      coffeeCupSize: requestBody["coffeeCupSize"],
-      coffeeName: requestBody["coffeeCupSize"],
-      coffeeNumberOfIceCubes: requestBody["coffeeNumberOfIceCubes"],
-      coffeeNumberOfSugarCubes: requestBody["coffeeNumberOfSugarCubes"],
-      coffeePrice: requestBody["coffeePrice"],
-      coffeeQuantity: requestBody["coffeeQuantity"],
-      coffeeTemperature: requestBody["coffeeTemperature"],
-      hasCoffeeCream: requestBody["hasCoffeeCream"]
+      ...coffeeProperties
     };
 
     const historyPurchaseConcatenated = historyPurchase.concat({ [newPurchaseKey]: newPurchase });
@@ -93,14 +97,7 @@ exports.handler = async (event) => {
       orderInformation: [
         {
           purchase_1: {
-            coffeeCupSize: requestBody["coffeeCupSize"],
-            coffeeName: requestBody["coffeeCupSize"],
-            coffeeNumberOfIceCubes: requestBody["coffeeNumberOfIceCubes"],
-            coffeeNumberOfSugarCubes: requestBody["coffeeNumberOfSugarCubes"],
-            coffeePrice: requestBody["coffeePrice"],
-            coffeeQuantity: requestBody["coffeeQuantity"],
-            coffeeTemperature: requestBody["coffeeTemperature"],
-            hasCoffeeCream: requestBody["hasCoffeeCream"]
+            ...coffeeProperties
           }
         }
       ]
