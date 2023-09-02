@@ -25,13 +25,6 @@ class _ProfilePhotoPageState extends State<PurchaseHistoryPage> {
     this.purchaseHistoryController = purchaseHistoryController;
   }
 
-  Future<List<PurchaseHistoryDto>> usersPurchaseHistory() async {
-    String email = await LoggedInService.getSharedPreferenceValue("<username>");
-    PurchaseHistoryController purchaseHistoryController =
-        PurchaseHistoryController();
-    return await purchaseHistoryController.getUsersPurchaseHistory(email);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,26 +39,46 @@ class _ProfilePhotoPageState extends State<PurchaseHistoryPage> {
           ),
           backgroundColor: Colors.brown.shade700,
         ),
-        body: FutureBuilder<List<PurchaseHistoryDto>>(
-            future: usersPurchaseHistory(),
-            builder: (BuildContext context,
-                AsyncSnapshot<List<PurchaseHistoryDto>> snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(
-                    child: CircularProgressIndicator(
-                        color: Colors.brown, backgroundColor: Colors.white));
-              } else if (snapshot.hasError) {
-                return Text("Error occured: ${snapshot.error}");
-              } else {
-                List<PurchaseHistoryDto> purchaseHistoryInformation =
-                    snapshot.data;
-                return ListView(
-                  children: purchaseHistoryInformation
-                      .map((PurchaseHistoryDto purchaseInformation) =>
-                          displayContentCards(purchaseInformation))
-                      .toList(),
-                );
-              }
-            }));
+        body: FutureBuilder<List<PurchaseHistoryDto>>(future: () async {
+          // debugging only to see if the POST request works for now
+          String response =
+              await this.purchaseHistoryController.postUsersPurchase(
+                    PurchaseHistoryDto(
+                      email: "romancagk@hotmail.com",
+                      coffeeName: "Irish Coffee",
+                      coffeePrice: "16.23\$",
+                      quantity: 2,
+                      coffeeCupSize: "L",
+                      coffeeTemperature: "Cold",
+                      hasCream: false,
+                      numberOfSugarCubes: 3,
+                      numberOfIceCubes: 0,
+                    ),
+                  );
+          print("Response? ${response}");
+          String email =
+              await LoggedInService.getSharedPreferenceValue("<username>");
+          return await this
+              .purchaseHistoryController
+              .getUsersPurchaseHistory(email);
+        }(), builder: (BuildContext context,
+            AsyncSnapshot<List<PurchaseHistoryDto>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+                child: CircularProgressIndicator(
+                    color: Colors.brown, backgroundColor: Colors.white));
+          } else if (snapshot.hasError) {
+            return Text("Error occured: ${snapshot.error}");
+          } else {
+            List<PurchaseHistoryDto> purchaseHistoryInformation = snapshot.data;
+
+            return ListView(
+              children: purchaseHistoryInformation
+                  .map((PurchaseHistoryDto purchaseInformation) =>
+                      displayContentCards(purchaseInformation))
+                  .toList(),
+            );
+          }
+        }));
   }
 }

@@ -39,21 +39,23 @@ class PurchaseHistoryDto {
         numberOfIceCubes: orderInformation.numberOfIceCubes);
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toMap() {
     return {
-      "email": email,
-      "coffeeName": coffeeName,
-      "coffeePrice": coffeePrice,
-      "quantity": quantity,
-      "coffeeCupSize": coffeeCupSize,
-      "coffeeTemperature": coffeeTemperature,
-      "hasCream": hasCream,
-      "numberOfSugarCubes": numberOfSugarCubes,
-      "numberOfIceCubes": numberOfIceCubes
+      "body": {
+        "email": email,
+        "coffeeName": coffeeName,
+        "coffeePrice": coffeePrice,
+        "quantity": quantity,
+        "coffeeCupSize": coffeeCupSize,
+        "coffeeTemperature": coffeeTemperature,
+        "hasCream": hasCream,
+        "numberOfSugarCubes": numberOfSugarCubes,
+        "numberOfIceCubes": numberOfIceCubes
+      }
     };
   }
 
-  String toJsonString() {
-    return jsonEncode(toJson());
+  String toJson() {
+    return jsonEncode(toMap());
   }
 }

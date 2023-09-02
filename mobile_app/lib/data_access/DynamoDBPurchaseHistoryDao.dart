@@ -64,17 +64,18 @@ class DynamoDBPurchaseHistoryDao {
   Future<String> postUsersPurchase(
       final PurchaseHistoryDto purchaseHistoryDto) async {
     const Map<String, String> headers = {"Content-Type": "application/json"};
-    final String jsonPayload = purchaseHistoryDto.toJsonString();
+    final String jsonPayload = purchaseHistoryDto.toJson();
     try {
       final http.Response response = await http.post(
         Uri.parse(this._url),
         headers: headers,
         body: jsonPayload,
       );
-      if (response.statusCode == 201) {
+      dynamic responseBody = jsonDecode(response.body);
+      if (responseBody["statusCode"] == 201) {
         return "New purchase added successfully";
       } else {
-        return "Error when adding a new purchase. Status Code: ${response.statusCode}";
+        return "Error when adding a new purchase. Error: ${responseBody['body']}";
       }
     } catch (error) {
       return "Could not add a new purchase. Error: ${error}";
