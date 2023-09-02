@@ -14,10 +14,10 @@ import 'package:coffee_orderer/controllers/AuthController.dart'
     show AuthController;
 import 'package:coffee_orderer/screens/helpAndSupportScreen.dart'
     show HelpAndSupportPage;
+import 'package:coffee_orderer/screens/purchaseHistoryScreen.dart'
+    show PurchaseHistoryPage;
 import 'package:coffee_orderer/controllers/PurchaseHistoryController.dart'
     show PurchaseHistoryController;
-import 'package:coffee_orderer/data_transfer/PurchaseHistoryDto.dart'
-    show PurchaseHistoryDto;
 
 class ProfileInformationPage extends StatefulWidget {
   final void Function(int) callbackSelectedIndex;
@@ -111,33 +111,17 @@ class _ProfileInformationPageState extends State<ProfileInformationPage> {
                                 _buildProfileCard("Orders In Progress",
                                     Icons.history_edu_sharp, () {
                                   Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        OrderPage(),
-                                  ));
+                                      builder: (BuildContext context) =>
+                                          OrderPage()));
                                 }),
                                 _buildProfileCard(
                                     "Purchase History", Icons.history,
                                     () async {
-                                  print("Purchase History");
-                                  String email = await LoggedInService
-                                      .getSharedPreferenceValue("<username>");
-                                  PurchaseHistoryController
-                                      purchaseHistoryController =
-                                      PurchaseHistoryController();
-                                  List<PurchaseHistoryDto> purchaseHistory =
-                                      await purchaseHistoryController
-                                          .getUsersPurchaseHistory(email);
-                                  // debugging
-                                  for (int i = 0;
-                                      i < purchaseHistory.length;
-                                      ++i) {
-                                    print(
-                                        "coffeeName: ${purchaseHistory[i].coffeeName}");
-                                    print(
-                                        "coffeePrice: ${purchaseHistory[i].coffeePrice}");
-                                    print(
-                                        "coffeeQuantity: ${purchaseHistory[i].coffeeQuantity}");
-                                  }
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          PurchaseHistoryPage(
+                                              purchaseHistoryController:
+                                                  PurchaseHistoryController())));
                                 }),
                                 _buildProfileCard(
                                     "Help & Support", Icons.privacy_tip_sharp,

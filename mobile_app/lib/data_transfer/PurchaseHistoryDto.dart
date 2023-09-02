@@ -6,23 +6,23 @@ class PurchaseHistoryDto {
   String email;
   String coffeeName;
   String coffeePrice;
-  int coffeeQuantity;
+  int quantity;
   String coffeeCupSize;
   String coffeeTemperature;
-  bool coffeeHasCream;
-  int coffeeNumberOfSugarCubes;
-  int coffeeNumberOfIceCubes;
+  bool hasCream;
+  int numberOfSugarCubes;
+  int numberOfIceCubes;
 
   PurchaseHistoryDto(
       {this.email,
       this.coffeeName,
       this.coffeePrice,
-      this.coffeeQuantity,
+      this.quantity,
       this.coffeeCupSize,
       this.coffeeTemperature,
-      this.coffeeHasCream,
-      this.coffeeNumberOfSugarCubes,
-      this.coffeeNumberOfIceCubes});
+      this.hasCream,
+      this.numberOfSugarCubes,
+      this.numberOfIceCubes});
 
   factory PurchaseHistoryDto.fromOrderInformationModel(
       OrderInformation orderInformation,
@@ -31,12 +31,12 @@ class PurchaseHistoryDto {
         email: email,
         coffeeName: orderInformation.coffeeName,
         coffeePrice: orderInformation.coffeePrice,
-        coffeeQuantity: orderInformation.quantity,
+        quantity: orderInformation.quantity,
         coffeeCupSize: orderInformation.coffeeCupSize,
         coffeeTemperature: orderInformation.coffeeTemperature,
-        coffeeHasCream: orderInformation.hasCream,
-        coffeeNumberOfSugarCubes: orderInformation.numberOfSugarCubes,
-        coffeeNumberOfIceCubes: orderInformation.numberOfIceCubes);
+        hasCream: orderInformation.hasCream,
+        numberOfSugarCubes: orderInformation.numberOfSugarCubes,
+        numberOfIceCubes: orderInformation.numberOfIceCubes);
   }
 
   Map<String, dynamic> toJson() {
@@ -44,12 +44,12 @@ class PurchaseHistoryDto {
       "email": email,
       "coffeeName": coffeeName,
       "coffeePrice": coffeePrice,
-      "coffeeQuantity": coffeeQuantity,
+      "quantity": quantity,
       "coffeeCupSize": coffeeCupSize,
       "coffeeTemperature": coffeeTemperature,
-      "hasCoffeeCream": coffeeHasCream,
-      "coffeeNumberOfSugarCubes": coffeeNumberOfSugarCubes,
-      "coffeeNumberOfIceCubes": coffeeNumberOfIceCubes
+      "hasCream": hasCream,
+      "numberOfSugarCubes": numberOfSugarCubes,
+      "numberOfIceCubes": numberOfIceCubes
     };
   }
 

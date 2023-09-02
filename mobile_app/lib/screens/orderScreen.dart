@@ -4,14 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:coffee_orderer/services/updateProviderService.dart'
     show UpdateProvider;
 import 'package:provider/provider.dart';
-import 'package:coffee_orderer/utils/labelConversionHandler.dart' show classes;
-import 'package:coffee_orderer/enums/coffeeTypes.dart' show CoffeeType;
-import 'package:coffee_orderer/components/orderScreen/frontOfCard.dart'
-    show buildFrontCardContent;
-import 'package:coffee_orderer/components/orderScreen/backOfCard.dart'
-    show buildBackCardContent;
-import 'package:coffee_orderer/utils/coffeeNameToClassConvertor.dart'
-    show coffeeNameToClassKey;
+import 'package:coffee_orderer/models/orderInformation.dart'
+    show OrderInformation;
+import 'package:coffee_orderer/utils/displayContentCards.dart'
+    show displayContentCards;
 
 class OrderPage extends StatefulWidget {
   @override
@@ -50,7 +46,8 @@ class _OrderPageState extends State<OrderPage> {
 
   @override
   Widget build(BuildContext context) {
-    final reference = FirebaseDatabase.instance.ref().child("Orders");
+    final DatabaseReference reference =
+        FirebaseDatabase.instance.ref().child("Orders");
     return Consumer<UpdateProvider>(
       builder:
           (BuildContext context, UpdateProvider updateProvider, Widget child) {
@@ -79,30 +76,22 @@ class _OrderPageState extends State<OrderPage> {
                       "")
                   .trim();
               this._orderList = parsedCoffeeInformation.split(",");
-              this._orderList[2] =
-                  coffeeNameToClassKey(this._orderList[2]).toLowerCase();
-              CoffeeType coffeeType = CoffeeType.values.firstWhere(
-                  (CoffeeType type) =>
-                      type.index == classes[this._orderList[2]],
-                  orElse: () => null);
-              this._orderList[2] = this._orderList[2][0].toUpperCase() +
-                  this._orderList[2].substring(1);
-              return GestureDetector(
-                onTap: () {
-                  _flipCard(index);
-                },
-                child: Container(
-                    padding: const EdgeInsets.all(16.0),
-                    margin: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 16.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      color: Colors.brown.shade400,
-                    ),
-                    child: _isCardFlipped(index)
-                        ? buildBackCardContent(this._orderList, coffeeType)
-                        : buildFrontCardContent(this._orderList, coffeeType)),
-              );
+              return displayContentCards(
+                  OrderInformation(
+                    coffeeTemperature: this._orderList[0],
+                    hasCream: this._orderList[1] == "true" ? true : false,
+                    coffeeName: this._orderList[2],
+                    quantity: int.tryParse(this._orderList[3]),
+                    numberOfIceCubes: int.tryParse(this._orderList[4]),
+                    coffeeCupSize: this._orderList[5],
+                    coffeeEstimationTime: this._orderList[6],
+                    numberOfSugarCubes: int.tryParse(this._orderList[7]),
+                    coffeeStatus: int.tryParse(this._orderList[8]),
+                    communication: this._orderList[9],
+                    coffeePrice: this._orderList[10],
+                    coffeeOrderTime: this._orderList[11],
+                  ),
+                  cardFlipParams: [_flipCard, _isCardFlipped, index]);
             },
           ),
         );
