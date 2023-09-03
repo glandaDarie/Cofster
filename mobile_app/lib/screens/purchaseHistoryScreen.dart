@@ -19,10 +19,10 @@ class PurchaseHistoryPage extends StatefulWidget {
 }
 
 class _ProfilePhotoPageState extends State<PurchaseHistoryPage> {
-  PurchaseHistoryController purchaseHistoryController;
+  PurchaseHistoryController _purchaseHistoryController;
 
   _ProfilePhotoPageState(PurchaseHistoryController purchaseHistoryController) {
-    this.purchaseHistoryController = purchaseHistoryController;
+    this._purchaseHistoryController = purchaseHistoryController;
   }
 
   @override
@@ -40,26 +40,10 @@ class _ProfilePhotoPageState extends State<PurchaseHistoryPage> {
           backgroundColor: Colors.brown.shade700,
         ),
         body: FutureBuilder<List<PurchaseHistoryDto>>(future: () async {
-          // debugging only to see if the POST request works for now
-          String response =
-              await this.purchaseHistoryController.postUsersPurchase(
-                    PurchaseHistoryDto(
-                      email: "romancagk@hotmail.com",
-                      coffeeName: "Irish Coffee",
-                      coffeePrice: "16.23\$",
-                      quantity: 2,
-                      coffeeCupSize: "L",
-                      coffeeTemperature: "Cold",
-                      hasCream: false,
-                      numberOfSugarCubes: 3,
-                      numberOfIceCubes: 0,
-                    ),
-                  );
-          print("Response? ${response}");
           String email =
               await LoggedInService.getSharedPreferenceValue("<username>");
           return await this
-              .purchaseHistoryController
+              ._purchaseHistoryController
               .getUsersPurchaseHistory(email);
         }(), builder: (BuildContext context,
             AsyncSnapshot<List<PurchaseHistoryDto>> snapshot) {

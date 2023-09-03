@@ -13,9 +13,9 @@ class DynamoDBPurchaseHistoryDao {
 
   Future<List<PurchaseHistoryDto>> getUsersPurchaseHistory() async {
     try {
-      http.Response response = await http.get(Uri.parse(this._url));
+      final http.Response response = await http.get(Uri.parse(this._url));
       if (response.statusCode == 200) {
-        List<PurchaseHistoryDto> purchaseHistory =
+        final List<PurchaseHistoryDto> purchaseHistory =
             this._parseJsonUsersPurchaseHistory(jsonDecode(response.body));
         if (purchaseHistory == null) {
           Fluttertoast.showToast(

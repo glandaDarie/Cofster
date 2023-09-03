@@ -14,6 +14,7 @@ exports.handler = async (event) => {
     };
   }
 
+
   const payload = {
     email: requestBody["email"],
     showOrderHistory: 1
@@ -36,12 +37,12 @@ exports.handler = async (event) => {
   let coffeeProperties = {
     coffeeCupSize: requestBody["coffeeCupSize"],
     coffeeName: requestBody["coffeeName"],
-    coffeeNumberOfIceCubes: requestBody["coffeeNumberOfIceCubes"],
-    coffeeNumberOfSugarCubes: requestBody["coffeeNumberOfSugarCubes"],
+    coffeeNumberOfIceCubes: requestBody["numberOfIceCubes"],
+    coffeeNumberOfSugarCubes: requestBody["numberOfSugarCubes"],
     coffeePrice: requestBody["coffeePrice"],
-    coffeeQuantity: requestBody["coffeeQuantity"],
+    coffeeQuantity: requestBody["quantity"],
     coffeeTemperature: requestBody["coffeeTemperature"],
-    hasCoffeeCream: requestBody["hasCoffeeCream"]
+    hasCoffeeCream: requestBody["hasCream"]
   };
 
   if (statusCode === 200) {
