@@ -33,8 +33,8 @@ import 'package:coffee_orderer/controllers/DrinksInformationController.dart'
 import 'package:coffee_orderer/services/updateProviderService.dart'
     show UpdateProvider;
 import 'package:provider/provider.dart';
-import 'package:coffee_orderer/notifiers/userSelectionNotifier.dart'
-    show UserSelectionNotifier;
+import 'package:coffee_orderer/services/notifierCustomSelectorSetupService.dart'
+    show NotifierCustomSelectorSetupService;
 
 SizedBox customizeDrink(
     BuildContext context,
@@ -48,40 +48,9 @@ SizedBox customizeDrink(
   int _numberOfIceCubes;
   bool _hasCream;
   double _price;
-  ValueNotifier<int> valueQuantityNotifier = ValueNotifier<int>(1);
-  ValueNotifier<String> selectedSizeNotifier = ValueNotifier<String>("M");
-  ValueNotifier<bool> hotSelectedNotifier = ValueNotifier<bool>(false);
-  ValueNotifier<int> sugarQuantityNotifier = ValueNotifier<int>(0);
-  ValueNotifier<int> iceQuantityNotifier = ValueNotifier<int>(1);
-  ValueNotifier<int> creamNotifier = ValueNotifier<int>(1);
-
-  ValueNotifierService<MergeNotifiers> combinedValueNotifier =
-      ValueNotifierService<MergeNotifiers>(MergeNotifiers(
-          valueQuantityNotifier.value,
-          selectedSizeNotifier.value,
-          sugarQuantityNotifier.value,
-          iceQuantityNotifier.value,
-          creamNotifier.value));
-
-  List<UserSelectionNotifier> notifiersToCombine = [
-    UserSelectionNotifier(valueQuantityNotifier, combinedValueNotifier),
-    UserSelectionNotifier(selectedSizeNotifier, combinedValueNotifier),
-    UserSelectionNotifier(sugarQuantityNotifier, combinedValueNotifier),
-    UserSelectionNotifier(iceQuantityNotifier, combinedValueNotifier),
-    UserSelectionNotifier(creamNotifier, combinedValueNotifier),
-  ];
-
-  for (UserSelectionNotifier listener in notifiersToCombine) {
-    listener.notifier.addListener(() {
-      listener.combinedNotifier.value = MergeNotifiers(
-        valueQuantityNotifier.value,
-        selectedSizeNotifier.value,
-        sugarQuantityNotifier.value,
-        iceQuantityNotifier.value,
-        creamNotifier.value,
-      );
-    });
-  }
+  NotifierCustomSelectorSetupService notifierService =
+      NotifierCustomSelectorSetupService(_quantityCount, "M", false, 0, 1, 1);
+  notifierService.attachAllListenersToNotifiers();
 
   return SizedBox(
     height: MediaQuery.of(context).size.height * 0.72,
@@ -110,8 +79,8 @@ SizedBox customizeDrink(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                boxTemperature(hotSelectedNotifier),
-                boxQuantity(valueQuantityNotifier),
+                boxTemperature(notifierService.hotSelectedNotifier),
+                boxQuantity(notifierService.valueQuantityNotifier),
               ],
             ),
           ),
@@ -123,7 +92,7 @@ SizedBox customizeDrink(
           const SizedBox(height: 5.0),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-            child: boxSizes(selectedSizeNotifier),
+            child: boxSizes(notifierService.selectedSizeNotifier),
           ),
           const SizedBox(height: 5.0),
           const Padding(
@@ -137,7 +106,7 @@ SizedBox customizeDrink(
                 height: 80,
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: ExtraIngredientWidget(
-                    sugarQuantityNotifier,
+                    notifierService.sugarQuantityNotifier,
                     "Sugar",
                     "cubes",
                     AssetImage(AppAssets.extraIngredeints.IMAGE_SUGAR)
@@ -147,7 +116,7 @@ SizedBox customizeDrink(
                 height: 80,
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: ExtraIngredientWidget(
-                    iceQuantityNotifier,
+                    notifierService.iceQuantityNotifier,
                     "Ice",
                     "cubes",
                     AssetImage(AppAssets.extraIngredeints.IMAGE_ICE).assetName),
@@ -156,7 +125,7 @@ SizedBox customizeDrink(
                 height: 80,
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: ExtraIngredientWidgetBinary(
-                    creamNotifier,
+                    notifierService.creamNotifier,
                     "Cream",
                     AssetImage(AppAssets.extraIngredeints.IMAGE_CREAM)
                         .assetName),
@@ -191,7 +160,7 @@ SizedBox customizeDrink(
                       textScaleFactor: 1.6,
                     ),
                     ValueListenableBuilder(
-                        valueListenable: combinedValueNotifier,
+                        valueListenable: notifierService.mergedNotifiers,
                         builder: (BuildContext context,
                             MergeNotifiers notifiers, Widget child) {
                           final int quantityCount = notifiers.quantity;
