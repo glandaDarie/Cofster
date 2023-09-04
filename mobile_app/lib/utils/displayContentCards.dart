@@ -41,15 +41,16 @@ Widget displayContentCards(dynamic orderInformation,
       orElse: () => null);
   orderInformation.coffeeName = orderInformation.coffeeName[0].toUpperCase() +
       orderInformation.coffeeName.substring(1);
+  Map<String, dynamic> cardProperties = contentCardProperties();
   return cardFlipParams.length == 3
       ? GestureDetector(
           onTap: () {
             cardFlipParams[0](cardFlipParams[2]);
           },
           child: Container(
-            padding: contentCardProperties()["padding"],
-            margin: contentCardProperties()["margin"],
-            decoration: contentCardProperties()["decoration"],
+            padding: cardProperties["padding"],
+            margin: cardProperties["margin"],
+            decoration: cardProperties["decoration"],
             child: cardFlipParams[1](cardFlipParams[2])
                 ? buildBackCardContent(orderInformation, coffeeType)
                 : buildFrontCardContent(
@@ -71,9 +72,9 @@ Widget displayContentCards(dynamic orderInformation,
           ),
         )
       : Container(
-          padding: contentCardProperties()["padding"],
-          margin: contentCardProperties()["margin"],
-          decoration: contentCardProperties()["decoration"],
+          padding: cardProperties["padding"],
+          margin: cardProperties["margin"],
+          decoration: cardProperties["decoration"],
           child: buildFrontCardContent(
             orderInformation,
             coffeeType,

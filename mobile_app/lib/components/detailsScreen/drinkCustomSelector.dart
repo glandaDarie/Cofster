@@ -1,4 +1,7 @@
+import 'package:coffee_orderer/controllers/PurchaseHistoryController.dart';
+import 'package:coffee_orderer/data_transfer/PurchaseHistoryDto.dart';
 import 'package:coffee_orderer/models/information.dart';
+import 'package:coffee_orderer/services/loggedInService.dart';
 import 'package:flutter/material.dart';
 import 'package:coffee_orderer/components/detailsScreen/boxSizes.dart'
     show boxSizes;
@@ -30,9 +33,14 @@ import 'package:coffee_orderer/controllers/DrinksInformationController.dart'
 import 'package:coffee_orderer/services/updateProviderService.dart'
     show UpdateProvider;
 import 'package:provider/provider.dart';
+import 'package:coffee_orderer/notifiers/userSelectionNotifier.dart'
+    show UserSelectionNotifier;
 
-SizedBox customizeDrink(BuildContext context,
-    ValueNotifier<bool> placedOrderNotifier, PaymentService paymentService) {
+SizedBox customizeDrink(
+    BuildContext context,
+    ValueNotifier<bool> placedOrderNotifier,
+    PaymentService paymentService,
+    PurchaseHistoryController purchaseHistoryController) {
   int _quantityCount = 1;
   String _coffeeCupSize;
   String _coffeeTemperature;
@@ -55,46 +63,25 @@ SizedBox customizeDrink(BuildContext context,
           iceQuantityNotifier.value,
           creamNotifier.value));
 
-  valueQuantityNotifier.addListener(() {
-    combinedValueNotifier.value = MergeNotifiers(
+  List<UserSelectionNotifier> notifiersToCombine = [
+    UserSelectionNotifier(valueQuantityNotifier, combinedValueNotifier),
+    UserSelectionNotifier(selectedSizeNotifier, combinedValueNotifier),
+    UserSelectionNotifier(sugarQuantityNotifier, combinedValueNotifier),
+    UserSelectionNotifier(iceQuantityNotifier, combinedValueNotifier),
+    UserSelectionNotifier(creamNotifier, combinedValueNotifier),
+  ];
+
+  for (UserSelectionNotifier listener in notifiersToCombine) {
+    listener.notifier.addListener(() {
+      listener.combinedNotifier.value = MergeNotifiers(
         valueQuantityNotifier.value,
         selectedSizeNotifier.value,
         sugarQuantityNotifier.value,
         iceQuantityNotifier.value,
-        creamNotifier.value);
-  });
-  selectedSizeNotifier.addListener(() {
-    combinedValueNotifier.value = MergeNotifiers(
-        valueQuantityNotifier.value,
-        selectedSizeNotifier.value,
-        sugarQuantityNotifier.value,
-        iceQuantityNotifier.value,
-        creamNotifier.value);
-  });
-  sugarQuantityNotifier.addListener(() {
-    combinedValueNotifier.value = MergeNotifiers(
-        valueQuantityNotifier.value,
-        selectedSizeNotifier.value,
-        sugarQuantityNotifier.value,
-        iceQuantityNotifier.value,
-        creamNotifier.value);
-  });
-  iceQuantityNotifier.addListener(() {
-    combinedValueNotifier.value = MergeNotifiers(
-        valueQuantityNotifier.value,
-        selectedSizeNotifier.value,
-        sugarQuantityNotifier.value,
-        iceQuantityNotifier.value,
-        creamNotifier.value);
-  });
-  creamNotifier.addListener(() {
-    combinedValueNotifier.value = MergeNotifiers(
-        valueQuantityNotifier.value,
-        selectedSizeNotifier.value,
-        sugarQuantityNotifier.value,
-        iceQuantityNotifier.value,
-        creamNotifier.value);
-  });
+        creamNotifier.value,
+      );
+    });
+  }
 
   return SizedBox(
     height: MediaQuery.of(context).size.height * 0.72,
@@ -259,18 +246,14 @@ SizedBox customizeDrink(BuildContext context,
                             fontSize: 16);
                         return;
                       }
-                      String userName =
-                          cache.containsKey("name") ? cache["name"] : "Guest";
-                      String drinkPlural = _quantityCount == 1
-                          ? cache["cardCoffeeName"]
-                          : "${cache['cardCoffeeName']}s";
-                      String title =
-                          "${_quantityCount == 1 ? "Order is" : "Orders are"} in progress!";
-                      String body =
-                          "$userName, your $_quantityCount $drinkPlural ${_quantityCount == 1 ? "is" : "are"} in preparation. Please put a coffee cup near the machine.";
+                      NotificationService notificationService =
+                          NotificationService();
+                      List<String> params = notificationService
+                          .getNotificationParamsAfterDrinkIsPayed(
+                              cache, _quantityCount);
                       NotificationService().showNotification(
-                        title: title,
-                        body: body,
+                        title: params[0],
+                        body: params[1],
                       );
                       String coffeeName = cache["cardCoffeeName"]
                           .split("-")
@@ -313,6 +296,34 @@ SizedBox customizeDrink(BuildContext context,
                         "hasCream": _hasCream
                       });
                       if (postOrderResponse != null) {
+                        Fluttertoast.showToast(
+                            msg: postOrderResponse,
+                            toastLength: Toast.LENGTH_SHORT,
+                            backgroundColor: Color.fromARGB(255, 71, 66, 65),
+                            textColor: Color.fromARGB(255, 220, 217, 216),
+                            fontSize: 16);
+                        return;
+                      }
+
+                      String postUsersPurchaseResponse =
+                          await purchaseHistoryController.postUsersPurchase(
+                        PurchaseHistoryDto(
+                          email: await LoggedInService.getSharedPreferenceValue(
+                              "<username>"),
+                          coffeeName: coffeeName.replaceAllMapped(
+                            RegExp(r"([a-z])([A-Z])"),
+                            (match) => "${match.group(1)} ${match.group(2)}",
+                          ),
+                          coffeePrice: "${_price.toStringAsFixed(2)}\$",
+                          quantity: _quantityCount,
+                          coffeeCupSize: _coffeeCupSize,
+                          coffeeTemperature: _coffeeTemperature,
+                          hasCream: _hasCream,
+                          numberOfSugarCubes: _numberOfSugarCubes,
+                          numberOfIceCubes: _numberOfIceCubes,
+                        ),
+                      );
+                      if (postUsersPurchaseResponse != null) {
                         Fluttertoast.showToast(
                             msg: postOrderResponse,
                             toastLength: Toast.LENGTH_SHORT,

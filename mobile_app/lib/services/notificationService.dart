@@ -44,4 +44,17 @@ class NotificationService {
     return notificationsPlugin.show(
         id, title, body, await _notificationDetails());
   }
+
+  List<String> getNotificationParamsAfterDrinkIsPayed(
+      Map<String, String> cache, int quantityCount) {
+    String userName = cache.containsKey("name") ? cache["name"] : "Guest";
+    String drinkPlural = quantityCount == 1
+        ? cache["cardCoffeeName"]
+        : "${cache['cardCoffeeName']}s";
+    String title =
+        "${quantityCount == 1 ? 'Order is' : 'Orders are'} in progress!";
+    String body =
+        "${userName}, your ${quantityCount} ${drinkPlural} ${quantityCount == 1 ? 'is' : 'are'} in preparation. Please put a coffee cup near the machine.";
+    return [title, body];
+  }
 }

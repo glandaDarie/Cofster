@@ -1,4 +1,5 @@
 import 'package:coffee_orderer/controllers/DrinksInformationController.dart';
+import 'package:coffee_orderer/controllers/PurchaseHistoryController.dart';
 import 'package:flutter/material.dart';
 import 'package:coffee_orderer/utils/localUserInformation.dart';
 import 'package:coffee_orderer/components/detailsScreen/drinkCustomSelector.dart'
@@ -28,6 +29,7 @@ class _DetailsPageState extends State<DetailsPage> {
   String _preparationTime;
   List<String> _nutritionInfo;
   PaymentService _paymentService;
+  PurchaseHistoryController _purchaseHistoryController;
 
   _DetailsPageState() {
     this.hotSelectedNotifier = ValueNotifier<bool>(false);
@@ -39,11 +41,17 @@ class _DetailsPageState extends State<DetailsPage> {
     this._ingredients = [];
     this._preparationTime = null;
     this._nutritionInfo = [];
+    this._purchaseHistoryController = PurchaseHistoryController();
   }
 
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   Future<dynamic> _getCoffeeCardInformationFromPreviousScreen(
@@ -296,7 +304,8 @@ class _DetailsPageState extends State<DetailsPage> {
                                               return customizeDrink(
                                                   context,
                                                   this.placedOrderNotifier,
-                                                  this._paymentService);
+                                                  this._paymentService,
+                                                  this._purchaseHistoryController);
                                             },
                                           );
                                         },

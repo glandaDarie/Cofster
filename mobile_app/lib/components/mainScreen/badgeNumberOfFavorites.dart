@@ -4,6 +4,7 @@ Widget buildBadgeWidget(int orderCount) {
   return Stack(
     children: [
       Icon(Icons.history),
+      // Icon(Icons.card_giftcard)
       if (orderCount > 0)
         Positioned(
           top: 0,
