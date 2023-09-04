@@ -223,7 +223,7 @@ SizedBox customizeDrink(BuildContext context,
                               (hasCream == 1 ? additionalTopings["cream"] : 0);
                           _coffeeCupSize = selectedCoffeeSize;
                           _coffeeTemperature =
-                              "Cold"; // machine will be made initialy just for cold drinks
+                              "Cold"; // machine will be made initialy just for cold drinks, after that we can add hot drinks
                           _numberOfSugarCubes = sugarCubes;
                           _numberOfIceCubes = iceCubes;
                           _hasCream = hasCream == 1 ? true : false;

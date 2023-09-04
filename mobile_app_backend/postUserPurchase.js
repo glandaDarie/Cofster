@@ -14,7 +14,6 @@ exports.handler = async (event) => {
     };
   }
 
-
   const payload = {
     email: requestBody["email"],
     showOrderHistory: 1

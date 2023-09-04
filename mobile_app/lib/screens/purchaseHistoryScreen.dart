@@ -55,7 +55,6 @@ class _ProfilePhotoPageState extends State<PurchaseHistoryPage> {
             return Text("Error occured: ${snapshot.error}");
           } else {
             List<PurchaseHistoryDto> purchaseHistoryInformation = snapshot.data;
-
             return ListView(
               children: purchaseHistoryInformation
                   .map((PurchaseHistoryDto purchaseInformation) =>
