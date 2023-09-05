@@ -1,3 +1,5 @@
+import 'package:coffee_orderer/components/detailsScreen/drinkCustomSelector/extraIngredients.dart'
+    show extraIngredients;
 import 'package:coffee_orderer/components/detailsScreen/ratingBar.dart'
     show RatingBarDrink;
 import 'package:coffee_orderer/controllers/PurchaseHistoryController.dart';
@@ -11,8 +13,6 @@ import 'package:coffee_orderer/components/detailsScreen/boxQuantity.dart'
     show boxQuantity;
 import 'package:coffee_orderer/components/detailsScreen/boxTemperature.dart'
     show boxTemperature;
-import 'package:coffee_orderer/components/detailsScreen/boxExtraIngredient.dart'
-    show ExtraIngredientWidget, ExtraIngredientWidgetBinary;
 import 'package:coffee_orderer/utils/boxProperties.dart'
     show sizes, additionalTopings;
 import 'package:coffee_orderer/services/mergeNotifierService.dart';
@@ -20,7 +20,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:coffee_orderer/utils/localUserInformation.dart';
 import 'package:coffee_orderer/services/paymentService.dart'
     show PaymentService;
-import 'package:coffee_orderer/utils/appAssets.dart' show AppAssets;
 import 'package:coffee_orderer/services/notificationService.dart'
     show NotificationService;
 import 'package:coffee_orderer/utils/constants.dart' show DEFAULT_PRICE;
@@ -99,36 +98,13 @@ SizedBox customizeDrink(
           ),
           const SizedBox(height: 5.0),
           Column(
-            children: [
-              Container(
-                height: 80,
-                padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: ExtraIngredientWidget(
-                    notifierService.sugarQuantityNotifier,
-                    "Sugar",
-                    "cubes",
-                    AssetImage(AppAssets.extraIngredeints.IMAGE_SUGAR)
-                        .assetName),
-              ),
-              Container(
-                height: 80,
-                padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: ExtraIngredientWidget(
-                    notifierService.iceQuantityNotifier,
-                    "Ice",
-                    "cubes",
-                    AssetImage(AppAssets.extraIngredeints.IMAGE_ICE).assetName),
-              ),
-              Container(
-                height: 80,
-                padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: ExtraIngredientWidgetBinary(
-                    notifierService.creamNotifier,
-                    "Cream",
-                    AssetImage(AppAssets.extraIngredeints.IMAGE_CREAM)
-                        .assetName),
-              ),
-            ],
+            children: extraIngredients(notifierService)
+                .map((dynamic extraIngredient) => Container(
+                      height: 80,
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                      child: extraIngredient,
+                    ))
+                .toList(),
           ),
           const SizedBox(height: 5.0),
           const Padding(

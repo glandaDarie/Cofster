@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
-Row ExtraIngredientWidget(ValueNotifier<int> quantityNotifier, String title,
-    String measurement, String image) {
+Row ExtraIngredientWidget(
+    {ValueNotifier<int> quantityNotifier,
+    String title,
+    String measurement,
+    String image}) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     crossAxisAlignment: CrossAxisAlignment.center,
@@ -110,7 +113,7 @@ Container IngredientCounterWidget(
 }
 
 Row ExtraIngredientWidgetBinary(
-    ValueNotifier<int> creamNotifier, String title, String image) {
+    {ValueNotifier<int> creamNotifier, String title, String image}) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     crossAxisAlignment: CrossAxisAlignment.center,
