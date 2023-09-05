@@ -28,11 +28,12 @@ class NotifierCustomSelectorSetupService {
 
   ValueNotifierService<MergeNotifiers> _combinedNotifiers() {
     return ValueNotifierService<MergeNotifiers>(MergeNotifiers(
-        this.valueQuantityNotifier.value,
-        this.selectedSizeNotifier.value,
-        this.sugarQuantityNotifier.value,
-        this.iceQuantityNotifier.value,
-        this.creamNotifier.value));
+      this.valueQuantityNotifier.value,
+      this.selectedSizeNotifier.value,
+      this.sugarQuantityNotifier.value,
+      this.iceQuantityNotifier.value,
+      this.creamNotifier.value,
+    ));
   }
 
   List<UserSelectionNotifier> _getUserSelectionNotifiers() {
@@ -60,11 +61,4 @@ class NotifierCustomSelectorSetupService {
       });
     }
   }
-
-  // ValueNotifier<int> getValueQuantityNotifier() => valueQuantityNotifier;
-  // ValueNotifier<String> getSelectedSizeNotifier() => selectedSizeNotifier;
-  // ValueNotifier<bool> getHotSelectedNotifier() => hotSelectedNotifier;
-  // ValueNotifier<int> getSugarQuantityNotifier() => sugarQuantityNotifier;
-  // ValueNotifier<int> getIceQuantityNotifier() => iceQuantityNotifier;
-  // ValueNotifier<int> getCreamNotifier() => creamNotifier;
 }

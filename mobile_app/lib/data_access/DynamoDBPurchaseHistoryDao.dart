@@ -73,7 +73,7 @@ class DynamoDBPurchaseHistoryDao {
       );
       dynamic responseBody = jsonDecode(response.body);
       if (responseBody["statusCode"] == 201) {
-        return "New purchase added successfully";
+        return null;
       } else {
         return "Error when adding a new purchase. Error: ${responseBody['body']}";
       }

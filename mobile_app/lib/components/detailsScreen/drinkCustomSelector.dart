@@ -1,3 +1,5 @@
+import 'package:coffee_orderer/components/detailsScreen/ratingBar.dart'
+    show RatingBarDrink;
 import 'package:coffee_orderer/controllers/PurchaseHistoryController.dart';
 import 'package:coffee_orderer/data_transfer/PurchaseHistoryDto.dart';
 import 'package:coffee_orderer/models/information.dart';
@@ -30,9 +32,6 @@ import 'package:coffee_orderer/services/timeOrdererService.dart'
     show timeOfOrder;
 import 'package:coffee_orderer/controllers/DrinksInformationController.dart'
     show DrinksInformationController;
-import 'package:coffee_orderer/services/updateProviderService.dart'
-    show UpdateProvider;
-import 'package:provider/provider.dart';
 import 'package:coffee_orderer/services/notifierCustomSelectorSetupService.dart'
     show NotifierCustomSelectorSetupService;
 
@@ -51,7 +50,6 @@ SizedBox customizeDrink(
   NotifierCustomSelectorSetupService notifierService =
       NotifierCustomSelectorSetupService(_quantityCount, "M", false, 0, 1, 1);
   notifierService.attachAllListenersToNotifiers();
-
   return SizedBox(
     height: MediaQuery.of(context).size.height * 0.72,
     child: SingleChildScrollView(
@@ -273,7 +271,6 @@ SizedBox customizeDrink(
                             fontSize: 16);
                         return;
                       }
-
                       String postUsersPurchaseResponse =
                           await purchaseHistoryController.postUsersPurchase(
                         PurchaseHistoryDto(
@@ -301,12 +298,8 @@ SizedBox customizeDrink(
                             fontSize: 16);
                         return;
                       }
-                      // needs to appear on the main page after some time you had the order (give reference back from the drink selected after loading that page)
-                      Provider.of<UpdateProvider>(context, listen: false)
-                          .triggerUpdate();
-                      Future.delayed(Duration(seconds: 30), () {
-                        placedOrderNotifier.value = true;
-                      });
+                      RatingBarDrink.startRatingDisplayCountdown(
+                          context, placedOrderNotifier);
                     },
                     style: ButtonStyle(
                       backgroundColor:

@@ -1,5 +1,5 @@
 from typing import List, Dict 
-from prediction import predict
+from inference import predict
 from flask import Flask, jsonify, request
 from features import questions
 from classes import labels

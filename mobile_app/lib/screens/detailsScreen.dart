@@ -49,11 +49,6 @@ class _DetailsPageState extends State<DetailsPage> {
     super.initState();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   Future<dynamic> _getCoffeeCardInformationFromPreviousScreen(
       String key) async {
     String cacheStr = await loadUserInformationFromCache();

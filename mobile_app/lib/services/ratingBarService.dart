@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import '../utils/localUserInformation.dart';
+import 'package:coffee_orderer/utils/localUserInformation.dart';
 
 class RatingBarService {
   static RatingBar ratingBar(ValueNotifier<double> ratingBarNotifier,

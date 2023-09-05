@@ -1,6 +1,6 @@
 from typing import List, Dict
 import os
-from prediction import predict
+from inference import predict
 from classes import labels
 
 def unit_test_accuracy(path : str, nr_samples : int = 100) -> List[Dict[str, str]]: 
