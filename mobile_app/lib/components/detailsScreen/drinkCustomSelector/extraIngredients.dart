@@ -1,4 +1,5 @@
-import 'package:coffee_orderer/services/notifierCustomSelectorSetupService.dart';
+import 'package:coffee_orderer/services/notifierCustomSelectorSetupService.dart'
+    show NotifierCustomSelectorSetupService;
 import 'package:flutter/material.dart';
 import 'package:coffee_orderer/utils/appAssets.dart' show AppAssets;
 import 'package:coffee_orderer/components/detailsScreen/boxExtraIngredient.dart'

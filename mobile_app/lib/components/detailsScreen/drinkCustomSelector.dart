@@ -1,5 +1,7 @@
 import 'package:coffee_orderer/components/detailsScreen/drinkCustomSelector/extraIngredients.dart'
     show extraIngredients;
+import 'package:coffee_orderer/components/detailsScreen/drinkCustomSelector/boxCupSize.dart'
+    show boxCupSize;
 import 'package:coffee_orderer/components/detailsScreen/ratingBar.dart'
     show RatingBarDrink;
 import 'package:coffee_orderer/controllers/PurchaseHistoryController.dart';
@@ -7,8 +9,6 @@ import 'package:coffee_orderer/data_transfer/PurchaseHistoryDto.dart';
 import 'package:coffee_orderer/models/information.dart';
 import 'package:coffee_orderer/services/loggedInService.dart';
 import 'package:flutter/material.dart';
-import 'package:coffee_orderer/components/detailsScreen/boxSizes.dart'
-    show boxSizes;
 import 'package:coffee_orderer/components/detailsScreen/boxQuantity.dart'
     show boxQuantity;
 import 'package:coffee_orderer/components/detailsScreen/boxTemperature.dart'
@@ -33,6 +33,8 @@ import 'package:coffee_orderer/controllers/DrinksInformationController.dart'
     show DrinksInformationController;
 import 'package:coffee_orderer/services/notifierCustomSelectorSetupService.dart'
     show NotifierCustomSelectorSetupService;
+// import 'package:coffee_orderer/components/detailsScreen/boxSizes.dart'
+// show boxSizes;
 
 SizedBox customizeDrink(
     BuildContext context,
@@ -47,7 +49,8 @@ SizedBox customizeDrink(
   bool _hasCream;
   double _price;
   NotifierCustomSelectorSetupService notifierService =
-      NotifierCustomSelectorSetupService(_quantityCount, "M", false, 0, 1, 1);
+      NotifierCustomSelectorSetupService(_quantityCount, "M", false, 0, 1,
+          1); // I do not like this, refactoring needed
   notifierService.attachAllListenersToNotifiers();
   return SizedBox(
     height: MediaQuery.of(context).size.height * 0.72,
@@ -81,22 +84,23 @@ SizedBox customizeDrink(
               ],
             ),
           ),
-          const SizedBox(height: 5.0),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            child: Divider(height: 1, thickness: 0.3, color: Colors.black38),
-          ),
-          const SizedBox(height: 5.0),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-            child: boxSizes(notifierService.selectedSizeNotifier),
-          ),
-          const SizedBox(height: 5.0),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            child: Divider(height: 1, thickness: 0.3, color: Colors.black38),
-          ),
-          const SizedBox(height: 5.0),
+          ...boxCupSize(notifierService.selectedSizeNotifier),
+          // const SizedBox(height: 5.0),
+          // const Padding(
+          //   padding: EdgeInsets.symmetric(horizontal: 20),
+          //   child: Divider(height: 1, thickness: 0.3, color: Colors.black38),
+          // ),
+          // const SizedBox(height: 5.0),
+          // Padding(
+          //   padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+          //   child: boxSizes(notifierService.selectedSizeNotifier),
+          // ),
+          // const SizedBox(height: 5.0),
+          // const Padding(
+          //   padding: EdgeInsets.symmetric(horizontal: 20),
+          //   child: Divider(height: 1, thickness: 0.3, color: Colors.black38),
+          // ),
+          // const SizedBox(height: 5.0),
           Column(
             children: extraIngredients(notifierService)
                 .map((dynamic extraIngredient) => Container(
