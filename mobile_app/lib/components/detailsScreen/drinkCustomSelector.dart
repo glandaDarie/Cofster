@@ -2,55 +2,29 @@ import 'package:coffee_orderer/components/detailsScreen/drinkCustomSelector/extr
     show extraIngredients;
 import 'package:coffee_orderer/components/detailsScreen/drinkCustomSelector/boxCupSize.dart'
     show boxCupSize;
-import 'package:coffee_orderer/components/detailsScreen/ratingBar.dart'
-    show RatingBarDrink;
 import 'package:coffee_orderer/controllers/PurchaseHistoryController.dart';
-import 'package:coffee_orderer/data_transfer/PurchaseHistoryDto.dart';
-import 'package:coffee_orderer/models/information.dart';
-import 'package:coffee_orderer/services/loggedInService.dart';
+import 'package:coffee_orderer/services/orderService.dart' show OrderService;
 import 'package:flutter/material.dart';
 import 'package:coffee_orderer/components/detailsScreen/boxQuantity.dart'
     show boxQuantity;
 import 'package:coffee_orderer/components/detailsScreen/boxTemperature.dart'
     show boxTemperature;
-import 'package:coffee_orderer/utils/boxProperties.dart'
-    show sizes, additionalTopings;
 import 'package:coffee_orderer/services/mergeNotifierService.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:coffee_orderer/utils/localUserInformation.dart';
 import 'package:coffee_orderer/services/paymentService.dart'
     show PaymentService;
-import 'package:coffee_orderer/services/notificationService.dart'
-    show NotificationService;
-import 'package:coffee_orderer/utils/constants.dart' show DEFAULT_PRICE;
-import 'package:coffee_orderer/controllers/OrderInformationController.dart'
-    show OrderInformationController;
-import 'package:coffee_orderer/enums/orderStatusTypes.dart'
-    show CoffeeOrderState;
-import 'package:coffee_orderer/services/timeOrdererService.dart'
-    show timeOfOrder;
-import 'package:coffee_orderer/controllers/DrinksInformationController.dart'
-    show DrinksInformationController;
 import 'package:coffee_orderer/services/notifierCustomSelectorSetupService.dart'
     show NotifierCustomSelectorSetupService;
-// import 'package:coffee_orderer/components/detailsScreen/boxSizes.dart'
-// show boxSizes;
+import 'package:coffee_orderer/utils/extraIngredientChange.dart'
+    show updateUIWithChangesOnExtraIngredients;
 
 SizedBox customizeDrink(
     BuildContext context,
     ValueNotifier<bool> placedOrderNotifier,
     PaymentService paymentService,
     PurchaseHistoryController purchaseHistoryController) {
-  int _quantityCount = 1;
-  String _coffeeCupSize;
-  String _coffeeTemperature;
-  int _numberOfSugarCubes;
-  int _numberOfIceCubes;
-  bool _hasCream;
-  double _price;
+  Map<String, dynamic> extraIngredientUpdater;
   NotifierCustomSelectorSetupService notifierService =
-      NotifierCustomSelectorSetupService(_quantityCount, "M", false, 0, 1,
-          1); // I do not like this, refactoring needed
+      NotifierCustomSelectorSetupService(1, "M", false, 0, 1, 1);
   notifierService.attachAllListenersToNotifiers();
   return SizedBox(
     height: MediaQuery.of(context).size.height * 0.72,
@@ -85,22 +59,6 @@ SizedBox customizeDrink(
             ),
           ),
           ...boxCupSize(notifierService.selectedSizeNotifier),
-          // const SizedBox(height: 5.0),
-          // const Padding(
-          //   padding: EdgeInsets.symmetric(horizontal: 20),
-          //   child: Divider(height: 1, thickness: 0.3, color: Colors.black38),
-          // ),
-          // const SizedBox(height: 5.0),
-          // Padding(
-          //   padding: EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-          //   child: boxSizes(notifierService.selectedSizeNotifier),
-          // ),
-          // const SizedBox(height: 5.0),
-          // const Padding(
-          //   padding: EdgeInsets.symmetric(horizontal: 20),
-          //   child: Divider(height: 1, thickness: 0.3, color: Colors.black38),
-          // ),
-          // const SizedBox(height: 5.0),
           Column(
             children: extraIngredients(notifierService)
                 .map((dynamic extraIngredient) => Container(
@@ -141,32 +99,22 @@ SizedBox customizeDrink(
                         valueListenable: notifierService.mergedNotifiers,
                         builder: (BuildContext context,
                             MergeNotifiers notifiers, Widget child) {
-                          final int quantityCount = notifiers.quantity;
-                          final String selectedCoffeeSize =
-                              notifiers.selectedValue;
-                          final int sugarCubes = notifiers.sugarQuantity;
-                          final int iceCubes = notifiers.iceQuantity;
-                          final int hasCream = notifiers.creamNotifier;
-                          _quantityCount = quantityCount;
-                          _price = DEFAULT_PRICE;
-                          _price = (_price *
-                                  quantityCount *
-                                  sizes[selectedCoffeeSize]) +
-                              ((sugarCubes - 1) * additionalTopings["sugar"]) +
-                              ((iceCubes - 1) * additionalTopings["ice"]) +
-                              (hasCream == 1 ? additionalTopings["cream"] : 0);
-                          _coffeeCupSize = selectedCoffeeSize;
-                          _coffeeTemperature =
-                              "Cold"; // machine will be made initialy just for cold drinks, after that we can add hot drinks
-                          _numberOfSugarCubes = sugarCubes;
-                          _numberOfIceCubes = iceCubes;
-                          _hasCream = hasCream == 1 ? true : false;
-                          return Text("\$${_price.toStringAsFixed(2)}",
-                              style: TextStyle(
-                                      fontFamily: 'varela',
-                                      color: Color(0xFF473D3A))
-                                  .copyWith(fontWeight: FontWeight.w900),
-                              textScaleFactor: 1.9);
+                          extraIngredientUpdater =
+                              updateUIWithChangesOnExtraIngredients(
+                            notifiers.selectedValue,
+                            notifiers.sugarQuantity,
+                            notifiers.iceQuantity,
+                            notifiers.creamNotifier,
+                            quantity: notifiers.quantity,
+                          );
+                          return Text(
+                            "\$${extraIngredientUpdater['price']}",
+                            style: TextStyle(
+                                    fontFamily: 'varela',
+                                    color: Color(0xFF473D3A))
+                                .copyWith(fontWeight: FontWeight.w900),
+                            textScaleFactor: 1.9,
+                          );
                         }),
                   ],
                 ),
@@ -175,111 +123,13 @@ SizedBox customizeDrink(
                   width: 250,
                   child: ElevatedButton(
                     onPressed: () async {
-                      String cacheStr = await loadUserInformationFromCache();
-                      Map<String, String> cache =
-                          fromStringCachetoMapCache(cacheStr);
-                      String paymentResponse = await paymentService.makePayment(
-                          context,
-                          (_price * 100).toInt().toStringAsFixed(0),
-                          cache["cardCoffeeName"],
-                          "USD",
-                          numberOfCoffeeDrinks: _quantityCount);
-                      if (paymentResponse != "success") {
-                        Fluttertoast.showToast(
-                            msg: paymentResponse,
-                            toastLength: Toast.LENGTH_SHORT,
-                            backgroundColor: Color.fromARGB(255, 71, 66, 65),
-                            textColor: Color.fromARGB(255, 220, 217, 216),
-                            fontSize: 16);
-                        return;
-                      }
-                      NotificationService notificationService =
-                          NotificationService();
-                      List<String> params = notificationService
-                          .getNotificationParamsAfterDrinkIsPayed(
-                              cache, _quantityCount);
-                      NotificationService().showNotification(
-                        title: params[0],
-                        body: params[1],
-                      );
-                      String coffeeName = cache["cardCoffeeName"]
-                          .split("-")
-                          .map((String word) =>
-                              "${word[0].toUpperCase()}${word.substring(1)}")
-                          .toList()
-                          .join();
-                      DrinksInformationController drinkInformationController =
-                          DrinksInformationController();
-                      Information information = await drinkInformationController
-                          .getInformationFromRespectiveDrink(coffeeName);
-                      int preparationTime;
-                      try {
-                        preparationTime = int.parse(
-                            information.preparationTime.split(" ")[0]);
-                      } catch (error) {
-                        Fluttertoast.showToast(
-                            msg: error,
-                            toastLength: Toast.LENGTH_SHORT,
-                            backgroundColor: Color.fromARGB(255, 71, 66, 65),
-                            textColor: Color.fromARGB(255, 220, 217, 216),
-                            fontSize: 16);
-                        return;
-                      }
-                      String postOrderResponse =
-                          await OrderInformationController
-                              .postOrderToOrdersInformation("Orders", {
-                        "coffeeName": coffeeName,
-                        "coffeePrice": "${_price.toStringAsFixed(2)}\$",
-                        "quantity": _quantityCount,
-                        "communication": "broadcast",
-                        "coffeeStatus": CoffeeOrderState.ORDER_PLACED.index,
-                        "coffeeOrderTime": timeOfOrder(),
-                        "coffeeFinishTimeEstimation": timeOfOrder(
-                            secondsDelay: preparationTime * _quantityCount),
-                        "coffeeCupSize": _coffeeCupSize,
-                        "coffeeTemperature": _coffeeTemperature,
-                        "numberOfSugarCubes": _numberOfSugarCubes,
-                        "numberOfIceCubes": _numberOfIceCubes,
-                        "hasCream": _hasCream
-                      });
-                      if (postOrderResponse != null) {
-                        Fluttertoast.showToast(
-                            msg: postOrderResponse,
-                            toastLength: Toast.LENGTH_SHORT,
-                            backgroundColor: Color.fromARGB(255, 71, 66, 65),
-                            textColor: Color.fromARGB(255, 220, 217, 216),
-                            fontSize: 16);
-                        return;
-                      }
-                      String postUsersPurchaseResponse =
-                          await purchaseHistoryController.postUsersPurchase(
-                        PurchaseHistoryDto(
-                          email: await LoggedInService.getSharedPreferenceValue(
-                              "<username>"),
-                          coffeeName: coffeeName.replaceAllMapped(
-                            RegExp(r"([a-z])([A-Z])"),
-                            (match) => "${match.group(1)} ${match.group(2)}",
-                          ),
-                          coffeePrice: "${_price.toStringAsFixed(2)}\$",
-                          quantity: _quantityCount,
-                          coffeeCupSize: _coffeeCupSize,
-                          coffeeTemperature: _coffeeTemperature,
-                          hasCream: _hasCream,
-                          numberOfSugarCubes: _numberOfSugarCubes,
-                          numberOfIceCubes: _numberOfIceCubes,
-                        ),
-                      );
-                      if (postUsersPurchaseResponse != null) {
-                        Fluttertoast.showToast(
-                            msg: postOrderResponse,
-                            toastLength: Toast.LENGTH_SHORT,
-                            backgroundColor: Color.fromARGB(255, 71, 66, 65),
-                            textColor: Color.fromARGB(255, 220, 217, 216),
-                            fontSize: 16);
-                        return;
-                      }
-                      RatingBarDrink.startRatingDisplayCountdown(
-                          context, placedOrderNotifier);
+                      OrderService(
+                              context,
+                              paymentService,
+                              purchaseHistoryController,
+                              extraIngredientUpdater,
+                              placedOrderNotifier)
+                          .placeOrder();
                     },
                     style: ButtonStyle(
                       backgroundColor:
