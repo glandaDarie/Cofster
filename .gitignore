@@ -1,4 +1,4 @@
 apiKeys.dart
-Cofster/mobile_app/lib/credentials/
-cup_detector/message_broker/credentials/
+credentials_firebase.json
+firebase_rtd_url.py
 .env
