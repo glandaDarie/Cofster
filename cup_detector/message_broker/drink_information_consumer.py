@@ -7,7 +7,7 @@ from enums import Methods
 from enum import Enum
 from models.order import Order
 
-class DrinksInformationConsumer:
+class Drinks_information_consumer:
     """
     A class for consuming and managing drink information from a Firebase Realtime Database.
 
@@ -17,7 +17,7 @@ class DrinksInformationConsumer:
 
     Attributes:
         table_name (str): The name of the database table being monitored.
-        drink_response (list): A list to store drink response data.
+        drinks_information (list): A list to store drink response data.
         data_lock (threading.Lock): A lock to ensure thread-safe access to data.
 
     Methods:
@@ -29,7 +29,7 @@ class DrinksInformationConsumer:
         self.table_name : str = table_name
         cred : credentials.Certificate = credentials.Certificate(cert=r"message_broker/credentials_firebase.json")
         firebase_admin.initialize_app(credential=cred, options=options)
-        self.drink_response : List[Dict] = []
+        self.drinks_information : List[Dict] = []
         self.data_lock : threading.Lock() = threading.Lock() 
 
     def _fetch_order_from_message_broker(self, endpoint : str = "/") -> Dict:
@@ -107,7 +107,7 @@ class DrinksInformationConsumer:
                     if order_id is None:
                         print("Respective order id could not be found")
                         return
-                    self.drink_response.append(response_data_change) 
+                    self.drinks_information.append(response_data_change) 
                     response_delete_order = self._delete_order_from_message_broker(f"/{self.table_name}/{order_id}")
                     if response_delete_order is not None:
                         print(response_delete_order)

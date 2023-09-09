@@ -6,12 +6,12 @@ from ultralytics.yolo.utils.plotting import Annotator
 import torch
 from utils.model_data import THRESHOLD_SCORE
 
-class Detectors:
+class YOLOv8_detector:
     def __init__(self):
         pass
 
     @staticmethod
-    def detector(frame : np.ndarray = np.ndarray | None, model : YOLO = None, path : str = None) -> YOLO | Tuple[YOLO, np.ndarray, bool]:
+    def detect_cup(frame : np.ndarray = None, model : YOLO = None, path : str = None) -> YOLO | Tuple[YOLO, np.ndarray, bool]:
         if model is None:
             model : YOLO = YOLO(path)
             return model
@@ -28,3 +28,7 @@ class Detectors:
                     has_bounding_box : bool = True
                     annotator.box_label(box_coordinates, f"{model.names[classes_index]}:{score:.2f}")
         return (model, annotator.result(), has_bounding_box) if has_bounding_box else (model, frame, has_bounding_box)
+    
+    @staticmethod
+    def detect_cup_placement(frame : np.ndarray = None, model : YOLO = None, path : str = None) -> YOLO | Tuple[YOLO, np.ndarray, bool]:
+        pass
