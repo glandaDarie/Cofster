@@ -4,9 +4,9 @@ import 'package:coffee_orderer/screens/mainScreen.dart';
 import 'package:flutter_login/flutter_login.dart';
 import 'package:coffee_orderer/controllers/AuthController.dart';
 import 'package:coffee_orderer/utils/localUserInformation.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:coffee_orderer/services/loggedInService.dart'
     show LoggedInService;
+import 'package:coffee_orderer/utils/toast.dart' show ToastUtils;
 
 class AuthPage extends StatefulWidget {
   @override
@@ -55,29 +55,8 @@ class _AuthPageState extends State<AuthPage> {
             String loggingStatusResponse =
                 await LoggedInService.changeSharedPreferenceLoggingStatus();
             if (loggingStatusResponse != null) {
-              Fluttertoast.showToast(
-                  msg:
-                      "Problems when changing the logging status: ${loggingStatusResponse}",
-                  toastLength: Toast.LENGTH_SHORT,
-                  backgroundColor: Color.fromARGB(255, 102, 33, 12),
-                  textColor: Color.fromARGB(255, 220, 217, 216),
-                  fontSize: 16);
-              return null;
-            }
-            const String usernameKey = "<username>";
-            String setUsernameStatusResponse =
-                await LoggedInService.setSharedPreferenceValue(usernameKey,
-                    value: data.name);
-            if (setUsernameStatusResponse != null) {
-              Fluttertoast.showToast(
-                msg: "Problems when setting the key: "
-                    "${usernameKey.substring(1, usernameKey.length - 1)} to : ${data.name}, "
-                    "error: ${setUsernameStatusResponse}",
-                toastLength: Toast.LENGTH_SHORT,
-                backgroundColor: Color.fromARGB(255, 102, 33, 12),
-                textColor: Color.fromARGB(255, 220, 217, 216),
-                fontSize: 16,
-              );
+              ToastUtils.showToast(
+                  "Problems when changing the logging status: ${loggingStatusResponse}");
               return null;
             }
             return this._authController.authUser(data);
@@ -93,6 +72,21 @@ class _AuthPageState extends State<AuthPage> {
               _name = signupData.additionalSignupData["1"];
             });
             String surname = signupData.additionalSignupData["2"];
+            String cacheStr = await loadUserInformationFromCache();
+            Map<String, String> cache = fromStringCachetoMapCache(cacheStr);
+            cache["name"] = _name;
+            await storeUserInformationInCache(cache);
+
+            const String usernameKey = "<username>";
+            String setUsernameStatusResponse =
+                await LoggedInService.setSharedPreferenceValue(usernameKey,
+                    value: signupData.name);
+            if (setUsernameStatusResponse != null) {
+              ToastUtils.showToast("Problems when setting the key: "
+                  "${usernameKey.substring(1, usernameKey.length - 1)} to : ${signupData.name}, "
+                  "error: ${setUsernameStatusResponse}");
+              return null;
+            }
             String response = await this
                 ._authController
                 .signupUser(signupData, _name, surname);
@@ -105,14 +99,9 @@ class _AuthPageState extends State<AuthPage> {
             String errorMsg =
                 await this._authController.loginCompletedSuccessfully();
             if (errorMsg != null) {
-              Fluttertoast.showToast(
-                  msg:
-                      "Exception when trying to fetch the credentials or name: ${errorMsg}",
-                  toastLength: Toast.LENGTH_SHORT,
-                  backgroundColor: Color.fromARGB(255, 102, 33, 12),
-                  textColor: Color.fromARGB(255, 220, 217, 216),
-                  fontSize: 16);
-              return;
+              ToastUtils.showToast(
+                  "Exception when trying to fetch the credentials or name: ${errorMsg}");
+              return null;
             }
             Navigator.of(context).pushReplacement(
                 MaterialPageRoute(builder: (context) => HomePage()));
@@ -131,13 +120,8 @@ class _AuthPageState extends State<AuthPage> {
             String loggingStatusResponse =
                 await LoggedInService.changeSharedPreferenceLoggingStatus();
             if (loggingStatusResponse != null) {
-              Fluttertoast.showToast(
-                  msg:
-                      "Problems when changing the logging status: ${loggingStatusResponse}",
-                  toastLength: Toast.LENGTH_SHORT,
-                  backgroundColor: Color.fromARGB(255, 102, 33, 12),
-                  textColor: Color.fromARGB(255, 220, 217, 216),
-                  fontSize: 16);
+              ToastUtils.showToast(
+                  "Problems when changing the logging status: ${loggingStatusResponse}");
               return null;
             }
             Navigator.of(context).pushReplacement(

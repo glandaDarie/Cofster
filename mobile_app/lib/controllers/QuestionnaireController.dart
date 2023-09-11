@@ -55,12 +55,10 @@ class QuestionnaireController {
   }
 
   Future<List<String>> loadDrinksFromDynamoDB() async {
-    String cacheStr = await loadUserInformationFromCache();
-    Map<String, String> cache = fromStringCachetoMapCache(cacheStr);
     String username =
         await LoggedInService.getSharedPreferenceValue("<username>");
-    return (await userController.getDrinksFromNameAndUsername(
-            cache["name"], username))
+    String name = await LoggedInService.getSharedPreferenceValue("<nameUser>");
+    return (await userController.getDrinksFromNameAndUsername(name, username))
         .cast<String>();
   }
 
@@ -83,7 +81,8 @@ class QuestionnaireController {
     String cacheStr = await loadUserInformationFromCache();
     Map<String, String> cache = await fromStringCachetoMapCache(cacheStr);
     cache.removeWhere(
-        (String key, String value) => RegExp(r'^drink-\d+$').hasMatch(key));
+      (String key, String value) => RegExp(r'^drink-\d+$').hasMatch(key),
+    );
     cache["name"] =
         await LoggedInService.getSharedPreferenceValue("<nameUser>");
     await storeUserInformationInCache(cache);

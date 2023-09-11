@@ -156,21 +156,6 @@ class _ProfileInformationPageState extends State<ProfileInformationPage> {
                                         fontSize: 16);
                                     return null;
                                   }
-                                  String responseRemovingKey =
-                                      await LoggedInService
-                                          .removeSharedPreferenceKey(
-                                              "<nameUser>");
-                                  if (responseRemovingKey != null) {
-                                    Fluttertoast.showToast(
-                                        msg: loggingStatusResponse,
-                                        toastLength: Toast.LENGTH_SHORT,
-                                        backgroundColor:
-                                            Color.fromARGB(255, 102, 33, 12),
-                                        textColor:
-                                            Color.fromARGB(255, 220, 217, 216),
-                                        fontSize: 16);
-                                    return null;
-                                  }
                                   Navigator.of(context).push(MaterialPageRoute(
                                     builder: (BuildContext context) =>
                                         AuthPage(),

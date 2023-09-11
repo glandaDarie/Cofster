@@ -5,10 +5,10 @@ import 'package:coffee_orderer/controllers/UserController.dart';
 import 'package:coffee_orderer/services/loggedInService.dart';
 import 'package:flutter/material.dart';
 import 'package:coffee_orderer/services/chooseUserPhotoService.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:coffee_orderer/utils/localUserInformation.dart';
 import 'package:coffee_orderer/screens/questionnaireScreen.dart';
+import 'package:coffee_orderer/utils/toast.dart' show ToastUtils;
 
 class ProfilePhotoPage extends StatefulWidget {
   const ProfilePhotoPage({Key key}) : super(key: key);
@@ -88,12 +88,7 @@ class _ProfilePhotoPageState extends State<ProfilePhotoPage>
                 bool correctPermissions = await selectAccessPermissions();
                 correctPermissions
                     ? showImagePicker(context)
-                    : Fluttertoast.showToast(
-                        msg: "No permission provided",
-                        toastLength: Toast.LENGTH_SHORT,
-                        backgroundColor: Color.fromARGB(255, 102, 33, 12),
-                        textColor: Color.fromARGB(255, 220, 217, 216),
-                        fontSize: 16);
+                    : ToastUtils.showToast("No permission provided");
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -134,12 +129,10 @@ class _ProfilePhotoPageState extends State<ProfilePhotoPage>
                     await LoggedInService.setSharedPreferenceValue("<nameUser>",
                         value: cache["name"]);
                 if (preferenceValueResponse != null) {
-                  Fluttertoast.showToast(
-                      msg: preferenceValueResponse.toString(),
-                      toastLength: Toast.LENGTH_SHORT,
-                      backgroundColor: Color.fromARGB(255, 71, 66, 65),
-                      textColor: Color.fromARGB(255, 220, 217, 216),
-                      fontSize: 16);
+                  ToastUtils.showToast(
+                    preferenceValueResponse.toString(),
+                    backgroundColor: Color.fromARGB(255, 71, 66, 65),
+                  );
                   return;
                 }
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
