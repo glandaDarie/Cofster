@@ -29,12 +29,12 @@ class RatingBarDrink {
           String cacheStr = await loadUserInformationFromCache();
           Map<String, String> cache = fromStringCachetoMapCache(cacheStr);
           _ratingController = RatingController();
-          String response =
-              await _ratingController.updateRatingResponseGivenDrink(
-                  cache["cardCoffeeName"], ratingBar.toString());
+          String drinkName = cache["cardCoffeeName"].replaceAll("-", "");
+          String response = await _ratingController
+              .updateRatingResponseGivenDrink(drinkName, ratingBar.toString());
           if (response.contains("Error")) {
             Fluttertoast.showToast(
-                msg: "Response: ${response}",
+                msg: "Error: ${response}",
                 toastLength: Toast.LENGTH_SHORT,
                 backgroundColor: Color.fromARGB(255, 102, 33, 12),
                 textColor: Color.fromARGB(255, 220, 217, 216),

@@ -3,11 +3,11 @@ import threading
 import firebase_admin
 from firebase_admin import db, credentials
 import json
-from enums import Methods
 from enum import Enum
+from enums.methods import Methods
 from models.order import Order
 
-class Drinks_information_consumer:
+class DrinksInformationConsumer:
     """
     A class for consuming and managing drink information from a Firebase Realtime Database.
 
