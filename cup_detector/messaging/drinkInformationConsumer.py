@@ -7,7 +7,7 @@ from enum import Enum
 from enums.methods import Methods
 from models.order import Order
 
-class DrinksInformationConsumer:
+class DrinkInformationConsumer:
     """
     A class for consuming and managing drink information from a Firebase Realtime Database.
 
@@ -27,12 +27,12 @@ class DrinksInformationConsumer:
     """
     def __init__(self, table_name : str, options : Dict[str, str]):
         self.table_name : str = table_name
-        cred : credentials.Certificate = credentials.Certificate(cert=r"message_broker/credentials_firebase.json")
+        cred : credentials.Certificate = credentials.Certificate(cert=r"messaging/credentials_firebase.json")
         firebase_admin.initialize_app(credential=cred, options=options)
         self.drinks_information : List[Dict] = []
         self.data_lock : threading.Lock() = threading.Lock() 
 
-    def _fetch_order_from_message_broker(self, endpoint : str = "/") -> Dict:
+    def __fetch_order_from_message_broker(self, endpoint : str = "/") -> Dict:
         """
         Fetch content from the message broker.
 
@@ -48,7 +48,7 @@ class DrinksInformationConsumer:
             return f"Error when fetching the order/orders: {exception}"
         return order
 
-    def _delete_order_from_message_broker(self, endpoint : str = "/") -> str:
+    def __delete_order_from_message_broker(self, endpoint : str = "/") -> str:
         """
         Delete an order from the message broker.
 
@@ -103,19 +103,19 @@ class DrinksInformationConsumer:
             if method.value == "POST":
                 with self.data_lock:
                     response_data_change : json = json.loads(json.dumps(event.data, indent=4))
-                    order_id : str = self._get_order_id(response_data_change)
+                    order_id : str = self.__get_order_id(response_data_change)
                     if order_id is None:
                         print("Respective order id could not be found")
                         return
                     self.drinks_information.append(response_data_change) 
-                    response_delete_order = self._delete_order_from_message_broker(f"/{self.table_name}/{order_id}")
+                    response_delete_order = self.__delete_order_from_message_broker(f"/{self.table_name}/{order_id}")
                     if response_delete_order is not None:
                         print(response_delete_order)
                         return 
         
         reference.listen(on_data_change_broker_listenable)
     
-    def _get_order_id(self, order_information : Dict[str, Any]) -> str | None:
+    def __get_order_id(self, order_information : Dict[str, Any]) -> str | None:
         """
         Retrieves the order ID that matches the provided order information.
 
@@ -125,7 +125,7 @@ class DrinksInformationConsumer:
         Returns:
             str | None: The order ID if a matching order is found; None if no matching order is found.
         """
-        all_orders_fetched : Dict | str = json.loads(json.dumps(self._fetch_order_from_message_broker(f"/{self.table_name}"), indent=4))
+        all_orders_fetched : Dict | str = json.loads(json.dumps(self.__fetch_order_from_message_broker(f"/{self.table_name}"), indent=4))
         if isinstance(all_orders_fetched, str):
             print(all_orders_fetched)
             return

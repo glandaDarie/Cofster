@@ -1,19 +1,24 @@
-from typing import List, Dict, Callable
+from typing import List
+import numpy as np
 import cv2
 from ultralytics import YOLO
 from utils.constants import CAMERA_INDEX, WINDOW_NAME
 from utils.paths import PATH_MODEL_CUP_DETECTION
+# from utils.paths import PATH_MODEL_PLACEMENT_DETECTION
 from detectors.YOLOv8 import YOLOv8Detector
 from utils.firebase_rtd_url import DATABASE_OPTIONS
-from message_broker.drinks_information_consumer import DrinksInformationConsumer
-from threading import Thread, Lock
+from messaging.drinkInformationConsumer import DrinkInformationConsumer
+from threading import Thread
+from threading import Lock
 from utils.logger import LOGGER
 from utils.constants import TABLE_NAME
-from services.DrinkCreationService import DrinkCreationSevice
-# from utils.paths import PATH_MODEL_PLACEMENT_DETECTION
+from services.drinkCreationService import DrinkCreationSevice
+from services.imageProcessorService import ImageProcessorBuilderService
+import multiprocessing
+from time import time
 
 if __name__ == "__main__":
-    drinks_information_consumer : DrinksInformationConsumer = DrinksInformationConsumer(table_name=TABLE_NAME, options=DATABASE_OPTIONS)
+    drinks_information_consumer : DrinkInformationConsumer = DrinkInformationConsumer(table_name=TABLE_NAME, options=DATABASE_OPTIONS)
     background_firebase_table_update_thread : Thread = Thread(target=drinks_information_consumer.listen_for_updates_on_drink_message_broker)
     background_firebase_table_update_thread.daemon = True
     background_firebase_table_update_thread.start()
@@ -28,31 +33,47 @@ if __name__ == "__main__":
                 LOGGER.error(f"Error when trying to read the frame: {frame}")
                 break
 
-            cup_detection_model : YOLO = YOLOv8Detector.detect_cup(path=PATH_MODEL_CUP_DETECTION)
+            cup_detection_model : YOLO = YOLOv8Detector.detect_cup(path_weights=PATH_MODEL_CUP_DETECTION)
             # cup_detection_placement_model : YOLO = YOLOv8_detector.detect_cup_placement(path=PATH_MODEL_PLACEMENT_DETECTION)
 
-            cup_detection_lock : Lock = Lock()
+            # cup_detection_lock : Lock = Lock()
+            cup_detection_lock : Thread.Lock = Lock()
             cup_detection_state : List[bool] = [False]
 
-            def callback_cup_detection(new_cup_detection_state : bool|None = None):
+            def callback_cup_detection(new_cup_detection_state : bool | None = None):
                 with cup_detection_lock:
                     if new_cup_detection_state is not None:
                         cup_detection_state[0] = new_cup_detection_state
                     return cup_detection_state[0]
 
-            background_create_coffee_drink_thread : Thread = Thread(target=DrinkCreationSevice.create_drink, \
+            drink_creation_service : DrinkCreationSevice = DrinkCreationSevice()
+            background_create_coffee_drink_thread : Thread = Thread(target=drink_creation_service.simulate_creation, \
                                                                     args=(drinks_information_consumer.drinks_information, callback_cup_detection))
             background_create_coffee_drink_thread.daemon = True
             background_create_coffee_drink_thread.start()
 
+            # coffee_drink_process : multiprocessing.Process = multiprocessing.Process(target=DrinkCreationSevice.create_drink, \
+            #                                                                            args=(drinks_information_consumer.drinks_information, callback_cup_detection))
+            # coffee_drink_process.daemon = True
+            # coffee_drink_process.start()
+            
+            start_fps_time : float = time()
+            end_fps_time : float = start_fps_time
+            image_processor_builder_service : ImageProcessorBuilderService = ImageProcessorBuilderService()
             while success:
+                end_fps_time = time()
                 cup_detection_model, frame, cup_detected = YOLOv8Detector.detect_cup(frame=frame, model=cup_detection_model)
                 callback_cup_detection(cup_detected)
                 print(f"len(consumer.drinks_information): {len(drinks_information_consumer.drinks_information)}")
+                frame : np.ndarray = image_processor_builder_service \
+                    .add_text_number_of_frames(frame=frame, start_time=start_fps_time, end_time=end_fps_time) \
+                    .build()
+                start_fps_time = end_fps_time
                 cv2.imshow(WINDOW_NAME, frame)
                 cv2.waitKey(1)
                 frame_captured_successfully, frame = camera.read()
             camera.release()
             cv2.destroyAllWindows()
+
 
                

@@ -11,9 +11,9 @@ class YOLOv8Detector:
         pass
 
     @staticmethod
-    def detect_cup(frame : np.ndarray = None, model : YOLO = None, path : str = None) -> YOLO | Tuple[YOLO, np.ndarray, bool]:
+    def detect_cup(frame : np.ndarray = None, model : YOLO = None, path_weights : str = None) -> YOLO | Tuple[YOLO, np.ndarray, bool]:
         if model is None:
-            model : YOLO = YOLO(path)
+            model : YOLO = YOLO(path_weights)
             return model
         has_bounding_box : bool = False
         results : List[ultralytics.yolo.engine.results.Results] = model.predict(frame)
@@ -30,5 +30,9 @@ class YOLOv8Detector:
         return (model, annotator.result(), has_bounding_box) if has_bounding_box else (model, frame, has_bounding_box)
     
     @staticmethod
-    def detect_cup_placement(frame : np.ndarray = None, model : YOLO = None, path : str = None) -> YOLO | Tuple[YOLO, np.ndarray, bool]:
+    def detect_cup_placement(frame : np.ndarray = None, model : YOLO = None, path_weights : str = None) -> YOLO | Tuple[YOLO, np.ndarray, bool]:
+        pass
+
+    @staticmethod
+    def is_cup_detected_position_valid():
         pass
