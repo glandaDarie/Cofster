@@ -14,7 +14,6 @@ from utils.logger import LOGGER
 from utils.constants import TABLE_NAME
 from services.drinkCreationService import DrinkCreationSevice
 from services.imageProcessorService import ImageProcessorBuilderService
-import multiprocessing
 from time import time
 
 if __name__ == "__main__":
@@ -37,7 +36,7 @@ if __name__ == "__main__":
             # cup_detection_placement_model : YOLO = YOLOv8_detector.detect_cup_placement(path=PATH_MODEL_PLACEMENT_DETECTION)
 
             # cup_detection_lock : Lock = Lock()
-            cup_detection_lock : Thread.Lock = Lock()
+            cup_detection_lock : Lock = Lock()
             cup_detection_state : List[bool] = [False]
 
             def callback_cup_detection(new_cup_detection_state : bool | None = None):
@@ -65,9 +64,9 @@ if __name__ == "__main__":
                 cup_detection_model, frame, cup_detected = YOLOv8Detector.detect_cup(frame=frame, model=cup_detection_model)
                 callback_cup_detection(cup_detected)
                 print(f"len(consumer.drinks_information): {len(drinks_information_consumer.drinks_information)}")
-                frame : np.ndarray = image_processor_builder_service \
-                    .add_text_number_of_frames(frame=frame, start_time=start_fps_time, end_time=end_fps_time) \
-                    .build()
+                # frame : np.ndarray = image_processor_builder_service \
+                #     .add_text_number_of_frames(frame=frame, start_time=start_fps_time, end_time=end_fps_time) \
+                #     .build()
                 start_fps_time = end_fps_time
                 cv2.imshow(WINDOW_NAME, frame)
                 cv2.waitKey(1)
