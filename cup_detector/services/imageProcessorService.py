@@ -16,7 +16,7 @@ class ImageProcessorBuilderService:
                      color : tuple = (0, 255, 0), 
                      thickness : int = 6
                      ) -> Self:
-        fps : int = int(1 / (end_time - start_time))
+        fps : int = int(1 / (end_time - start_time)) if end_time != start_time else 0
         text : str = f"{text}: {fps}"
         self.frame = cv2.putText(img=frame, text=text, org=org, fontFace=fontFace,
                 fontScale=fontScale, color=color, thickness=thickness)

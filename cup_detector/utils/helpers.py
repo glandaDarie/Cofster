@@ -9,3 +9,4 @@ def create_path(paths : List[str] = None) -> str:
     for path in paths:
         fullpath : str = os.path.join(fullpath, path) 
     return fullpath
+

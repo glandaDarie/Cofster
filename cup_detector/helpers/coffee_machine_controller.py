@@ -5,7 +5,7 @@ class CoffeeMachineController:
         pass
         # GPIO.setmode(GPIO.BCM)
 
-    def start_servos():
+    def run_servos():
         pass
 
     def start_pumps():

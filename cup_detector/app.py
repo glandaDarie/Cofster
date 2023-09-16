@@ -35,7 +35,6 @@ if __name__ == "__main__":
             cup_detection_model : YOLO = YOLOv8Detector.detect_cup(path_weights=PATH_MODEL_CUP_DETECTION)
             # cup_detection_placement_model : YOLO = YOLOv8_detector.detect_cup_placement(path=PATH_MODEL_PLACEMENT_DETECTION)
 
-            # cup_detection_lock : Lock = Lock()
             cup_detection_lock : Lock = Lock()
             cup_detection_state : List[bool] = [False]
 
@@ -50,11 +49,6 @@ if __name__ == "__main__":
                                                                     args=(drinks_information_consumer.drinks_information, callback_cup_detection))
             background_create_coffee_drink_thread.daemon = True
             background_create_coffee_drink_thread.start()
-
-            # coffee_drink_process : multiprocessing.Process = multiprocessing.Process(target=DrinkCreationSevice.create_drink, \
-            #                                                                            args=(drinks_information_consumer.drinks_information, callback_cup_detection))
-            # coffee_drink_process.daemon = True
-            # coffee_drink_process.start()
             
             start_fps_time : float = time()
             end_fps_time : float = start_fps_time
@@ -64,9 +58,9 @@ if __name__ == "__main__":
                 cup_detection_model, frame, cup_detected = YOLOv8Detector.detect_cup(frame=frame, model=cup_detection_model)
                 callback_cup_detection(cup_detected)
                 print(f"len(consumer.drinks_information): {len(drinks_information_consumer.drinks_information)}")
-                # frame : np.ndarray = image_processor_builder_service \
-                #     .add_text_number_of_frames(frame=frame, start_time=start_fps_time, end_time=end_fps_time) \
-                #     .build()
+                frame : np.ndarray = image_processor_builder_service \
+                    .add_text_number_of_frames(frame=frame, start_time=start_fps_time, end_time=end_fps_time) \
+                    .build()
                 start_fps_time = end_fps_time
                 cv2.imshow(WINDOW_NAME, frame)
                 cv2.waitKey(1)
