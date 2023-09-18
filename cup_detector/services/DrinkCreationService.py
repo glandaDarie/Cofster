@@ -25,13 +25,28 @@ class DrinkCreationSevice(CoffeeMachineController):
         __create_drink: Private method to create drinks.
         __continuously_check_cup: Private method to continuously monitor cup detection.
     """
-    def __init__(self, drink_finished_callback : Callable):
+    def __init__(self, drink_finished_callback : Callable[[bool], bool]):
         super().__init__()
-        self.drink_finished_callback : Callable = drink_finished_callback
+        self.drink_finished_callback : Callable[[bool], bool] = drink_finished_callback
         self.stop_drink_creation_event : Event = Event()
         self.stop_continuous_cup_checking : Event = Event()
 
     def simulate_creation(self, drinks_information_consumer : DrinkInformationConsumer, callback_cup_detection : Callable[[bool], bool]) -> str:
+        """
+        Simulate the creation of drinks based on cup detection.
+
+        This method continuously monitors cup detection and, when a cup is detected,
+        it spawns threads to create drinks using the provided drink information and cup detection callback.
+        It waits for the drink creation to complete and then cleans up the order information.
+
+        Args:
+            drinks_information_consumer (DrinkInformationConsumer): An instance of DrinkInformationConsumer
+                containing information about the drinks to be created.
+            callback_cup_detection (Callable[[bool], bool]): A callback function to detect the presence of a cup.
+
+        Returns:
+            str: A message indicating the status of the drink creation process.
+        """
         while True:
             if callback_cup_detection():
                 with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
