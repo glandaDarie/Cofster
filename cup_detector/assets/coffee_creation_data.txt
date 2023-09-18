@@ -1,0 +1,24 @@
+Given the coffee drink that I provided: {coffee_name}, please generate a JSON with the ingredients necessary to make that respective drink.
+The drinks with what you can work are as follows: 
+    - white sugar
+    - brown sugar
+    - whiskey
+    - water
+    - normal milk
+    - coconut milk
+    - liquor
+    - chocolate syrupt
+    - cocoa powder 
+    - sweetener 
+
+The JSON should look something like this:
+
+{
+    coffee_name: coffee_name_value,
+    ingredient_1: ingredient_1_value,
+    ingredient_2: ingredient_2_value,
+    .
+    .
+    .
+    ingredient_n: ingredient_n_value
+}
