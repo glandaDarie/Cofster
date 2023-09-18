@@ -1,20 +1,42 @@
+import 'package:coffee_orderer/enums/coffeeTypes.dart';
 import 'package:coffee_orderer/utils/boxProperties.dart'
     show sizes, additionalTopings;
-import 'package:coffee_orderer/utils/constants.dart' show DEFAULT_PRICE;
+import 'package:coffee_orderer/utils/cardProperties.dart'
+    show coffeePrices, coffeeNames;
+import 'package:coffee_orderer/utils/toast.dart';
 
-Map<String, dynamic> updateUIWithChangesOnExtraIngredients(String coffeeSize,
-        int numberSugarCubes, int numberIceCubes, int hasCream,
-        {int quantity = 1, String coffeeTemperature = "Cold"}) =>
-    ({
-      "quantity": quantity,
-      "coffeeSize": coffeeSize,
-      "numberSugarCubes": numberSugarCubes,
-      "numberIceCubes": numberIceCubes,
-      "hasCream": hasCream == 1 ? true : false,
-      "price": ((DEFAULT_PRICE * quantity * sizes[coffeeSize]) +
-              ((numberSugarCubes - 1) * additionalTopings["sugar"]) +
-              ((numberIceCubes - 1) * additionalTopings["ice"]) +
-              (hasCream == 1 ? additionalTopings["cream"] : 0))
-          .toStringAsFixed(2),
-      "coffeeTemperature": coffeeTemperature
-    });
+Map<String, dynamic> updateUIWithChangesOnExtraIngredients(String coffeeName,
+    String coffeeSize, int numberSugarCubes, int numberIceCubes, int hasCream,
+    {int quantity = 1, String coffeeTemperature = "Cold"}) {
+  final double coffeePrice = _getCoffeePrice(coffeeName);
+  if (coffeePrice == null) {
+    ToastUtils.showToast("Coffee price not found");
+    return null;
+  }
+  return {
+    "quantity": quantity,
+    "coffeeSize": coffeeSize,
+    "numberSugarCubes": numberSugarCubes,
+    "numberIceCubes": numberIceCubes,
+    "hasCream": hasCream == 1 ? true : false,
+    "price": ((coffeePrice * quantity * sizes[coffeeSize]) +
+            ((numberSugarCubes - 1) * additionalTopings["sugar"]) +
+            ((numberIceCubes - 1) * additionalTopings["ice"]) +
+            (hasCream == 1 ? additionalTopings["cream"] : 0))
+        .toStringAsFixed(2),
+    "coffeeTemperature": coffeeTemperature
+  };
+}
+
+double _getCoffeePrice(String coffeeName) {
+  final coffeeTypeEntry = coffeeNames.entries.firstWhere(
+    (MapEntry<CoffeeType, String> entry) => entry.value == coffeeName,
+    orElse: () => null,
+  );
+  if (coffeeTypeEntry != null) {
+    final coffeeType = coffeeTypeEntry.key;
+    final priceString = coffeePrices[coffeeType].replaceAll('\$', '');
+    return double.tryParse(priceString ?? null);
+  }
+  return null;
+}
