@@ -32,3 +32,27 @@ class FooterImages {
   static final String COFFEE_IMAGE_2 = "assets/images/coffee2.jpg";
   static final String COFFEE_IMAGE_3 = "assets/images/coffee3.jpg";
 }
+
+// class CoffeeInformation {
+//   const CoffeeInformation._();
+
+//   static getAllPrices() {
+//     return {
+//       "Cors"
+//     }
+//   }
+// }
+
+
+// Map<String, int> classes = {
+//   "Cortado": 0,
+//   "americano": 1,
+//   "cappuccino": 2,
+//   "latte machiatto": 3,
+//   "flat white": 4,
+//   "cold espresso": 5,
+//   "mocha": 6,
+//   "cold brew": 7,
+//   "coretto": 8,
+//   "irish coffee": 9
+// };
