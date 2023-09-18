@@ -38,15 +38,24 @@ if __name__ == "__main__":
             cup_detection_lock : Lock = Lock()
             cup_detection_state : List[bool] = [False]
 
-            def callback_cup_detection(new_cup_detection_state : bool | None = None):
+            def callback_cup_detection(new_cup_detection_state : bool | None = None) -> bool:
                 with cup_detection_lock:
                     if new_cup_detection_state is not None:
                         cup_detection_state[0] = new_cup_detection_state
                     return cup_detection_state[0]
+            
+            finished_thread_lock : Lock = Lock()
+            finished_drink_state : List[bool] = [False]
 
-            drink_creation_service : DrinkCreationSevice = DrinkCreationSevice()
+            def drink_finished_callback(new_finished_drink_state : bool | None = None) -> bool:
+                with finished_thread_lock:
+                    if new_finished_drink_state is not None:
+                        finished_drink_state[0] = new_finished_drink_state
+                    return finished_drink_state[0]
+
+            drink_creation_service : DrinkCreationSevice = DrinkCreationSevice(drink_finished_callback=drink_finished_callback)
             background_create_coffee_drink_thread : Thread = Thread(target=drink_creation_service.simulate_creation, \
-                                                                    args=(drinks_information_consumer.drinks_information, callback_cup_detection))
+                                                                    args=(drinks_information_consumer, callback_cup_detection))
             background_create_coffee_drink_thread.daemon = True
             background_create_coffee_drink_thread.start()
             
@@ -64,7 +73,10 @@ if __name__ == "__main__":
                 start_fps_time = end_fps_time
                 cv2.imshow(WINDOW_NAME, frame)
                 cv2.waitKey(1)
-                frame_captured_successfully, frame = camera.read()
+                success, frame = camera.read()
+                if drink_finished_callback():
+                    drink_finished_callback(False)
+                    break
             camera.release()
             cv2.destroyAllWindows()
 

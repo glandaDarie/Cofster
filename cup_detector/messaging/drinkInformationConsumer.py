@@ -30,6 +30,7 @@ class DrinkInformationConsumer:
         cred : credentials.Certificate = credentials.Certificate(cert=r"messaging/credentials_firebase.json")
         firebase_admin.initialize_app(credential=cred, options=options)
         self.drinks_information : List[Dict] = []
+        self.order_ids : List[str] = []
         self.data_lock : threading.Lock() = threading.Lock() 
 
     def __fetch_order_from_message_broker(self, endpoint : str = "/") -> Dict:
@@ -48,12 +49,12 @@ class DrinkInformationConsumer:
             return f"Error when fetching the order/orders: {exception}"
         return order
 
-    def __delete_order_from_message_broker(self, endpoint : str = "/") -> str:
+    def delete_order_from_message_broker(self, endpoint : str = "/") -> str:
         """
         Delete an order from the message broker.
 
         Args:
-            order_id (str): The ID of the order to be deleted.
+            endpoint (str): The endpoint of where we .
 
         Returns:
             str: A message indicating the status of the delete operation.
@@ -103,15 +104,12 @@ class DrinkInformationConsumer:
             if method.value == "POST":
                 with self.data_lock:
                     response_data_change : json = json.loads(json.dumps(event.data, indent=4))
-                    order_id : str = self.__get_order_id(response_data_change)
+                    order_id : str = self.__get_order_id(order_information=response_data_change)
                     if order_id is None:
                         print("Respective order id could not be found")
                         return
                     self.drinks_information.append(response_data_change) 
-                    response_delete_order = self.__delete_order_from_message_broker(f"/{self.table_name}/{order_id}")
-                    if response_delete_order is not None:
-                        print(response_delete_order)
-                        return 
+                    self.order_ids.append(order_id)
         
         reference.listen(on_data_change_broker_listenable)
     

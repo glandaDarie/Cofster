@@ -1,8 +1,9 @@
 from typing import List, Dict, Callable, Generator
 from helpers.coffee_machine_controller import CoffeeMachineController
 import concurrent.futures
-from threading import Event, Lock
+from threading import Event
 from utils.logger import thread_information_logger
+from messaging.drinkInformationConsumer import DrinkInformationConsumer
 
 class DrinkCreationSevice(CoffeeMachineController):
     """
@@ -15,6 +16,7 @@ class DrinkCreationSevice(CoffeeMachineController):
         None
 
     Attributes:
+        drinks_information_consumer
         stop_drink_creation_event (Event): An event used to control drink creation threads.
         stop_continuous_cup_checking (Event): An event used to control cup detection monitoring.
 
@@ -23,19 +25,20 @@ class DrinkCreationSevice(CoffeeMachineController):
         __create_drink: Private method to create drinks.
         __continuously_check_cup: Private method to continuously monitor cup detection.
     """
-    def __init__(self):
+    def __init__(self, drink_finished_callback : Callable):
         super().__init__()
+        self.drink_finished_callback : Callable = drink_finished_callback
         self.stop_drink_creation_event : Event = Event()
         self.stop_continuous_cup_checking : Event = Event()
 
-    def simulate_creation(self, drink_information : Dict[str, str], callback_cup_detection : Callable[[bool], bool]) -> str:
+    def simulate_creation(self, drinks_information_consumer : DrinkInformationConsumer, callback_cup_detection : Callable[[bool], bool]) -> str:
         while True:
             if callback_cup_detection():
                 with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
                     self.stop_drink_creation_event.clear()
                     self.stop_continuous_cup_checking.clear()
                     futures : Dict[concurrent.futures.ThreadPoolExecutor, str] = {}
-                    futures[executor.submit(lambda : self.__create_drink(drink_information=drink_information, \
+                    futures[executor.submit(lambda : self.__create_drink(drink_information=drinks_information_consumer.drinks_information, \
                             callback_cup_detection=callback_cup_detection))] = "create_drink"
                     futures[executor.submit(lambda : self.__continuously_check_cup(callback_cup_detection=callback_cup_detection))] = \
                             "continuously_check_cup"
@@ -49,9 +52,14 @@ class DrinkCreationSevice(CoffeeMachineController):
                                     thread_information_logger(futures)
                                     break
                         except InterruptedError as e:  
-                            return f"Error from thread: {e}"                         
+                            return f"Error from thread: {e}"                        
                 print("Coffee creation complete.")
-                drink_information.pop(0)
+                table_name : str = drinks_information_consumer.table_name
+                order_id : str = drinks_information_consumer.order_ids[0]
+                drinks_information_consumer.delete_order_from_message_broker(endpoint=f"/{table_name}/{order_id}")
+                drinks_information_consumer.drinks_information.pop(0)
+                drinks_information_consumer.order_ids.pop(0)
+                self.drink_finished_callback(True)
                 return
             else:
                 print("Cup not detected, stopping coffee creation.")
