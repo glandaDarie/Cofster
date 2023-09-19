@@ -5,6 +5,7 @@ from ultralytics import YOLO
 from utils.constants import CAMERA_INDEX, WINDOW_NAME
 from utils.paths import PATH_MODEL_CUP_DETECTION
 # from utils.paths import PATH_MODEL_PLACEMENT_DETECTION
+import json
 from detectors.YOLOv8 import YOLOv8Detector
 from utils.firebase_rtd_url import DATABASE_OPTIONS
 from messaging.drinkInformationConsumer import DrinkInformationConsumer
@@ -15,14 +16,20 @@ from utils.constants import TABLE_NAME
 from services.drinkCreationService import DrinkCreationSevice
 from services.imageProcessorService import ImageProcessorBuilderService
 from time import time
+from services.llm_services.openAIService import OpenAIService
 
 if __name__ == "__main__":
     drinks_information_consumer : DrinkInformationConsumer = DrinkInformationConsumer(table_name=TABLE_NAME, options=DATABASE_OPTIONS)
     background_firebase_table_update_thread : Thread = Thread(target=drinks_information_consumer.listen_for_updates_on_drink_message_broker)
     background_firebase_table_update_thread.daemon = True
     background_firebase_table_update_thread.start()
+    openai_service : OpenAIService = OpenAIService() 
     while True:
         if len(drinks_information_consumer.drinks_information) > 0:
+            coffee_name : str = drinks_information_consumer.drinks_information[0]["coffeeName"]
+            prompt : str = f"Given the coffee drink that I provided: {coffee_name}, \
+                please generate a JSON with the ingredients necessary to make that respective drink."
+            ingredients_coffee : json = openai_service(prompt=prompt)
             camera : object = cv2.VideoCapture(CAMERA_INDEX) 
             if not camera.isOpened():
                 LOGGER.error("Error when trying to open the camera")

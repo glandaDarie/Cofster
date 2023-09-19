@@ -1,4 +1,4 @@
-class HuggingFace:
+class HuggingFaceService:
     def __init__(self):
         pass
 

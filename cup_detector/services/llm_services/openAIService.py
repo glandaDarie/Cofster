@@ -8,8 +8,9 @@ from langchain.chains import ConversationalRetrievalChain
 from utils.paths import PATH_COFFEE_CREATION
 from utils.helpers import FileLoader
 import json
+from dotenv import load_dotenv
 
-class OpenAI:
+class OpenAIService:
     def __init__(self):
         """
         Initialize the OpenAI instance.
@@ -17,10 +18,11 @@ class OpenAI:
         Sets the OpenAI API key from the environment variable API_TOKEN_OPENAI and initializes a FileLoader instance.
 
         """
-        os.environ["OPEN_AI_KEY"] = os.getenv("API_TOKEN_OPENAI")
+        load_dotenv(".env")
+        os.environ["OPEN_AI_KEY"] = os.getenv("OPENAI_API_KEY")
         self.file_loader : FileLoader = FileLoader(file_path=PATH_COFFEE_CREATION) 
     
-    def generate_available_ingredients(self, coffee_name : str, query : str, model : str = "gpt-3.5-turbo", temperature_prompt : float = 0) -> json:
+    def __generate_available_ingredients(self, prompt : str, model : str = "gpt-3.5-turbo", temperature_prompt : float = 0) -> json:
         """
         Generate a response to a query using the OpenAI model with a specified coffee name.
 
@@ -33,13 +35,14 @@ class OpenAI:
         Returns:
             str: The generated response.
         """
-        self.file_loader.update_coffee_name_inside_coffee_creation_file(coffee_name=coffee_name)
         text_loader : TextLoader = TextLoader(file_path=PATH_COFFEE_CREATION)
         index : VectorstoreIndexCreator = VectorstoreIndexCreator().from_loaders([text_loader])
         chain : ConversationalRetrievalChain = ConversationalRetrievalChain.from_llm(
             llm=ChatOpenAI(model=model, temperature=temperature_prompt),
             retriever=index.vectorstore.as_retriever(search_kwargs={"k": 1}),
         )
-        result : Dict[str, str] = chain({"question": query})
-        self.file_loader.update_coffee_name_inside_coffee_creation_file(coffee_name=coffee_name, default=True)
+        result : Dict[str, str] = chain({"question": prompt, "chat_history": []})
         return result["answer"]
+    
+    def __call__(self, prompt : str, model : str = "gpt-3.5-turbo", temperature_prompt : float = 0) -> json:
+        return self.__generate_available_ingredients(prompt=prompt, model=model, temperature_prompt=temperature_prompt)

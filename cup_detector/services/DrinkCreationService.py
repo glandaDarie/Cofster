@@ -1,4 +1,4 @@
-from typing import List, Dict, Callable, Generator
+from typing import Dict, Callable, Generator
 from helpers.coffee_machine_controller import CoffeeMachineController
 import concurrent.futures
 from threading import Event
@@ -35,7 +35,7 @@ class DrinkCreationSevice(CoffeeMachineController):
         """
         Simulate the creation of drinks based on cup detection.
 
-        This method continuously monitors cup detection and, when a cup is detected,
+        This method continuously monitors cup detection and, when the given cup is detected,
         it spawns threads to create drinks using the provided drink information and cup detection callback.
         It waits for the drink creation to complete and then cleans up the order information.
 
