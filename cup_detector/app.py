@@ -1,11 +1,10 @@
-from typing import List
+from typing import List, Dict
 import numpy as np
 import cv2
 from ultralytics import YOLO
 from utils.constants import CAMERA_INDEX, WINDOW_NAME
 from utils.paths import PATH_MODEL_CUP_DETECTION
 # from utils.paths import PATH_MODEL_PLACEMENT_DETECTION
-import json
 from detectors.YOLOv8 import YOLOv8Detector
 from utils.firebase_rtd_url import DATABASE_OPTIONS
 from messaging.drinkInformationConsumer import DrinkInformationConsumer
@@ -16,6 +15,7 @@ from utils.constants import TABLE_NAME
 from services.drinkCreationService import DrinkCreationSevice
 from services.imageProcessorService import ImageProcessorBuilderService
 from time import time
+from time import sleep
 from services.llm_services.openAIService import OpenAIService
 
 if __name__ == "__main__":
@@ -29,7 +29,10 @@ if __name__ == "__main__":
             coffee_name : str = drinks_information_consumer.drinks_information[0]["coffeeName"]
             prompt : str = f"Given the coffee drink that I provided: {coffee_name}, \
                 please generate a JSON with the ingredients necessary to make that respective drink."
-            ingredients_coffee : json = openai_service(prompt=prompt)
+            coffee_ingredients : Dict[str, str] = openai_service(prompt=prompt)
+            drinks_information_consumer.drinks_information[0] : Dict[str, str] = {**drinks_information_consumer.drinks_information[0], \
+                                                                                  **coffee_ingredients}
+            print(f"new drinks information consumer : {drinks_information_consumer.drinks_information}")
             camera : object = cv2.VideoCapture(CAMERA_INDEX) 
             if not camera.isOpened():
                 LOGGER.error("Error when trying to open the camera")

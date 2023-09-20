@@ -22,18 +22,17 @@ class OpenAIService:
         os.environ["OPEN_AI_KEY"] = os.getenv("OPENAI_API_KEY")
         self.file_loader : FileLoader = FileLoader(file_path=PATH_COFFEE_CREATION) 
     
-    def __generate_available_ingredients(self, prompt : str, model : str = "gpt-3.5-turbo", temperature_prompt : float = 0) -> json:
+    def __generate_available_ingredients(self, prompt : str, model : str = "gpt-3.5-turbo", temperature_prompt : float = 0) -> Dict[str, str]:
         """
-        Generate a response to a query using the OpenAI model with a specified coffee name.
+        Helper method to generate a response to a query using the OpenAI model.
 
         Args:
-            coffee_name (str): The name of the coffee to use in the query.
             query (str): The input query or prompt.
             model (str): The OpenAI model to use (default is "gpt-3.5-turbo").
-            temperature_prompt (float): The temperature for controlling response randomness (default is 0.2).
+            temperature_prompt (float): The temperature for controlling response randomness (default is 0).
 
         Returns:
-            str: The generated response.
+            Dict[str, str]: The generated response.
         """
         text_loader : TextLoader = TextLoader(file_path=PATH_COFFEE_CREATION)
         index : VectorstoreIndexCreator = VectorstoreIndexCreator().from_loaders([text_loader])
@@ -42,7 +41,19 @@ class OpenAIService:
             retriever=index.vectorstore.as_retriever(search_kwargs={"k": 1}),
         )
         result : Dict[str, str] = chain({"question": prompt, "chat_history": []})
-        return result["answer"]
+        print(result["answer"], type(result["answer"]))
+        return json.loads(result["answer"]) 
     
-    def __call__(self, prompt : str, model : str = "gpt-3.5-turbo", temperature_prompt : float = 0) -> json:
+    def __call__(self, prompt : str, model : str = "gpt-3.5-turbo", temperature_prompt : float = 0) -> Dict[str, str]:
+        """
+        Generate a response to a query using the OpenAI model.
+
+        Args:
+            prompt (str): The input query or prompt.
+            model (str): The OpenAI model to use (default is "gpt-3.5-turbo").
+            temperature_prompt (float): The temperature for controlling response randomness (default is 0).
+
+        Returns:
+            Dict[str, str]: The generated response.
+        """
         return self.__generate_available_ingredients(prompt=prompt, model=model, temperature_prompt=temperature_prompt)
