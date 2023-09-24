@@ -16,14 +16,11 @@ import 'package:coffee_orderer/patterns/CoffeeCardSingleton.dart';
 import 'package:coffee_orderer/services/speechToTextService.dart'
     show SpeechToTextService;
 import 'package:speech_to_text/speech_recognition_result.dart';
-import 'package:coffee_orderer/screens/mapScreen.dart';
 import 'package:coffee_orderer/components/mainScreen/userImage.dart'
     show buildUserImage;
-import 'package:coffee_orderer/components/mainScreen/footerImage.dart'
-    show buildFooterImage;
-import 'package:coffee_orderer/utils/appAssets.dart' show FooterImages;
 import 'package:coffee_orderer/services/loggedInService.dart'
     show LoggedInService;
+import 'package:coffee_orderer/components/mainScreen/footer.dart' show Footer;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);
@@ -46,6 +43,7 @@ class _HomePageState extends State<HomePage> {
   String _rawTextFromSpeech;
   bool _speechState;
   bool _listeningState;
+  ValueNotifier<int> _numberFavoritesValueNotifier;
 
   _HomePageState() {
     this.userController = UserController();
@@ -66,7 +64,11 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    this.coffeeCardController = CoffeeCardController(context, _onTapHeartLogo);
+    this.coffeeCardSingleton = CoffeeCardSingleton(context);
+    this._numberFavoritesValueNotifier = ValueNotifier<int>(
+        this.coffeeCardSingleton.getNumberOfSetFavoriteFromCoffeeCardObjects());
+    this.coffeeCardController = CoffeeCardController(
+        context, _onTapHeartLogo, _numberFavoritesValueNotifier);
     WidgetsBinding.instance.addPostFrameCallback((Duration timeStamp) {
       this
           .questionnaireController
@@ -126,7 +128,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    this.coffeeCardSingleton = CoffeeCardSingleton(context);
     return FutureBuilder<Map<String, List<String>>>(
       future: this
           .questionnaireController
@@ -142,6 +143,7 @@ class _HomePageState extends State<HomePage> {
         } else {
           Map<String, List<String>> favouriteDrinksMap = snapshot.data;
           this._favouriteDrinks = List.from(favouriteDrinksMap.values.first);
+          print("Favorite drinks: ${this._favouriteDrinks}");
           return Scaffold(
             body: Stack(
               children: [
@@ -327,40 +329,7 @@ class _HomePageState extends State<HomePage> {
                       height: 125.0,
                       child: ListView(
                         scrollDirection: Axis.horizontal,
-                        children: [
-                          InkWell(
-                              onTap: () async {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => GoogleMapPage(
-                                        coffeeStoreName: "Camera din Fata"),
-                                  ),
-                                );
-                              },
-                              child: buildFooterImage(
-                                  FooterImages.COFFEE_IMAGE_1)),
-                          InkWell(
-                              onTap: () async {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => GoogleMapPage(
-                                            coffeeStoreName: "Cafe D'Arte")));
-                              },
-                              child: buildFooterImage(
-                                  FooterImages.COFFEE_IMAGE_2)),
-                          InkWell(
-                              onTap: () async {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => GoogleMapPage(
-                                            coffeeStoreName: "La Fabrique")));
-                              },
-                              child: buildFooterImage(
-                                  FooterImages.COFFEE_IMAGE_3)),
-                        ],
+                        children: Footer(context),
                       ),
                     ),
                     SizedBox(height: 50.0)
@@ -377,9 +346,7 @@ class _HomePageState extends State<HomePage> {
                     _onSpeechStateChanged,
                     this._listeningState,
                     _onToggleListeningState,
-                    orderCount: this
-                        .coffeeCardSingleton
-                        .getNumberOfSetFavoriteFromCoffeeCardObjects(),
+                    numberFavoritesValueNotifier: _numberFavoritesValueNotifier,
                   ),
                 ),
               ],

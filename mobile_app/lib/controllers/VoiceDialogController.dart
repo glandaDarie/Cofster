@@ -2,7 +2,7 @@ import 'package:coffee_orderer/controllers/CoffeeCardController.dart';
 import 'package:coffee_orderer/services/speechToTextService.dart';
 import 'package:coffee_orderer/utils/localUserInformation.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:coffee_orderer/utils/toast.dart' show ToastUtils;
 import 'package:coffee_orderer/screens/detailsScreen.dart';
 import '../models/card.dart';
 
@@ -42,12 +42,7 @@ class VoiceDialogController {
       await speechToTextService.stopListening();
       initializedSpeech = !initializedSpeech;
       speechResult = speechToTextService.callbackGetSpeechResult();
-      Fluttertoast.showToast(
-          msg: "Speech to text result: ${speechResult}",
-          toastLength: Toast.LENGTH_SHORT,
-          backgroundColor: Color.fromARGB(255, 102, 33, 12),
-          textColor: Color.fromARGB(255, 220, 217, 216),
-          fontSize: 16);
+      ToastUtils.showToast("Speech to text result: ${speechResult}");
       fillCacheWithDataFromSpeechResult(speechResult);
       moveToDetailsScreen(context);
     }
@@ -61,13 +56,8 @@ class VoiceDialogController {
         .getParticularCoffeeCardGivenTheNameOfTheCoffeeFromSpeech(
             speechResult, threshold);
     if (card == null) {
-      Fluttertoast.showToast(
-          msg:
-              "There is no coffee card in the list of coffee cards that has that name",
-          toastLength: Toast.LENGTH_SHORT,
-          backgroundColor: Color.fromARGB(255, 102, 33, 12),
-          textColor: Color.fromARGB(255, 220, 217, 216),
-          fontSize: 16);
+      ToastUtils.showToast(
+          "There is no coffee card in the list of coffee cards that has that name");
       return;
     }
     storeUserInformationInCache({

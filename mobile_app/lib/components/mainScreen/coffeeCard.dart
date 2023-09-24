@@ -1,17 +1,18 @@
-import 'package:coffee_orderer/patterns/CoffeeCardSingleton.dart';
 import 'package:flutter/material.dart';
 import 'package:coffee_orderer/screens/detailsScreen.dart';
 import 'package:coffee_orderer/models/card.dart' show CoffeeCard;
 import 'package:coffee_orderer/controllers/CoffeeCardController.dart'
     show CoffeeCardController;
 import 'package:coffee_orderer/utils/localUserInformation.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:coffee_orderer/utils/toast.dart' show ToastUtils;
 import 'package:coffee_orderer/utils/coffeeNameShortener.dart'
     show shortenCoffeeNameIfNeeded;
+import 'package:coffee_orderer/notifiers/favoriteDrinkNotifier.dart'
+    show FavoriteDrinkNotifier;
 
 Padding coffeeCard(CoffeeCard card,
     [void Function(CoffeeCard, ValueNotifier<bool>) callbackSetFavorite,
-    List<CoffeeCard> Function() callbackCoffeCards]) {
+    ValueNotifier<int> numberFavoritesValueNotifier]) {
   return Padding(
       padding: EdgeInsets.only(left: 15.0, right: 15.0),
       child: Container(
@@ -69,18 +70,14 @@ Padding coffeeCard(CoffeeCard card,
                               SizedBox(height: 10.0),
                               InkWell(
                                 onTap: () {
-                                  CoffeeCardSingleton coffeeCardInstance =
-                                      CoffeeCardSingleton(card.context);
-                                  List<CoffeeCard> coffeeCardObjects =
-                                      coffeeCardInstance.getCoffeeCardObjects();
-                                  for (CoffeeCard coffeeCardObject
-                                      in coffeeCardObjects) {
-                                    if (coffeeCardObject.coffeeName ==
-                                        card.coffeeName) {
-                                      callbackSetFavorite(coffeeCardObject,
-                                          card.isFavoriteNotifier);
-                                    }
-                                  }
+                                  FavoriteDrinkNotifier favoriteDrinkNotifier =
+                                      FavoriteDrinkNotifier(card);
+                                  favoriteDrinkNotifier
+                                      .updateFavoriteStateForEachDrink(
+                                          callbackSetFavorite);
+                                  favoriteDrinkNotifier
+                                      .notifyChangeOnNumberOfFavoriteDrinks(
+                                          numberFavoritesValueNotifier);
                                 },
                                 child: _hearIcon(card),
                               ),
@@ -102,12 +99,8 @@ Padding coffeeCard(CoffeeCard card,
                     bool cardIsFavorite = CoffeeCardController
                         .getParticularCoffeeCardIsFavoriteState(card);
                     if (cardIsFavorite == null) {
-                      Fluttertoast.showToast(
-                          msg: "That respective coffee does not exist",
-                          toastLength: Toast.LENGTH_SHORT,
-                          backgroundColor: Color.fromARGB(255, 102, 33, 12),
-                          textColor: Color.fromARGB(255, 220, 217, 216),
-                          fontSize: 16);
+                      ToastUtils.showToast(
+                          "That respective coffee does not exist");
                       return;
                     }
                     storeUserInformationInCache({
@@ -158,7 +151,7 @@ Row _hearIcon(CoffeeCard card) {
         ),
         child: ValueListenableBuilder<bool>(
           valueListenable: card.isFavoriteNotifier,
-          builder: (context, isFavorite, child) {
+          builder: (BuildContext context, bool isFavorite, Widget child) {
             return Center(
               child: Icon(
                 Icons.favorite,

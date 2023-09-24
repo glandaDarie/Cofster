@@ -1,6 +1,7 @@
 import 'package:coffee_orderer/models/card.dart';
 import 'package:flutter/material.dart';
-import 'package:coffee_orderer/components/mainScreen/coffeeCard.dart';
+import 'package:coffee_orderer/components/mainScreen/coffeeCard.dart'
+    show coffeeCard;
 import 'package:coffee_orderer/models/card.dart' show CoffeeCard;
 import 'package:coffee_orderer/patterns/CoffeeCardSingleton.dart'
     show CoffeeCardSingleton;
@@ -13,14 +14,17 @@ class CoffeeCardController {
   List<Padding> _coffeeCards;
   List<CoffeeCard> _objectsCoffeeCards;
   CoffeeCardSingleton _coffeeCardSingleton;
+  ValueNotifier<int> _numberFavoritesValueNotifier;
 
   CoffeeCardController(
       [BuildContext context,
-      void Function(CoffeeCard, ValueNotifier<bool>) onTapHeartLogo]) {
+      void Function(CoffeeCard, ValueNotifier<bool>) onTapHeartLogo,
+      ValueNotifier<int> _numberFavoritesValueNotifier]) {
     this._context = context;
     this._onTapHeartLogo = onTapHeartLogo;
     this._coffeeCardSingleton = CoffeeCardSingleton(this._context);
     this._objectsCoffeeCards = _coffeeCardSingleton.getCoffeeCardObjects();
+    this._numberFavoritesValueNotifier = _numberFavoritesValueNotifier;
   }
 
   Padding getParticularCoffeeCard(int index) {
@@ -31,7 +35,7 @@ class CoffeeCardController {
     this._coffeeCards[index] = _value;
   }
 
-  List<CoffeeCard> _onSendReferenceOfCoffeeCards() {
+  List<CoffeeCard> onSendReferenceOfCoffeeCards() {
     return this._objectsCoffeeCards;
   }
 
@@ -39,7 +43,7 @@ class CoffeeCardController {
     return [
       for (CoffeeCard objectCoffeeCard in this._objectsCoffeeCards)
         coffeeCard(objectCoffeeCard, this._onTapHeartLogo,
-            this._onSendReferenceOfCoffeeCards),
+            this._numberFavoritesValueNotifier),
     ].toList();
   }
 

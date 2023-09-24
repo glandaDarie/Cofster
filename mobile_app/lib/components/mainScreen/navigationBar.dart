@@ -1,5 +1,4 @@
 import 'package:coffee_orderer/components/mainScreen/voiceDialog.dart';
-import 'package:coffee_orderer/patterns/CoffeeCardSingleton.dart';
 import 'package:coffee_orderer/screens/profileInformationScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
@@ -13,9 +12,8 @@ ValueListenableBuilder bottomNavigationBar(
     void Function(bool) callbackSpeechStatus,
     bool startListening,
     dynamic Function(bool) callbackToggleListeningState,
-    {int orderCount = 0,
+    {ValueNotifier<int> numberFavoritesValueNotifier = null,
     ValueNotifier<int> Function(BuildContext context) callbackFavoritesOn}) {
-  ValueNotifier<int> orderCountValueNotifier = ValueNotifier<int>(orderCount);
   ValueNotifier<bool> speechStatusValueNotifier =
       ValueNotifier<bool>(speechStatus);
   return ValueListenableBuilder<int>(
@@ -38,7 +36,7 @@ ValueListenableBuilder bottomNavigationBar(
             ),
           ),
           GestureDetector(
-            onTap: () async {
+            onTap: () {
               callbackSelectedIndex(1);
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (BuildContext context) => ProfileInformationPage(
@@ -50,20 +48,16 @@ ValueListenableBuilder bottomNavigationBar(
             ),
           ),
           GestureDetector(
-              onTap: () {
-                callbackSelectedIndex(2);
+            onTap: () {
+              callbackSelectedIndex(2);
+            },
+            child: ValueListenableBuilder<int>(
+              valueListenable: numberFavoritesValueNotifier,
+              builder: (BuildContext context, int orderCount, Widget child) {
+                return buildBadgeWidget(orderCount);
               },
-              child: ValueListenableBuilder<int>(
-                  valueListenable: orderCountValueNotifier,
-                  builder:
-                      (BuildContext context, int orderCount, Widget child) {
-                    CoffeeCardSingleton coffeeCardSingleton =
-                        CoffeeCardSingleton(context);
-                    orderCount = coffeeCardSingleton
-                        .getNumberOfSetFavoriteFromCoffeeCardObjects();
-                    orderCountValueNotifier = ValueNotifier<int>(orderCount);
-                    return buildBadgeWidget(orderCount);
-                  })),
+            ),
+          ),
           ValueListenableBuilder<bool>(
             valueListenable: speechStatusValueNotifier,
             builder: (BuildContext context, bool speechStatus, Widget child) {
@@ -72,12 +66,13 @@ ValueListenableBuilder bottomNavigationBar(
                   callbackSpeechStatus(speechStatus);
                   speechStatusValueNotifier.value = !speechStatus;
                   voiceDialog(
-                      context,
-                      speechStatusValueNotifier.value,
-                      speechStatusValueNotifier,
-                      callbackSpeechStatus,
-                      startListening,
-                      callbackToggleListeningState);
+                    context,
+                    speechStatusValueNotifier.value,
+                    speechStatusValueNotifier,
+                    callbackSpeechStatus,
+                    startListening,
+                    callbackToggleListeningState,
+                  );
                 },
                 icon: Icon(
                   speechStatus ? Icons.mic : Icons.mic_off,

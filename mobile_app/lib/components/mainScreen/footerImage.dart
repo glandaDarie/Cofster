@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Padding buildFooterImage(String imgPath) {
+Padding footerImage(String imgPath) {
   return Padding(
       padding: EdgeInsets.only(right: 15.0),
       child: Container(
