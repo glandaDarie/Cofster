@@ -1,9 +1,10 @@
 import 'package:coffee_orderer/components/mainScreen/voiceDialog.dart';
+import 'package:coffee_orderer/screens/giftCardScreen.dart';
 import 'package:coffee_orderer/screens/profileInformationScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:coffee_orderer/components/mainScreen/badgeNumberOfFavorites.dart'
-    show buildBadgeWidget;
+import 'package:coffee_orderer/components/mainScreen/badgeWithLabel.dart'
+    show badgeWithLabel;
 
 ValueListenableBuilder bottomNavigationBar(
     ValueNotifier<int> selectedIndexValueNotifier,
@@ -25,7 +26,7 @@ ValueListenableBuilder bottomNavigationBar(
         color: Colors.white,
         buttonBackgroundColor: Colors.white,
         height: 50,
-        items: [
+        items: <Widget>[
           GestureDetector(
             onTap: () {
               callbackSelectedIndex(0);
@@ -53,8 +54,9 @@ ValueListenableBuilder bottomNavigationBar(
             },
             child: ValueListenableBuilder<int>(
               valueListenable: numberFavoritesValueNotifier,
-              builder: (BuildContext context, int orderCount, Widget child) {
-                return buildBadgeWidget(orderCount);
+              builder: (BuildContext context, int numberOfSetOnFavorites,
+                  Widget child) {
+                return badgeWithLabel(numberOfSetOnFavorites, Icons.history);
               },
             ),
           ),
@@ -80,6 +82,20 @@ ValueListenableBuilder bottomNavigationBar(
                 ),
               );
             },
+          ),
+          GestureDetector(
+            onTap: () {
+              callbackSelectedIndex(4);
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => GiftCardPage(
+                      callbackSelectedIndex: callbackSelectedIndex)));
+            },
+            child: ValueListenableBuilder<int>(
+              valueListenable: numberFavoritesValueNotifier,
+              builder: (BuildContext context, int numberOfGifts, Widget child) {
+                return badgeWithLabel(numberOfGifts, Icons.wallet_giftcard);
+              },
+            ),
           ),
         ],
         onTap: callbackSelectedIndex,

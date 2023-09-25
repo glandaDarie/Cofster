@@ -1,4 +1,4 @@
-import 'package:coffee_orderer/screens/mainScreen.dart';
+import 'package:coffee_orderer/screens/mainScreen.dart' show HomePage;
 import 'package:flutter/material.dart';
 import 'dart:typed_data';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -42,7 +42,7 @@ class _ProfileInformationPageState extends State<ProfileInformationPage> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async {
+      onWillPop: () {
         _callbackSelectedIndex(
             0); // change animation on NavBar back to the default HomePage
         Navigator.of(context).push(
@@ -62,7 +62,7 @@ class _ProfileInformationPageState extends State<ProfileInformationPage> {
                           SizedBox(
                             height: 90,
                           ),
-                          _buildUserImageInProfileInformation(snapshot),
+                          _UserImageInProfileInformation(snapshot),
                           SizedBox(height: 15),
                           FutureBuilder(
                             future: Future.delayed(Duration(seconds: 3)).then(
@@ -108,14 +108,13 @@ class _ProfileInformationPageState extends State<ProfileInformationPage> {
                           Expanded(
                             child: ListView(
                               children: [
-                                _buildProfileCard("Orders In Progress",
+                                _ProfileCard("Orders In Progress",
                                     Icons.history_edu_sharp, () {
                                   Navigator.of(context).push(MaterialPageRoute(
                                       builder: (BuildContext context) =>
                                           OrderPage()));
                                 }),
-                                _buildProfileCard(
-                                    "Purchase History", Icons.history,
+                                _ProfileCard("Purchase History", Icons.history,
                                     () async {
                                   Navigator.of(context).push(MaterialPageRoute(
                                       builder: (BuildContext context) =>
@@ -123,7 +122,7 @@ class _ProfileInformationPageState extends State<ProfileInformationPage> {
                                               purchaseHistoryController:
                                                   PurchaseHistoryController())));
                                 }),
-                                _buildProfileCard(
+                                _ProfileCard(
                                     "Help & Support", Icons.privacy_tip_sharp,
                                     () {
                                   Navigator.of(context).push(MaterialPageRoute(
@@ -131,7 +130,7 @@ class _ProfileInformationPageState extends State<ProfileInformationPage> {
                                         HelpAndSupportPage(),
                                   ));
                                 }),
-                                _buildProfileCard(
+                                _ProfileCard(
                                     "Invite a Friend", Icons.add_reaction_sharp,
                                     () async {
                                   await InvitieAFriendService
@@ -140,8 +139,7 @@ class _ProfileInformationPageState extends State<ProfileInformationPage> {
                                           catchPhrase: CatchPhrases
                                               .CATCH_PHRASE_COFSTER);
                                 }),
-                                _buildProfileCard("Logout", Icons.logout,
-                                    () async {
+                                _ProfileCard("Logout", Icons.logout, () async {
                                   String loggingStatusResponse =
                                       await LoggedInService
                                           .changeSharedPreferenceLoggingStatus();
@@ -172,7 +170,7 @@ class _ProfileInformationPageState extends State<ProfileInformationPage> {
   }
 }
 
-Center _buildUserImageInProfileInformation(AsyncSnapshot snapshot) {
+Center _UserImageInProfileInformation(AsyncSnapshot snapshot) {
   Object image = snapshot.hasData
       ? MemoryImage(snapshot.data)
       : AssetImage("assets/images/no_profile_image.jpg");
@@ -184,7 +182,7 @@ Center _buildUserImageInProfileInformation(AsyncSnapshot snapshot) {
   );
 }
 
-Card _buildProfileCard(String name, IconData icon, VoidCallback onTapCallback) {
+Card _ProfileCard(String name, IconData icon, VoidCallback onTapCallback) {
   return Card(
     color: Colors.white,
     margin: const EdgeInsets.symmetric(horizontal: 35, vertical: 15),

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
-Widget buildBadgeWidget(int orderCount) {
+Widget badgeWithLabel(int numberDrinks, IconData icon) {
   return Stack(
     children: [
-      Icon(Icons.history),
+      Icon(icon),
+      // Icon(Icons.history),
       // Icon(Icons.card_giftcard)
-      if (orderCount > 0)
+      if (numberDrinks > 0)
         Positioned(
           top: 0,
           right: -9,
@@ -20,7 +21,7 @@ Widget buildBadgeWidget(int orderCount) {
               minHeight: 6,
             ),
             child: Text(
-              orderCount.toString(),
+              numberDrinks.toString(),
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 10,
