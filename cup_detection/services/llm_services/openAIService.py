@@ -41,7 +41,6 @@ class OpenAIService:
             retriever=index.vectorstore.as_retriever(search_kwargs={"k": 1}),
         )
         result : Dict[str, str] = chain({"question": prompt, "chat_history": []})
-        print(result["answer"], type(result["answer"]))
         return json.loads(result["answer"]) 
     
     def __call__(self, prompt : str, model : str = "gpt-3.5-turbo", temperature_prompt : float = 0) -> Dict[str, str]:
