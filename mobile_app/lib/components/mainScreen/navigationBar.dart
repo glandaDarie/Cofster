@@ -91,7 +91,8 @@ ValueListenableBuilder bottomNavigationBar(
                       callbackSelectedIndex: callbackSelectedIndex)));
             },
             child: ValueListenableBuilder<int>(
-              valueListenable: numberFavoritesValueNotifier,
+              valueListenable:
+                  numberFavoritesValueNotifier, // here will be the gift numbers from the AWS backend to track
               builder: (BuildContext context, int numberOfGifts, Widget child) {
                 return badgeWithLabel(numberOfGifts, Icons.wallet_giftcard);
               },
