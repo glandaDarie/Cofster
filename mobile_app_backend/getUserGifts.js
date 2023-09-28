@@ -24,26 +24,25 @@ exports.handler = async (event) => {
   try {
     const data = await database.scan(params).promise();
     const users = data.Items[0].users;
-    let gifts = null;
     
-    for(let user of users) {
-      let userKey = Object.keys(user)[0];
-      const currentUser = user[userKey];
-      if(currentUser.name === requestBody.name && currentUser.username === requestBody.username) {
-        gifts = user[userKey].gifts;
-        break;
-      }
+    const payload = {
+      users: users,
+      targetUser: requestBody
     }
+    
+    const getUserGiftInformationParams = {
+      FunctionName: "getUserGiftInformation",
+      InvocationType: "RequestResponse",
+      Payload: JSON.stringify(payload),
+    };
+    
+    const lambda = new AWS.Lambda({ region: REGION });
+    const responseGifts = await lambda
+      .invoke(getUserGiftInformationParams)
+      .promise();
+    
+    return JSON.parse(responseGifts.Payload);
 
-    return gifts !== null ?
-    {
-      statusCode : 200,
-      gifts: gifts
-    } :
-    {
-      statusCode: 400,
-      body: "Respective user does not have gifts or he does not exist"
-    }
   } catch (error) {
     return {
       statusCode: 500,

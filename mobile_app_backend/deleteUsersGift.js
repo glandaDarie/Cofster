@@ -36,16 +36,15 @@ exports.handler = async (event) => {
         body: "No data found in the table",
       };
     }
-
-    const updatedData = removeGiftFromUser(fetchedData.Items[0], requestBody);
+  
+    const updatedData = await removeGiftFromUser(fetchedData.Items[0], requestBody);
+    
     if(typeof updatedData === "string") {
       return {
         statusCode: 400,
         body: updatedData
       }
     }
-    
-    console.log(JSON.stringify(updatedData));
     
     const putContentParams = {
       TableName: TABLE_NAME,
@@ -77,39 +76,62 @@ exports.handler = async (event) => {
   }
 };
 
-const removeGiftFromUser = (data, targetUser) => {
+
+const removeGiftFromUser = async (data, targetUser) => {
   let deleted = false;
+  
   if (data && data.users) {
     const users = data.users;
-    for (let i = 0; i < users.length; i++) {
-      const user = users[i];
-      let userKey = Object.keys(user)[0];
-      const currentUser = user[userKey];
-      if (
-        currentUser.name === targetUser.name &&
-        currentUser.username === targetUser.username
-      ) {
-        let gifts = currentUser.gifts[0];
-        let giftValues = Object.values(gifts);
-        if (Object.keys(gifts).length === 1) {
-          let giftValue = giftValues[0];
+    
+    const payload = {
+      users: users,
+      targetUser: targetUser
+    }
+    
+    const getUserGiftInformationParams = {
+      FunctionName: "getUserGiftInformation",
+      InvocationType: "RequestResponse",
+      Payload: JSON.stringify(payload),
+    };
+    
+    const lambda = new AWS.Lambda({ region: REGION });
+    const responseGifts = await lambda
+      .invoke(getUserGiftInformationParams)
+      .promise();
+
+    const currentUser = JSON.parse(responseGifts.Payload);
+    const userPosition = currentUser.userPosition;
+    const userID = currentUser.userID;
+    
+    if(currentUser.statusCode != 200) {
+      return currentUser.body;
+    }
+    
+    if (currentUser) {
+      let gifts = currentUser.gifts[0];
+      let giftValues = Object.values(gifts);
+      if (Object.keys(gifts).length === 1) {
+        let giftValue = giftValues[0];
+        if (giftValue === targetUser.gift) {
+          deleted = true;
+          users.splice(userPosition, 1);
+        }
+      } else {
+        for (let [giftKey, giftValue] of Object.entries(gifts)) {
           if (giftValue === targetUser.gift) {
             deleted = true;
-            users.splice(i, 1);
-          }
-        } else {
-          for (let [giftKey, giftValue] of Object.entries(gifts)) {
-            if (giftValue === targetUser.gift) {
-              deleted = true;
-              delete gifts[giftKey];
-            }
+            delete gifts[giftKey];
           }
         }
+        data.users[userPosition][userID].gifts = [gifts];
       }
     }
-    if (!deleted) {
-      return "The respective user does not have the respective name/username/gift";
-    }
   }
+  
+  if (!deleted) {
+    return "The respective user does not have the respective name/username/gift";
+  }
+  
   return data;
 };
+
