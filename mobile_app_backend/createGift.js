@@ -23,43 +23,78 @@ exports.handler = async (event) => {
     let data = await database.scan(getGiftsContentParams).promise();
     data = data.Items;
     let existingUsers = data[0].users || [];
-    let userID = null;
-    let userIDs = existingUsers.length > 0 ? existingUsers.map(userObj => Object.keys(userObj)[0]) : [];
-    if (userIDs.length === 0) {
-      userID = "user_1"
-    } else {
-      const userIDIndex = Math.max(...userIDs.map(userID => Number(userID.split("_")[1])));
-      userID = "user_" + String(Number(userIDIndex) + 1);  
+    
+    const payload = {
+      users: existingUsers,
+      targetUser: requestBody
     }
     
-    const newUserData = {
-      [userID]:
-      {
-        name: requestBody.name,
-        username: requestBody.username,
-        gifts: [
-          {
-            gift_1: requestBody["gift"]
-          }
-        ]
-      },
+    const getUserGiftInformationParams = {
+      FunctionName: "getUserGiftInformation",
+      InvocationType: "RequestResponse",
+      Payload: JSON.stringify(payload),
     };
     
-    existingUsers.push(newUserData);
+    const lambda = new AWS.Lambda({ region: REGION });
+    const responseGifts = await lambda
+      .invoke(getUserGiftInformationParams)
+      .promise();
     
-    await database.update({
-      TableName: TABLE_NAME,
-      Key: {
-        giftId: 0,
-      },
-      UpdateExpression: "SET #users = :newUserData",
-      ExpressionAttributeNames: {
-        "#users": "users"
-      },
-      ExpressionAttributeValues: {
-        ":newUserData": existingUsers
+    let {statusCode, _, userPosition, userID} = JSON.parse(responseGifts.Payload)
+    let user = null;
+    let newUserData = null;
+    
+    if(statusCode === 200) { 
+      user = existingUsers[userPosition][[userID]];
+      const giftIndex = getNewGiftPosition(user);
+      user.gifts[0][["gift_" + giftIndex]] = requestBody.gift;
+      newUserData = {
+        [userID]: {...user}
+      };
+      
+      await database.update({
+        TableName: TABLE_NAME,
+        Key: {
+          giftId: 0,
+        },
+        UpdateExpression: "SET #users[" + userPosition + "]." + userID + " = :newUserData",
+        ExpressionAttributeNames: {
+          "#users": "users",
+        },
+        ExpressionAttributeValues: {
+          ":newUserData": user,
+        },
+      }).promise();
+    } else { 
+      userID = getNewUserID(existingUsers);
+      newUserData = {
+        [userID]: {
+          name: requestBody.name,
+          username: requestBody.username,
+          gifts: [
+            {
+              gift_1: requestBody["gift"]
+            }
+          ]
+        }
       }
-    }).promise();
+      
+      existingUsers.push(newUserData);
+      
+      await database.update({
+        TableName: TABLE_NAME,
+        Key: {
+          giftId: 0,
+        },
+        UpdateExpression: "SET #users = :newUserData",
+        ExpressionAttributeNames: {
+          "#users": "users"
+        },
+        ExpressionAttributeValues: {
+          ":newUserData": existingUsers
+        }
+      }).promise();
+    }
 
     return {
       statusCode: 201,
@@ -73,3 +108,18 @@ exports.handler = async (event) => {
     };
   }
 };
+
+const getNewGiftPosition = (user) => {
+  let giftKeys = Object.keys(user.gifts[0]);
+  let giftKey = giftKeys[giftKeys.length - 1];
+  return String(Number(giftKey.split("_")[1]) + 1);
+}
+
+const getNewUserID = (users) => {
+  let userIDs = users.length > 0 ? users.map(userObj => Object.keys(userObj)[0]) : [];
+  if(userIDs.length === 0) {
+    return "user_1";
+  }
+  const userID = Math.max(...userIDs.map(userID => Number(userID.split("_")[1])));
+  return "user_" + String(Number(userID) + 1);
+}
