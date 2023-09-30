@@ -34,4 +34,13 @@ class DynamoDBGiftsDao {
     }
     return gifts;
   }
+
+  Future<String> createGift(String name, String username, String gift) async {
+    return await "";
+  }
+
+  Future<String> deleteUserGift(
+      String name, String username, String gift) async {
+    return await "";
+  }
 }

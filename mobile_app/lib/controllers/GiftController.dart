@@ -17,4 +17,23 @@ class GiftController {
     this._urlDaoGift = DynamoDBGiftsDao(this._urlGift);
     return await this._urlDaoGift.getUserGifts();
   }
+
+  Future<String> createGift(String name, String username, String gift) async {
+    this._urlServiceGift = UrlService(
+        "https://t90ka4phb9.execute-api.us-east-1.amazonaws.com/prod",
+        "/gifts/user/gift");
+    this._urlGift = this._urlServiceGift.createUrl();
+    this._urlDaoGift = DynamoDBGiftsDao(this._urlGift);
+    return await this._urlDaoGift.createGift(name, username, gift);
+  }
+
+  Future<String> deleteUserGift(
+      String name, String username, String gift) async {
+    this._urlServiceGift = UrlService(
+        "https://t90ka4phb9.execute-api.us-east-1.amazonaws.com/prod",
+        "/gifts/user/gift");
+    this._urlGift = this._urlServiceGift.createUrl();
+    this._urlDaoGift = DynamoDBGiftsDao(this._urlGift);
+    return await this._urlDaoGift.deleteUserGift(name, username, gift);
+  }
 }

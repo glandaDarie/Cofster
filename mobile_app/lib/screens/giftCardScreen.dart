@@ -41,8 +41,8 @@ class _GiftCardPageState extends State<GiftCardPage> {
                 ? "ioan@hotmai.com"
                 : await LoggedInService.getSharedPreferenceValue("<username>");
             return await _giftController.getUserGifts(name, username);
-          }(), builder:
-              (BuildContext context, AsyncSnapshot<List<Gift>> snapshotGifts) {
+          }(), builder: (final BuildContext context,
+              final AsyncSnapshot<List<Gift>> snapshotGifts) {
             if (snapshotGifts.connectionState == ConnectionState.waiting) {
               return const Center(
                 child: CircularProgressIndicator(
