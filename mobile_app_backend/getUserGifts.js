@@ -41,8 +41,14 @@ exports.handler = async (event) => {
       .invoke(getUserGiftInformationParams)
       .promise();
     
-    return JSON.parse(responseGifts.Payload);
-
+    const userGiftInformation = JSON.parse(responseGifts.Payload);
+    const {statusCode, gifts} = userGiftInformation;
+    
+    return {
+      statusCode: statusCode,
+      gifts: gifts
+    };
+    
   } catch (error) {
     return {
       statusCode: 500,
