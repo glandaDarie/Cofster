@@ -1,10 +1,9 @@
 import 'package:coffee_orderer/models/orderInformation.dart';
-import 'package:flutter/material.dart';
 import 'package:coffee_orderer/data_transfer/PurchaseHistoryDto.dart'
     show PurchaseHistoryDto;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:coffee_orderer/utils/toast.dart' show ToastUtils;
 
 class DynamoDBPurchaseHistoryDao {
   final String _url;
@@ -18,12 +17,7 @@ class DynamoDBPurchaseHistoryDao {
         final List<PurchaseHistoryDto> purchaseHistory =
             this._parseJsonUsersPurchaseHistory(jsonDecode(response.body));
         if (purchaseHistory == null) {
-          Fluttertoast.showToast(
-              msg: "Error: problems when parsing the JSON",
-              toastLength: Toast.LENGTH_SHORT,
-              backgroundColor: Color.fromARGB(255, 102, 33, 12),
-              textColor: Color.fromARGB(255, 220, 217, 216),
-              fontSize: 16);
+          ToastUtils.showToast("Error: problems when parsing the JSON");
           return null;
         }
         return purchaseHistory;
