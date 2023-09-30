@@ -1,0 +1,56 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "questionAPI",
+    "version" : "2023-05-12T06:16:46Z",
+    "title" : "questionAPI"
+  },
+  "host" : "1xihq64176.execute-api.us-east-1.amazonaws.com",
+  "basePath" : "/prod",
+  "schemes" : [ "https" ],
+  "paths" : {
+    "/questions" : {
+      "get" : {
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "schema" : {
+              "$ref" : "#/definitions/Empty"
+            }
+          }
+        }
+      },
+      "options" : {
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "responses" : {
+          "200" : {
+            "description" : "200 response",
+            "schema" : {
+              "$ref" : "#/definitions/Empty"
+            },
+            "headers" : {
+              "Access-Control-Allow-Origin" : {
+                "type" : "string"
+              },
+              "Access-Control-Allow-Methods" : {
+                "type" : "string"
+              },
+              "Access-Control-Allow-Headers" : {
+                "type" : "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "Empty" : {
+      "type" : "object",
+      "title" : "Empty Schema"
+    }
+  }
+}
