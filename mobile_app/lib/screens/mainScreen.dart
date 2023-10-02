@@ -1,15 +1,22 @@
 import 'dart:typed_data';
-import 'package:coffee_orderer/controllers/CoffeeCardController.dart';
-import 'package:coffee_orderer/controllers/UserController.dart';
-import 'package:coffee_orderer/controllers/AuthController.dart';
-import 'package:coffee_orderer/controllers/QuestionnaireController.dart';
-import 'package:coffee_orderer/models/card.dart';
+import 'package:coffee_orderer/controllers/CoffeeCardController.dart'
+    show CoffeeCardController;
+import 'package:coffee_orderer/controllers/UserController.dart'
+    show UserController;
+import 'package:coffee_orderer/controllers/AuthController.dart'
+    show AuthController;
+import 'package:coffee_orderer/controllers/QuestionnaireController.dart'
+    show QuestionnaireController;
+import 'package:coffee_orderer/controllers/GiftController.dart'
+    show GiftController;
+import 'package:coffee_orderer/models/card.dart' show CoffeeCard;
 import 'package:flutter/material.dart';
 import 'package:coffee_orderer/utils/coffeeFunFact.dart';
 import 'package:coffee_orderer/components/mainScreen/navigationBar.dart';
 import 'package:coffee_orderer/components/mainScreen/popupFreeDrink.dart'
     show showPopup;
-import 'package:coffee_orderer/controllers/CoffeeCardFavouriteDrinksController.dart';
+import 'package:coffee_orderer/controllers/CoffeeCardFavouriteDrinksController.dart'
+    show CoffeeCardFavouriteDrinksController;
 import 'package:coffee_orderer/services/notificationService.dart'
     show NotificationService;
 import 'package:coffee_orderer/patterns/CoffeeCardSingleton.dart';
@@ -20,6 +27,7 @@ import 'package:coffee_orderer/components/mainScreen/userImage.dart'
     show buildUserImage;
 import 'package:coffee_orderer/services/loggedInService.dart'
     show LoggedInService;
+import 'package:coffee_orderer/utils/message.dart' show Message;
 import 'package:coffee_orderer/components/mainScreen/footer.dart' show Footer;
 
 class HomePage extends StatefulWidget {
@@ -44,6 +52,7 @@ class _HomePageState extends State<HomePage> {
   bool _speechState;
   bool _listeningState;
   ValueNotifier<int> _numberFavoritesValueNotifier;
+  GiftController _giftController;
 
   _HomePageState() {
     this.userController = UserController();
@@ -59,6 +68,11 @@ class _HomePageState extends State<HomePage> {
     this._rawTextFromSpeech = "";
     this._speechState = false;
     this._listeningState = false;
+    this._giftController = GiftController();
+  }
+
+  Future<String> saveUserGift(String gift) async {
+    return await this._giftController.createGift(gift);
   }
 
   @override
@@ -83,6 +97,15 @@ class _HomePageState extends State<HomePage> {
             return;
           }
           showPopup(context, favouriteDrink);
+
+          saveUserGift(favouriteDrink).then((String response) {
+            if (response != null) {
+              return Message.error(message: response);
+            }
+            print(
+              "Error handling if drink is created for that specific user: ${response}",
+            );
+          }, onError: (dynamic error) => Message.error(message: error));
           NotificationService().showNotification(
             title: "New user reward",
             body:

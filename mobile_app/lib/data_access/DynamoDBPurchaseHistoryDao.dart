@@ -58,12 +58,12 @@ class DynamoDBPurchaseHistoryDao {
   Future<String> postUsersPurchase(
       final PurchaseHistoryDto purchaseHistoryDto) async {
     const Map<String, String> headers = {"Content-Type": "application/json"};
-    final String jsonPayload = purchaseHistoryDto.toJson();
+    final String payload = purchaseHistoryDto.toJson();
     try {
       final http.Response response = await http.post(
         Uri.parse(this._url),
         headers: headers,
-        body: jsonPayload,
+        body: payload,
       );
       dynamic responseBody = jsonDecode(response.body);
       if (responseBody["statusCode"] == 201) {
