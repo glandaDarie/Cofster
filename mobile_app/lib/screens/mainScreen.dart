@@ -53,6 +53,7 @@ class _HomePageState extends State<HomePage> {
   bool _listeningState;
   ValueNotifier<int> _numberFavoritesValueNotifier;
   GiftController _giftController;
+  ValueNotifier<bool> _userGiftsNotifier;
 
   _HomePageState() {
     this.userController = UserController();
@@ -69,6 +70,7 @@ class _HomePageState extends State<HomePage> {
     this._speechState = false;
     this._listeningState = false;
     this._giftController = GiftController();
+    this._userGiftsNotifier = ValueNotifier<bool>(true);
   }
 
   @override
@@ -362,6 +364,7 @@ class _HomePageState extends State<HomePage> {
                     _onSpeechStateChanged,
                     this._listeningState,
                     _onToggleListeningState,
+                    userGiftsNotifier: this._userGiftsNotifier,
                     numberFavoritesValueNotifier: _numberFavoritesValueNotifier,
                     giftController: this._giftController,
                   ),

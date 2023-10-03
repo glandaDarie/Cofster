@@ -17,7 +17,9 @@ ValueListenableBuilder bottomNavigationBar(
     dynamic Function(bool) callbackToggleListeningState,
     {ValueNotifier<int> numberFavoritesValueNotifier = null,
     ValueNotifier<int> Function(BuildContext context) callbackFavoritesOn,
-    GiftController giftController}) {
+    GiftController giftController,
+    @required ValueNotifier<bool> userGiftsNotifier}) {
+  int numberOfGifts = 0;
   ValueNotifier<bool> speechStatusValueNotifier =
       ValueNotifier<bool>(speechStatus);
   return ValueListenableBuilder<int>(
@@ -87,34 +89,46 @@ ValueListenableBuilder bottomNavigationBar(
             },
           ),
           GestureDetector(
-            onTap: () {
-              callbackSelectedIndex(4);
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (BuildContext context) => GiftCardPage(
-                      callbackSelectedIndex: callbackSelectedIndex)));
-            },
-            child: FutureBuilder<dynamic>(
-              future: giftController.getUserGifts(),
-              builder: (final BuildContext context,
-                  final AsyncSnapshot<dynamic> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return badgeWithLabel(0, Icons.wallet_giftcard);
-                } else if (snapshot.hasError) {
-                  return Center(
-                    child: Text("Error: ${snapshot.error}"),
-                  );
-                }
-                dynamic giftsResponse = snapshot.data;
-                if (giftsResponse is String) {
-                  return Message.error(
-                    message: giftsResponse.toString(),
-                  );
-                }
-                return badgeWithLabel(
-                    giftsResponse.length, Icons.wallet_giftcard);
+              onTap: () {
+                callbackSelectedIndex(4);
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => GiftCardPage(
+                        callbackSelectedIndex: callbackSelectedIndex)));
               },
-            ),
-          ),
+              child: ValueListenableBuilder(
+                  valueListenable: userGiftsNotifier,
+                  builder: (BuildContext context, bool fetchedUserGifts,
+                      Widget child) {
+                    userGiftsNotifier.value = false;
+                    if (!fetchedUserGifts) {
+                      return badgeWithLabel(
+                          numberOfGifts, Icons.wallet_giftcard);
+                    }
+                    return FutureBuilder<dynamic>(
+                      future: giftController.getUserGifts(),
+                      builder: (final BuildContext context,
+                          final AsyncSnapshot<dynamic> snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return badgeWithLabel(
+                              numberOfGifts, Icons.wallet_giftcard);
+                        } else if (snapshot.hasError) {
+                          return Center(
+                            child: Text("Error: ${snapshot.error}"),
+                          );
+                        }
+                        dynamic giftsResponse = snapshot.data;
+                        if (giftsResponse is String) {
+                          return Message.error(
+                            message: giftsResponse.toString(),
+                          );
+                        }
+                        numberOfGifts = giftsResponse.length;
+                        return badgeWithLabel(
+                            numberOfGifts, Icons.wallet_giftcard);
+                      },
+                    );
+                  })),
         ],
         onTap: callbackSelectedIndex,
       );
