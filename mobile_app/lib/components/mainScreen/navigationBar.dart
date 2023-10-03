@@ -1,10 +1,12 @@
 import 'package:coffee_orderer/components/mainScreen/voiceDialog.dart';
+import 'package:coffee_orderer/controllers/GiftController.dart';
 import 'package:coffee_orderer/screens/giftCardScreen.dart';
 import 'package:coffee_orderer/screens/profileInformationScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:coffee_orderer/components/mainScreen/badgeWithLabel.dart'
     show badgeWithLabel;
+import 'package:coffee_orderer/utils/message.dart' show Message;
 
 ValueListenableBuilder bottomNavigationBar(
     ValueNotifier<int> selectedIndexValueNotifier,
@@ -14,7 +16,8 @@ ValueListenableBuilder bottomNavigationBar(
     bool startListening,
     dynamic Function(bool) callbackToggleListeningState,
     {ValueNotifier<int> numberFavoritesValueNotifier = null,
-    ValueNotifier<int> Function(BuildContext context) callbackFavoritesOn}) {
+    ValueNotifier<int> Function(BuildContext context) callbackFavoritesOn,
+    GiftController giftController}) {
   ValueNotifier<bool> speechStatusValueNotifier =
       ValueNotifier<bool>(speechStatus);
   return ValueListenableBuilder<int>(
@@ -90,11 +93,25 @@ ValueListenableBuilder bottomNavigationBar(
                   builder: (BuildContext context) => GiftCardPage(
                       callbackSelectedIndex: callbackSelectedIndex)));
             },
-            child: ValueListenableBuilder<int>(
-              valueListenable:
-                  numberFavoritesValueNotifier, // here will be the gift numbers from the AWS backend to track
-              builder: (BuildContext context, int numberOfGifts, Widget child) {
-                return badgeWithLabel(numberOfGifts, Icons.wallet_giftcard);
+            child: FutureBuilder<dynamic>(
+              future: giftController.getUserGifts(),
+              builder: (final BuildContext context,
+                  final AsyncSnapshot<dynamic> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return badgeWithLabel(0, Icons.wallet_giftcard);
+                } else if (snapshot.hasError) {
+                  return Center(
+                    child: Text("Error: ${snapshot.error}"),
+                  );
+                }
+                dynamic giftsResponse = snapshot.data;
+                if (giftsResponse is String) {
+                  return Message.error(
+                    message: giftsResponse.toString(),
+                  );
+                }
+                return badgeWithLabel(
+                    giftsResponse.length, Icons.wallet_giftcard);
               },
             ),
           ),

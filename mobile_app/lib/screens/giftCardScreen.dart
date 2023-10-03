@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:coffee_orderer/screens/mainScreen.dart' show HomePage;
 import 'package:coffee_orderer/services/loggedInService.dart'
     show LoggedInService;
+import 'package:coffee_orderer/utils/message.dart' show Message;
 
 class GiftCardPage extends StatefulWidget {
   final void Function(int) callbackSelectedIndex;
@@ -31,96 +32,89 @@ class _GiftCardPageState extends State<GiftCardPage> {
                 builder: (BuildContext context) => HomePage()));
             return;
           },
-          child: FutureBuilder<dynamic>(future: () async {
-            const bool testing = true;
-            final String name = testing
-                ? "daniel"
-                : await LoggedInService.getSharedPreferenceValue("<nameUser>");
-            final String username = testing
-                ? "mihaimicea@yahoo.com"
-                : await LoggedInService.getSharedPreferenceValue("<username>");
-            return await this._giftController.getUserGifts(name, username);
-          }(), builder: (final BuildContext contextGifts,
-              final AsyncSnapshot<dynamic> snapshotGifts) {
-            if (snapshotGifts.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(
-                    color: Colors.brown, backgroundColor: Colors.white),
-              );
-            } else if (snapshotGifts.hasError) {
-              return Center(
-                child: Text("Error: ${snapshotGifts.error}"),
-              );
-            }
+          child: FutureBuilder<dynamic>(
+              future: this._giftController.getUserGifts(),
+              builder: (final BuildContext contextGifts,
+                  final AsyncSnapshot<dynamic> snapshotGifts) {
+                if (snapshotGifts.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(
+                        color: Colors.brown, backgroundColor: Colors.white),
+                  );
+                } else if (snapshotGifts.hasError) {
+                  return Center(
+                    child: Text("Error: ${snapshotGifts.error}"),
+                  );
+                }
 
-            dynamic giftsResponse = snapshotGifts.data;
-            if (giftsResponse is String) {
-              return Padding(
-                  padding: EdgeInsets.all(70.0),
-                  child: Text(giftsResponse,
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 16.0,
-                      )));
-            }
+                dynamic giftsResponse = snapshotGifts.data;
+                if (giftsResponse is String) {
+                  return Message.error(
+                    message: giftsResponse.toString(),
+                  );
+                }
 
-            // List<LottieObjects> will be here instead of this dummy padding for now
-            return Padding(
-                padding: EdgeInsets.all(70.0),
-                child: Text(giftsResponse,
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontSize: 16.0,
-                    )));
+                // List<LottieObjects> will be here instead of this dummy implementation
+                return Message.error(
+                  message: giftsResponse.toString(),
+                );
 
-            // dummy debugging implementation for now
-            // should create here a component that accepts the gifts as parameter and create the lottie element
-            // should return a List<LottieObject> where LottieObject will be mapped to the each gift
+                // return Padding(
+                //     padding: EdgeInsets.all(70.0),
+                //     child: Text(giftsResponse.toString(),
+                //         style: TextStyle(
+                //           color: Colors.red,
+                //           fontSize: 16.0,
+                //         )));
 
-            // return Padding(
-            //   padding: EdgeInsets.all(70.0),
-            //   child: Text("Gifts: ${gifts}"),
-            // );
+                // dummy debugging implementation for now
+                // should create here a component that accepts the gifts as parameter and create the lottie element
+                // should return a List<LottieObject> where LottieObject will be mapped to the each gift
 
-            // check here if the JSON is parsed correctly and the update will be performed in the DynamoDB database
-            // return FutureBuilder<String>(future: () async {
-            //   // dummy testing the implementation here
-            //   String name = "daniel";
-            //   String username = "mihaimicea@yahoo.com";
-            //   String gift = "Americano";
-            //   return await this
-            //       ._giftController
-            //       .deleteUserGift(name, username, gift);
-            // }(), builder: (final BuildContext context,
-            //     final AsyncSnapshot<String> spashotAddedGift) {
-            //   if (spashotAddedGift.connectionState == ConnectionState.waiting) {
-            //     return const Center(
-            //       child: CircularProgressIndicator(
-            //           color: Colors.brown, backgroundColor: Colors.white),
-            //     );
-            //   } else if (spashotAddedGift.hasError) {
-            //     return Center(
-            //       child: Text("Error: ${spashotAddedGift.error}"),
-            //     );
-            //   }
+                // return Padding(
+                //   padding: EdgeInsets.all(70.0),
+                //   child: Text("Gifts: ${gifts}"),
+                // );
 
-            //   String giftAddedResponse = spashotAddedGift.data;
-            //   if (giftAddedResponse != null) {
-            //     return Padding(
-            //         padding: EdgeInsets.all(70.0),
-            //         child: Text(giftAddedResponse,
-            //             style: TextStyle(
-            //               color: Colors.red,
-            //               fontSize: 16.0,
-            //             )));
-            //   }
-            //   return Padding(
-            //     padding: EdgeInsets.all(70.0),
-            //     child: Text(
-            //         "Gifts: ${giftsResponse}, \n Message: ${giftAddedResponse}"),
-            //   );
-            // });
-          })),
+                // check here if the JSON is parsed correctly and the update will be performed in the DynamoDB database
+                // return FutureBuilder<String>(future: () async {
+                //   // dummy testing the implementation here
+                //   String name = "daniel";
+                //   String username = "mihaimicea@yahoo.com";
+                //   String gift = "Americano";
+                //   return await this
+                //       ._giftController
+                //       .deleteUserGift(name, username, gift);
+                // }(), builder: (final BuildContext context,
+                //     final AsyncSnapshot<String> spashotAddedGift) {
+                //   if (spashotAddedGift.connectionState == ConnectionState.waiting) {
+                //     return const Center(
+                //       child: CircularProgressIndicator(
+                //           color: Colors.brown, backgroundColor: Colors.white),
+                //     );
+                //   } else if (spashotAddedGift.hasError) {
+                //     return Center(
+                //       child: Text("Error: ${spashotAddedGift.error}"),
+                //     );
+                //   }
+
+                //   String giftAddedResponse = spashotAddedGift.data;
+                //   if (giftAddedResponse != null) {
+                //     return Padding(
+                //         padding: EdgeInsets.all(70.0),
+                //         child: Text(giftAddedResponse,
+                //             style: TextStyle(
+                //               color: Colors.red,
+                //               fontSize: 16.0,
+                //             )));
+                //   }
+                //   return Padding(
+                //     padding: EdgeInsets.all(70.0),
+                //     child: Text(
+                //         "Gifts: ${giftsResponse}, \n Message: ${giftAddedResponse}"),
+                //   );
+                // });
+              })),
     );
   }
 }

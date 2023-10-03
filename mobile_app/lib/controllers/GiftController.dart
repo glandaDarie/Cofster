@@ -12,11 +12,12 @@ class GiftController {
 
   GiftController() : this._giftService = GiftService();
 
-  Future<List<Gift>> getUserGifts(String name, String username) async {
+  Future<List<Gift>> getUserGifts() async {
+    List<String> params = await this._giftService.loadGiftParams();
     this._urlServiceGift = UrlService(
         "https://t90ka4phb9.execute-api.us-east-1.amazonaws.com/prod",
         "/gifts/user/gift",
-        {"name": name, "username": username});
+        {"name": params[0], "username": params[1]});
     this._urlGift = this._urlServiceGift.createUrl();
     this._urlDaoGift = DynamoDBGiftsDao(this._urlGift);
     return await this._urlDaoGift.getUserGifts();
@@ -31,8 +32,7 @@ class GiftController {
     return await this._giftService.createGift(gift, this._urlDaoGift);
   }
 
-  Future<String> deleteUserGift(
-      String name, String username, String gift) async {
+  Future<String> deleteUserGift(String gift) async {
     this._urlServiceGift = UrlService(
         "https://t90ka4phb9.execute-api.us-east-1.amazonaws.com/prod",
         "/gifts/user/gift");

@@ -71,10 +71,6 @@ class _HomePageState extends State<HomePage> {
     this._giftController = GiftController();
   }
 
-  Future<String> saveUserGift(String gift) async {
-    return await this._giftController.createGift(gift);
-  }
-
   @override
   void initState() {
     super.initState();
@@ -97,14 +93,11 @@ class _HomePageState extends State<HomePage> {
             return;
           }
           showPopup(context, favouriteDrink);
-
-          saveUserGift(favouriteDrink).then((String response) {
+          this._giftController.createGift(favouriteDrink).then(
+              (String response) {
             if (response != null) {
               return Message.error(message: response);
             }
-            print(
-              "Error handling if drink is created for that specific user: ${response}",
-            );
           }, onError: (dynamic error) => Message.error(message: error));
           NotificationService().showNotification(
             title: "New user reward",
@@ -166,7 +159,7 @@ class _HomePageState extends State<HomePage> {
         } else {
           Map<String, List<String>> favouriteDrinksMap = snapshot.data;
           this._favouriteDrinks = List.from(favouriteDrinksMap.values.first);
-          print("Favorite drinks: ${this._favouriteDrinks}");
+          // print("Favorite drinks: ${this._favouriteDrinks}");
           return Scaffold(
             body: Stack(
               children: [
@@ -370,6 +363,7 @@ class _HomePageState extends State<HomePage> {
                     this._listeningState,
                     _onToggleListeningState,
                     numberFavoritesValueNotifier: _numberFavoritesValueNotifier,
+                    giftController: this._giftController,
                   ),
                 ),
               ],
