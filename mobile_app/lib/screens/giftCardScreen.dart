@@ -2,9 +2,8 @@ import 'package:coffee_orderer/controllers/GiftController.dart'
     show GiftController;
 import 'package:flutter/material.dart';
 import 'package:coffee_orderer/screens/mainScreen.dart' show HomePage;
-import 'package:coffee_orderer/services/loggedInService.dart'
-    show LoggedInService;
 import 'package:coffee_orderer/utils/message.dart' show Message;
+import 'package:lottie/lottie.dart';
 
 class GiftCardPage extends StatefulWidget {
   final void Function(int) callbackSelectedIndex;
@@ -16,15 +15,30 @@ class GiftCardPage extends StatefulWidget {
   _GiftCardPageState createState() => _GiftCardPageState(callbackSelectedIndex);
 }
 
-class _GiftCardPageState extends State<GiftCardPage> {
+class _GiftCardPageState extends State<GiftCardPage>
+    with TickerProviderStateMixin {
   void Function(int) _callbackSelectedIndex;
   GiftController _giftController;
+  ValueNotifier<bool> _animationPlayingNotifier;
+
   _GiftCardPageState(this._callbackSelectedIndex)
-      : this._giftController = GiftController();
+      : this._giftController = GiftController(),
+        this._animationPlayingNotifier = ValueNotifier<bool>(true);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          "        Redeem gifts",
+          style: TextStyle(
+            fontSize: 30,
+            color: Colors.white,
+            fontWeight: FontWeight.normal,
+          ),
+        ),
+        backgroundColor: Colors.brown.shade700,
+      ),
       body: WillPopScope(
           onWillPop: () {
             _callbackSelectedIndex(0);
@@ -55,9 +69,81 @@ class _GiftCardPageState extends State<GiftCardPage> {
                 }
 
                 // List<LottieObjects> will be here instead of this dummy implementation
-                return Message.error(
-                  message: giftsResponse.toString(),
+                // return ValueListenableBuilder(
+                //     valueListenable: this._animationPlayingNotifier,
+                //     builder: (BuildContext context, bool animationPlaying,
+                //         Widget child) {
+                //       return GestureDetector(
+                //         onTap: () {
+                //           this._animationPlayingNotifier.value =
+                //               !animationPlaying;
+                //         },
+                //         child: Lottie.asset(
+                //           "assets/files/giftAnimation.json",
+                //           animate: !animationPlaying,
+                //           repeat: false,
+                //         ),
+                //       );
+                //     });
+
+                return ValueListenableBuilder(
+                  valueListenable: this._animationPlayingNotifier,
+                  builder: (BuildContext context, bool animationPlaying,
+                      Widget child) {
+                    return Container(
+                      margin: EdgeInsets.all(40.0),
+                      decoration: BoxDecoration(
+                        color: Colors.brown,
+                        borderRadius: BorderRadius.circular(15.0),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            spreadRadius: 5,
+                            blurRadius: 4,
+                            offset: Offset(0, 1),
+                          ),
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            GestureDetector(
+                              onTap: () {
+                                this._animationPlayingNotifier.value =
+                                    !animationPlaying;
+                              },
+                              child: Lottie.asset(
+                                "assets/files/giftAnimation.json",
+                                width: 350,
+                                height: 250,
+                                animate: !animationPlaying,
+                                repeat: false,
+                              ),
+                            ),
+                            Container(
+                              child: Text(
+                                "Gift Name",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 24.0,
+                                  fontFamily: "Roboto",
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
                 );
+
+                // return Message.error(
+                //   message: giftsResponse.toString(),
+                // );
 
                 // return Padding(
                 //     padding: EdgeInsets.all(70.0),
