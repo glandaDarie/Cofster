@@ -2,7 +2,6 @@ import 'package:coffee_orderer/data_access/DynamoDBGiftsDao.dart'
     show DynamoDBGiftsDao;
 import 'package:coffee_orderer/services/giftService.dart' show GiftService;
 import 'package:coffee_orderer/services/urlService.dart' show UrlService;
-import 'package:coffee_orderer/models/gift.dart' show Gift;
 
 class GiftController {
   UrlService _urlServiceGift;
@@ -12,7 +11,7 @@ class GiftController {
 
   GiftController() : this._giftService = GiftService();
 
-  Future<List<Gift>> getUserGifts() async {
+  Future<dynamic> getUserGifts() async {
     List<String> params = await this._giftService.loadGiftParams();
     this._urlServiceGift = UrlService(
         "https://t90ka4phb9.execute-api.us-east-1.amazonaws.com/prod",

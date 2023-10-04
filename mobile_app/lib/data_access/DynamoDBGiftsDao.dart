@@ -11,13 +11,16 @@ class DynamoDBGiftsDao {
     http.Response response;
     try {
       response = await http.get(Uri.parse(this._url));
-      if (response.statusCode == 200) {
+      dynamic jsonResponse = jsonDecode(response.body);
+      if (jsonResponse["statusCode"] == 200) {
         final List<Gift> gifts =
             this._parseJsonUserGifts(jsonDecode(response.body));
         if (gifts == null) {
           return "Error: problems when parsing the JSON";
         }
         return gifts;
+      } else if (jsonResponse["statusCode"] == 400) {
+        return [];
       }
     } catch (error) {
       return "Error when trying to fetch the gifts of the user: ${error}";

@@ -32,3 +32,5 @@ class FooterImages {
   static final String COFFEE_IMAGE_2 = "assets/images/coffee2.jpg";
   static final String COFFEE_IMAGE_3 = "assets/images/coffee3.jpg";
 }
+
+const String GIFT_ANIMATION = "assets/files/giftAnimation.json";

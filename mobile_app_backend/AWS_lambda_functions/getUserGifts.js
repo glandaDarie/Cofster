@@ -42,13 +42,18 @@ exports.handler = async (event) => {
       .promise();
     
     const userGiftInformation = JSON.parse(responseGifts.Payload);
-    const {statusCode, gifts} = userGiftInformation;
+    const {statusCode, gifts, body} = userGiftInformation;
     
-    return {
+    return body === undefined ? 
+    {
       statusCode: statusCode,
       gifts: gifts
-    };
-    
+    } 
+    : 
+    {
+      statusCode: statusCode,
+      body: body
+    }
   } catch (error) {
     return {
       statusCode: 500,

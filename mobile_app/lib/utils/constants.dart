@@ -34,3 +34,5 @@ final List<String> PARTNER_FOOTER_IMAGES = [
   FooterImages.COFFEE_IMAGE_2,
   FooterImages.COFFEE_IMAGE_3,
 ];
+
+const MAX_GIFTS = 1000;
