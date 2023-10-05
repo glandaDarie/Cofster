@@ -1,11 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:coffee_orderer/models/orderInformation.dart';
 import 'package:coffee_orderer/services/communicationSubscriberService.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:coffee_orderer/services/passwordGeneratorService.dart'
     show generateNewPassword;
+import 'package:coffee_orderer/utils/toast.dart' show ToastUtils;
 
 class FirebaseCommunicationSubscriberService
     implements CommunicationSubscriberService {
@@ -38,12 +37,8 @@ class FirebaseCommunicationSubscriberService
           .child("Orders");
       await reference.set(content);
     } catch (error) {
-      Fluttertoast.showToast(
-          msg: "Error when publishing the data to the broker: ${error}",
-          toastLength: Toast.LENGTH_SHORT,
-          backgroundColor: Color.fromARGB(255, 71, 66, 65),
-          textColor: Color.fromARGB(255, 220, 217, 216),
-          fontSize: 16);
+      ToastUtils.showToast(
+          "Error when publishing the data to the broker: ${error}");
       return null;
     }
 

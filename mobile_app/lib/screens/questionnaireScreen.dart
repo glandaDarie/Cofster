@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:coffee_orderer/screens/mainScreen.dart';
 import 'package:coffee_orderer/models/question.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:coffee_orderer/utils/localUserInformation.dart';
+import 'package:coffee_orderer/utils/toast.dart' show ToastUtils;
 
 class QuestionnairePage extends StatefulWidget {
   @override
@@ -156,13 +156,7 @@ class _QuestionnairePageState extends State<QuestionnairePage> {
                               .updateUsersFavouriteDrinks(favouriteDrinks);
                           if (response !=
                               "Successfully updated the favourite drinks") {
-                            Fluttertoast.showToast(
-                                msg: response,
-                                toastLength: Toast.LENGTH_SHORT,
-                                backgroundColor:
-                                    Color.fromARGB(255, 102, 33, 12),
-                                textColor: Color.fromARGB(255, 220, 217, 216),
-                                fontSize: 16);
+                            ToastUtils.showToast(response);
                             return Center(
                                 child: CircularProgressIndicator(
                                     color: Colors.brown,

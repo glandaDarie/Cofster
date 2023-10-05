@@ -2,8 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:coffee_orderer/utils/toast.dart' show ToastUtils;
 
 ImagePicker picker = ImagePicker();
 
@@ -15,12 +15,7 @@ void photoSelector(String selector, Function callback) async {
       if (value != null) {
         String response = await cropImage(File(value.path), callback);
         if (response != null) {
-          Fluttertoast.showToast(
-              msg: "Could not crop the image",
-              toastLength: Toast.LENGTH_SHORT,
-              backgroundColor: Color.fromARGB(255, 102, 33, 12),
-              textColor: Color.fromARGB(255, 220, 217, 216),
-              fontSize: 16);
+          ToastUtils.showToast("Could not crop the image");
           return null;
         }
       }
@@ -32,23 +27,13 @@ void photoSelector(String selector, Function callback) async {
       if (value != null) {
         String response = await cropImage(File(value.path), callback);
         if (response != null) {
-          Fluttertoast.showToast(
-              msg: "Could not crop the image",
-              toastLength: Toast.LENGTH_SHORT,
-              backgroundColor: Color.fromARGB(255, 102, 33, 12),
-              textColor: Color.fromARGB(255, 220, 217, 216),
-              fontSize: 16);
+          ToastUtils.showToast("Could not crop the image");
           return null;
         }
       }
     });
   } else {
-    Fluttertoast.showToast(
-        msg: "Error when selecting available selectors",
-        toastLength: Toast.LENGTH_SHORT,
-        backgroundColor: Color.fromARGB(255, 102, 33, 12),
-        textColor: Color.fromARGB(255, 220, 217, 216),
-        fontSize: 16);
+    ToastUtils.showToast("Error when selecting available selectors");
     return null;
   }
 }
@@ -92,12 +77,7 @@ Future<String> cropImage(File imgFile, Function callback) async {
       imageCache.clear();
     }
   } catch (e) {
-    Fluttertoast.showToast(
-        msg: "Image could not be updated, exception: ${e}",
-        toastLength: Toast.LENGTH_SHORT,
-        backgroundColor: Color.fromARGB(255, 102, 33, 12),
-        textColor: Color.fromARGB(255, 220, 217, 216),
-        fontSize: 16);
+    ToastUtils.showToast("Image could not be updated, exception: ${e}");
     return null;
   }
   return errorMsg;

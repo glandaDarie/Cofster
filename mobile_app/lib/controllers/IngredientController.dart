@@ -4,9 +4,9 @@ import 'package:coffee_orderer/utils/ingredientsProperties.dart'
     show ingredientNames, ingredientIcons, ingredientColors;
 import 'package:coffee_orderer/enums/ingredientsTypes.dart'
     show IngredientsType;
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:coffee_orderer/components/detailsScreen/ingredient.dart'
     show buildIngredient;
+import 'package:coffee_orderer/utils/toast.dart' show ToastUtils;
 
 class IngredientController {
   List<Ingredient> allIngredients;
@@ -22,13 +22,8 @@ class IngredientController {
             drinkIngridientsNames.contains(ingredient.ingredientName))
         .toList();
     if (drinkIngredients.isEmpty) {
-      Fluttertoast.showToast(
-          msg:
-              "Error: There is no ingredient present for that respective drink.",
-          toastLength: Toast.LENGTH_SHORT,
-          backgroundColor: Color.fromARGB(255, 102, 33, 12),
-          textColor: Color.fromARGB(255, 220, 217, 216),
-          fontSize: 16);
+      ToastUtils.showToast(
+          "Error: There is no ingredient present for that respective drink.");
       return null;
     }
     return [

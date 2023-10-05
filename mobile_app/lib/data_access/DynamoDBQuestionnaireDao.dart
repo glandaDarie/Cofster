@@ -1,8 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:coffee_orderer/models/question.dart';
 import 'package:http/http.dart' as http;
-import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:convert';
+import 'package:coffee_orderer/utils/toast.dart' show ToastUtils;
 
 class DynamoDBQuestionnaireDao {
   String _url;
@@ -46,21 +45,11 @@ class DynamoDBQuestionnaireDao {
           body: jsonEncode(requestBody));
       jsonResponse = jsonDecode(response.body);
       if (jsonResponse["statusCode"] != 201) {
-        Fluttertoast.showToast(
-            msg: "Error: ${jsonResponse["body"]}",
-            toastLength: Toast.LENGTH_SHORT,
-            backgroundColor: Color.fromARGB(255, 102, 33, 12),
-            textColor: Color.fromARGB(255, 220, 217, 216),
-            fontSize: 16);
+        ToastUtils.showToast("Error: ${jsonResponse["body"]}");
         return null;
       }
     } catch (e) {
-      Fluttertoast.showToast(
-          msg: "Exception when inserting a new user: ${e}",
-          toastLength: Toast.LENGTH_SHORT,
-          backgroundColor: Color.fromARGB(255, 102, 33, 12),
-          textColor: Color.fromARGB(255, 220, 217, 216),
-          fontSize: 16);
+      ToastUtils.showToast("Exception when inserting a new user: ${e}");
       return null;
     }
     return jsonResponse["favouriteDrinks"].values.toList().cast<String>();

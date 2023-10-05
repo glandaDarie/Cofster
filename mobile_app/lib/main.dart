@@ -6,24 +6,19 @@ import 'package:coffee_orderer/screens/mainScreen.dart';
 import 'package:coffee_orderer/services/notificationService.dart'
     show NotificationService;
 import 'package:firebase_core/firebase_core.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:coffee_orderer/services/updateProviderService.dart'
     show UpdateProvider;
 import 'package:coffee_orderer/services/loggedInService.dart'
     show LoggedInService;
+import 'package:coffee_orderer/utils/toast.dart' show ToastUtils;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   try {
     await Firebase.initializeApp();
   } catch (error) {
-    Fluttertoast.showToast(
-        msg: error.toString(),
-        toastLength: Toast.LENGTH_SHORT,
-        backgroundColor: Color.fromARGB(255, 71, 66, 65),
-        textColor: Color.fromARGB(255, 220, 217, 216),
-        fontSize: 16);
+    ToastUtils.showToast(error.toString());
     return;
   }
   if (!(await LoggedInService.checkSharedPreferenceExistence(

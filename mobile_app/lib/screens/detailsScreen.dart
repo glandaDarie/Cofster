@@ -1,14 +1,19 @@
-import 'package:coffee_orderer/controllers/DrinksInformationController.dart';
-import 'package:coffee_orderer/controllers/PurchaseHistoryController.dart';
+import 'package:coffee_orderer/controllers/DrinksInformationController.dart'
+    show DrinksInformationController;
+import 'package:coffee_orderer/controllers/PurchaseHistoryController.dart'
+    show PurchaseHistoryController;
 import 'package:flutter/material.dart';
-import 'package:coffee_orderer/utils/localUserInformation.dart';
+import 'package:coffee_orderer/utils/localUserInformation.dart'
+    show loadUserInformationFromCache, fromStringCachetoMapCache;
 import 'package:coffee_orderer/components/detailsScreen/drinkCustomSelector.dart'
     show customizeDrink;
-import 'package:coffee_orderer/components/detailsScreen/ratingBar.dart';
-import 'package:coffee_orderer/models/information.dart';
+import 'package:coffee_orderer/components/detailsScreen/ratingBar.dart'
+    show RatingBarDrink;
+import 'package:coffee_orderer/models/information.dart' show Information;
 import 'package:coffee_orderer/controllers/IngredientController.dart'
     show IngredientController;
-import 'package:coffee_orderer/controllers/RatingController.dart';
+import 'package:coffee_orderer/controllers/RatingController.dart'
+    show RatingController;
 import 'package:coffee_orderer/services/paymentService.dart'
     show PaymentService;
 

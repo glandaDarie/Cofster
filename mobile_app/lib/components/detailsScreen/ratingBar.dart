@@ -3,6 +3,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:coffee_orderer/utils/localUserInformation.dart';
 import 'package:coffee_orderer/controllers/RatingController.dart';
+import 'package:coffee_orderer/utils/toast.dart' show ToastUtils;
 
 class RatingBarDrink {
   static RatingBar ratingBar(ValueNotifier<double> ratingBarNotifier,
@@ -33,21 +34,16 @@ class RatingBarDrink {
           String response = await _ratingController
               .updateRatingResponseGivenDrink(drinkName, ratingBar.toString());
           if (response.contains("Error")) {
-            Fluttertoast.showToast(
-                msg: "Error: ${response}",
-                toastLength: Toast.LENGTH_SHORT,
-                backgroundColor: Color.fromARGB(255, 102, 33, 12),
-                textColor: Color.fromARGB(255, 220, 217, 216),
-                fontSize: 20);
+            ToastUtils.showToast(
+              "Error: ${response}",
+              fontSize: 20,
+            );
             return;
           }
-          Fluttertoast.showToast(
-              msg:
-                  "You gave this ${cache['cardCoffeeName']} a rating of ${ratingBar}\nThank you for giving us feedback!",
-              toastLength: Toast.LENGTH_SHORT,
-              backgroundColor: Color.fromARGB(255, 102, 33, 12),
-              textColor: Color.fromARGB(255, 220, 217, 216),
-              fontSize: 20);
+          ToastUtils.showToast(
+            "You gave this ${cache['cardCoffeeName']} a rating of ${ratingBar}\nThank you for giving us feedback!",
+            fontSize: 20,
+          );
           ratingBarNotifier.value = ratingBar;
           placedOrderNotifier.value = false;
         });

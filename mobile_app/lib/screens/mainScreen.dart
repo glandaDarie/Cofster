@@ -11,8 +11,9 @@ import 'package:coffee_orderer/controllers/GiftController.dart'
     show GiftController;
 import 'package:coffee_orderer/models/card.dart' show CoffeeCard;
 import 'package:flutter/material.dart';
-import 'package:coffee_orderer/utils/coffeeFunFact.dart';
-import 'package:coffee_orderer/components/mainScreen/navigationBar.dart';
+import 'package:coffee_orderer/utils/coffeeFunFact.dart' show generateFunFact;
+import 'package:coffee_orderer/components/mainScreen/navigationBar.dart'
+    show bottomNavigationBar;
 import 'package:coffee_orderer/components/mainScreen/popupFreeDrink.dart'
     show showPopup;
 import 'package:coffee_orderer/controllers/CoffeeCardFavouriteDrinksController.dart'

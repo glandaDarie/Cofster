@@ -1,7 +1,6 @@
 import 'dart:io' show Directory, File;
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:coffee_orderer/utils/toast.dart' show ToastUtils;
 
 Future<void> storeUserInformationInCache(
     Map<String, String> userInformation) async {
@@ -14,12 +13,8 @@ Future<void> storeUserInformationInCache(
     });
     await outputFile.writeAsString(userInformationFormatted, flush: true);
   } catch (e) {
-    Fluttertoast.showToast(
-        msg: "Error when storing data: $e",
-        toastLength: Toast.LENGTH_SHORT,
-        backgroundColor: Color.fromARGB(255, 102, 33, 12),
-        textColor: Color.fromARGB(255, 220, 217, 216),
-        fontSize: 16);
+    ToastUtils.showToast("Error when storing data: {$e}");
+    return null;
   }
 }
 
@@ -30,12 +25,8 @@ Future<String> loadUserInformationFromCache() async {
     File inputFile = File("${directory.path}/userInformation.txt");
     userInformationRead = await inputFile.readAsString();
   } catch (e) {
-    Fluttertoast.showToast(
-        msg: "Error when loading data: $e",
-        toastLength: Toast.LENGTH_SHORT,
-        backgroundColor: Color.fromARGB(255, 102, 33, 12),
-        textColor: Color.fromARGB(255, 220, 217, 216),
-        fontSize: 16);
+    ToastUtils.showToast("Error when loading data: ${e}");
+    return null;
   }
   return userInformationRead;
 }
@@ -59,11 +50,7 @@ Future<void> appendInformationInCache(
     }
     await storeUserInformationInCache(cache);
   } catch (e) {
-    Fluttertoast.showToast(
-        msg: "When appending information, exception: $e",
-        toastLength: Toast.LENGTH_SHORT,
-        backgroundColor: Color.fromARGB(255, 102, 33, 12),
-        textColor: Color.fromARGB(255, 220, 217, 216),
-        fontSize: 16);
+    ToastUtils.showToast("When appending information, exception: ${e}");
+    return null;
   }
 }

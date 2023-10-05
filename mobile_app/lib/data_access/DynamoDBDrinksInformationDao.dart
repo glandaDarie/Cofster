@@ -1,8 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:coffee_orderer/models/information.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:coffee_orderer/utils/toast.dart' show ToastUtils;
 
 class DynamoDBDrinksInformationDao {
   String _url;
@@ -18,12 +17,7 @@ class DynamoDBDrinksInformationDao {
     if (response.statusCode == 200) {
       information = this._parseJsonDrinkInformation(jsonDecode(response.body));
       if (information == null) {
-        Fluttertoast.showToast(
-            msg: "Error: problems when parsing the JSON",
-            toastLength: Toast.LENGTH_SHORT,
-            backgroundColor: Color.fromARGB(255, 102, 33, 12),
-            textColor: Color.fromARGB(255, 220, 217, 216),
-            fontSize: 16);
+        ToastUtils.showToast("Error: problems when parsing the JSON");
         return null;
       }
       return information;

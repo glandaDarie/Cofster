@@ -18,6 +18,7 @@ import 'package:coffee_orderer/screens/purchaseHistoryScreen.dart'
     show PurchaseHistoryPage;
 import 'package:coffee_orderer/controllers/PurchaseHistoryController.dart'
     show PurchaseHistoryController;
+import 'package:coffee_orderer/utils/toast.dart' show ToastUtils;
 
 class ProfileInformationPage extends StatefulWidget {
   final void Function(int) callbackSelectedIndex;
@@ -144,14 +145,7 @@ class _ProfileInformationPageState extends State<ProfileInformationPage> {
                                       await LoggedInService
                                           .changeSharedPreferenceLoggingStatus();
                                   if (loggingStatusResponse != null) {
-                                    Fluttertoast.showToast(
-                                        msg: loggingStatusResponse,
-                                        toastLength: Toast.LENGTH_SHORT,
-                                        backgroundColor:
-                                            Color.fromARGB(255, 102, 33, 12),
-                                        textColor:
-                                            Color.fromARGB(255, 220, 217, 216),
-                                        fontSize: 16);
+                                    ToastUtils.showToast(loggingStatusResponse);
                                     return null;
                                   }
                                   Navigator.of(context).push(MaterialPageRoute(

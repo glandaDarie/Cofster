@@ -1,7 +1,6 @@
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:flutter/material.dart';
+import 'package:coffee_orderer/utils/toast.dart' show ToastUtils;
 
 class SpeechToTextService {
   static SpeechToTextService _instance;
@@ -37,12 +36,7 @@ class SpeechToTextService {
     try {
       this._speechStatus = await speechToText.initialize();
     } catch (e) {
-      Fluttertoast.showToast(
-          msg: "Speech cannot be intialized, error: ${e}",
-          toastLength: Toast.LENGTH_SHORT,
-          backgroundColor: Color.fromARGB(255, 102, 33, 12),
-          textColor: Color.fromARGB(255, 220, 217, 216),
-          fontSize: 16);
+      ToastUtils.showToast("Speech cannot be intialized, error: ${e}");
       return;
     }
     this._callbackRerenderUI();
@@ -56,12 +50,7 @@ class SpeechToTextService {
     try {
       await speechToText.stop();
     } catch (e) {
-      Fluttertoast.showToast(
-          msg: "Speech cannot be closed, error: ${e}",
-          toastLength: Toast.LENGTH_SHORT,
-          backgroundColor: Color.fromARGB(255, 102, 33, 12),
-          textColor: Color.fromARGB(255, 220, 217, 216),
-          fontSize: 16);
+      ToastUtils.showToast("Speech cannot be closed, error: ${e}");
       return;
     }
     this._callbackRerenderUI();
@@ -71,12 +60,8 @@ class SpeechToTextService {
     try {
       await speechToText.listen(onResult: this._callbackSetSpeechResult);
     } catch (e) {
-      Fluttertoast.showToast(
-          msg: "Cannot start listening to users voice, error: ${e}",
-          toastLength: Toast.LENGTH_SHORT,
-          backgroundColor: Color.fromARGB(255, 102, 33, 12),
-          textColor: Color.fromARGB(255, 220, 217, 216),
-          fontSize: 16);
+      ToastUtils.showToast(
+          "Cannot start listening to users voice, error: ${e}");
       return;
     }
   }

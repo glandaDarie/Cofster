@@ -1,9 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
 import 'package:coffee_orderer/controllers/UserController.dart';
 import 'package:coffee_orderer/services/validateCredentialsService.dart';
 import 'package:coffee_orderer/models/user.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:coffee_orderer/utils/localUserInformation.dart';
 import 'package:coffee_orderer/services/encryptPasswordService.dart';
 import 'package:mailer/mailer.dart';
@@ -13,6 +11,7 @@ import 'package:coffee_orderer/services/passwordGeneratorService.dart';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:steel_crypt/steel_crypt.dart';
+import 'package:coffee_orderer/utils/toast.dart' show ToastUtils;
 
 class AuthController extends ValidateCredentialsService {
   Duration get loginTime => Duration(milliseconds: 2250);
@@ -26,12 +25,7 @@ class AuthController extends ValidateCredentialsService {
     try {
       _users = await this.userController.getAllUsers();
     } catch (e) {
-      Fluttertoast.showToast(
-          msg: "Exception when trying to fetch users: $e",
-          toastLength: Toast.LENGTH_SHORT,
-          backgroundColor: Color.fromARGB(255, 102, 33, 12),
-          textColor: Color.fromARGB(255, 220, 217, 216),
-          fontSize: 16);
+      ToastUtils.showToast("Exception when trying to fetch users: $e");
       return null;
     }
     return _users;
@@ -125,12 +119,7 @@ class AuthController extends ValidateCredentialsService {
       smtpServer = SmtpServer("smtp-mail.outlook.com",
           port: 587, username: usernameSender, password: passwordSender);
     } catch (e) {
-      Fluttertoast.showToast(
-          msg: "Error creating SmtpServer: ${e}",
-          toastLength: Toast.LENGTH_SHORT,
-          backgroundColor: Color.fromARGB(255, 102, 33, 12),
-          textColor: Color.fromARGB(255, 220, 217, 216),
-          fontSize: 16);
+      ToastUtils.showToast("Error creating SmtpServer: ${e}");
       return null;
     }
     String data;
@@ -150,23 +139,13 @@ class AuthController extends ValidateCredentialsService {
         ..subject = "Verification code"
         ..text = "Your verification code is: ${data}";
     } else {
-      Fluttertoast.showToast(
-          msg: "No valid operation for sending an email.",
-          toastLength: Toast.LENGTH_SHORT,
-          backgroundColor: Color.fromARGB(255, 102, 33, 12),
-          textColor: Color.fromARGB(255, 220, 217, 216),
-          fontSize: 16);
+      ToastUtils.showToast("No valid operation for sending an email.");
       return null;
     }
     try {
       await send(message, smtpServer);
     } on MailerException catch (e) {
-      Fluttertoast.showToast(
-          msg: "Could not send email. Exception : ${e}",
-          toastLength: Toast.LENGTH_SHORT,
-          backgroundColor: Color.fromARGB(255, 102, 33, 12),
-          textColor: Color.fromARGB(255, 220, 217, 216),
-          fontSize: 16);
+      ToastUtils.showToast("Could not send email. Exception : ${e}");
       return null;
     }
     return data;
@@ -204,12 +183,7 @@ class AuthController extends ValidateCredentialsService {
     await storeUserInformationInCache({"name": content["name"]});
     String response = await this.userController.insertNewUser(content);
     if (response != null) {
-      Fluttertoast.showToast(
-          msg: "Exception : ${response}",
-          toastLength: Toast.LENGTH_SHORT,
-          backgroundColor: Color.fromARGB(255, 102, 33, 12),
-          textColor: Color.fromARGB(255, 220, 217, 216),
-          fontSize: 16);
+      ToastUtils.showToast("Exception : ${response}");
     }
     return response;
   }
