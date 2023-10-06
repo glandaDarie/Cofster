@@ -95,36 +95,46 @@ Padding coffeeCard(CoffeeCard card,
               ]),
               SizedBox(height: 20.0),
               InkWell(
-                  onTap: () async {
-                    bool cardIsFavorite = CoffeeCardController
-                        .getParticularCoffeeCardIsFavoriteState(card);
-                    if (cardIsFavorite == null) {
-                      ToastUtils.showToast(
-                          "That respective coffee does not exist");
-                      return;
-                    }
-                    storeUserInformationInCache({
-                      "cardCoffeeName": card.coffeeName.replaceAll(" ", "-"),
-                      "cardImgPath": card.imgPath,
-                      "cardDescription": card.description.replaceAll(" ", "-"),
-                      "cardIsFavorite": cardIsFavorite.toString()
-                    });
-                    Navigator.of(card.context).push(
-                        MaterialPageRoute(builder: (context) => DetailsPage()));
-                  },
-                  child: Container(
-                      height: 50.0,
-                      width: 225.0,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(25.0),
-                          color: Color(0xFF473D3A)),
-                      child: Center(
-                          child: Text("Order Now",
-                              style: TextStyle(
-                                  fontFamily: "nunito",
-                                  fontSize: 14.0,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white)))))
+                onTap: () async {
+                  bool cardIsFavorite = CoffeeCardController
+                      .getParticularCoffeeCardIsFavoriteState(card);
+                  if (cardIsFavorite == null) {
+                    ToastUtils.showToast(
+                        "That respective coffee does not exist");
+                    return;
+                  }
+                  storeUserInformationInCache({
+                    "cardCoffeeName": card.coffeeName.replaceAll(" ", "-"),
+                    "cardImgPath": card.imgPath,
+                    "cardDescription": card.description.replaceAll(" ", "-"),
+                    "cardIsFavorite": cardIsFavorite.toString()
+                  });
+                  Navigator.of(card.context).push(
+                    MaterialPageRoute(
+                      builder: (context) => DetailsPage(
+                        isGift: false,
+                      ),
+                    ),
+                  );
+                },
+                child: Container(
+                  height: 50.0,
+                  width: 225.0,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(25.0),
+                      color: Color(0xFF473D3A)),
+                  child: Center(
+                    child: Text(
+                      "Order Now",
+                      style: TextStyle(
+                          fontFamily: "nunito",
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    ),
+                  ),
+                ),
+              )
             ],
           )));
 }

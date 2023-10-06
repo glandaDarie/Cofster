@@ -70,6 +70,11 @@ class VoiceDialogController {
 
   static void moveToDetailsScreen(BuildContext context) {
     Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => DetailsPage()));
+      MaterialPageRoute(
+        builder: (context) => DetailsPage(
+          isGift: false,
+        ),
+      ),
+    );
   }
 }

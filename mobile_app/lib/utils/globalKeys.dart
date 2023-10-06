@@ -1,4 +1,3 @@
-// import 'package:flutter/material.dart';
-// import 'package:coffee_orderer/screens/detailsScreen.dart';
+import 'package:flutter/material.dart';
 
-// GlobalKey<_DetailsPageState> inkWellKey = GlobalKey<_DetailsPageState>();
+GlobalKey inkWellShowModalBottomSheet = GlobalKey();

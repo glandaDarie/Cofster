@@ -33,7 +33,9 @@ Widget lottieGiftBox(
                   animationPlayingNotifier.value = !animationPlaying;
                   Future.delayed(Duration(seconds: 3), () {
                     Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (BuildContext context) => DetailsPage(),
+                      builder: (BuildContext context) => DetailsPage(
+                        isGift: true,
+                      ),
                     ));
                   });
                 },

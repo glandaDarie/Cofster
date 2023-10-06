@@ -5,8 +5,6 @@ import 'package:coffee_orderer/controllers/PurchaseHistoryController.dart'
 import 'package:flutter/material.dart';
 import 'package:coffee_orderer/utils/localUserInformation.dart'
     show loadUserInformationFromCache, fromStringCachetoMapCache;
-import 'package:coffee_orderer/components/detailsScreen/drinkCustomSelector.dart'
-    show customizeDrink;
 import 'package:coffee_orderer/components/detailsScreen/ratingBar.dart'
     show RatingBarDrink;
 import 'package:coffee_orderer/models/information.dart' show Information;
@@ -16,10 +14,18 @@ import 'package:coffee_orderer/controllers/RatingController.dart'
     show RatingController;
 import 'package:coffee_orderer/services/paymentService.dart'
     show PaymentService;
+import 'package:coffee_orderer/components/detailsScreen/drinkCustomSelector/drinkCustomSelectorSheet.dart'
+    show drinkCustomSelectorSheet;
+import 'package:coffee_orderer/components/detailsScreen/bottomCoffeeDrinkButton.dart'
+    show bottomCoffeeDrinkButton;
 
 class DetailsPage extends StatefulWidget {
+  final bool isGift;
+
+  const DetailsPage({Key key, @required this.isGift}) : super(key: key);
+
   @override
-  _DetailsPageState createState() => _DetailsPageState();
+  _DetailsPageState createState() => _DetailsPageState(isGift);
 }
 
 class _DetailsPageState extends State<DetailsPage> {
@@ -35,8 +41,9 @@ class _DetailsPageState extends State<DetailsPage> {
   List<String> _nutritionInfo;
   PaymentService _paymentService;
   PurchaseHistoryController _purchaseHistoryController;
+  ValueNotifier<bool> isGiftValueNotifier;
 
-  _DetailsPageState() {
+  _DetailsPageState(bool isGift) {
     this.hotSelectedNotifier = ValueNotifier<bool>(false);
     this.placedOrderNotifier = ValueNotifier<bool>(false);
     this.ratingBarNotifier = ValueNotifier<double>(0.0);
@@ -47,6 +54,7 @@ class _DetailsPageState extends State<DetailsPage> {
     this._preparationTime = null;
     this._nutritionInfo = [];
     this._purchaseHistoryController = PurchaseHistoryController();
+    isGiftValueNotifier = ValueNotifier<bool>(isGift);
   }
 
   @override
@@ -79,7 +87,9 @@ class _DetailsPageState extends State<DetailsPage> {
             ConnectionState.waiting) {
           return Center(
             child: CircularProgressIndicator(
-                color: Colors.brown, backgroundColor: Colors.white),
+              color: Colors.brown,
+              backgroundColor: Colors.white,
+            ),
           );
         } else if (snapshotPreviousScreenData.hasError) {
           return Center(
@@ -285,47 +295,49 @@ class _DetailsPageState extends State<DetailsPage> {
                                     ),
                                   ),
                                   SizedBox(height: 10.0),
-                                  Padding(
-                                    padding: EdgeInsets.only(right: 25.0),
-                                    child: InkWell(
-                                        onTap: () {
-                                          showModalBottomSheet(
-                                            isScrollControlled: true,
-                                            backgroundColor: Colors.white,
-                                            isDismissible: true,
-                                            shape: const RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.vertical(
-                                                top: Radius.circular(25),
+                                  ValueListenableBuilder<bool>(
+                                    valueListenable: this.isGiftValueNotifier,
+                                    builder: ((BuildContext context,
+                                        bool isGift, Widget child) {
+                                      return Padding(
+                                        padding: EdgeInsets.only(right: 25.0),
+                                        child: isGift
+                                            ? Builder(
+                                                builder:
+                                                    (BuildContext context) {
+                                                  Future.microtask(() {
+                                                    drinkCustomSelectorSheet(
+                                                      context,
+                                                      this.placedOrderNotifier,
+                                                      this._paymentService,
+                                                      this._purchaseHistoryController,
+                                                    );
+                                                    this
+                                                        .isGiftValueNotifier
+                                                        .value = true;
+                                                  });
+                                                  return bottomCoffeeDrinkButton(
+                                                    buttonText:
+                                                        "Create coffee drink",
+                                                  );
+                                                },
+                                              )
+                                            : InkWell(
+                                                onTap: () {
+                                                  drinkCustomSelectorSheet(
+                                                    context,
+                                                    this.placedOrderNotifier,
+                                                    this._paymentService,
+                                                    this._purchaseHistoryController,
+                                                  );
+                                                },
+                                                child: bottomCoffeeDrinkButton(
+                                                  buttonText:
+                                                      "Create coffee drink",
+                                                ),
                                               ),
-                                            ),
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return customizeDrink(
-                                                  context,
-                                                  this.placedOrderNotifier,
-                                                  this._paymentService,
-                                                  this._purchaseHistoryController);
-                                            },
-                                          );
-                                        },
-                                        child: Container(
-                                          height: 50.0,
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(35.0),
-                                              color: Color(0xFF473D3A)),
-                                          child: Center(
-                                            child: Text(
-                                              "Create coffee drink",
-                                              style: TextStyle(
-                                                  fontFamily: "nunito",
-                                                  fontSize: 14.0,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.white),
-                                            ),
-                                          ),
-                                        )),
+                                      );
+                                    }),
                                   ),
                                   SizedBox(height: 20.0)
                                 ]))),
@@ -334,7 +346,8 @@ class _DetailsPageState extends State<DetailsPage> {
                           left: 135.0,
                           child: FutureBuilder<dynamic>(
                             future: _getCoffeeCardInformationFromPreviousScreen(
-                                "cardImgPath"),
+                              "cardImgPath",
+                            ),
                             builder: (BuildContext context,
                                 AsyncSnapshot<dynamic> snapshot) {
                               if (snapshot.connectionState ==
@@ -378,7 +391,8 @@ class _DetailsPageState extends State<DetailsPage> {
                                             child: FutureBuilder<dynamic>(
                                               future:
                                                   _getCoffeeCardInformationFromPreviousScreen(
-                                                      "cardCoffeeName"),
+                                                "cardCoffeeName",
+                                              ),
                                               builder: (context, snapshot) {
                                                 if (snapshot.connectionState ==
                                                     ConnectionState.waiting) {

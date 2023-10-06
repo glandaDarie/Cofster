@@ -13,7 +13,7 @@ Future<void> storeUserInformationInCache(
     });
     await outputFile.writeAsString(userInformationFormatted, flush: true);
   } catch (e) {
-    ToastUtils.showToast("Error when storing data: {$e}");
+    ToastUtils.showToast("Error when storing data: ${e}");
     return null;
   }
 }
