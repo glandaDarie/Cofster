@@ -25,6 +25,15 @@ class CoffeeCardSingleton {
     return _coffeeCardObjects;
   }
 
+  CoffeeCard getCoffeeCardWithMatchingName({@required String name}) {
+    for (CoffeeCard coffeeCard in _coffeeCardObjects) {
+      if (coffeeCard.coffeeName == name) {
+        return coffeeCard;
+      }
+    }
+    return null;
+  }
+
   int getNumberOfSetFavoriteFromCoffeeCardObjects() {
     return _coffeeCardObjects
         .where((CoffeeCard coffeeCardObject) =>

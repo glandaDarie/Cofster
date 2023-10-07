@@ -29,7 +29,7 @@ class _GiftCardPageState extends State<GiftCardPage>
   _GiftCardPageState(this._callbackSelectedIndex)
       : this._giftController = GiftController(),
         this._animationPlayingNotifiers =
-            List.generate(MAX_GIFTS, (index) => ValueNotifier<bool>(true));
+            List.generate(MAX_GIFTS, (int index) => ValueNotifier<bool>(true));
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +87,10 @@ class _GiftCardPageState extends State<GiftCardPage>
             return ListView(
               children: zip([giftNames, this._animationPlayingNotifiers])
                   .map(
-                    (List<Object> items) => lottieGiftBox(items[0], items[1]),
+                    (List<Object> items) => lottieGiftBox(
+                      gift: items[0],
+                      animationPlayingNotifier: items[1],
+                    ),
                   )
                   .toList(),
             );

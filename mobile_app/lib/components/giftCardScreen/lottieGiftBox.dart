@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart' show Lottie;
 import 'package:coffee_orderer/utils/appAssets.dart' show GIFT_ANIMATION;
-import 'package:coffee_orderer/screens/detailsScreen.dart' show DetailsPage;
+import 'package:coffee_orderer/components/detailsScreen/navigateToDetailsPage.dart'
+    show navigateToDetailsPage;
 
 Widget lottieGiftBox(
-    String gift, ValueNotifier<bool> animationPlayingNotifier) {
+    {@required String gift,
+    @required ValueNotifier<bool> animationPlayingNotifier}) {
   return ValueListenableBuilder(
     valueListenable: animationPlayingNotifier,
     builder: (BuildContext context, bool animationPlaying, Widget child) {
@@ -31,13 +33,11 @@ Widget lottieGiftBox(
               GestureDetector(
                 onTap: () async {
                   animationPlayingNotifier.value = !animationPlaying;
-                  Future.delayed(Duration(seconds: 3), () {
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (BuildContext context) => DetailsPage(
-                        isGift: true,
-                      ),
-                    ));
-                  });
+                  navigateToDetailsPage(
+                    currentScreenName: "GiftCardPage",
+                    gift: gift,
+                    context: context,
+                  );
                 },
                 child: Lottie.asset(
                   GIFT_ANIMATION,

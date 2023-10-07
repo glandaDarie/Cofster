@@ -1,7 +1,6 @@
 import 'package:coffee_orderer/screens/mainScreen.dart' show HomePage;
 import 'package:flutter/material.dart';
 import 'dart:typed_data';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:coffee_orderer/services/loggedInService.dart'
     show LoggedInService;
 import 'package:coffee_orderer/utils/paths.dart' show Paths;

@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:coffee_orderer/screens/detailsScreen.dart';
 import 'package:coffee_orderer/models/card.dart' show CoffeeCard;
-import 'package:coffee_orderer/controllers/CoffeeCardController.dart'
-    show CoffeeCardController;
-import 'package:coffee_orderer/utils/localUserInformation.dart';
-import 'package:coffee_orderer/utils/toast.dart' show ToastUtils;
 import 'package:coffee_orderer/utils/coffeeNameShortener.dart'
     show shortenCoffeeNameIfNeeded;
 import 'package:coffee_orderer/notifiers/favoriteDrinkNotifier.dart'
     show FavoriteDrinkNotifier;
+import 'package:coffee_orderer/components/detailsScreen/navigateToDetailsPage.dart'
+    show navigateToDetailsPage;
 
 Padding coffeeCard(CoffeeCard card,
     [void Function(CoffeeCard, ValueNotifier<bool>) callbackSetFavorite,
@@ -96,25 +93,9 @@ Padding coffeeCard(CoffeeCard card,
               SizedBox(height: 20.0),
               InkWell(
                 onTap: () async {
-                  bool cardIsFavorite = CoffeeCardController
-                      .getParticularCoffeeCardIsFavoriteState(card);
-                  if (cardIsFavorite == null) {
-                    ToastUtils.showToast(
-                        "That respective coffee does not exist");
-                    return;
-                  }
-                  storeUserInformationInCache({
-                    "cardCoffeeName": card.coffeeName.replaceAll(" ", "-"),
-                    "cardImgPath": card.imgPath,
-                    "cardDescription": card.description.replaceAll(" ", "-"),
-                    "cardIsFavorite": cardIsFavorite.toString()
-                  });
-                  Navigator.of(card.context).push(
-                    MaterialPageRoute(
-                      builder: (context) => DetailsPage(
-                        isGift: false,
-                      ),
-                    ),
+                  navigateToDetailsPage(
+                    currentScreenName: "MainPage",
+                    card: card,
                   );
                 },
                 child: Container(
