@@ -88,7 +88,9 @@ class PaymentService {
                         textScaleFactor: 1.2,
                         style: TextStyle(
                                 fontFamily: 'varela', color: Colors.black54)
-                            .copyWith(fontWeight: FontWeight.w700),
+                            .copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ],
                   ),

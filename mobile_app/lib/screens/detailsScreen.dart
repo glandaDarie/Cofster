@@ -174,13 +174,15 @@ class _DetailsPageState extends State<DetailsPage> {
                                         Future.delayed(
                                             Duration(seconds: 30), () {});
                                         return Visibility(
-                                            visible: placedOrder,
-                                            child: Positioned(
-                                                bottom: 25,
-                                                right: 70,
-                                                child: RatingBarDrink.ratingBar(
-                                                    ratingBarNotifier,
-                                                    placedOrderNotifier)));
+                                          visible: placedOrder,
+                                          child: Positioned(
+                                            bottom: 25,
+                                            right: 70,
+                                            child: RatingBarDrink.ratingBar(
+                                                ratingBarNotifier,
+                                                placedOrderNotifier),
+                                          ),
+                                        );
                                       }),
                                   SizedBox(height: 10.0),
                                   Padding(
@@ -311,6 +313,8 @@ class _DetailsPageState extends State<DetailsPage> {
                                                       this.placedOrderNotifier,
                                                       this._paymentService,
                                                       this._purchaseHistoryController,
+                                                      previousScreenName:
+                                                          "GiftCardPage",
                                                     );
                                                     this
                                                         .isGiftValueNotifier

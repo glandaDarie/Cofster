@@ -10,8 +10,9 @@ void drinkCustomSelectorSheet(
   BuildContext context,
   ValueNotifier<bool> placedOrderNotifier,
   PaymentService paymentService,
-  PurchaseHistoryController purchaseHistoryController,
-) {
+  PurchaseHistoryController purchaseHistoryController, {
+  String previousScreenName = "MainPage",
+}) {
   showModalBottomSheet(
     isScrollControlled: true,
     backgroundColor: Colors.white,
@@ -28,6 +29,7 @@ void drinkCustomSelectorSheet(
         placedOrderNotifier,
         paymentService,
         purchaseHistoryController,
+        previousScreenName: previousScreenName,
       );
     },
   );

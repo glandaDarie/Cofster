@@ -25,11 +25,12 @@ class OrderService {
   Map<String, dynamic> _extraIngredients;
   ValueNotifier<bool> _placedOrderNotifier;
   OrderService(
-      this._context,
-      this._paymentService,
-      this._purchaseHistoryController,
-      this._extraIngredients,
-      this._placedOrderNotifier);
+    this._context,
+    this._paymentService,
+    this._purchaseHistoryController,
+    this._extraIngredients,
+    this._placedOrderNotifier,
+  );
 
   Future<void> placeOrder() async {
     String cacheStr = await loadUserInformationFromCache();

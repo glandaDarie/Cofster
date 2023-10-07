@@ -36,3 +36,11 @@ final List<String> PARTNER_FOOTER_IMAGES = [
 ];
 
 const MAX_GIFTS = 1000;
+
+const int DEFAULT_DRINK_QUANTITY = 1;
+const String DEFAULT_DRINK_SIZE = "M";
+const bool DEFAULT_IS_DRINK_HOT = false;
+const int DEFAULT_SUGAR_CUBES_QUANTITY = 0;
+const int DEFAULT_ICE_CUBES_QUANTITY = 1;
+const int DEFAULT_CREAM = 1;
+const String FREE_DRINK_TAX = "0.50";

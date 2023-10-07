@@ -18,15 +18,33 @@ import 'package:coffee_orderer/utils/extraIngredientChange.dart'
     show updateUIWithChangesOnExtraIngredients;
 import 'package:coffee_orderer/utils/coffeeName.dart'
     show getCoffeeNameFromCache;
+import 'package:coffee_orderer/utils/constants.dart'
+    show
+        DEFAULT_DRINK_QUANTITY,
+        DEFAULT_DRINK_SIZE,
+        DEFAULT_IS_DRINK_HOT,
+        DEFAULT_SUGAR_CUBES_QUANTITY,
+        DEFAULT_ICE_CUBES_QUANTITY,
+        DEFAULT_CREAM,
+        FREE_DRINK_TAX;
 
 FutureBuilder<String> customizeDrink(
-    BuildContext context,
-    ValueNotifier<bool> placedOrderNotifier,
-    PaymentService paymentService,
-    PurchaseHistoryController purchaseHistoryController) {
+  BuildContext context,
+  ValueNotifier<bool> placedOrderNotifier,
+  PaymentService paymentService,
+  PurchaseHistoryController purchaseHistoryController, {
+  String previousScreenName = "MainPage",
+}) {
   Map<String, dynamic> extraIngredientUpdater;
   NotifierCustomSelectorSetupService notifierService =
-      NotifierCustomSelectorSetupService(1, "M", false, 0, 1, 1);
+      NotifierCustomSelectorSetupService(
+    DEFAULT_DRINK_QUANTITY,
+    DEFAULT_DRINK_SIZE,
+    DEFAULT_IS_DRINK_HOT,
+    DEFAULT_SUGAR_CUBES_QUANTITY,
+    DEFAULT_ICE_CUBES_QUANTITY,
+    DEFAULT_CREAM,
+  );
   notifierService.attachAllListenersToNotifiers();
   return FutureBuilder<String>(
     future: getCoffeeNameFromCache(),
@@ -123,12 +141,16 @@ FutureBuilder<String> customizeDrink(
                                   notifiers.creamNotifier,
                                   quantity: notifiers.quantity,
                                 );
+                                if (previousScreenName == "GiftCardPage") {
+                                  extraIngredientUpdater["price"] =
+                                      FREE_DRINK_TAX;
+                                }
                                 return Text(
                                   "\$${extraIngredientUpdater['price']}",
                                   style: TextStyle(
-                                          fontFamily: 'varela',
-                                          color: Color(0xFF473D3A))
-                                      .copyWith(fontWeight: FontWeight.w900),
+                                    fontFamily: 'varela',
+                                    color: Color(0xFF473D3A),
+                                  ).copyWith(fontWeight: FontWeight.w900),
                                   textScaleFactor: 1.9,
                                 );
                               }),
@@ -139,7 +161,7 @@ FutureBuilder<String> customizeDrink(
                         width: 250,
                         child: ElevatedButton(
                           onPressed: () async {
-                            OrderService(
+                            await OrderService(
                                     context,
                                     paymentService,
                                     purchaseHistoryController,
