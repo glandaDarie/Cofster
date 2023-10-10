@@ -4,11 +4,21 @@ import 'package:coffee_orderer/utils/boxProperties.dart'
 import 'package:coffee_orderer/utils/cardProperties.dart'
     show coffeePrices, coffeeNames;
 import 'package:coffee_orderer/utils/toast.dart';
+import 'package:coffee_orderer/utils/constants.dart' show FREE_DRINK_TAX;
 
-Map<String, dynamic> updateUIWithChangesOnExtraIngredients(String coffeeName,
-    String coffeeSize, int numberSugarCubes, int numberIceCubes, int hasCream,
-    {int quantity = 1, String coffeeTemperature = "Cold"}) {
-  final double coffeePrice = _getCoffeePrice(coffeeName);
+Map<String, dynamic> updateUIWithChangesOnExtraIngredients(
+  String coffeeName,
+  String coffeeSize,
+  int numberSugarCubes,
+  int numberIceCubes,
+  int hasCream, {
+  int quantity = 1,
+  String coffeeTemperature = "Cold",
+  String previousScreenName = "MainPage",
+}) {
+  final double coffeePrice = previousScreenName == "MainPage"
+      ? _getCoffeePrice(coffeeName)
+      : double.tryParse(FREE_DRINK_TAX) ?? null;
   if (coffeePrice == null) {
     ToastUtils.showToast("Coffee price not found");
     return null;

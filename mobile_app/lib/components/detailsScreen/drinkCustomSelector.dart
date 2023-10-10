@@ -25,8 +25,7 @@ import 'package:coffee_orderer/utils/constants.dart'
         DEFAULT_IS_DRINK_HOT,
         DEFAULT_SUGAR_CUBES_QUANTITY,
         DEFAULT_ICE_CUBES_QUANTITY,
-        DEFAULT_CREAM,
-        FREE_DRINK_TAX;
+        DEFAULT_CREAM;
 
 FutureBuilder<String> customizeDrink(
   BuildContext context,
@@ -140,11 +139,8 @@ FutureBuilder<String> customizeDrink(
                                   notifiers.iceQuantity,
                                   notifiers.creamNotifier,
                                   quantity: notifiers.quantity,
+                                  previousScreenName: previousScreenName,
                                 );
-                                if (previousScreenName == "GiftCardPage") {
-                                  extraIngredientUpdater["price"] =
-                                      FREE_DRINK_TAX;
-                                }
                                 return Text(
                                   "\$${extraIngredientUpdater['price']}",
                                   style: TextStyle(
@@ -159,19 +155,61 @@ FutureBuilder<String> customizeDrink(
                       SizedBox(
                         height: 60,
                         width: 250,
+                        // WORKING ON THIS
+                        // child: Builder(
+                        //   builder: (BuildContext context) {
+                        //     Future.microtask(() async {
+                        //       if (!hasTriggeredRerender) {
+                        //         await OrderService(
+                        //           context,
+                        //           paymentService,
+                        //           purchaseHistoryController,
+                        //           extraIngredientUpdater,
+                        //           placedOrderNotifier,
+                        //         ).placeOrder();
+                        //       }
+                        //       hasTriggeredRerender = true;
+                        //     });
+                        //     return ElevatedButton(
+                        //       onPressed: () {},
+                        //       style: ButtonStyle(
+                        //         backgroundColor:
+                        //             MaterialStateProperty.all<Color>(
+                        //                 Color(0xFF473D3A)),
+                        //         shape: MaterialStateProperty.all<
+                        //             RoundedRectangleBorder>(
+                        //           RoundedRectangleBorder(
+                        //             borderRadius: BorderRadius.circular(25),
+                        //           ),
+                        //         ),
+                        //       ),
+                        //       child: Text(
+                        //         "Order",
+                        //         textScaleFactor: 1.5,
+                        //         style: TextStyle(
+                        //                 fontFamily: 'varela',
+                        //                 color: Colors.white)
+                        //             .copyWith(
+                        //           fontWeight: FontWeight.w700,
+                        //         ),
+                        //       ),
+                        //     );
+                        //   },
+                        // ),
                         child: ElevatedButton(
                           onPressed: () async {
                             await OrderService(
-                                    context,
-                                    paymentService,
-                                    purchaseHistoryController,
-                                    extraIngredientUpdater,
-                                    placedOrderNotifier)
-                                .placeOrder();
+                              context,
+                              paymentService,
+                              purchaseHistoryController,
+                              extraIngredientUpdater,
+                              placedOrderNotifier,
+                            ).placeOrder();
                           },
                           style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all<Color>(
-                                Color(0xFF473D3A)),
+                              Color(0xFF473D3A),
+                            ),
                             shape: MaterialStateProperty.all<
                                 RoundedRectangleBorder>(
                               RoundedRectangleBorder(
