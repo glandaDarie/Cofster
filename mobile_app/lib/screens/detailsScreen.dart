@@ -41,7 +41,8 @@ class _DetailsPageState extends State<DetailsPage> {
   List<String> _nutritionInfo;
   PaymentService _paymentService;
   PurchaseHistoryController _purchaseHistoryController;
-  ValueNotifier<bool> isGiftValueNotifier;
+  ValueNotifier<bool> _isGiftValueNotifier;
+  ValueNotifier<bool> _microtaskNotExecutedNotifier;
 
   _DetailsPageState(bool isGift) {
     this.hotSelectedNotifier = ValueNotifier<bool>(false);
@@ -54,7 +55,8 @@ class _DetailsPageState extends State<DetailsPage> {
     this._preparationTime = null;
     this._nutritionInfo = [];
     this._purchaseHistoryController = PurchaseHistoryController();
-    isGiftValueNotifier = ValueNotifier<bool>(isGift);
+    this._isGiftValueNotifier = ValueNotifier<bool>(isGift);
+    this._microtaskNotExecutedNotifier = ValueNotifier<bool>(true);
   }
 
   @override
@@ -298,7 +300,7 @@ class _DetailsPageState extends State<DetailsPage> {
                                   ),
                                   SizedBox(height: 10.0),
                                   ValueListenableBuilder<bool>(
-                                    valueListenable: this.isGiftValueNotifier,
+                                    valueListenable: this._isGiftValueNotifier,
                                     builder: ((BuildContext context,
                                         bool isGift, Widget child) {
                                       return Padding(
@@ -307,19 +309,26 @@ class _DetailsPageState extends State<DetailsPage> {
                                             ? Builder(
                                                 builder:
                                                     (BuildContext context) {
-                                                  Future.microtask(() {
-                                                    drinkCustomSelectorSheet(
-                                                      context,
-                                                      this.placedOrderNotifier,
-                                                      this._paymentService,
-                                                      this._purchaseHistoryController,
-                                                      previousScreenName:
-                                                          "GiftCardPage",
-                                                    );
-                                                    this
-                                                        .isGiftValueNotifier
-                                                        .value = true;
-                                                  });
+                                                  if (this
+                                                      ._microtaskNotExecutedNotifier
+                                                      .value) {
+                                                    Future.microtask(() {
+                                                      drinkCustomSelectorSheet(
+                                                        context,
+                                                        this.placedOrderNotifier,
+                                                        this._paymentService,
+                                                        this._purchaseHistoryController,
+                                                        previousScreenName:
+                                                            "GiftCardPage",
+                                                      );
+                                                      this
+                                                          ._isGiftValueNotifier
+                                                          .value = true;
+                                                      this
+                                                          ._microtaskNotExecutedNotifier
+                                                          .value = false;
+                                                    });
+                                                  }
                                                   return bottomCoffeeDrinkButton(
                                                     buttonText:
                                                         "Create coffee drink",

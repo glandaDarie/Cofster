@@ -2,8 +2,10 @@ import 'package:coffee_orderer/components/detailsScreen/drinkCustomSelector/extr
     show extraIngredients;
 import 'package:coffee_orderer/components/detailsScreen/drinkCustomSelector/boxCupSize.dart'
     show boxCupSize;
-import 'package:coffee_orderer/controllers/PurchaseHistoryController.dart';
-import 'package:coffee_orderer/services/orderService.dart' show OrderService;
+import 'package:coffee_orderer/controllers/PurchaseHistoryController.dart'
+    show PurchaseHistoryController;
+import 'package:coffee_orderer/components/detailsScreen/drinkCustomSelector/orderButton.dart'
+    show OrderButton;
 import 'package:flutter/material.dart';
 import 'package:coffee_orderer/components/detailsScreen/boxQuantity.dart'
     show boxQuantity;
@@ -18,6 +20,8 @@ import 'package:coffee_orderer/utils/extraIngredientChange.dart'
     show updateUIWithChangesOnExtraIngredients;
 import 'package:coffee_orderer/utils/coffeeName.dart'
     show getCoffeeNameFromCache;
+import 'package:coffee_orderer/services/orderService.dart' show OrderService;
+
 import 'package:coffee_orderer/utils/constants.dart'
     show
         DEFAULT_DRINK_QUANTITY,
@@ -34,7 +38,7 @@ FutureBuilder<String> customizeDrink(
   PurchaseHistoryController purchaseHistoryController, {
   String previousScreenName = "MainPage",
 }) {
-  Map<String, dynamic> extraIngredientUpdater;
+  Map<String, dynamic> extraIngredientUpdater = {};
   NotifierCustomSelectorSetupService notifierService =
       NotifierCustomSelectorSetupService(
     DEFAULT_DRINK_QUANTITY,
@@ -155,47 +159,14 @@ FutureBuilder<String> customizeDrink(
                       SizedBox(
                         height: 60,
                         width: 250,
-                        // WORKING ON THIS
-                        // child: Builder(
-                        //   builder: (BuildContext context) {
-                        //     Future.microtask(() async {
-                        //       if (!hasTriggeredRerender) {
-                        //         await OrderService(
-                        //           context,
-                        //           paymentService,
-                        //           purchaseHistoryController,
-                        //           extraIngredientUpdater,
-                        //           placedOrderNotifier,
-                        //         ).placeOrder();
-                        //       }
-                        //       hasTriggeredRerender = true;
-                        //     });
-                        //     return ElevatedButton(
-                        //       onPressed: () {},
-                        //       style: ButtonStyle(
-                        //         backgroundColor:
-                        //             MaterialStateProperty.all<Color>(
-                        //                 Color(0xFF473D3A)),
-                        //         shape: MaterialStateProperty.all<
-                        //             RoundedRectangleBorder>(
-                        //           RoundedRectangleBorder(
-                        //             borderRadius: BorderRadius.circular(25),
-                        //           ),
-                        //         ),
-                        //       ),
-                        //       child: Text(
-                        //         "Order",
-                        //         textScaleFactor: 1.5,
-                        //         style: TextStyle(
-                        //                 fontFamily: 'varela',
-                        //                 color: Colors.white)
-                        //             .copyWith(
-                        //           fontWeight: FontWeight.w700,
-                        //         ),
-                        //       ),
-                        //     );
-                        //   },
-                        // ),
+                        // child: OrderButton(
+                        //   context: context,
+                        //   paymentService: paymentService,
+                        //   purchaseHistoryController:
+                        //       purchaseHistoryController,
+                        //   extraIngredientUpdater: extraIngredientUpdater,
+                        //   placedOrderNotifier: placedOrderNotifier,
+                        // )
                         child: ElevatedButton(
                           onPressed: () async {
                             await OrderService(
