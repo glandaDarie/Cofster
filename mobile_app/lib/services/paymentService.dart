@@ -68,37 +68,46 @@ class PaymentService {
       {int numberOfCoffeeDrinks = 1}) async {
     String error_msg = null;
     try {
-      await Stripe.instance
-          .presentPaymentSheet()
-          .then((PaymentSheetPaymentOption value) {
-        showDialog(
-            context: _contextPaymentPage,
-            builder: (BuildContext _) => AlertDialog(
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.check_circle,
-                        color: Colors.green,
-                        size: 100.0,
-                      ),
-                      SizedBox(height: 10.0),
-                      Text(
-                        "Payment has been done successfully.\nPayed: ${(int.parse(amount) / 100).toStringAsFixed(2)} for ${numberOfCoffeeDrinks} ${numberOfCoffeeDrinks == 1 ? coffeeName : "${coffeeName}s"}",
-                        textScaleFactor: 1.2,
-                        style: TextStyle(
-                                fontFamily: 'varela', color: Colors.black54)
-                            .copyWith(
-                          fontWeight: FontWeight.w700,
+      await Stripe.instance.presentPaymentSheet().then(
+        (PaymentSheetPaymentOption value) {
+          showDialog(
+              context: _contextPaymentPage,
+              builder: (BuildContext _) => AlertDialog(
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.check_circle,
+                          color: Colors.green,
+                          size: 100.0,
                         ),
-                      ),
-                    ],
-                  ),
-                ));
-        this._paymentIntent = null;
-      }).onError((error, stackTrace) {
-        throw Exception(error);
-      });
+                        SizedBox(height: 10.0),
+                        Text(
+                          "Payment has been done successfully.\nPayed: ${(int.parse(amount) / 100).toStringAsFixed(2)} for ${numberOfCoffeeDrinks} ${numberOfCoffeeDrinks == 1 ? coffeeName : "${coffeeName}s"}",
+                          textScaleFactor: 1.2,
+                          style: TextStyle(
+                                  fontFamily: 'varela', color: Colors.black54)
+                              .copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ));
+          this._paymentIntent = null;
+        },
+      ).onError(
+        (error, stackTrace) {
+          String jsonError = error.toString();
+          Match errorMatch =
+              RegExp(r'localizedMessage:\s(.*?),\smessage:\s(.*?)(?:,|\))')
+                  .firstMatch(jsonError);
+          String errorMessage = errorMatch.group(1);
+          return errorMessage == "The payment flow has been canceled"
+              ? null
+              : throw Exception(error);
+        },
+      );
     } on StripeException catch (e) {
       error_msg = "$e";
       AlertDialog(
