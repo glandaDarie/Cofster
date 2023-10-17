@@ -12,6 +12,8 @@ import 'package:coffee_orderer/services/updateProviderService.dart'
 import 'package:coffee_orderer/services/loggedInService.dart'
     show LoggedInService;
 import 'package:coffee_orderer/utils/toast.dart' show ToastUtils;
+import 'package:coffee_orderer/providers/orderIDProvider.dart'
+    show OrderIDProvider;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,12 +29,15 @@ void main() async {
   }
   NotificationService().initNotification("coffee_cappuccino");
   runApp(
-    MaterialApp(
-      home: ChangeNotifierProvider(
-        create: (context) => UpdateProvider(),
-        child: CofsterPage(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => UpdateProvider()),
+        ChangeNotifierProvider(create: (_) => OrderIDProvider.instance),
+      ],
+      child: MaterialApp(
+        home: CofsterPage(),
+        debugShowCheckedModeBanner: false,
       ),
-      debugShowCheckedModeBanner: false,
     ),
   );
 }

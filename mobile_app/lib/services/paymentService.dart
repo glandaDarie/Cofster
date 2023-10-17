@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:coffee_orderer/components/detailsScreen/messageDialog.dart'
+    show MessageDialog;
 
 class PaymentService {
   BuildContext _contextPaymentPage;
@@ -71,29 +73,18 @@ class PaymentService {
       await Stripe.instance.presentPaymentSheet().then(
         (PaymentSheetPaymentOption value) {
           showDialog(
-              context: _contextPaymentPage,
-              builder: (BuildContext _) => AlertDialog(
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.check_circle,
-                          color: Colors.green,
-                          size: 100.0,
-                        ),
-                        SizedBox(height: 10.0),
-                        Text(
-                          "Payment has been done successfully.\nPayed: ${(int.parse(amount) / 100).toStringAsFixed(2)} for ${numberOfCoffeeDrinks} ${numberOfCoffeeDrinks == 1 ? coffeeName : "${coffeeName}s"}",
-                          textScaleFactor: 1.2,
-                          style: TextStyle(
-                                  fontFamily: 'varela', color: Colors.black54)
-                              .copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ));
+            context: _contextPaymentPage,
+            builder: (BuildContext context) {
+              return MessageDialog(
+                amount: amount,
+                coffeeName: coffeeName,
+                numberOfCoffeeDrinks: numberOfCoffeeDrinks,
+                message: "Payment has been done successfully." +
+                    "\nPayed: ${(int.parse(amount) / 100).toStringAsFixed(2)} for " +
+                    "${numberOfCoffeeDrinks} ${numberOfCoffeeDrinks == 1 ? coffeeName : "${coffeeName}s"}",
+              );
+            },
+          );
           this._paymentIntent = null;
         },
       ).onError(

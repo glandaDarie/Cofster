@@ -7,7 +7,7 @@ import 'package:coffee_orderer/components/detailsScreen/drinkCustomSelector.dart
     show customizeDrink;
 
 void drinkCustomSelectorSheet(
-  BuildContext context,
+  BuildContext detailsScreenContext,
   ValueNotifier<bool> placedOrderNotifier,
   PaymentService paymentService,
   PurchaseHistoryController purchaseHistoryController, {
@@ -22,7 +22,7 @@ void drinkCustomSelectorSheet(
         top: Radius.circular(25),
       ),
     ),
-    context: context,
+    context: detailsScreenContext,
     builder: (BuildContext context) {
       return customizeDrink(
         context,

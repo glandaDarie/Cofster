@@ -18,6 +18,9 @@ import 'package:coffee_orderer/components/detailsScreen/drinkCustomSelector/drin
     show drinkCustomSelectorSheet;
 import 'package:coffee_orderer/components/detailsScreen/bottomCoffeeDrinkButton.dart'
     show bottomCoffeeDrinkButton;
+import 'package:provider/provider.dart';
+import 'package:coffee_orderer/providers/orderIDProvider.dart'
+    show OrderIDProvider;
 
 class DetailsPage extends StatefulWidget {
   final bool isGift;
@@ -80,6 +83,10 @@ class _DetailsPageState extends State<DetailsPage> {
   @override
   Widget build(BuildContext context) {
     this._paymentService = PaymentService(context);
+    print(
+        "Provided from provider: ${context.watch<OrderIDProvider>().orderData}");
+    print(
+        "Provided from provider: ${context.watch<OrderIDProvider>().orderID}");
     return Scaffold(
         body: FutureBuilder<dynamic>(
       future: _getCoffeeCardInformationFromPreviousScreen("cardCoffeeName"),

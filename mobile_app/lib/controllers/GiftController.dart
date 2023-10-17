@@ -9,7 +9,7 @@ class GiftController {
   DynamoDBGiftsDao _urlDaoGift;
   GiftService _giftService;
 
-  GiftController() : this._giftService = GiftService();
+  GiftController() : this._giftService = GiftService(tableName: "Orders");
 
   Future<dynamic> getUserGifts() async {
     List<String> params = await this._giftService.loadGiftParams();

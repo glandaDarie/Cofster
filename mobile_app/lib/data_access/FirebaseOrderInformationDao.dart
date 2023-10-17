@@ -3,6 +3,9 @@ import 'package:coffee_orderer/services/passwordGeneratorService.dart'
     show generateNewPassword;
 import 'package:coffee_orderer/models/orderInformation.dart'
     show OrderInformation;
+import 'package:flutter/material.dart';
+import 'package:coffee_orderer/providers/orderIDProvider.dart'
+    show OrderIDProvider;
 
 class FirebaseOrderInformationDao {
   FirebaseOrderInformationDao();
@@ -58,26 +61,33 @@ class FirebaseOrderInformationDao {
   }
 
   static Future<String> postOrderToOrdersInformation(
-      String endpoint, Map<String, dynamic> content) async {
+    String endpoint,
+    Map<String, dynamic> content, {
+    BuildContext providerContext,
+  }) async {
+    String orderID = "id_${generateNewPassword(
+      passwordLength: 9,
+      strengthPasswordThreshold: 0.1,
+      checkPassword: false,
+      specialChar: false,
+    )}";
+
+    Map<String, dynamic> orderData = {
+      "coffeeName": content["coffeeName"],
+      "coffeePrice": content["coffeePrice"],
+      "quantity": content["quantity"],
+      "communication": content["communication"],
+      "coffeeStatus": content["coffeeStatus"],
+      "coffeeOrderTime": content["coffeeOrderTime"],
+      "coffeeFinishTimeEstimation": content["coffeeFinishTimeEstimation"],
+    };
+
+    OrderIDProvider.instance.orderID = orderID;
+    OrderIDProvider.instance.orderData = orderData;
+
     try {
-      DatabaseReference reference = FirebaseDatabase.instance
-          .ref()
-          .child("Orders")
-          .child("id_${generateNewPassword(
-            passwordLength: 9,
-            strengthPasswordThreshold: 0.1,
-            checkPassword: false,
-            specialChar: false,
-          )}");
-      Map<String, dynamic> orderData = {
-        "coffeeName": content["coffeeName"],
-        "coffeePrice": content["coffeePrice"],
-        "quantity": content["quantity"],
-        "communication": content["communication"],
-        "coffeeStatus": content["coffeeStatus"],
-        "coffeeOrderTime": content["coffeeOrderTime"],
-        "coffeeFinishTimeEstimation": content["coffeeFinishTimeEstimation"],
-      };
+      DatabaseReference reference =
+          FirebaseDatabase.instance.ref().child("Orders").child(orderID);
       if (content.length > 7) {
         // checks if the card is a flash card or normal card (the back of the card)
         orderData = {

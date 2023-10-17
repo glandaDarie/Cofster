@@ -92,7 +92,8 @@ class _AddNoteState extends State<AddNotePage> {
                   "coffeeFinishTimeEstimation": _estimatedOrderTime(),
                 };
                 OrderInformationController.postOrderToOrdersInformation(
-                    "Orders", content);
+                    "Orders", content,
+                    providerContext: context);
                 Navigator.pushReplacement(
                     context, MaterialPageRoute(builder: (_) => OrderPage()));
               },
