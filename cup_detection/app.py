@@ -15,8 +15,36 @@ from utils.constants import TABLE_NAME
 from services.drinkCreationService import DrinkCreationSevice
 from services.imageProcessorService import ImageProcessorBuilderService
 from time import time
-from time import sleep
 from services.llm_services.openAIService import OpenAIService
+from utils.constants import PROMPT_TEMPLATE
+
+"""
+Handles the real-time processing of coffee drink information. It listens for updates from a message broker,
+generates prompts for an AI service to determine coffee ingredients, performs real-time cup detection, and creates coffee drinks.
+
+Usage:
+    Run this script to initiate coffee drink processing. It continuously listens for updates on coffee drink information,
+    generates prompts for an AI service to determine ingredients, performs real-time cup detection, and creates coffee drinks
+    until manually terminated.
+
+    The script initializes several components:
+    - A message broker listener for coffee drink information.
+    - An AI service for generating ingredients based on coffee drink names.
+    - Real-time camera capture for cup detection.
+    - Locks and callback functions for managing state and coordination.
+    - A background thread for coffee drink creation.
+
+    The process includes:
+    1. Listening for and receiving coffee drink information updates.
+    2. Generating prompts for an AI service based on coffee names.
+    3. Using the AI service to determine coffee ingredients.
+    4. Initializing and opening a camera for real-time cup detection.
+    5. Managing locks and callback functions for state synchronization.
+    6. Creating coffee drinks in a background thread.
+    7. Real-time frame processing for cup detection and user interface display.
+    8. Checking for completion of coffee drinks.
+"""
+
 
 if __name__ == "__main__":
     drinks_information_consumer : DrinkInformationConsumer = DrinkInformationConsumer(table_name=TABLE_NAME, options=DATABASE_OPTIONS)
@@ -27,8 +55,9 @@ if __name__ == "__main__":
     while True:
         if len(drinks_information_consumer.drinks_information) > 0:
             coffee_name : str = drinks_information_consumer.drinks_information[0]["coffeeName"]
-            prompt : str = f"Given the coffee drink that I provided: {coffee_name}, \
-                please generate a JSON with the ingredients necessary to make that respective drink."
+            prompt : str = PROMPT_TEMPLATE.format(coffee_name)
+            # prompt : str = f"Given the coffee drink that I provided: {coffee_name}, \
+            #     please generate a JSON with the ingredients necessary to make that respective drink."
             coffee_ingredients : Dict[str, str] = openai_service(prompt=prompt)
             drinks_information_consumer.drinks_information[0] : Dict[str, str] = {**drinks_information_consumer.drinks_information[0], \
                                                                                   **coffee_ingredients}
