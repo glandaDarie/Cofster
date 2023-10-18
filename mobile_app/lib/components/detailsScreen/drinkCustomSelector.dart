@@ -9,7 +9,8 @@ import 'package:coffee_orderer/components/detailsScreen/boxQuantity.dart'
     show boxQuantity;
 import 'package:coffee_orderer/components/detailsScreen/boxTemperature.dart'
     show boxTemperature;
-import 'package:coffee_orderer/services/mergeNotifierService.dart';
+import 'package:coffee_orderer/services/mergeNotifierService.dart'
+    show MergeNotifiers;
 import 'package:coffee_orderer/services/paymentService.dart'
     show PaymentService;
 import 'package:coffee_orderer/services/notifierCustomSelectorSetupService.dart'
@@ -18,9 +19,10 @@ import 'package:coffee_orderer/utils/extraIngredientChange.dart'
     show updateUIWithChangesOnExtraIngredients;
 import 'package:coffee_orderer/utils/coffeeName.dart'
     show getCoffeeNameFromCache;
-import 'package:coffee_orderer/services/orderService.dart' show OrderService;
-// import 'package:coffee_orderer/components/detailsScreen/drinkCustomSelector/orderButton.dart'
-//     show OrderButton;
+import 'package:coffee_orderer/models/ingredientUpdater.dart'
+    show IngredientUpdater;
+import 'package:coffee_orderer/components/detailsScreen/drinkCustomSelector/orderButton.dart'
+    show OrderButton;
 import 'package:coffee_orderer/utils/constants.dart'
     show
         DEFAULT_DRINK_QUANTITY,
@@ -38,6 +40,8 @@ FutureBuilder<String> customizeDrink(
   String previousScreenName = "MainPage",
 }) {
   Map<String, dynamic> extraIngredientUpdater = {};
+  final IngredientUpdater ingredientUpdater =
+      IngredientUpdater(extraIngredientUpdater);
   NotifierCustomSelectorSetupService notifierService =
       NotifierCustomSelectorSetupService(
     DEFAULT_DRINK_QUANTITY,
@@ -131,69 +135,42 @@ FutureBuilder<String> customizeDrink(
                             textScaleFactor: 1.6,
                           ),
                           ValueListenableBuilder(
-                              valueListenable: notifierService.mergedNotifiers,
-                              builder: (BuildContext context,
-                                  MergeNotifiers notifiers, Widget child) {
-                                extraIngredientUpdater =
-                                    updateUIWithChangesOnExtraIngredients(
-                                  coffeeName.replaceAll("-", " "),
-                                  notifiers.selectedValue,
-                                  notifiers.sugarQuantity,
-                                  notifiers.iceQuantity,
-                                  notifiers.creamNotifier,
-                                  quantity: notifiers.quantity,
-                                  previousScreenName: previousScreenName,
-                                );
-                                return Text(
-                                  "\$${extraIngredientUpdater['price']}",
-                                  style: TextStyle(
-                                    fontFamily: 'varela',
-                                    color: Color(0xFF473D3A),
-                                  ).copyWith(fontWeight: FontWeight.w900),
-                                  textScaleFactor: 1.9,
-                                );
-                              }),
+                            valueListenable: notifierService.mergedNotifiers,
+                            builder: (BuildContext context,
+                                MergeNotifiers notifiers, Widget child) {
+                              extraIngredientUpdater =
+                                  updateUIWithChangesOnExtraIngredients(
+                                coffeeName.replaceAll("-", " "),
+                                notifiers.selectedValue,
+                                notifiers.sugarQuantity,
+                                notifiers.iceQuantity,
+                                notifiers.creamNotifier,
+                                quantity: notifiers.quantity,
+                                previousScreenName: previousScreenName,
+                              );
+                              ingredientUpdater.ingredientUpdater =
+                                  extraIngredientUpdater;
+                              return Text(
+                                "\$${extraIngredientUpdater['price']}",
+                                style: TextStyle(
+                                  fontFamily: 'varela',
+                                  color: Color(0xFF473D3A),
+                                ).copyWith(fontWeight: FontWeight.w900),
+                                textScaleFactor: 1.9,
+                              );
+                            },
+                          ),
                         ],
                       ),
                       SizedBox(
                         height: 60,
                         width: 250,
-                        // child: OrderButton(
-                        //   context: context,
-                        //   paymentService: paymentService,
-                        //   purchaseHistoryController:
-                        //       purchaseHistoryController,
-                        //   extraIngredientUpdater: extraIngredientUpdater,
-                        //   placedOrderNotifier: placedOrderNotifier,
-                        // )
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            await OrderService(
-                              context,
-                              paymentService,
-                              purchaseHistoryController,
-                              extraIngredientUpdater,
-                              placedOrderNotifier,
-                            ).placeOrder();
-                          },
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                              Color(0xFF473D3A),
-                            ),
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(25),
-                              ),
-                            ),
-                          ),
-                          child: Text(
-                            "Order",
-                            textScaleFactor: 1.5,
-                            style: TextStyle(
-                                    fontFamily: 'varela', color: Colors.white)
-                                .copyWith(fontWeight: FontWeight.w700),
-                          ),
+                        child: OrderButton(
+                          context: context,
+                          paymentService: paymentService,
+                          purchaseHistoryController: purchaseHistoryController,
+                          ingredientUpdater: ingredientUpdater,
+                          placedOrderNotifier: placedOrderNotifier,
                         ),
                       ),
                     ],

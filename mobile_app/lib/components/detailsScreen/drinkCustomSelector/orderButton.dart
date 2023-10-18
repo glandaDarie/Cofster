@@ -4,14 +4,14 @@ import 'package:coffee_orderer/services/paymentService.dart'
     show PaymentService;
 import 'package:coffee_orderer/controllers/PurchaseHistoryController.dart'
     show PurchaseHistoryController;
+import 'package:coffee_orderer/models/ingredientUpdater.dart'
+    show IngredientUpdater;
 
-// not merged with the rest of the code because of an unexpected bug happening to the extraIngredientUpdater
-// (it returns back from the other function null without any reason whatsoever)
 ElevatedButton OrderButton({
   @required BuildContext context,
   @required PaymentService paymentService,
   @required PurchaseHistoryController purchaseHistoryController,
-  @required Map<String, dynamic> extraIngredientUpdater,
+  @required IngredientUpdater ingredientUpdater,
   @required ValueNotifier<bool> placedOrderNotifier,
   String textData = "Order",
   double textScaleFactor = 1.5,
@@ -25,7 +25,7 @@ ElevatedButton OrderButton({
         context,
         paymentService,
         purchaseHistoryController,
-        extraIngredientUpdater,
+        ingredientUpdater.ingredientUpdater,
         placedOrderNotifier,
       ).placeOrder();
     },

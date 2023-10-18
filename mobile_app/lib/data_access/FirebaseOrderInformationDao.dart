@@ -3,7 +3,6 @@ import 'package:coffee_orderer/services/passwordGeneratorService.dart'
     show generateNewPassword;
 import 'package:coffee_orderer/models/orderInformation.dart'
     show OrderInformation;
-import 'package:flutter/material.dart';
 import 'package:coffee_orderer/providers/orderIDProvider.dart'
     show OrderIDProvider;
 
