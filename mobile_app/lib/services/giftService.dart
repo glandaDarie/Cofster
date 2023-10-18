@@ -28,4 +28,11 @@ class GiftService {
       await LoggedInService.getSharedPreferenceValue("<username>")
     ];
   }
+
+  bool orderDataChanged(Map<String, dynamic> orderData) {
+    if (orderData == null) {
+      return false;
+    }
+    return orderData["coffeeStatus"];
+  }
 }

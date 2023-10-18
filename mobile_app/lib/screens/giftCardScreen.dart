@@ -87,9 +87,9 @@ class _GiftCardPageState extends State<GiftCardPage>
             return ListView(
               children: zip([giftNames, this._animationPlayingNotifiers])
                   .map(
-                    (List<Object> items) => lottieGiftBox(
-                      gift: items[0],
-                      animationPlayingNotifier: items[1],
+                    (List<Object> pairs) => lottieGiftBox(
+                      gift: pairs[0],
+                      animationPlayingNotifier: pairs[1],
                     ),
                   )
                   .toList(),

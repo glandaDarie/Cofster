@@ -76,9 +76,6 @@ class PaymentService {
             context: _contextPaymentPage,
             builder: (BuildContext context) {
               return MessageDialog(
-                amount: amount,
-                coffeeName: coffeeName,
-                numberOfCoffeeDrinks: numberOfCoffeeDrinks,
                 message: "Payment has been done successfully." +
                     "\nPayed: ${(int.parse(amount) / 100).toStringAsFixed(2)} for " +
                     "${numberOfCoffeeDrinks} ${numberOfCoffeeDrinks == 1 ? coffeeName : "${coffeeName}s"}",

@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 
-Widget MessageDialog({
-  @required final String amount,
-  @required final int numberOfCoffeeDrinks,
-  @required final String coffeeName,
+AlertDialog MessageDialog({
   @required final String message,
   final IconData iconData = Icons.check_circle,
   final Color iconColor = Colors.green,
