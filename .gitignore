@@ -2,3 +2,4 @@ apiKeys.dart
 credentials_firebase.json
 firebase_rtd_url.py
 .env
+__pycache__
