@@ -101,29 +101,25 @@ class OrderService {
 
   Future<String> _placeOrderToMessageBroker(
     String coffeeName,
-    int preparationTime, {
-    BuildContext providerContext,
-  }) async {
+    int preparationTime,
+  ) async {
     String postOrderResponse =
         await OrderInformationController.postOrderToOrdersInformation(
-      "Orders",
-      {
-        "coffeeName": coffeeName,
-        "coffeePrice": "${this._extraIngredients["price"]}\$",
-        "quantity": this._extraIngredients["quantity"],
-        "communication": "broadcast",
-        "coffeeStatus": CoffeeOrderState.ORDER_PLACED.index,
-        "coffeeOrderTime": timeOfOrder(),
-        "coffeeFinishTimeEstimation": timeOfOrder(
-            secondsDelay: preparationTime * this._extraIngredients["quantity"]),
-        "coffeeCupSize": this._extraIngredients["coffeeSize"],
-        "coffeeTemperature": this._extraIngredients["coffeeTemperature"],
-        "numberOfSugarCubes": this._extraIngredients["numberSugarCubes"],
-        "numberOfIceCubes": this._extraIngredients["numberIceCubes"],
-        "hasCream": this._extraIngredients["hasCream"]
-      },
-      providerContext: providerContext,
-    );
+            "Orders", {
+      "coffeeName": coffeeName,
+      "coffeePrice": "${this._extraIngredients["price"]}\$",
+      "quantity": this._extraIngredients["quantity"],
+      "communication": "broadcast",
+      "coffeeStatus": CoffeeOrderState.ORDER_PLACED.index,
+      "coffeeOrderTime": timeOfOrder(),
+      "coffeeFinishTimeEstimation": timeOfOrder(
+          secondsDelay: preparationTime * this._extraIngredients["quantity"]),
+      "coffeeCupSize": this._extraIngredients["coffeeSize"],
+      "coffeeTemperature": this._extraIngredients["coffeeTemperature"],
+      "numberOfSugarCubes": this._extraIngredients["numberSugarCubes"],
+      "numberOfIceCubes": this._extraIngredients["numberIceCubes"],
+      "hasCream": this._extraIngredients["hasCream"]
+    });
     return postOrderResponse;
   }
 

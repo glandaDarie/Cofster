@@ -62,9 +62,8 @@ class FirebaseOrderInformationDao {
 
   static Future<String> postOrderToOrdersInformation(
     String endpoint,
-    Map<String, dynamic> content, {
-    BuildContext providerContext,
-  }) async {
+    Map<String, dynamic> content,
+  ) async {
     String orderID = "id_${generateNewPassword(
       passwordLength: 9,
       strengthPasswordThreshold: 0.1,

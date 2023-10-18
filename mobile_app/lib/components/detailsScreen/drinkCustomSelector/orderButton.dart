@@ -13,7 +13,6 @@ ElevatedButton OrderButton({
   @required PurchaseHistoryController purchaseHistoryController,
   @required Map<String, dynamic> extraIngredientUpdater,
   @required ValueNotifier<bool> placedOrderNotifier,
-  @required BuildContext providerContext,
   String textData = "Order",
   double textScaleFactor = 1.5,
   Color backgroundColor = const Color(0xFF473D3A),
