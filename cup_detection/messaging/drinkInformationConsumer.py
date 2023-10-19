@@ -22,7 +22,7 @@ class DrinkInformationConsumer:
 
     Methods:
         _fetch_content_from_message_broker(endpoint): Fetch content from the message broker.
-        _delete_order_from_message_broker(endpoint): Delete an order from the message broker.
+        delete_order_from_message_broker(endpoint): Delete an order from the message broker.
         listen_for_updates_on_drink_message_broker(endpoint): Listen for updates on the drink message broker.
     """
     def __init__(self, table_name : str, options : Dict[str, str]):
@@ -33,7 +33,7 @@ class DrinkInformationConsumer:
         self.order_ids : List[str] = []
         self.data_lock : threading.Lock() = threading.Lock() 
 
-    def __fetch_order_from_message_broker(self, endpoint : str = "/") -> Dict:
+    def __fetch_order_from_message_broker(self, endpoint : str = "/") -> Dict | str:
         """
         Fetch content from the message broker.
 
@@ -49,12 +49,12 @@ class DrinkInformationConsumer:
             return f"Error when fetching the order/orders: {exception}"
         return order
 
-    def delete_order_from_message_broker(self, endpoint : str = "/") -> str:
+    def delete_order_from_message_broker(self, endpoint : str = "/") -> str | None:
         """
         Delete an order from the message broker.
 
         Args:
-            endpoint (str): The endpoint of where we .
+            endpoint (str): The endpoint used for deleting the order.
 
         Returns:
             str: A message indicating the status of the delete operation.
@@ -63,6 +63,22 @@ class DrinkInformationConsumer:
             db.reference(endpoint).delete()
         except Exception as exception:
             return f"Error when deleting the order/orders {exception}"
+        
+    def update_order_in_message_broker(self, new_value : str, endpoint : str = "/") -> str | None:
+        """
+        Update the coffeeStatus of an order in the Firebase Realtime Database.
+
+        Args:
+            new_value (str): The new value to set for the coffeeStatus.
+            endpoint (str, optional): The endpoint path within the database.
+
+        Returns:
+            str: A message indicating the status of the update operation.
+        """
+        try:
+            db.reference(endpoint).set(new_value)
+        except Exception as exception:
+            return f"Error when trying to update the the coffeeStatus of the order: {exception}"
 
     def listen_for_updates_on_drink_message_broker(self, endpoint: str = "/"):
         """

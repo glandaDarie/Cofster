@@ -4,6 +4,7 @@ import concurrent.futures
 from threading import Event
 from utils.logger import thread_information_logger
 from messaging.drinkInformationConsumer import DrinkInformationConsumer
+from threading import Thread
 
 class DrinkCreationSevice(CoffeeMachineController):
     """
@@ -31,7 +32,8 @@ class DrinkCreationSevice(CoffeeMachineController):
         self.stop_drink_creation_event : Event = Event()
         self.stop_continuous_cup_checking : Event = Event()
 
-    def simulate_creation(self, drinks_information_consumer : DrinkInformationConsumer, callback_cup_detection : Callable[[bool], bool]) -> str:
+    def simulate_creation(self, drinks_information_consumer : DrinkInformationConsumer, callback_cup_detection : Callable[[bool], bool], \
+                          main_thread_terminated : Event) -> str:
         """
         Simulate the creation of drinks based on cup detection.
 
@@ -47,16 +49,16 @@ class DrinkCreationSevice(CoffeeMachineController):
         Returns:
             str: A message indicating the status of the drink creation process.
         """
-        while True:
+        while not main_thread_terminated.is_set():
             if callback_cup_detection():
                 with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
                     self.stop_drink_creation_event.clear()
                     self.stop_continuous_cup_checking.clear()
                     futures : Dict[concurrent.futures.ThreadPoolExecutor, str] = {}
                     futures[executor.submit(lambda : self.__create_drink(drink_information=drinks_information_consumer.drinks_information, \
-                            callback_cup_detection=callback_cup_detection))] = "create_drink"
+                            callback_cup_detection=callback_cup_detection, main_thread_terminated=main_thread_terminated))] = "create_drink"
                     futures[executor.submit(lambda : self.__continuously_check_cup(callback_cup_detection=callback_cup_detection))] = \
-                            "continuously_check_cup"
+                            "continuously_check_cup"                    
                     for future in concurrent.futures.as_completed(futures):
                         try:
                             result_drink_creation : bool|Generator = future.result()                                            
@@ -68,9 +70,10 @@ class DrinkCreationSevice(CoffeeMachineController):
                                     break
                         except InterruptedError as e:  
                             return f"Error from thread: {e}"                        
-                print("Coffee creation complete.")
+                print("Coffee creation complete.") 
                 table_name : str = drinks_information_consumer.table_name
                 order_id : str = drinks_information_consumer.order_ids[0]
+                drinks_information_consumer.update_order_in_message_broker(new_value=1, endpoint=f"/{table_name}/{order_id}/coffeeStatus")
                 drinks_information_consumer.delete_order_from_message_broker(endpoint=f"/{table_name}/{order_id}")
                 drinks_information_consumer.drinks_information.pop(0)
                 drinks_information_consumer.order_ids.pop(0)
@@ -79,7 +82,8 @@ class DrinkCreationSevice(CoffeeMachineController):
             else:
                 print("Cup not detected, stopping coffee creation.")
 
-    def __create_drink(self, drink_information : Dict[str, str], callback_cup_detection : Callable[[bool], bool]) -> bool | str:
+    def __create_drink(self, drink_information : Dict[str, str], callback_cup_detection : Callable[[bool], bool], \
+                       main_thread_terminated : Event) -> bool | str:
         """
         Private thread method to create drinks.
 
@@ -91,7 +95,7 @@ class DrinkCreationSevice(CoffeeMachineController):
             bool | str: True if drink creation is successful, an error message otherwise. 
                         Interruptions happen if the cup is not present (moved) from the specific position.
         """
-        while True:
+        while not main_thread_terminated.is_set():
             try:
                 is_drink_creation_interrupted : bool = self.stop_drink_creation_event.wait(timeout=10)
                 # do the drink creation here
@@ -105,7 +109,7 @@ class DrinkCreationSevice(CoffeeMachineController):
             self.stop_continuous_cup_checking.set()
             return True
 
-    def __continuously_check_cup(self, callback_cup_detection : Callable[[bool], bool]) -> Generator:
+    def __continuously_check_cup(self, callback_cup_detection : Callable[[bool], bool], main_thread_terminated : Event) -> Generator:
         """
         Private thread method to continuously monitor cup detection.
 
@@ -115,7 +119,7 @@ class DrinkCreationSevice(CoffeeMachineController):
         Yields:
             str: "Cup detected" if the cup is detected, "Cup not detected" otherwise.
         """
-        while not self.stop_continuous_cup_checking.is_set():
+        while not self.stop_continuous_cup_checking.is_set() and not main_thread_terminated.is_set():
             if callback_cup_detection():
                 yield "Cup detected"            
             else:

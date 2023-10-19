@@ -5,8 +5,9 @@ from ultralytics import YOLO
 from ultralytics.yolo.utils.plotting import Annotator 
 import torch
 from utils.constants import THRESHOLD_SCORE
+from detectors.Detector import Detector
 
-class YOLOv8Detector:
+class YOLOv8Detector(Detector):
     def __init__(self):
         pass
 

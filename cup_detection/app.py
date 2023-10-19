@@ -3,20 +3,22 @@ import numpy as np
 import cv2
 from ultralytics import YOLO
 from utils.constants import CAMERA_INDEX, WINDOW_NAME
-from utils.paths import PATH_MODEL_CUP_DETECTION
-# from utils.paths import PATH_MODEL_PLACEMENT_DETECTION
 from detectors.YOLOv8 import YOLOv8Detector
 from utils.firebase_rtd_url import DATABASE_OPTIONS
 from messaging.drinkInformationConsumer import DrinkInformationConsumer
 from threading import Thread
 from threading import Lock
 from utils.logger import LOGGER
+from utils.arguments_parser import ArgumentParser
 from utils.constants import TABLE_NAME
 from services.drinkCreationService import DrinkCreationSevice
 from services.imageProcessorService import ImageProcessorBuilderService
 from time import time
 from services.llm_services.openAIService import OpenAIService
 from utils.constants import PROMPT_TEMPLATE
+from threading import Event
+from utils.paths import PATH_MODEL_CUP_DETECTION
+# from utils.paths import PATH_MODEL_PLACEMENT_DETECTION
 
 """
 Handles the real-time processing of coffee drink information. It listens for updates from a message broker,
@@ -45,22 +47,22 @@ Usage:
     8. Checking for completion of coffee drinks.
 """
 
-
 if __name__ == "__main__":
+    cli_arguments = ArgumentParser.get_arguments()
     drinks_information_consumer : DrinkInformationConsumer = DrinkInformationConsumer(table_name=TABLE_NAME, options=DATABASE_OPTIONS)
+    main_thread_terminated : Event = Event()
     background_firebase_table_update_thread : Thread = Thread(target=drinks_information_consumer.listen_for_updates_on_drink_message_broker)
     background_firebase_table_update_thread.daemon = True
     background_firebase_table_update_thread.start()
-    openai_service : OpenAIService = OpenAIService() 
+    openai_service : OpenAIService = OpenAIService()
     while True:
         if len(drinks_information_consumer.drinks_information) > 0:
             coffee_name : str = drinks_information_consumer.drinks_information[0]["coffeeName"]
             prompt : str = PROMPT_TEMPLATE.format(coffee_name)
-            # prompt : str = f"Given the coffee drink that I provided: {coffee_name}, \
-            #     please generate a JSON with the ingredients necessary to make that respective drink."
             coffee_ingredients : Dict[str, str] = openai_service(prompt=prompt)
-            drinks_information_consumer.drinks_information[0] : Dict[str, str] = {**drinks_information_consumer.drinks_information[0], \
-                                                                                  **coffee_ingredients}
+            if cli_arguments.llm_recipe:
+                drinks_information_consumer.drinks_information[0] : Dict[str, str] = {**drinks_information_consumer.drinks_information[0], \
+                                                                                      **coffee_ingredients}
             print(f"new drinks information consumer : {drinks_information_consumer.drinks_information}")
             camera : object = cv2.VideoCapture(CAMERA_INDEX) 
             if not camera.isOpened():
@@ -94,7 +96,7 @@ if __name__ == "__main__":
 
             drink_creation_service : DrinkCreationSevice = DrinkCreationSevice(drink_finished_callback=drink_finished_callback)
             background_create_coffee_drink_thread : Thread = Thread(target=drink_creation_service.simulate_creation, \
-                                                                    args=(drinks_information_consumer, callback_cup_detection))
+                                                                    args=(drinks_information_consumer, callback_cup_detection, main_thread_terminated))
             background_create_coffee_drink_thread.daemon = True
             background_create_coffee_drink_thread.start()
             
@@ -112,12 +114,13 @@ if __name__ == "__main__":
                 start_fps_time = end_fps_time
                 cv2.imshow(WINDOW_NAME, frame)
                 cv2.waitKey(1)
+                # if cv2.waitKey(1) & 0xFF == ord('q'): # dummy implementation to check if the threads are joining
+                #     break
                 success, frame = camera.read()
                 if drink_finished_callback():
                     drink_finished_callback(False)
                     break
             camera.release()
-            cv2.destroyAllWindows()
-
-
-               
+            cv2.destroyAllWindows() 
+            main_thread_terminated.set()
+            background_create_coffee_drink_thread.join()
