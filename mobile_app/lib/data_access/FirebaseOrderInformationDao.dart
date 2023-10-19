@@ -81,7 +81,6 @@ class FirebaseOrderInformationDao {
     };
 
     OrderIDProvider.instance.orderID = orderID;
-    OrderIDProvider.instance.orderData = orderData;
 
     try {
       DatabaseReference reference =

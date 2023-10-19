@@ -155,14 +155,14 @@ class _HomePageState extends State<HomePage> {
           AsyncSnapshot<Map<String, List<String>>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
-              child: CircularProgressIndicator(
-                  color: Colors.brown, backgroundColor: Colors.white));
+            child: CircularProgressIndicator(
+                color: Colors.brown, backgroundColor: Colors.white),
+          );
         } else if (snapshot.hasError) {
           return Text("Error occured ${snapshot.error}");
         } else {
           Map<String, List<String>> favouriteDrinksMap = snapshot.data;
           this._favouriteDrinks = List.from(favouriteDrinksMap.values.first);
-          // print("Favorite drinks: ${this._favouriteDrinks}");
           return Scaffold(
             body: Stack(
               children: [

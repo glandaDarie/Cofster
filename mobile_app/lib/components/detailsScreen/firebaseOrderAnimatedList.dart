@@ -3,11 +3,16 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:coffee_orderer/components/detailsScreen/messageDialog.dart'
     show MessageDialog;
+import 'package:coffee_orderer/controllers/GiftController.dart'
+    show GiftController;
+import 'package:coffee_orderer/utils/toast.dart' show ToastUtils;
 
 FirebaseAnimatedList FirebaseOrderAnimatedList(
   DatabaseReference databaseReference,
-  BuildContext context,
-) {
+  BuildContext context, {
+  bool deleteGift = null,
+  String giftName = null,
+}) {
   return FirebaseAnimatedList(
     query: databaseReference,
     shrinkWrap: true,
@@ -31,6 +36,23 @@ FirebaseAnimatedList FirebaseOrderAnimatedList(
             );
           },
         );
+        if (deleteGift != null && giftName != null) {
+          if (deleteGift) {
+            GiftController giftController = GiftController();
+            giftController.deleteUserGift(giftName).then(
+              (String response) {
+                if (response != null) {
+                  ToastUtils.showToast(response);
+                  return;
+                }
+              },
+            ).onError(
+              (error, stackTrace) {
+                ToastUtils.showToast("Error: ${error}");
+              },
+            );
+          }
+        }
       }
       return SizedBox.shrink();
     },

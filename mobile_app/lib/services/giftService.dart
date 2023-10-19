@@ -4,7 +4,6 @@ import 'package:coffee_orderer/services/loggedInService.dart'
     show LoggedInService;
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-// import 'package:firebase_database/ui/firebase_animated_list.dart';
 
 class GiftService {
   DatabaseReference databaseReference;
@@ -27,12 +26,5 @@ class GiftService {
       await LoggedInService.getSharedPreferenceValue("<nameUser>"),
       await LoggedInService.getSharedPreferenceValue("<username>")
     ];
-  }
-
-  bool orderDataChanged(Map<String, dynamic> orderData) {
-    if (orderData == null) {
-      return false;
-    }
-    return orderData["coffeeStatus"];
   }
 }

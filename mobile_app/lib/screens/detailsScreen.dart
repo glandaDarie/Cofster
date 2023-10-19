@@ -11,7 +11,7 @@ import 'package:coffee_orderer/services/paymentService.dart'
     show PaymentService;
 import 'package:coffee_orderer/components/detailsScreen/firebaseOrderAnimatedList.dart'
     show FirebaseOrderAnimatedList;
-import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/firebase_database.dart' show FirebaseDatabase;
 import 'package:provider/provider.dart';
 import 'package:coffee_orderer/providers/orderIDProvider.dart'
     show OrderIDProvider;
@@ -44,6 +44,7 @@ class _DetailsPageState extends State<DetailsPage> {
   PurchaseHistoryController _purchaseHistoryController;
   ValueNotifier<bool> _isGiftValueNotifier;
   ValueNotifier<bool> _microtaskNotExecutedNotifier;
+  bool _isGift;
 
   _DetailsPageState(bool isGift) {
     this.hotSelectedNotifier = ValueNotifier<bool>(false);
@@ -57,6 +58,7 @@ class _DetailsPageState extends State<DetailsPage> {
     this._nutritionInfo = [];
     this._purchaseHistoryController = PurchaseHistoryController();
     this._isGiftValueNotifier = ValueNotifier<bool>(isGift);
+    this._isGift = isGift;
     this._microtaskNotExecutedNotifier = ValueNotifier<bool>(true);
   }
 
@@ -89,9 +91,10 @@ class _DetailsPageState extends State<DetailsPage> {
                 "Error from snapshotPreviousScreenData: ${snapshotPreviousScreenData.error}"),
           );
         } else if (snapshotPreviousScreenData.hasData) {
+          String coffeeName = snapshotPreviousScreenData.data;
           Function contentBodyCallback = () => DetailsScreenBody(
                 drinksInformationController: this.drinksInformationController,
-                coffeeName: snapshotPreviousScreenData.data.replaceAll(" ", ""),
+                coffeeName: coffeeName.replaceAll(" ", ""),
                 ingredients: this._ingredients,
                 preparationTime: this._preparationTime,
                 nutritionInfo: this._nutritionInfo,
@@ -115,6 +118,8 @@ class _DetailsPageState extends State<DetailsPage> {
                           .child("Orders")
                           .child(orderID),
                       context,
+                      deleteGift: _isGift,
+                      giftName: coffeeName,
                     )
                   ],
                 )

@@ -49,7 +49,10 @@ class _GiftCardPageState extends State<GiftCardPage>
         onWillPop: () {
           _callbackSelectedIndex(0);
           Navigator.of(context).push(
-              MaterialPageRoute(builder: (BuildContext context) => HomePage()));
+            MaterialPageRoute(
+              builder: (BuildContext context) => HomePage(),
+            ),
+          );
           return;
         },
         child: FutureBuilder<dynamic>(
