@@ -4,7 +4,6 @@ import concurrent.futures
 from threading import Event
 from utils.logger import thread_information_logger
 from messaging.drinkInformationConsumer import DrinkInformationConsumer
-from threading import Thread
 
 class DrinkCreationSevice(CoffeeMachineController):
     """
@@ -101,7 +100,7 @@ class DrinkCreationSevice(CoffeeMachineController):
                 # do the drink creation here
                 # print(drink_information)
                 if is_drink_creation_interrupted or not callback_cup_detection():
-                    # print(f"is_drink_creation_interrupted: {is_drink_creation_interrupted}")
+                    print(f"is_drink_creation_interrupted: {is_drink_creation_interrupted}")
                     self.stop_drink_creation_event.clear()
                     continue
             except Exception as e:

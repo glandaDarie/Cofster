@@ -114,8 +114,6 @@ if __name__ == "__main__":
                 start_fps_time = end_fps_time
                 cv2.imshow(WINDOW_NAME, frame)
                 cv2.waitKey(1)
-                # if cv2.waitKey(1) & 0xFF == ord('q'): # dummy implementation to check if the threads are joining
-                #     break
                 success, frame = camera.read()
                 if drink_finished_callback():
                     drink_finished_callback(False)
