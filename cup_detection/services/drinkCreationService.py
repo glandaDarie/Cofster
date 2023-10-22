@@ -56,7 +56,7 @@ class DrinkCreationSevice(CoffeeMachineController):
                     futures : Dict[concurrent.futures.ThreadPoolExecutor, str] = {}
                     futures[executor.submit(lambda : self.__create_drink(drink_information=drinks_information_consumer.drinks_information, \
                             callback_cup_detection=callback_cup_detection, main_thread_terminated=main_thread_terminated))] = "create_drink"
-                    futures[executor.submit(lambda : self.__continuously_check_cup(callback_cup_detection=callback_cup_detection))] = \
+                    futures[executor.submit(lambda : self.__continuously_check_cup(callback_cup_detection=callback_cup_detection, main_thread_terminated=main_thread_terminated))] = \
                             "continuously_check_cup"                    
                     for future in concurrent.futures.as_completed(futures):
                         try:
@@ -99,6 +99,7 @@ class DrinkCreationSevice(CoffeeMachineController):
                 is_drink_creation_interrupted : bool = self.stop_drink_creation_event.wait(timeout=10)
                 # do the drink creation here
                 # print(drink_information)
+                print(f"is_drink_creation_interrupted: {is_drink_creation_interrupted}")
                 if is_drink_creation_interrupted or not callback_cup_detection():
                     print(f"is_drink_creation_interrupted: {is_drink_creation_interrupted}")
                     self.stop_drink_creation_event.clear()
