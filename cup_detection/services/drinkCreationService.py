@@ -44,6 +44,7 @@ class DrinkCreationSevice(CoffeeMachineController):
             drinks_information_consumer (DrinkInformationConsumer): An instance of DrinkInformationConsumer
                 containing information about the drinks to be created.
             callback_cup_detection (Callable[[bool], bool]): A callback function to detect the presence of a cup.
+            main_thread_terminated_event (Event): An event used to send broadcast alerts to the children threads to join the main one
 
         Returns:
             str: A message indicating the status of the drink creation process.
@@ -55,12 +56,13 @@ class DrinkCreationSevice(CoffeeMachineController):
                     self.stop_continuous_cup_checking.clear()
                     futures : Dict[concurrent.futures.ThreadPoolExecutor, str] = {}
                     futures[executor.submit(lambda : self.__create_drink(drink_information=drinks_information_consumer.drinks_information, \
-                        callback_cup_detection=callback_cup_detection, main_thread_terminated=main_thread_terminated_event))] = "create_drink"
+                        callback_cup_detection=callback_cup_detection, main_thread_terminated_event=main_thread_terminated_event))] = "create_drink"
                     futures[executor.submit(lambda : self.__continuously_check_cup(callback_cup_detection=callback_cup_detection, \
-                        main_thread_terminated=main_thread_terminated_event))] = "continuously_check_cup"                     
+                        main_thread_terminated_event=main_thread_terminated_event))] = "continuously_check_cup"                     
                     for future in concurrent.futures.as_completed(futures):
                         try:
-                            result_drink_creation : bool|Generator = future.result()                                            
+                            result_drink_creation : bool|Generator = future.result()
+                            print(f"type result_drink_creation: {type(result_drink_creation)}")                                            
                             if isinstance(result_drink_creation, bool):
                                 print(f"Result: {result_drink_creation}")
                                 if result_drink_creation:

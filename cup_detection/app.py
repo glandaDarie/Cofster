@@ -50,7 +50,7 @@ Usage:
 if __name__ == "__main__":
     cli_arguments = ArgumentParser.get_arguments()
     drinks_information_consumer : DrinkInformationConsumer = DrinkInformationConsumer(table_name=TABLE_NAME, options=DATABASE_OPTIONS)
-    main_thread_terminated : Event = Event()
+    main_thread_terminated_event : Event = Event()
     background_firebase_table_update_thread : Thread = Thread(target=drinks_information_consumer.listen_for_updates_on_drink_message_broker)
     background_firebase_table_update_thread.daemon = True
     background_firebase_table_update_thread.start()
@@ -96,7 +96,7 @@ if __name__ == "__main__":
 
             drink_creation_service : DrinkCreationSevice = DrinkCreationSevice(drink_finished_callback=drink_finished_callback)
             background_create_coffee_drink_thread : Thread = Thread(target=drink_creation_service.simulate_creation, \
-                                                                    args=(drinks_information_consumer, callback_cup_detection, main_thread_terminated))
+                                                                    args=(drinks_information_consumer, callback_cup_detection, main_thread_terminated_event))
             background_create_coffee_drink_thread.daemon = True
             background_create_coffee_drink_thread.start()
             
@@ -120,7 +120,8 @@ if __name__ == "__main__":
                     break
             camera.release()
             cv2.destroyAllWindows() 
-            main_thread_terminated.set()
+            main_thread_terminated_event.set()
             print(f"Number of running threads before join: {active_count()}")
             background_create_coffee_drink_thread.join()
             print(f"Number of running threads after join: {active_count()}")
+            main_thread_terminated_event.clear()
