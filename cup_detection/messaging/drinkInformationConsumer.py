@@ -117,7 +117,7 @@ class DrinkInformationConsumer:
                 return 
             
             method : str = handle_method_response(json.dumps(event.data, indent=4)) 
-            if method.value == "POST":
+            if method.value == Methods.POST:
                 with self.data_lock:
                     response_data_change : json = json.loads(json.dumps(event.data, indent=4))
                     order_id : str = self.__get_order_id(order_information=response_data_change)
