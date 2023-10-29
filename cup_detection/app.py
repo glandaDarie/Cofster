@@ -16,7 +16,7 @@ from services.imageProcessorService import ImageProcessorBuilderService
 from time import time
 from services.llm_services.openAIService import OpenAIService
 from utils.constants import PROMPT_TEMPLATE
-from threading import Event
+from threading import Event, active_count
 from utils.paths import PATH_MODEL_CUP_DETECTION
 # from utils.paths import PATH_MODEL_PLACEMENT_DETECTION
 
@@ -121,4 +121,6 @@ if __name__ == "__main__":
             camera.release()
             cv2.destroyAllWindows() 
             main_thread_terminated.set()
+            print(f"Number of running threads before join: {active_count()}")
             background_create_coffee_drink_thread.join()
+            print(f"Number of running threads after join: {active_count()}")

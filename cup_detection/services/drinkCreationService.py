@@ -32,7 +32,7 @@ class DrinkCreationSevice(CoffeeMachineController):
         self.stop_continuous_cup_checking : Event = Event()
 
     def simulate_creation(self, drinks_information_consumer : DrinkInformationConsumer, callback_cup_detection : Callable[[bool], bool], \
-                          main_thread_terminated : Event) -> str:
+                          main_thread_terminated_event : Event) -> str:
         """
         Simulate the creation of drinks based on cup detection.
 
@@ -48,16 +48,16 @@ class DrinkCreationSevice(CoffeeMachineController):
         Returns:
             str: A message indicating the status of the drink creation process.
         """
-        while not main_thread_terminated.is_set():
+        while not main_thread_terminated_event.is_set():
             if callback_cup_detection():
                 with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
                     self.stop_drink_creation_event.clear()
                     self.stop_continuous_cup_checking.clear()
                     futures : Dict[concurrent.futures.ThreadPoolExecutor, str] = {}
                     futures[executor.submit(lambda : self.__create_drink(drink_information=drinks_information_consumer.drinks_information, \
-                        callback_cup_detection=callback_cup_detection, main_thread_terminated=main_thread_terminated))] = "create_drink"
+                        callback_cup_detection=callback_cup_detection, main_thread_terminated=main_thread_terminated_event))] = "create_drink"
                     futures[executor.submit(lambda : self.__continuously_check_cup(callback_cup_detection=callback_cup_detection, \
-                        main_thread_terminated=main_thread_terminated))] = "continuously_check_cup"                     
+                        main_thread_terminated=main_thread_terminated_event))] = "continuously_check_cup"                     
                     for future in concurrent.futures.as_completed(futures):
                         try:
                             result_drink_creation : bool|Generator = future.result()                                            
@@ -82,7 +82,7 @@ class DrinkCreationSevice(CoffeeMachineController):
                 print("Cup not detected, stopping coffee creation.")
 
     def __create_drink(self, drink_information : Dict[str, str], callback_cup_detection : Callable[[bool], bool], \
-                       main_thread_terminated : Event) -> bool | str:
+                       main_thread_terminated_event : Event) -> bool | str:
         """
         Private thread method to create drinks.
 
@@ -94,7 +94,7 @@ class DrinkCreationSevice(CoffeeMachineController):
             bool | str: True if drink creation is successful, an error message otherwise. 
                         Interruptions happen if the cup is not present (moved) from the specific position.
         """
-        while not main_thread_terminated.is_set():
+        while not main_thread_terminated_event.is_set():
             try:
                 is_drink_creation_interrupted : bool = self.stop_drink_creation_event.wait(timeout=10)
                 # do the drink creation here
@@ -108,7 +108,7 @@ class DrinkCreationSevice(CoffeeMachineController):
             self.stop_continuous_cup_checking.set()
             return True
 
-    def __continuously_check_cup(self, callback_cup_detection : Callable[[bool], bool], main_thread_terminated : Event) -> Generator:
+    def __continuously_check_cup(self, callback_cup_detection : Callable[[bool], bool], main_thread_terminated_event : Event) -> Generator:
         """
         Private thread method to continuously monitor cup detection.
 
@@ -118,7 +118,7 @@ class DrinkCreationSevice(CoffeeMachineController):
         Yields:
             str: "Cup detected" if the cup is detected, "Cup not detected" otherwise.
         """
-        while not self.stop_continuous_cup_checking.is_set() and not main_thread_terminated.is_set():
+        while not self.stop_continuous_cup_checking.is_set() and not main_thread_terminated_event.is_set():
             if callback_cup_detection():
                 yield "Cup detected"            
             else:

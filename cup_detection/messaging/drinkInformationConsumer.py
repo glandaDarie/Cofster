@@ -108,9 +108,8 @@ class DrinkInformationConsumer:
                     return Methods.GET
                 elif data == "null": 
                     return Methods.DELETE
-                elif self.table_name not in data:
-                    if len(data.split(" ")) != 1: 
-                        return Methods.POST
+                elif self.table_name not in data and len(data.split(" ")) != 1:
+                    return Methods.POST
                 return Methods.PUT
 
             if event.event_type != "put":
