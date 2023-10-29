@@ -108,10 +108,11 @@ class DrinkInformationConsumer:
                     return Methods.GET
                 elif data == "null": 
                     return Methods.DELETE
-                elif self.table_name not in data: 
-                    return Methods.POST
+                elif self.table_name not in data:
+                    if len(data.split(" ")) != 1: 
+                        return Methods.POST
                 return Methods.PUT
-            
+
             if event.event_type != "put":
                 print(f"Changes while listening on the data couldn't be tracked, type is: {event.event_type}")
                 return 

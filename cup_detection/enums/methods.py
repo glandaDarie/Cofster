@@ -5,3 +5,4 @@ class Methods(Enum):
     POST = "POST"
     PUT = "PUT"
     DELETE = "DELETE"
+    UNKOWN = "UNKOWN"
