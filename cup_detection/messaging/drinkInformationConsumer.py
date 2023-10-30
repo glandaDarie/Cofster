@@ -117,7 +117,7 @@ class DrinkInformationConsumer:
                 return 
             
             method : str = handle_method_response(json.dumps(event.data, indent=4)) 
-            if method.value == Methods.POST:
+            if method.value == Methods.POST.value:
                 with self.data_lock:
                     response_data_change : json = json.loads(json.dumps(event.data, indent=4))
                     order_id : str = self.__get_order_id(order_information=response_data_change)
@@ -157,4 +157,4 @@ class DrinkInformationConsumer:
                order_information_fetched.number_of_ice_cubes == order_information["numberOfIceCubes"] and \
                order_information_fetched.number_of_sugar_cubes == order_information["numberOfSugarCubes"] and \
                order_information_fetched.quantity == order_information["quantity"]:
-                return order_id
+               return order_id

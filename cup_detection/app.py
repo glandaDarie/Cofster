@@ -16,7 +16,7 @@ from services.imageProcessorService import ImageProcessorBuilderService
 from time import time
 from services.llm_services.openAIService import OpenAIService
 from utils.constants import PROMPT_TEMPLATE
-from threading import Event, active_count
+from threading import Event
 from utils.paths import PATH_MODEL_CUP_DETECTION
 # from utils.paths import PATH_MODEL_PLACEMENT_DETECTION
 
@@ -58,9 +58,9 @@ if __name__ == "__main__":
     while True:
         if len(drinks_information_consumer.drinks_information) > 0:
             coffee_name : str = drinks_information_consumer.drinks_information[0]["coffeeName"]
-            prompt : str = PROMPT_TEMPLATE.format(coffee_name)
-            coffee_ingredients : Dict[str, str] = openai_service(prompt=prompt)
             if cli_arguments.llm_recipe:
+                prompt : str = PROMPT_TEMPLATE.format(coffee_name)
+                coffee_ingredients : Dict[str, str] = openai_service(prompt=prompt)
                 drinks_information_consumer.drinks_information[0] : Dict[str, str] = {**drinks_information_consumer.drinks_information[0], \
                                                                                       **coffee_ingredients}
             print(f"new drinks information consumer : {drinks_information_consumer.drinks_information}")
@@ -73,8 +73,8 @@ if __name__ == "__main__":
                 LOGGER.error(f"Error when trying to read the frame: {frame}")
                 break
 
-            cup_detection_model : YOLO = YOLOv8Detector.detect_cup(path_weights=PATH_MODEL_CUP_DETECTION)
-            # cup_detection_placement_model : YOLO = YOLOv8_detector.detect_cup_placement(path=PATH_MODEL_PLACEMENT_DETECTION)
+            cup_detection_model : YOLO = YOLOv8Detector.detect(path_weights=PATH_MODEL_CUP_DETECTION)
+            # cup_detection_placement_model : YOLO = YOLOv8Detector.detect(path_weights=PATH_MODEL_PLACEMENT_DETECTION)
 
             cup_detection_lock : Lock = Lock()
             cup_detection_state : List[bool] = [False]
@@ -105,9 +105,12 @@ if __name__ == "__main__":
             image_processor_builder_service : ImageProcessorBuilderService = ImageProcessorBuilderService()
             while success:
                 end_fps_time = time()
-                cup_detection_model, frame, cup_detected = YOLOv8Detector.detect_cup(frame=frame, model=cup_detection_model)
+                cup_detection_model, frame, cup_detected, cup_bounding_boxes = YOLOv8Detector.detect(frame=frame, model=cup_detection_model)
+                # cup_detection_placement_model, frame, cup_placement_detected, placement_bounding_boxes = YOLOv8Detector.detect(frame=frame, \
+                #                                                                                                                model=cup_detection_placement_model)
+                # cup_position_valid : bool = YOLOv8Detector.is_cup_in_correct_position(object1_boxes=cup_bounding_boxes, object2_boxes=placement_bounding_boxes, tolerance=6)
                 callback_cup_detection(cup_detected)
-                print(f"len(consumer.drinks_information): {len(drinks_information_consumer.drinks_information)}")
+                print(f"len(consumer.drinks_information): {len(drinks_information_consumer.drinks_information)}") # testing the message queue
                 frame : np.ndarray = image_processor_builder_service \
                     .add_text_number_of_frames(frame=frame, start_time=start_fps_time, end_time=end_fps_time) \
                     .build()
@@ -119,9 +122,9 @@ if __name__ == "__main__":
                     drink_finished_callback(False)
                     break
             camera.release()
-            cv2.destroyAllWindows() 
             main_thread_terminated_event.set()
-            print(f"Number of running threads before join: {active_count()}")
             background_create_coffee_drink_thread.join()
-            print(f"Number of running threads after join: {active_count()}")
             main_thread_terminated_event.clear()
+            if len(drinks_information_consumer.drinks_information) <= 0:
+               cv2.destroyAllWindows() 
+

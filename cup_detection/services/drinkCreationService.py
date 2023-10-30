@@ -62,7 +62,6 @@ class DrinkCreationSevice(CoffeeMachineController):
                     for future in concurrent.futures.as_completed(futures):
                         try:
                             result_drink_creation : bool|Generator = future.result()
-                            print(f"type result_drink_creation: {type(result_drink_creation)}")                                            
                             if isinstance(result_drink_creation, bool):
                                 print(f"Result: {result_drink_creation}")
                                 if result_drink_creation:
