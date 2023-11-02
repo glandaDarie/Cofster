@@ -4,8 +4,6 @@ Widget badgeWithLabel(int numberDrinks, IconData icon) {
   return Stack(
     children: [
       Icon(icon),
-      // Icon(Icons.history),
-      // Icon(Icons.card_giftcard)
       if (numberDrinks > 0)
         Positioned(
           top: 0,
