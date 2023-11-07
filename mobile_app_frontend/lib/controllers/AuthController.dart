@@ -1,0 +1,252 @@
+import 'package:flutter_login/flutter_login.dart';
+import 'package:coffee_orderer/controllers/UserController.dart';
+import 'package:coffee_orderer/services/validateCredentialsService.dart';
+import 'package:coffee_orderer/models/user.dart';
+import 'package:coffee_orderer/utils/localUserInformation.dart';
+import 'package:coffee_orderer/services/encryptPasswordService.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server.dart';
+import 'package:coffee_orderer/credentials/EmailCredentials.dart';
+import 'package:coffee_orderer/services/passwordGeneratorService.dart';
+import 'dart:convert';
+import 'dart:typed_data';
+import 'package:steel_crypt/steel_crypt.dart';
+import 'package:coffee_orderer/utils/toast.dart' show ToastUtils;
+
+class AuthController extends ValidateCredentialsService {
+  Duration get loginTime => Duration(milliseconds: 2250);
+  UserController userController;
+  AuthController() {
+    userController = UserController();
+  }
+
+  Future<List<dynamic>> getUsers() async {
+    List<dynamic> _users;
+    try {
+      _users = await this.userController.getAllUsers();
+    } catch (e) {
+      ToastUtils.showToast("Exception when trying to fetch users: $e");
+      return null;
+    }
+    return _users;
+  }
+
+  Future<String> authUser(LoginData data) async {
+    await storeUserInformationInCache(
+        {"username": data.name, "password": data.password});
+    List<dynamic> users = await getUsers();
+    return Future.delayed(loginTime).then((_) {
+      for (User user in users) {
+        if (user.username == data.name &&
+            passwordIsMatchedWithHash(data.password, user.password)) {
+          return null;
+        }
+      }
+      return "Credentials Username and/or password are not correct";
+    });
+  }
+
+  Future<String> signupUser(SignupData data, String name, String surname) {
+    return Future.delayed(loginTime).then((_) async {
+      String responseNameValidator = validateNameSurname(name);
+      if (responseNameValidator != null) {
+        return responseNameValidator;
+      }
+      String responseSurnameValidator = validateNameSurname(surname);
+      if (responseSurnameValidator != null) {
+        return responseSurnameValidator;
+      }
+      String responseUsernameValidator = validateUsername(data.name);
+      if (responseUsernameValidator != null) {
+        return responseUsernameValidator;
+      }
+      String responsePasswordValidator = validatePassword(data.password);
+      if (responsePasswordValidator != null) {
+        return responsePasswordValidator;
+      }
+      return await sendEmail(data.name);
+    });
+  }
+
+  Future<String> recoverPassword(String username) async {
+    List<dynamic> users = await getUsers();
+    return Future.delayed(loginTime).then((_) async {
+      for (User user in users) {
+        if (user.username == username) {
+          String data = await sendEmail(username, "password");
+          if (data == null) {
+            return "Exception: ${data}";
+          }
+          // PUT request to update the password of that specific user
+          String response = await this
+              .userController
+              .updateUsersPassword(username, encryptPassword(data));
+          if (response != "Successfully updated the password") {
+            return response;
+          }
+          return null;
+        }
+      }
+      return "User does not exist";
+    });
+  }
+
+  List<String> decryptCredentials() {
+    String usernameFortunaKey = emailCredentials["usernameFortunaKey"];
+    String username = emailCredentials["username"];
+    String usernameIV = emailCredentials["usernameIV"];
+    String passwordFortunaKey = emailCredentials["passwordFortunaKey"];
+    String password = emailCredentials["password"];
+    String passwordIV = emailCredentials["passwordIV"];
+    AesCrypt aesDecrypterUsername =
+        AesCrypt(key: usernameFortunaKey, padding: PaddingAES.pkcs7);
+    AesCrypt aesDecrypterPassword =
+        AesCrypt(key: passwordFortunaKey, padding: PaddingAES.pkcs7);
+    String usernameSender =
+        aesDecrypterUsername.gcm.decrypt(enc: username, iv: usernameIV);
+    String passwordSender =
+        aesDecrypterPassword.gcm.decrypt(enc: password, iv: passwordIV);
+    return [usernameSender, passwordSender];
+  }
+
+  Future<String> sendEmail(String recipientEmail,
+      [String lock = "verification_code"]) async {
+    List<String> credentialsSender = decryptCredentials();
+    String usernameSender = credentialsSender[0];
+    String passwordSender = credentialsSender[1];
+    SmtpServer smtpServer = null;
+    try {
+      smtpServer = SmtpServer("smtp-mail.outlook.com",
+          port: 587, username: usernameSender, password: passwordSender);
+    } catch (e) {
+      ToastUtils.showToast("Error creating SmtpServer: ${e}");
+      return null;
+    }
+    String data;
+    Message message;
+    if (lock == "password") {
+      data = generateNewPassword();
+      message = Message()
+        ..from = Address(usernameSender, "Cofster")
+        ..recipients.add(recipientEmail)
+        ..subject = "Password reset"
+        ..text = "Your new password is: ${data}";
+    } else if (lock == "verification_code") {
+      data = generateNewVerificationCode();
+      message = Message()
+        ..from = Address(usernameSender, "Cofster")
+        ..recipients.add(recipientEmail)
+        ..subject = "Verification code"
+        ..text = "Your verification code is: ${data}";
+    } else {
+      ToastUtils.showToast("No valid operation for sending an email.");
+      return null;
+    }
+    try {
+      await send(message, smtpServer);
+    } on MailerException catch (e) {
+      ToastUtils.showToast("Could not send email. Exception : ${e}");
+      return null;
+    }
+    return data;
+  }
+
+  Future<String> loginCompletedSuccessfully() async {
+    Map<String, String> cache = {};
+    String errorMsg = null;
+    dynamic nameUser;
+    try {
+      String _userCredentialsLoginStr = await loadUserInformationFromCache();
+      String userCredentialsLoginStr = _userCredentialsLoginStr.trim();
+      List<String> userCredentialsLoginList =
+          userCredentialsLoginStr.split("\n");
+      userCredentialsLoginList.forEach((String credential) {
+        List<String> _credential = credential.split(" ");
+        cache[_credential[0]] = _credential[1];
+      });
+    } catch (e) {
+      errorMsg = "Exception when trying to fetch the credentials or name: $e";
+    }
+    nameUser =
+        await this.userController.getUserNameFromCredentials(cache, getUsers());
+    await storeUserInformationInCache({"name": nameUser});
+    return errorMsg;
+  }
+
+  Future<String> singupCompletedSuccessfully(
+      String name, LoginData data) async {
+    Map<String, String> content = {
+      "name": name,
+      "username": data.name,
+      "password": encryptPassword(data.password)
+    };
+    await storeUserInformationInCache({"name": content["name"]});
+    String response = await this.userController.insertNewUser(content);
+    if (response != null) {
+      ToastUtils.showToast("Exception : ${response}");
+    }
+    return response;
+  }
+
+  Future<String> compareVerificationCode(String formVerificationCode) async {
+    String stringCache = await loadUserInformationFromCache();
+    Map<String, String> cache = fromStringCachetoMapCache(stringCache);
+    if (formVerificationCode != cache["code"]) {
+      return "Code is not written correctly";
+    }
+    return null;
+  }
+
+  Future<String> usernameUniqueOnSingup(String username) async {
+    List<dynamic> users = await this.userController.getAllUsers();
+    for (dynamic user in users) {
+      if (username == user.username) {
+        return "Username : ${username} is already\npresent in the database";
+      }
+    }
+    return null;
+  }
+
+  Future<String> getNameFromCache() async {
+    String cacheAsString = await loadUserInformationFromCache();
+    Map<String, String> cache = fromStringCachetoMapCache(cacheAsString);
+    for (MapEntry<String, String> content in cache.entries) {
+      if (content.key.trim() == "name") {
+        return content.value.trim();
+      }
+    }
+    return null;
+  }
+
+  Future<Uint8List> loadUserPhoto() async {
+    String cacheStr;
+    try {
+      cacheStr = await loadUserInformationFromCache();
+    } catch (error) {
+      throw "Error when trying to load user information from cache: ${error}";
+    }
+    Map<String, String> cache = fromStringCachetoMapCache(cacheStr);
+    if (!cache.containsKey("name")) {
+      return null;
+    }
+    Map<String, String> content = {"name": cache["name"].toLowerCase()};
+    String photoBase64 = await this.userController.getUsersPhotoFromS3(content);
+    Uint8List photoBytes = base64.decode(photoBase64);
+    return photoBytes;
+  }
+
+  Future<String> loadName() async {
+    String cacheNameValue;
+    try {
+      String cacheStr = await loadUserInformationFromCache();
+      Map<String, String> cache = fromStringCachetoMapCache(cacheStr);
+      cacheNameValue = cache["name"];
+      if (cacheNameValue == null) {
+        cacheNameValue = "Guest";
+      }
+    } catch (e) {
+      return "Error loading name: ${e}";
+    }
+    return cacheNameValue;
+  }
+}

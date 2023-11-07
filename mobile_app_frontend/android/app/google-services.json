@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "157066113639",
+    "firebase_url": "https://coffeemachinegatewaybroker-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "coffeemachinegatewaybroker",
+    "storage_bucket": "coffeemachinegatewaybroker.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:157066113639:android:e0b8a59711d58616055ac2",
+        "android_client_info": {
+          "package_name": "com.example.mobile_app_frontend"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "157066113639-61k9ko77333r15e05f17b664679aopt3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCljGGuI-MezFCyuFNod0kqJ9jmJsetWa0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "157066113639-61k9ko77333r15e05f17b664679aopt3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
