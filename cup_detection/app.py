@@ -1,6 +1,8 @@
 from typing import List, Dict
 import numpy as np
 import cv2
+import requests
+from flask import Response
 from ultralytics import YOLO
 from utils.constants import CAMERA_INDEX, WINDOW_NAME
 from detectors.YOLOv8 import YOLOv8Detector
@@ -47,6 +49,18 @@ Usage:
     8. Checking for completion of coffee drinks.
 """
 
+# test the prompt_server API 
+# def get_llm_recipe(coffee_name : str) -> str:
+#     params : Dict[str, str] = {"coffee_name" : coffee_name}
+#     try:
+#         response : Response = requests.get("http:127.0.0.1:8001", params=params)
+#         assert response.status_code == 200, f"Request failed with status code {response.status_code}" 
+#         return response.json()
+#     except requests.exceptions.RequestException as exception:
+#         raise exception
+
+#     print(get_llm_recipe("Mocha"))
+
 if __name__ == "__main__":
     cli_arguments = ArgumentParser.get_arguments()
     drinks_information_consumer : DrinkInformationConsumer = DrinkInformationConsumer(table_name=TABLE_NAME, options=DATABASE_OPTIONS)
@@ -59,8 +73,8 @@ if __name__ == "__main__":
         if len(drinks_information_consumer.drinks_information) > 0:
             coffee_name : str = drinks_information_consumer.drinks_information[0]["coffeeName"]
             if cli_arguments.llm_recipe:
-                prompt : str = PROMPT_TEMPLATE.format(coffee_name)
-                coffee_ingredients : Dict[str, str] = openai_service(prompt=prompt)
+                prompt_recipe : str = PROMPT_TEMPLATE.format(coffee_name)
+                coffee_ingredients : Dict[str, str] = openai_service(prompt=prompt_recipe)
                 drinks_information_consumer.drinks_information[0] : Dict[str, str] = {**drinks_information_consumer.drinks_information[0], \
                                                                                       **coffee_ingredients}
             print(f"new drinks information consumer : {drinks_information_consumer.drinks_information}")
