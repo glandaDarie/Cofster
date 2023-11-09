@@ -1,8 +1,7 @@
 from typing import List, Dict
 import numpy as np
 import cv2
-import requests
-from flask import Response
+import json
 from ultralytics import YOLO
 from utils.constants import CAMERA_INDEX, WINDOW_NAME
 from detectors.YOLOv8 import YOLOv8Detector
@@ -16,10 +15,10 @@ from utils.constants import TABLE_NAME
 from services.drinkCreationService import DrinkCreationSevice
 from services.imageProcessorService import ImageProcessorBuilderService
 from time import time
-from services.llm_services.openAIService import OpenAIService
-from utils.constants import PROMPT_TEMPLATE
 from threading import Event
 from utils.paths import PATH_MODEL_CUP_DETECTION
+from controllers.recipe_controller import RecipeController
+from services.recipe_service import RecipeService
 # from utils.paths import PATH_MODEL_PLACEMENT_DETECTION
 
 """
@@ -49,18 +48,6 @@ Usage:
     8. Checking for completion of coffee drinks.
 """
 
-# test the prompt_server API 
-# def get_llm_recipe(coffee_name : str) -> str:
-#     params : Dict[str, str] = {"coffee_name" : coffee_name}
-#     try:
-#         response : Response = requests.get("http:127.0.0.1:8001", params=params)
-#         assert response.status_code == 200, f"Request failed with status code {response.status_code}" 
-#         return response.json()
-#     except requests.exceptions.RequestException as exception:
-#         raise exception
-
-#     print(get_llm_recipe("Mocha"))
-
 if __name__ == "__main__":
     cli_arguments = ArgumentParser.get_arguments()
     drinks_information_consumer : DrinkInformationConsumer = DrinkInformationConsumer(table_name=TABLE_NAME, options=DATABASE_OPTIONS)
@@ -68,15 +55,22 @@ if __name__ == "__main__":
     background_firebase_table_update_thread : Thread = Thread(target=drinks_information_consumer.listen_for_updates_on_drink_message_broker)
     background_firebase_table_update_thread.daemon = True
     background_firebase_table_update_thread.start()
-    openai_service : OpenAIService = OpenAIService()
+    recipe_controller : RecipeController = RecipeController(RecipeService())
     while True:
         if len(drinks_information_consumer.drinks_information) > 0:
             coffee_name : str = drinks_information_consumer.drinks_information[0]["coffeeName"]
             if cli_arguments.llm_recipe:
-                prompt_recipe : str = PROMPT_TEMPLATE.format(coffee_name)
-                coffee_ingredients : Dict[str, str] = openai_service(prompt=prompt_recipe)
-                drinks_information_consumer.drinks_information[0] : Dict[str, str] = {**drinks_information_consumer.drinks_information[0], \
+                try:                 
+                    response : str = recipe_controller.get_recipe(base_url="http://192.168.1.102:8001/", endpoint="coffee_recipe", \
+                                                                coffee_name=coffee_name)
+                    response_data : Dict[Dict[str, str], Dict[str, int]] = json.loads(response)
+                    status_code : int = response_data["status_code"]
+                    assert status_code == 200, f"Error, status code: {status_code}"
+                    coffee_ingredients : str = response_data["ingredients"]
+                    drinks_information_consumer.drinks_information[0] : Dict[str, str] = {**drinks_information_consumer.drinks_information[0], \
                                                                                       **coffee_ingredients}
+                except Exception as exception:
+                    raise f"Error from fetching the ingredients from the Large Language Model: {exception}"
             print(f"new drinks information consumer : {drinks_information_consumer.drinks_information}")
             camera : object = cv2.VideoCapture(CAMERA_INDEX) 
             if not camera.isOpened():
