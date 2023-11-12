@@ -2,6 +2,22 @@ import 'dart:io' show Directory, File;
 import 'package:path_provider/path_provider.dart';
 import 'package:coffee_orderer/utils/toast.dart' show ToastUtils;
 
+Future<String> createUserInformationFile() async {
+  String msg = "File is already created";
+  try {
+    final Directory directory = await getApplicationDocumentsDirectory();
+    File userInformationFile = File("${directory.path}/userInformation.txt");
+    if (!await userInformationFile.exists()) {
+      userInformationFile.create();
+      msg = "Created file: ${userInformationFile.path} successfully";
+    }
+  } catch (e) {
+    throw Exception(
+        "Error when ensuring user information file existence: ${e}");
+  }
+  return msg;
+}
+
 Future<void> storeUserInformationInCache(
     Map<String, String> userInformation) async {
   try {

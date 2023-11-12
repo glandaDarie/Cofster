@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:coffee_orderer/screens/authScreen.dart';
-// import 'package:coffee_orderer/screens/questionnaireScreen.dart';
-// import 'package:coffee_orderer/screens/loginScreen.dart';
 import 'package:coffee_orderer/screens/mainScreen.dart';
 import 'package:coffee_orderer/services/notificationService.dart'
     show NotificationService;
@@ -14,11 +12,18 @@ import 'package:coffee_orderer/services/loggedInService.dart'
 import 'package:coffee_orderer/utils/toast.dart' show ToastUtils;
 import 'package:coffee_orderer/providers/orderIDProvider.dart'
     show OrderIDProvider;
+import 'package:coffee_orderer/utils/localUserInformation.dart'
+    show createUserInformationFile;
+// import 'package:coffee_orderer/screens/questionnaireScreen.dart';
+// import 'package:coffee_orderer/screens/loginScreen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   try {
     await Firebase.initializeApp();
+    await createUserInformationFile();
+    // String createFileResponse = await createUserInformationFile();
+    // print("createFileResponse: ${createFileResponse}");
   } catch (error) {
     ToastUtils.showToast(error.toString());
     return;
