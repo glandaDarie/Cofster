@@ -24,7 +24,7 @@ def test_llm_recipe() -> None:
     assert all(pattern.match(key) for key in list(actual_ingredients.keys())), "All ingredient keys should match the pattern."
 
 def test_generate_prompts() -> None:
-    users_information : List[Tuple[str, int]] = [("darie", 1), ("teofil", 2), ("glanda", 3), ("something", 4)] 
+    users_information : List[Tuple[str, int]] = [("text1", 1), ("text2", 2), ("text3", 3), ("text4", 4)] 
     current_path : str = os.path.dirname(os.path.dirname(os.getcwd()))
     userPromptGenerator : UserPromptGenerator = UserPromptGenerator(users_information=users_information, root_path=current_path) 
     actual : str = userPromptGenerator.create()
