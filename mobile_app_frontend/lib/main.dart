@@ -22,8 +22,6 @@ void main() async {
   try {
     await Firebase.initializeApp();
     await createUserInformationFile();
-    // String createFileResponse = await createUserInformationFile();
-    // print("createFileResponse: ${createFileResponse}");
   } catch (error) {
     ToastUtils.showToast(error.toString());
     return;

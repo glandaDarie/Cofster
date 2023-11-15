@@ -16,9 +16,9 @@ from services.drinkCreationService import DrinkCreationSevice
 from services.imageProcessorService import ImageProcessorBuilderService
 from time import time
 from threading import Event
-from utils.paths import PATH_MODEL_CUP_DETECTION
 from controllers.recipe_controller import RecipeController
 from services.recipe_service import RecipeService
+from utils.paths import PATH_MODEL_CUP_DETECTION
 # from utils.paths import PATH_MODEL_PLACEMENT_DETECTION
 
 """
