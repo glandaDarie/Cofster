@@ -28,7 +28,7 @@ def test_generate_prompts() -> None:
     users_information : List[Tuple[str, int]] = [("text1", 1), ("text2", 2), ("text3", 3), ("text4", 4)] 
     current_path : str = os.path.dirname(os.path.dirname(os.getcwd()))
     userPromptGenerator : UserPromptGenerator = UserPromptGenerator(users_information=users_information, root_path=current_path) 
-    actual : str = userPromptGenerator.create()
+    actual : str = userPromptGenerator.generate()
     expected : str = "Successfully generated the files and directories for each user"
     assert actual == expected, f"Actual: {actual}, Expected: {expected}"
 
@@ -43,13 +43,13 @@ def test_integration_functionality_of_data_transformer_with_prompt_generator() -
         raise TypeError("Not all elements at the second position are of type integer.")
     current_path : str = os.path.dirname(os.path.dirname(os.getcwd()))
     userPromptGenerator : UserPromptGenerator = UserPromptGenerator(users_information=users_information, root_path=current_path) 
-    actual : str = userPromptGenerator.create()
-    expected : str = "Successfully generated the files and directories for each user"
+    actual : str = userPromptGenerator.generate()
+    expected : str = "Successfully generated the directories and files for each user"
     assert actual == expected, f"Actual: {actual}, Expected: {expected}"
 
 if __name__ == "__main__":
-#     # test_llm_recipe()
-#     # test_generate_prompts()
+    test_llm_recipe()
+    test_generate_prompts()
     test_integration_functionality_of_data_transformer_with_prompt_generator()
     
     

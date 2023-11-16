@@ -1,4 +1,5 @@
 from typing import List, Tuple, Dict, Any, Self
+from io import TextIOWrapper
 import os
 import json
 import requests 
@@ -98,16 +99,23 @@ class DataTansformer:
                 try:
                     data : Dict = json.loads(response.text)[0]
                 except ValueError as json_error:
-                    print(f"Failed to parse JSON response: {json_error}")
+                    raise ValueError(f"Failed to parse JSON response: {json_error}")
         except (requests.exceptions.ConnectionError,
                 requests.exceptions.Timeout,
                 requests.exceptions.HTTPError,
                 requests.exceptions.RequestException) as error:
-            print(f"Error when fetching data from url: {url}, error: {error}")
+            if isinstance(error, requests.exceptions.ConnectionError):
+                raise requests.exceptions.ConnectionError(f"Connection error occurred, error: {error}")
+            elif isinstance(error, requests.exceptions.Timeout):
+                raise requests.exceptions.Timeout(f"Request timeout occurred, error: {error}")
+            elif isinstance(error, requests.exceptions.HTTPError):
+                raise requests.exceptions.HTTPError(f"HTTP error occurred, error: {error}")
+            else:
+                raise requests.exceptions.RequestException(f"Another request exception occurred, error: {error}") 
         self.data = data
         return self
 
-    def __parse_json(self, data : Dict) -> List[Tuple[str, str]]:
+    def __parse_json(self, data : Dict) -> List[Tuple[str, int]]:
         """
         Parses JSON data to extract users' information.
 
@@ -124,18 +132,18 @@ class DataTansformer:
             try:
                 id : int = int(user["id"])
             except ValueError as error:
-                print(f"Error when trying to convert id from string to int: {error}")
+                raise ValueError(f"Error when trying to convert id from string to int: {error}")
             users_information.append((name, id))
         return users_information
 
-    def transform(self) -> List[Tuple[str, str]]:
+    def transform(self) -> List[Tuple[str, int]]:
         """
         Transforms data to extract users' information.
 
         Returns:
             List[Tuple[str, str]]: A list of tuples containing users' information.
         """
-        users_information : List[Tuple[str, str]] = self.__parse_json(self.data)
+        users_information : List[Tuple[str, int]] = self.__parse_json(self.data)
         return users_information
 
 class UserPromptGenerator:
@@ -150,11 +158,12 @@ class UserPromptGenerator:
         """
         self.prompt_files_path : str = os.path.join(root_path, "assets", "users_prompt_files")
         self.source_path : str = os.path.join(root_path, "assets", "coffee_creation_data.txt")
+        self.previous_users_prompt_files_path : str = os.path.join(root_path, "assets", "previous_users_information.txt")
         self.users_information : List[Tuple[str, int]] = users_information
 
-    def create(self) -> None:
+    def generate(self) -> None:
         """
-        Creates prompt data for users by generating directories and copying content from the source file.
+        Generates prompt data for users by generating directories and copying content from the source file.
         
         Raises:
             TypeError: If elements at the first or second positions in users_information are not of the expected types.
@@ -166,18 +175,109 @@ class UserPromptGenerator:
             raise TypeError("Not all elements at the second position are of type integer.")
         
         if not os.path.exists(self.prompt_files_path):
-            os.makedirs(self.prompt_files_path)
-            os.chdir(self.prompt_files_path)
-            sub_directories : List[str] = [f"{id}_{name.lower()}" for name, id in self.users_information]
-            for sub_directory in sub_directories:
-                current_dir_path : str = os.path.join(self.prompt_files_path, sub_directory)
-                if not os.path.exists(current_dir_path):
-                    os.makedirs(current_dir_path)
-                destination_path : str = os.path.join(current_dir_path, "prompt_data.txt")
+            _ : bool | str = self.__create_hierarchical_structure()
+        else:
+            _ : bool | str = self.__update_hierarchical_structure()
+        return "Successfully generated the directories and files for each user"
+
+    def __create_hierarchical_structure(self) -> bool | FileNotFoundError:
+        """
+        Create prompt data for users, generating directories and copying content from source files.
+
+        Raises:
+            FileNotFoundError: If the source file or directory is not found.
+        
+        Returns:
+            bool: True if the operation was successful.
+        """
+        os.makedirs(self.prompt_files_path)
+        os.chdir(self.prompt_files_path)
+        sub_directories : List[str] = [f"{id}_{name.lower()}" for name, id in self.users_information]
+        response_msg : bool | str = self.__store_previous_users_information(file_path=self.previous_users_prompt_files_path, users_information=sub_directories)
+        assert response_msg == "Successfully stored the users information", response_msg
+        for sub_directory in sub_directories:
+            current_dir_path : str = os.path.join(self.prompt_files_path, sub_directory)
+            if not os.path.exists(current_dir_path):
+                os.makedirs(current_dir_path)
+            destination_path : str = os.path.join(current_dir_path, "prompt_data.txt")
+            try:
+                with open(file=self.source_path, mode="r") as source, open(file=destination_path, mode="w") as destionation:
+                    content : str = source.read()
+                    destionation.write(content)
+            except FileNotFoundError as error:
+                raise FileNotFoundError(f"Error: {error}. Files/File not found. Please check the file paths")
+        return True
+
+    def __update_hierarchical_structure(self) -> bool | str:
+        """
+        Update the hierarchical structure based on changes in user information.
+
+        Returns:
+            bool | str: A message indicating whether the structure needs updating or not.
+
+        Raises:
+            Any specific exceptions raised during the process.
+        """
+        previous_info : List[Tuple[str, int]] = self.__load_previous_users_information(self.previous_users_prompt_files_path)
+        current_info : List[Tuple[str, int]] = list(map(lambda user_information: (user_information[0].lower(), user_information[1]), self.users_information))        
+        previous_info : set = set(previous_info)
+        current_info : set = set(current_info)
+        difference_info : set = previous_info - current_info
+        difference_info : List[Tuple[str, int]] = list(difference_info)
+        if len(difference_info) == 0:
+            return "No need to update the structure, there isn't any change in the AWS backend"
+        #TODO 
+        # add the users that are not in the previous_users_information.txt file
+
+    def __store_previous_users_information(self, file_path : str, users_information : List[str]) -> bool | str:
+        """
+        Store previous users' information in a file.
+
+        Args:
+            file_path (str): The path to the file where information will be stored.
+            users_information (List[str]): List of strings containing user information.
+
+        Returns:
+            bool: True if the information was stored successfully, False otherwise.
+        """
+        file : TextIOWrapper | None = None
+        try:
+            file = open(file=file_path, mode="w")
+            file.write("\n".join([user_information.replace("_", " ") for user_information in users_information]))                
+        except IOError as error:
+            return f"An error occurred while writing to the file: {file_path}. Error: {error}"
+        finally:
+            if file:
+                file.close()
+        return "Successfully stored the users information"
+
+    def __load_previous_users_information(self, file_path : str) -> List[Tuple[str, int]]:
+        """
+        Load previous users' information from a file and return a list of tuples containing names (lowercased)
+        and corresponding IDs.
+
+        Args:
+            file_path (str): The path to the file containing user information.
+
+        Returns:
+            List[Tuple[str, int]]: A list of tuples where each tuple contains a lowercased name and an ID.
+
+        Raises:
+            ValueError: If an error occurs while converting ID from string to int.
+            AttributeError: If an error occurs while converting name to lowercase.
+        """
+        previous_users_information : List[str] = []
+        with open(file=file_path, mode="r") as file:
+            for line in file.readlines():
+                line_splitted : List[str] = line.split()
+                if len(line_splitted) != 2:
+                    continue
                 try:
-                    with open(self.source_path, "r") as source, open(destination_path, "w") as destionation:
-                        content : str = source.read()
-                        destionation.write(content)
-                except FileNotFoundError as error:
-                    raise FileNotFoundError(f"Error: {error}. Files/File not found. Please check the file paths")
-        return "Successfully generated the files and directories for each user"
+                    id : str = int(line_splitted[0])
+                    name : str = line_splitted[1].lower()
+                except ValueError as error:
+                    raise ValueError(f"Cannot convert id from string to int. Error: {error}")
+                except AttributeError as error:
+                    raise AttributeError(f"Cannot convert name to lowercase. Error: {error}")
+                previous_users_information.append((name, id))
+        return previous_users_information
