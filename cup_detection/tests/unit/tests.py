@@ -10,6 +10,7 @@ from re import compile
 from controllers.recipe_controller import RecipeController
 from services.recipe_service import RecipeService
 from utils.helpers import UserPromptGenerator
+from utils.helpers import DataTansformer
 import os
 
 def test_llm_recipe() -> None:
@@ -31,8 +32,24 @@ def test_generate_prompts() -> None:
     expected : str = "Successfully generated the files and directories for each user"
     assert actual == expected, f"Actual: {actual}, Expected: {expected}"
 
+def test_integration_functionality_of_data_transformer_with_prompt_generator() -> None:
+    dataTansformer : DataTansformer = DataTansformer()
+    users_information = dataTansformer \
+        .fetch(base_url="https://2rbfw9r283.execute-api.us-east-1.amazonaws.com", endpoint="prod/users", params={"usersInformation" : "info"}) \
+        .transform()
+    if not all(isinstance(user_information[0], str) for user_information in users_information):
+        raise TypeError("Not all elements at the first position are of type string.")
+    if not all(isinstance(user_information[1], int) for user_information in users_information):
+        raise TypeError("Not all elements at the second position are of type integer.")
+    current_path : str = os.path.dirname(os.path.dirname(os.getcwd()))
+    userPromptGenerator : UserPromptGenerator = UserPromptGenerator(users_information=users_information, root_path=current_path) 
+    actual : str = userPromptGenerator.create()
+    expected : str = "Successfully generated the files and directories for each user"
+    assert actual == expected, f"Actual: {actual}, Expected: {expected}"
+
 if __name__ == "__main__":
-    test_llm_recipe()
-    test_generate_prompts()
+#     # test_llm_recipe()
+#     # test_generate_prompts()
+    test_integration_functionality_of_data_transformer_with_prompt_generator()
     
     

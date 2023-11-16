@@ -1,5 +1,9 @@
+from typing import List, Tuple, Dict, Any, Self
 import os
-from typing import List, Tuple
+import json
+import requests 
+from requests.models import Response
+from urllib.parse import urljoin
 
 def create_path(paths : List[str] = None) -> str:
     """
@@ -63,6 +67,76 @@ class FileLoader:
         with open(self.file_path, "w") as output_file:
             output_file.write(self.file_content)
         return True
+
+class DataTansformer:
+    """
+    A class for fetching and transforming data.
+    """
+    def __init__(self):
+        """
+        Initializes DataTransformer class.
+        """
+        self.data : dict | None = None
+
+    def fetch(self, base_url : str, endpoint : str, params : Dict[str, Any] | None = None) -> Self:
+        """
+        Fetches data from the specified URL endpoint.
+
+        Args:
+            base_url (str): The base URL.
+            endpoint (str): The endpoint to fetch data from.
+            params (Dict[str, Any] | None, optional): Parameters for the request. Defaults to None.
+
+        Returns:
+            DataTransformer: The DataTransformer object.
+        """
+        url : str = urljoin(base_url, endpoint)
+        try:
+            response : Response = requests.get(url=url, params=params)
+            status_code : int = response.status_code
+            if status_code == 200:
+                try:
+                    data : Dict = json.loads(response.text)[0]
+                except ValueError as json_error:
+                    print(f"Failed to parse JSON response: {json_error}")
+        except (requests.exceptions.ConnectionError,
+                requests.exceptions.Timeout,
+                requests.exceptions.HTTPError,
+                requests.exceptions.RequestException) as error:
+            print(f"Error when fetching data from url: {url}, error: {error}")
+        self.data = data
+        return self
+
+    def __parse_json(self, data : Dict) -> List[Tuple[str, str]]:
+        """
+        Parses JSON data to extract users' information.
+
+        Args:
+            data (Dict): JSON data to be parsed.
+
+        Returns:
+            List[Tuple[str, str]]: A list of tuples containing users' information.
+        """
+        users_information : List[Tuple[str, str]] = []
+        users : List[Dict[str, str]] = data["users"][0]["user"]
+        for user in users:
+            name : str = user["name"]
+            try:
+                id : int = int(user["id"])
+            except ValueError as error:
+                print(f"Error when trying to convert id from string to int: {error}")
+            users_information.append((name, id))
+        return users_information
+
+    def transform(self) -> List[Tuple[str, str]]:
+        """
+        Transforms data to extract users' information.
+
+        Returns:
+            List[Tuple[str, str]]: A list of tuples containing users' information.
+        """
+        users_information : List[Tuple[str, str]] = self.__parse_json(self.data)
+        return users_information
 
 class UserPromptGenerator:
     """Generates default prompt data for each user based on provided information."""
