@@ -13,6 +13,18 @@ from utils.paths import PATH_ROOT
 
 @repeat(every(4).minutes)
 def format_and_generate_prompt_hierarchial_structure_for_users():
+    """
+    Fetches user information, transforms it, generates prompts based on the information, and logs the job information.
+
+    This function utilizes a scheduler to repetitively execute a set of tasks. It fetches user information from a specified API,
+    transforms the data, generates prompts, and logs the job information periodically.
+
+    Raises:
+        TypeError: If the fetched user information does not conform to the expected data types.
+
+    Note:
+        This function is designed to be used with a scheduler to run periodically.
+    """
     data_tansformer : DataTansformer = DataTansformer()
     users_information = data_tansformer \
         .fetch(base_url="https://2rbfw9r283.execute-api.us-east-1.amazonaws.com", endpoint="prod/users", params={"usersInformation" : "info"}) \
