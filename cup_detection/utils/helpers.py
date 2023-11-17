@@ -161,7 +161,7 @@ class UserPromptGenerator:
         self.previous_users_prompt_files_path : str = os.path.join(root_path, "assets", "previous_users_information.txt")
         self.users_information : List[Tuple[str, int]] = users_information
 
-    def generate(self) -> None:
+    def generate(self) -> str:
         """
         Generates prompt data for users by generating directories and copying content from the source file.
         
@@ -173,14 +173,14 @@ class UserPromptGenerator:
             raise TypeError("Not all elements at the first position are of type string.")
         if not all(isinstance(user_information[1], int) for user_information in self.users_information):
             raise TypeError("Not all elements at the second position are of type integer.")
-        
+                
         if not os.path.exists(self.prompt_files_path):
-            _ : bool | str = self.__create_hierarchical_structure()
+            success : bool | str = self.__create_hierarchical_structure()
         else:
-            _ : bool | str = self.__update_hierarchical_structure()
-        return "Successfully generated the directories and files for each user"
+            success : bool | str = self.__update_hierarchical_structure()
+        return success
 
-    def __create_hierarchical_structure(self) -> bool | FileNotFoundError:
+    def __create_hierarchical_structure(self) -> str | FileNotFoundError:
         """
         Create prompt data for users, generating directories and copying content from source files.
 
@@ -206,14 +206,14 @@ class UserPromptGenerator:
                     destionation.write(content)
             except FileNotFoundError as error:
                 raise FileNotFoundError(f"Error: {error}. Files/File not found. Please check the file paths")
-        return True
+        return "Successfully created the directories and files for each user"
 
-    def __update_hierarchical_structure(self) -> bool | str:
+    def __update_hierarchical_structure(self) -> str:
         """
         Update the hierarchical structure based on changes in user information.
 
         Returns:
-            bool | str: A message indicating whether the structure needs updating or not.
+            str: A message indicating whether the structure needs updating or not.
 
         Raises:
             Any specific exceptions raised during the process.
@@ -228,6 +228,7 @@ class UserPromptGenerator:
             return "No need to update the structure, there isn't any change in the AWS backend"
         #TODO 
         # add the users that are not in the previous_users_information.txt file
+        return "Successfully updated the directories and files for the respectiv user/users"
 
     def __store_previous_users_information(self, file_path : str, users_information : List[str]) -> bool | str:
         """

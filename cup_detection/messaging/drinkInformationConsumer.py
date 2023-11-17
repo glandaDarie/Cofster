@@ -6,6 +6,7 @@ import json
 from enum import Enum
 from enums.methods import Methods
 from models.order import Order
+from utils.logger import LOGGER
 
 class DrinkInformationConsumer:
     """
@@ -113,7 +114,7 @@ class DrinkInformationConsumer:
                 return Methods.PUT
 
             if event.event_type != "put":
-                print(f"Changes while listening on the data couldn't be tracked, type is: {event.event_type}")
+                LOGGER.info(f"Changes while listening on the data couldn't be tracked, type is: {event.event_type}")
                 return 
             
             method : str = handle_method_response(json.dumps(event.data, indent=4)) 
@@ -122,7 +123,7 @@ class DrinkInformationConsumer:
                     response_data_change : json = json.loads(json.dumps(event.data, indent=4))
                     order_id : str = self.__get_order_id(order_information=response_data_change)
                     if order_id is None:
-                        print("Respective order id could not be found")
+                        LOGGER.info("Respective order id could not be found")
                         return
                     self.drinks_information.append(response_data_change) 
                     self.order_ids.append(order_id)
@@ -141,7 +142,7 @@ class DrinkInformationConsumer:
         """
         all_orders_fetched : Dict | str = json.loads(json.dumps(self.__fetch_order_from_message_broker(f"/{self.table_name}"), indent=4))
         if isinstance(all_orders_fetched, str):
-            print(all_orders_fetched)
+            LOGGER.info(f"Error: {all_orders_fetched}")
             return
         for order_id, order_fetched in all_orders_fetched.items():
             order_information_fetched : Order = Order(*list(order_fetched.values()))

@@ -3,3 +3,6 @@ credentials_firebase.json
 firebase_rtd_url.py
 .env
 __pycache__
+users_prompt_files
+logging_information.log
+previous_users_information.txt
