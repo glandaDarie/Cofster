@@ -219,7 +219,7 @@ class UserPromptGenerator:
             Any specific exceptions raised during the process.
         """
         previous_info : List[Tuple[str, int]] = self.__load_previous_users_information(self.previous_users_prompt_files_path)
-        current_info : List[Tuple[str, int]] = list(map(lambda user_information: (user_information[0].lower(), user_information[1]), self.users_information))        
+        current_info : List[Tuple[str, int]] = list(map(lambda user_information: (user_information[0].lower(), user_information[1]), self.users_information))   
         previous_info : set = set(previous_info)
         current_info : set = set(current_info)
         difference_info : set = previous_info - current_info
@@ -227,6 +227,13 @@ class UserPromptGenerator:
         if len(difference_info) == 0:
             return "No need to update the structure, there isn't any change in the AWS backend"
         #TODO 
+        elif len(difference_info) > 0:
+            if len(current_info) > len(previous_info):
+                pass
+            else:
+                pass
+        else:
+            raise RuntimeError("The difference between the sets cannot be smaller than 0")
         # add the users that are not in the previous_users_information.txt file
         return "Successfully updated the directories and files for the respectiv user/users"
 
