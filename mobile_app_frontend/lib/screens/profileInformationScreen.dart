@@ -18,6 +18,8 @@ import 'package:coffee_orderer/screens/purchaseHistoryScreen.dart'
 import 'package:coffee_orderer/controllers/PurchaseHistoryController.dart'
     show PurchaseHistoryController;
 import 'package:coffee_orderer/utils/toast.dart' show ToastUtils;
+import 'package:coffee_orderer/utils/localUserInformation.dart'
+    show loadUserInformationFromCache, fromStringCachetoMapCache;
 
 class ProfileInformationPage extends StatefulWidget {
   final void Function(int) callbackSelectedIndex;
@@ -139,7 +141,8 @@ class _ProfileInformationPageState extends State<ProfileInformationPage> {
                                           catchPhrase: CatchPhrases
                                               .CATCH_PHRASE_COFSTER);
                                 }),
-                                _ProfileCard("Logout", Icons.logout, () async {
+                                _ProfileCard("Sign Out", Icons.logout,
+                                    () async {
                                   String loggingStatusResponse =
                                       await LoggedInService
                                           .changeSharedPreferenceLoggingStatus();
@@ -151,6 +154,16 @@ class _ProfileInformationPageState extends State<ProfileInformationPage> {
                                     builder: (BuildContext context) =>
                                         AuthPage(),
                                   ));
+                                }),
+                                _ProfileCard("Delete Account", Icons.delete,
+                                    () async {
+                                  // should appear a popup diagram
+                                  // here should be the backend code to delete the account user from the database using AWS lambda
+                                  String cacheStr =
+                                      await loadUserInformationFromCache();
+                                  Map<String, String> cache =
+                                      fromStringCachetoMapCache(cacheStr);
+                                  // TODO
                                 }),
                               ],
                             ),
@@ -178,7 +191,7 @@ Center _UserImageInProfileInformation(AsyncSnapshot snapshot) {
 Card _ProfileCard(String name, IconData icon, VoidCallback onTapCallback) {
   return Card(
     color: Colors.white,
-    margin: const EdgeInsets.symmetric(horizontal: 35, vertical: 15),
+    margin: const EdgeInsets.symmetric(horizontal: 35, vertical: 12),
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
     child: ListTile(
       onTap: onTapCallback,

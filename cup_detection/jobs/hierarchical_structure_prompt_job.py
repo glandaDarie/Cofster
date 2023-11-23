@@ -12,7 +12,7 @@ from utils.logger import LOGGER
 from utils.paths import PATH_ROOT
 
 # @repeat(every(4).minutes) # in prod
-@repeat(every(10).seconds) # to test the CRON job
+@repeat(every(10).seconds) # for testing the CRON job
 def format_and_generate_prompt_hierarchial_structure_for_users():
     """
     Fetches user information, transforms it, generates prompts based on the information, and logs the job information.

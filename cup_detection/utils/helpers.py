@@ -6,6 +6,7 @@ import requests
 from requests.models import Response
 from urllib.parse import urljoin
 from utils.logger import LOGGER
+import copy
 
 def create_path(paths : List[str] = None) -> str:
     """
@@ -181,6 +182,24 @@ class UserPromptGenerator:
             success : bool | str = self.__update_hierarchical_structure()
         return success
 
+    def __generate_user_subdirectories(self, data : List[Tuple[str, str]] | None = None) -> List[str]:
+        """
+        Generate a list of subdirectories based on user information.
+
+        Args:
+            data (List[Tuple[str, str]]): Optional. The user information. Defaults to None.
+
+        Returns:
+            List[str]: A list of subdirectories in the format 'id_name.lower()' for each user.
+
+        Notes:
+            - If 'data' is None, the function uses the user information stored within the class.
+            - If 'data' is provided, it uses the provided user information to generate subdirectories.
+        """
+        return [f"{id}_{name.lower()}" for name, id in self.users_information] if data is None \
+            else [f"{id}_{name.lower()}" for name, id in data]
+        # return [f"{id}_{name.lower()}" for name, id in self.users_information]
+
     def __create_hierarchical_structure(self, data : List[Tuple[str, str]] | None = None) -> str | FileNotFoundError:
         """
         Create prompt data for users, generating directories and copying content from source files.
@@ -191,12 +210,16 @@ class UserPromptGenerator:
         Returns:
             bool: True if the operation was successful.
         """
+        # Temporary workaround: code in this if-else block should be refactored ASAP to a better and more structured implementation
         if data is None:
             os.makedirs(self.prompt_files_path)
             os.chdir(self.prompt_files_path)
-        sub_directories : List[str] = [f"{id}_{name.lower()}" for name, id in self.users_information] if data is None \
-            else [f"{id}_{name.lower()}" for name, id in data]
-        response_msg : bool | str = self.__store_previous_users_information(file_path=self.previous_users_prompt_files_path, subdirs=sub_directories)
+            sub_directories : List[str] = self.__generate_user_subdirectories()
+            subdirs_merged : List[str] = copy.deepcopy(sub_directories)
+        else:
+            sub_directories : List[str] = self.__generate_user_subdirectories(data=data)
+            subdirs_merged : List[str] = self.__generate_user_subdirectories() + sub_directories
+        response_msg : bool | str = self.__store_previous_users_information(file_path=self.previous_users_prompt_files_path, subdirs=subdirs_merged)
         assert response_msg == "Successfully cached the users information", response_msg
         for sub_directory in sub_directories:
             current_dir_path : str = os.path.join(self.prompt_files_path, sub_directory)
@@ -227,8 +250,9 @@ class UserPromptGenerator:
         current_info : List[Tuple[str, int]] = list(map(lambda user_information: (user_information[0].lower(), user_information[1]), self.users_information))   
         previous_info : set = set(previous_info)
         current_info : set = set(current_info)
-        difference_info : set = previous_info - current_info
+        difference_info = previous_info.symmetric_difference(current_info)
         difference_info : List[Tuple[str, int]] = list(difference_info)
+        print(f"difference_info: {difference_info}")
         if len(difference_info) == 0:
             return "No need to update the structure, there isn't any change in the AWS backend"
         #TODO 
@@ -266,7 +290,7 @@ class UserPromptGenerator:
         """
         msg : str | None = None
         recieved_msg : str = self.__create_hierarchical_structure(data=prompt_files)
-        if msg != "Successfully created the directories and files for the new user/new users":
+        if recieved_msg.lower().strip() != "Successfully created the directories and files for the new user/new users".lower().strip():
             msg = recieved_msg
         return msg
 
