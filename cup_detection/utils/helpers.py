@@ -5,6 +5,7 @@ import json
 import requests 
 from requests.models import Response
 from urllib.parse import urljoin
+from utils.logger import LOGGER
 
 def create_path(paths : List[str] = None) -> str:
     """
@@ -180,7 +181,7 @@ class UserPromptGenerator:
             success : bool | str = self.__update_hierarchical_structure()
         return success
 
-    def __create_hierarchical_structure(self) -> str | FileNotFoundError:
+    def __create_hierarchical_structure(self, data : List[Tuple[str, str]] | None = None) -> str | FileNotFoundError:
         """
         Create prompt data for users, generating directories and copying content from source files.
 
@@ -190,23 +191,27 @@ class UserPromptGenerator:
         Returns:
             bool: True if the operation was successful.
         """
-        os.makedirs(self.prompt_files_path)
-        os.chdir(self.prompt_files_path)
-        sub_directories : List[str] = [f"{id}_{name.lower()}" for name, id in self.users_information]
-        response_msg : bool | str = self.__store_previous_users_information(file_path=self.previous_users_prompt_files_path, users_information=sub_directories)
-        assert response_msg == "Successfully stored the users information", response_msg
+        if data is None:
+            os.makedirs(self.prompt_files_path)
+            os.chdir(self.prompt_files_path)
+        sub_directories : List[str] = [f"{id}_{name.lower()}" for name, id in self.users_information] if data is None \
+            else [f"{id}_{name.lower()}" for name, id in data]
+        response_msg : bool | str = self.__store_previous_users_information(file_path=self.previous_users_prompt_files_path, subdirs=sub_directories)
+        assert response_msg == "Successfully cached the users information", response_msg
         for sub_directory in sub_directories:
             current_dir_path : str = os.path.join(self.prompt_files_path, sub_directory)
             if not os.path.exists(current_dir_path):
                 os.makedirs(current_dir_path)
-            destination_path : str = os.path.join(current_dir_path, "prompt_data.txt")
-            try:
-                with open(file=self.source_path, mode="r") as source, open(file=destination_path, mode="w") as destionation:
-                    content : str = source.read()
-                    destionation.write(content)
-            except FileNotFoundError as error:
-                raise FileNotFoundError(f"Error: {error}. Files/File not found. Please check the file paths")
-        return "Successfully created the directories and files for each user"
+                destination_path : str = os.path.join(current_dir_path, "prompt_data.txt")
+                try:
+                    with open(file=self.source_path, mode="r") as source, open(file=destination_path, mode="w") as destination:
+                        content : str = source.read()
+                        destination.write(content)
+                except FileNotFoundError as error:
+                    raise FileNotFoundError(f"Error: {error}. Files/File not found. Please check the file paths")
+        if data is None:
+            return "Successfully created the users_prompt_files, the directories and files for each new user"
+        return "Successfully created the directories and files for the new user/new users"
 
     def __update_hierarchical_structure(self) -> str:
         """
@@ -227,23 +232,55 @@ class UserPromptGenerator:
         if len(difference_info) == 0:
             return "No need to update the structure, there isn't any change in the AWS backend"
         #TODO 
+        # add the users that are not in the previous_users_information.txt file
         elif len(difference_info) > 0:
-            if len(current_info) > len(previous_info):
-                pass
-            else:
-                pass
+            if len(current_info) > len(previous_info): # a new user/more new users created an account on the Cofster mobile app
+                error_msg : str = self.__add_prompt_files(prompt_files=difference_info)
+                if error_msg is not None:
+                    raise RuntimeError(error_msg)
+                LOGGER.info("Successfully added a new prompt file/prompt files")
+            else: # len(current_info) < len(previous_info) # a user/more users deleted the account on the Cofster mobile app
+                error_msg : str = self.__delete_prompt_files(prompt_files=difference_info)
+                if error_msg is not None:
+                    raise RuntimeError(error_msg)
+                LOGGER.info("Successfully removed a prompt file/prompt files")
         else:
             raise RuntimeError("The difference between the sets cannot be smaller than 0")
-        # add the users that are not in the previous_users_information.txt file
         return "Successfully updated the directories and files for the respectiv user/users"
 
-    def __store_previous_users_information(self, file_path : str, users_information : List[str]) -> bool | str:
+    def __add_prompt_files(self, prompt_files : List[Tuple[str, int]]) -> str:
+        """
+        Add prompt files and directories for newly added users to the Cofster mobile app.
+
+        Args:
+            prompt_files (List[Tuple[str, int]]): A list of tuples containing information about newly added users.
+                Each tuple contains the user's name and identifier.
+
+        Returns:
+            str: A message indicating the outcome of the addition process.
+                - If the addition process was successful, it returns "Successfully added the prompt files and directories for the new user/new users".
+                - If an error occurred during the addition process, it returns an error message explaining the issue.
+
+        Raises:
+            Specific exceptions are raised if any critical errors occur during the addition process.
+        """
+        msg : str | None = None
+        recieved_msg : str = self.__create_hierarchical_structure(data=prompt_files)
+        if msg != "Successfully created the directories and files for the new user/new users":
+            msg = recieved_msg
+        return msg
+
+    def __delete_prompt_files(prompt_files : List[Tuple[str, int]]) -> str:
+        msg : str | None = None
+        return msg
+
+    def __store_previous_users_information(self, file_path : str, subdirs : List[str]) -> bool | str:
         """
         Store previous users' information in a file.
 
         Args:
             file_path (str): The path to the file where information will be stored.
-            users_information (List[str]): List of strings containing user information.
+            subdirs (List[str]): List of strings containing the subdirectories.
 
         Returns:
             bool: True if the information was stored successfully, False otherwise.
@@ -251,13 +288,13 @@ class UserPromptGenerator:
         file : TextIOWrapper | None = None
         try:
             file = open(file=file_path, mode="w")
-            file.write("\n".join([user_information.replace("_", " ") for user_information in users_information]))                
+            file.write("\n".join([subdir.replace("_", " ") for subdir in subdirs]))                
         except IOError as error:
             return f"An error occurred while writing to the file: {file_path}. Error: {error}"
         finally:
             if file:
                 file.close()
-        return "Successfully stored the users information"
+        return "Successfully cached the users information"
 
     def __load_previous_users_information(self, file_path : str) -> List[Tuple[str, int]]:
         """
