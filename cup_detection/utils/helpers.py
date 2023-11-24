@@ -198,7 +198,6 @@ class UserPromptGenerator:
         """
         return [f"{id}_{name.lower()}" for name, id in self.users_information] if data is None \
             else [f"{id}_{name.lower()}" for name, id in data]
-        # return [f"{id}_{name.lower()}" for name, id in self.users_information]
 
     def __create_hierarchical_structure(self, data : List[Tuple[str, str]] | None = None) -> str | FileNotFoundError:
         """
@@ -252,10 +251,8 @@ class UserPromptGenerator:
         current_info : set = set(current_info)
         difference_info = previous_info.symmetric_difference(current_info)
         difference_info : List[Tuple[str, int]] = list(difference_info)
-        print(f"difference_info: {difference_info}")
         if len(difference_info) == 0:
             return "No need to update the structure, there isn't any change in the AWS backend"
-        #TODO 
         # add the users that are not in the previous_users_information.txt file
         elif len(difference_info) > 0:
             if len(current_info) > len(previous_info): # a new user/more new users created an account on the Cofster mobile app
@@ -264,6 +261,7 @@ class UserPromptGenerator:
                     raise RuntimeError(error_msg)
                 LOGGER.info("Successfully added a new prompt file/prompt files")
             else: # len(current_info) < len(previous_info) # a user/more users deleted the account on the Cofster mobile app
+                #TODO
                 error_msg : str = self.__delete_prompt_files(prompt_files=difference_info)
                 if error_msg is not None:
                     raise RuntimeError(error_msg)
