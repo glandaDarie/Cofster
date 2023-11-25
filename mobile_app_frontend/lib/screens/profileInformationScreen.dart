@@ -20,6 +20,8 @@ import 'package:coffee_orderer/controllers/PurchaseHistoryController.dart'
 import 'package:coffee_orderer/utils/toast.dart' show ToastUtils;
 import 'package:coffee_orderer/utils/localUserInformation.dart'
     show loadUserInformationFromCache, fromStringCachetoMapCache;
+import 'package:coffee_orderer/components/profileInformationScreen/deleteUserDialog.dart'
+    show showDeleteConfirmationDialog;
 
 class ProfileInformationPage extends StatefulWidget {
   final void Function(int) callbackSelectedIndex;
@@ -157,13 +159,22 @@ class _ProfileInformationPageState extends State<ProfileInformationPage> {
                                 }),
                                 _ProfileCard("Delete Account", Icons.delete,
                                     () async {
+                                  // TODO
                                   // should appear a popup diagram
                                   // here should be the backend code to delete the account user from the database using AWS lambda
                                   String cacheStr =
                                       await loadUserInformationFromCache();
                                   Map<String, String> cache =
                                       fromStringCachetoMapCache(cacheStr);
-                                  // TODO
+                                  String errorMsg =
+                                      await showDeleteConfirmationDialog(
+                                    context: context,
+                                  );
+                                  print("cached data: ${cache}");
+                                  assert(
+                                    errorMsg == null,
+                                    "Problems with the confirmation dialog, error ${errorMsg}",
+                                  );
                                 }),
                               ],
                             ),
