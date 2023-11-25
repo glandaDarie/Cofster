@@ -88,8 +88,8 @@ const deleteUser = async (data, targetName, targetUsername, database) => {
   }
   
   deletionData.user.splice(foundIndex, 1);
-  if(foundIndex < deletionData.user.length) {
-    for(let index = foundIndex; index < deletionData.user.length; ++index) {
+  if (foundIndex < deletionData.user.length) {
+    for (let index = foundIndex; index < deletionData.user.length; ++index) {
       const user = deletionData.user[index];
       const id = Number(user.id) - 1;
       deletionData.user[index].id = String(id);
