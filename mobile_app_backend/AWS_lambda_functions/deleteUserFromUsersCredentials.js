@@ -10,7 +10,7 @@ exports.handler = async (event) => {
   } catch(error) {
     return {
       statusCode: 400,
-      body: `Invalid request body: ${error}` 
+      body: `Invalid request body: ${error}`
     };
   }
   
@@ -78,13 +78,24 @@ const deleteUser = async (data, targetName, targetUsername, database) => {
   if (!deletionData) {
     return `Problems with the database, there is no user present`;
   }
+  
   const foundIndex = deletionData.user.findIndex(user => {
     return user.name === targetName && user.username === targetUsername;
   });
+  
   if (foundIndex === -1) {
     return `The given user is not present in the database`;
   }
+  
   deletionData.user.splice(foundIndex, 1);
+  if(foundIndex < deletionData.user.length) {
+    for(let index = foundIndex; index < deletionData.user.length; ++index) {
+      const user = deletionData.user[index];
+      const id = Number(user.id) - 1;
+      deletionData.user[index].id = String(id);
+    }  
+  }
+  
   const params = {
     TableName: TABLE_NAME,
     Item: {
@@ -92,6 +103,7 @@ const deleteUser = async (data, targetName, targetUsername, database) => {
       users: data.users,
     },
   };
+  
   try {
     await database.put(params).promise();
   } catch (error) {
