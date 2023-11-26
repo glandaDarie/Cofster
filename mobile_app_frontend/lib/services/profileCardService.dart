@@ -13,7 +13,6 @@ import 'package:coffee_orderer/screens/purchaseHistoryScreen.dart'
     show PurchaseHistoryPage;
 import 'package:coffee_orderer/controllers/PurchaseHistoryController.dart'
     show PurchaseHistoryController;
-import 'package:coffee_orderer/utils/toast.dart' show ToastUtils;
 import 'package:coffee_orderer/utils/localUserInformation.dart'
     show loadUserInformationFromCache, fromStringCachetoMapCache;
 import 'package:coffee_orderer/components/profileInformationScreen/deleteUserDialog.dart'
@@ -79,11 +78,11 @@ class ProfileCardService {
   static Future<String> singOut({@required BuildContext context}) async {
     String errorMsg = null;
     try {
-      final String loggingStatusResponse =
+      final String loggingStatusErrorMsg =
           await LoggedInService.changeSharedPreferenceLoggingStatus();
-      if (loggingStatusResponse != null) {
-        ToastUtils.showToast(loggingStatusResponse);
-        return null;
+      if (loggingStatusErrorMsg != null) {
+        errorMsg = loggingStatusErrorMsg.toString();
+        return errorMsg;
       }
       Navigator.of(context).push(
         MaterialPageRoute(

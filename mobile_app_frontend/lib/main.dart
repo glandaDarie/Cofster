@@ -49,26 +49,27 @@ class CofsterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: LoggedInService.getSharedPreferenceValue("<keepMeLoggedIn>"),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.hasData) {
-            dynamic loggingStatusResponse = snapshot.data;
-            if (!(loggingStatusResponse is bool)) {
-              return Text("${loggingStatusResponse}");
-            }
-            return MaterialApp(
-              // home: AuthPage(),
-              // home: QuestionnairePage(),
-              // home: Home(),
-              // home: HomePage(),
-              home: loggingStatusResponse ? HomePage() : AuthPage(),
-              debugShowCheckedModeBanner: false,
-            );
-          } else if (snapshot.hasError) {
-            return Text("Error: ${snapshot.error}");
-          } else {
-            return CircularProgressIndicator();
+      future: LoggedInService.getSharedPreferenceValue("<keepMeLoggedIn>"),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData) {
+          dynamic loggingStatusResponse = snapshot.data;
+          if (!(loggingStatusResponse is bool)) {
+            return Text("${loggingStatusResponse}");
           }
-        });
+          return MaterialApp(
+            // home: AuthPage(),
+            // home: QuestionnairePage(),
+            // home: Home(),
+            // home: HomePage(),
+            home: loggingStatusResponse ? HomePage() : AuthPage(),
+            debugShowCheckedModeBanner: false,
+          );
+        } else if (snapshot.hasError) {
+          return Text("Error: ${snapshot.error}");
+        } else {
+          return CircularProgressIndicator();
+        }
+      },
+    );
   }
 }
