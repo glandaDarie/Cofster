@@ -7,17 +7,19 @@ import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart'
 
 Future<String> showDeleteConfirmationDialog({
   @required BuildContext context,
-  String title = "Delete Account",
+  final String title = "Delete Account",
   String msg =
       "Are you sure you want to delete your account?\nYou can't recover it later on!",
-  double titleSize = 24,
-  double msgSize = 14,
-  Function cancelFn = null,
-  Function deleteFn = null,
+  final double titleSize = 24,
+  final double msgSize = 14,
+  final Function cancelFn = null,
+  final Function deleteFn = null,
 }) async {
+  String errorMsg = null;
   msg = msg.replaceAllMapped(RegExp(r'\n\s*'), (match) => '\n' + ' ' * 15);
   try {
-    await Dialogs.materialDialog(
+    await Dialogs.bottomMaterialDialog(
+      context: context,
       title: title,
       msg: msg,
       color: Colors.white,
@@ -30,12 +32,11 @@ Future<String> showDeleteConfirmationDialog({
         color: Colors.black,
         fontSize: 14,
       ),
-      context: context,
       actions: [
         IconsOutlineButton(
-          onPressed: () async {
+          onPressed: () {
             if (cancelFn != null) {
-              await cancelFn();
+              cancelFn(context);
             }
           },
           text: "Cancel",
@@ -59,7 +60,7 @@ Future<String> showDeleteConfirmationDialog({
       ],
     );
   } catch (error) {
-    return "${error}";
+    errorMsg = error.toString();
   }
-  return null;
+  return errorMsg;
 }
