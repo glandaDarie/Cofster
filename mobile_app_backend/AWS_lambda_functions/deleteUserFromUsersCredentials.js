@@ -6,7 +6,7 @@ AWS.config.update({ region: REGION });
 exports.handler = async (event) => {
   let requestBody = null;
   try {
-    requestBody = {...event};
+    requestBody = JSON.parse(event.body);
   } catch(error) {
     return {
       statusCode: 400,
