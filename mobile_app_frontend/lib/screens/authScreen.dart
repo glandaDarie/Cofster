@@ -92,7 +92,7 @@ class _AuthPageState extends State<AuthPage> {
             String response = await this
                 ._authController
                 .signupUser(signupData, _name, surname);
-            storeUserInformationInCache({"code": response});
+            await storeUserInformationInCache({"code": response});
             return null;
           },
           userValidator: this._authController.validateUsername,
@@ -133,7 +133,7 @@ class _AuthPageState extends State<AuthPage> {
           onResendCode: (SignupData signupData) async {
             String response =
                 await this._authController.sendEmail(signupData.name);
-            storeUserInformationInCache({"code": response});
+            await storeUserInformationInCache({"code": response});
             return null;
           },
           onRecoverPassword: this._authController.recoverPassword,

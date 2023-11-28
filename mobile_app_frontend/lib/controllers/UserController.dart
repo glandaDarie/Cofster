@@ -55,8 +55,8 @@ class UserController {
   }
 
   Future<dynamic> getUserNameFromCredentials(
-      Map<dynamic, dynamic> params, Future<List<dynamic>> _users) async {
-    List<dynamic> users = await _users;
+      Map<dynamic, dynamic> params, List<dynamic> users) async {
+    // List<dynamic> users = await _users;
     return await this.userDaoGetUsers.getUserNameFromCredentials(params, users);
   }
 

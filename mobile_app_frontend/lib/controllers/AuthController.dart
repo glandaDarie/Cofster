@@ -13,6 +13,8 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:steel_crypt/steel_crypt.dart';
 import 'package:coffee_orderer/utils/toast.dart' show ToastUtils;
+import 'package:coffee_orderer/services/loggedInService.dart'
+    show LoggedInService;
 
 class AuthController extends ValidateCredentialsService {
   Duration get loginTime => Duration(milliseconds: 2250);
@@ -161,20 +163,28 @@ class AuthController extends ValidateCredentialsService {
     Map<String, String> cache = {};
     String errorMsg = null;
     dynamic nameUser;
+    List<String> _credentials = [];
     try {
       String _userCredentialsLoginStr = await loadUserInformationFromCache();
       String userCredentialsLoginStr = _userCredentialsLoginStr.trim();
       List<String> userCredentialsLoginList =
           userCredentialsLoginStr.split("\n");
-      userCredentialsLoginList.forEach((String credential) {
-        List<String> _credential = credential.split(" ");
-        cache[_credential[0]] = _credential[1];
+      userCredentialsLoginList.forEach((String credentials) {
+        _credentials = credentials.split(" ");
+        cache[_credentials[0]] = _credentials[1];
       });
     } catch (e) {
       errorMsg = "Exception when trying to fetch the credentials or name: $e";
     }
-    nameUser =
-        await this.userController.getUserNameFromCredentials(cache, getUsers());
+    nameUser = await this
+        .userController
+        .getUserNameFromCredentials(cache, await getUsers());
+    String setPreferenceError = await LoggedInService.setSharedPreferenceValue(
+      "<nameUser>",
+      value: nameUser,
+    );
+    assert(setPreferenceError == null,
+        "Error when trying to set the preference of a given variable");
     await storeUserInformationInCache({"name": nameUser});
     return errorMsg;
   }
