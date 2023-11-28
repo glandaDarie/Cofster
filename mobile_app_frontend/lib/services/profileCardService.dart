@@ -17,6 +17,8 @@ import 'package:coffee_orderer/utils/localUserInformation.dart'
     show loadUserInformationFromCache, fromStringCachetoMapCache;
 import 'package:coffee_orderer/components/profileInformationScreen/deleteUserDialog.dart'
     show showDeleteConfirmationDialog;
+import 'package:coffee_orderer/controllers/UserController.dart'
+    show UserController;
 
 class ProfileCardService {
   static String ordersInProgress({@required BuildContext context}) {
@@ -24,7 +26,7 @@ class ProfileCardService {
     try {
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (BuildContext context) => OrderPage(),
+          builder: (final BuildContext context) => OrderPage(),
         ),
       );
     } catch (error) {
@@ -38,7 +40,7 @@ class ProfileCardService {
     try {
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (BuildContext context) => PurchaseHistoryPage(
+          builder: (final BuildContext context) => PurchaseHistoryPage(
             purchaseHistoryController: PurchaseHistoryController(),
           ),
         ),
@@ -54,7 +56,7 @@ class ProfileCardService {
     try {
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (BuildContext context) => HelpAndSupportPage(),
+          builder: (final BuildContext context) => HelpAndSupportPage(),
         ),
       );
     } catch (error) {
@@ -86,7 +88,7 @@ class ProfileCardService {
       }
       Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (BuildContext context) => AuthPage(),
+          builder: (final BuildContext context) => AuthPage(),
         ),
       );
     } catch (error) {
@@ -95,9 +97,6 @@ class ProfileCardService {
     return errorMsg;
   }
 
-  // TODO
-  // should appear a popup diagram
-  // here should be the backend code to delete the account user from the database using AWS lambda
   static Future<String> deleteAccount({@required BuildContext context}) async {
     String errorMsg = null;
     try {
@@ -106,20 +105,39 @@ class ProfileCardService {
       final String confirmationDialogMsg = await showDeleteConfirmationDialog(
         context: context,
         deleteFn: (BuildContext context) async {
-          final String errorMsg = await singOut(context: context);
+          final String errorMsgSignOut = await singOut(context: context);
+          print("errorMsgSignOut: ${errorMsgSignOut}");
           assert(
-            errorMsg == null,
-            "Error on Sign Out button: ${errorMsg}",
+            errorMsgSignOut == null,
+            "Error on Sign Out button: ${errorMsgSignOut}",
           );
+          final UserController userController = UserController();
+          String username = null;
+          try {
+            username =
+                await LoggedInService.getSharedPreferenceValue("<username>");
+          } catch (error) {
+            errorMsg = error.toString();
+            return errorMsg;
+          }
+          final Map<String, String> content = {
+            "name": cache["name"],
+            "username": username,
+          };
+          final String deleteUserErrrorMsg =
+              await userController.deleteUserFromCredentials(content);
+          if (deleteUserErrrorMsg != null) {
+            errorMsg = deleteUserErrrorMsg.toString();
+          }
+          Navigator.of(context).pop();
         },
-        cancelFn: (BuildContext context) {
+        cancelFn: (final BuildContext context) {
           Navigator.of(context).pop();
         },
       );
       if (confirmationDialogMsg != null) {
         errorMsg = confirmationDialogMsg.toString();
       }
-      print("cached data: ${cache}");
     } catch (error) {
       errorMsg = error.toString();
     }

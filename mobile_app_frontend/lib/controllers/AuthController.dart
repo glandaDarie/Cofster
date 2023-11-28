@@ -6,7 +6,8 @@ import 'package:coffee_orderer/utils/localUserInformation.dart';
 import 'package:coffee_orderer/services/encryptPasswordService.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
-import 'package:coffee_orderer/credentials/EmailCredentials.dart';
+import 'package:coffee_orderer/credentials/EmailCredentials.dart'
+    show emailCredentials;
 import 'package:coffee_orderer/services/passwordGeneratorService.dart';
 import 'dart:convert';
 import 'dart:typed_data';
@@ -91,22 +92,27 @@ class AuthController extends ValidateCredentialsService {
     });
   }
 
+  String encryptCredentials(String inp, String key, String iv) {
+    final AesCrypt encryptor = AesCrypt(padding: PaddingAES.pkcs7, key: key);
+    return encryptor.gcm.encrypt(inp: inp, iv: iv);
+  }
+
   List<String> decryptCredentials() {
-    String usernameFortunaKey = emailCredentials["usernameFortunaKey"];
-    String username = emailCredentials["username"];
-    String usernameIV = emailCredentials["usernameIV"];
-    String passwordFortunaKey = emailCredentials["passwordFortunaKey"];
-    String password = emailCredentials["password"];
-    String passwordIV = emailCredentials["passwordIV"];
-    AesCrypt aesDecrypterUsername =
+    final String usernameFortunaKey = emailCredentials["usernameFortunaKey"];
+    final String username = emailCredentials["username"];
+    final String usernameIV = emailCredentials["usernameIV"];
+    final String passwordFortunaKey = emailCredentials["passwordFortunaKey"];
+    final String password = emailCredentials["password"];
+    final String passwordIV = emailCredentials["passwordIV"];
+    final AesCrypt aesDecrypterUsername =
         AesCrypt(key: usernameFortunaKey, padding: PaddingAES.pkcs7);
-    AesCrypt aesDecrypterPassword =
+    final AesCrypt aesDecrypterPassword =
         AesCrypt(key: passwordFortunaKey, padding: PaddingAES.pkcs7);
-    String usernameSender =
+    final String decryptedUsername =
         aesDecrypterUsername.gcm.decrypt(enc: username, iv: usernameIV);
-    String passwordSender =
+    final String decryptedPassword =
         aesDecrypterPassword.gcm.decrypt(enc: password, iv: passwordIV);
-    return [usernameSender, passwordSender];
+    return [decryptedUsername, decryptedPassword];
   }
 
   Future<String> sendEmail(String recipientEmail,

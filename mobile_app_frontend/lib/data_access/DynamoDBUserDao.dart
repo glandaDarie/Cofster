@@ -15,7 +15,7 @@ class DynamoDBUserDao {
     List<dynamic> information = [];
     List<dynamic> usersInformation = [];
     try {
-      http.Response response = await http.get(Uri.parse(this.url));
+      final http.Response response = await http.get(Uri.parse(this.url));
       if (response.statusCode == 200) {
         information = jsonDecode(response.body);
         usersInformation = parseJson(information);
@@ -28,13 +28,13 @@ class DynamoDBUserDao {
   }
 
   Future<dynamic> getLastUser() async {
-    List<dynamic> users = await getAllUsers();
+    final List<dynamic> users = await getAllUsers();
     return users[users.length - 1];
   }
 
   Future<List<dynamic>> getDrinksFromNameAndUsername(
       String name, String username) async {
-    List<dynamic> users = await getAllUsers();
+    final List<dynamic> users = await getAllUsers();
     if (username != null) {
       for (dynamic user in users) {
         if (name == user.name && username == user.username) {
@@ -75,25 +75,27 @@ class DynamoDBUserDao {
   }
 
   List<dynamic> parseJson(List<dynamic> data) {
-    List<dynamic> usersInformation = [];
-    List<dynamic> users = data[0]["users"];
-    List<dynamic> _user = users[0]["user"];
+    final List<dynamic> usersInformation = [];
+    final List<dynamic> users = data[0]["users"];
+    final List<dynamic> _user = users[0]["user"];
     for (dynamic _u in _user) {
       int id = int.parse(_u["id"]);
-      String name = _u["name"];
-      String username = _u["username"];
-      String password = _u["password"];
-      String photo = _u["photo"];
-      List<dynamic> favouriteDrinksJson = _u["favouriteDrinks"];
-      List<Map<String, String>> favouriteDrinksConverted = favouriteDrinksJson
-          .map<Map<String, String>>(
-              (favDrink) => Map<String, String>.from(favDrink))
-          .toList();
-      List<String> favouriteDrinks = favouriteDrinksConverted
+      final String name = _u["name"];
+      final String username = _u["username"];
+      final String password = _u["password"];
+      final String photo = _u["photo"];
+      final List<dynamic> favouriteDrinksJson = _u["favouriteDrinks"];
+      final List<Map<String, String>> favouriteDrinksConverted =
+          favouriteDrinksJson
+              .map<Map<String, String>>(
+                  (favDrink) => Map<String, String>.from(favDrink))
+              .toList();
+      final List<String> favouriteDrinks = favouriteDrinksConverted
           .map((favDrink) => favDrink[
               "drink ${favouriteDrinksConverted.indexOf(favDrink) + 1}"])
           .toList();
-      User user = User(id, name, username, password, photo, favouriteDrinks);
+      final User user =
+          User(id, name, username, password, photo, favouriteDrinks);
       usersInformation.add(user);
     }
     return usersInformation;
@@ -103,9 +105,11 @@ class DynamoDBUserDao {
       String username, String newPassword) async {
     String msg = null;
     try {
-      http.Response response = await http.put(Uri.parse(this.url),
-          headers: {"Content-Type": "application/json"},
-          body: jsonEncode({"username": username, "newPassword": newPassword}));
+      final http.Response response = await http.put(
+        Uri.parse(this.url),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"username": username, "newPassword": newPassword}),
+      );
       msg = "Successfully updated the password";
       if (response.statusCode != 200) {
         msg = "Status code is: ${response.statusCode}";
@@ -118,15 +122,15 @@ class DynamoDBUserDao {
 
   Future<String> insertNewUser(Map<String, String> content) async {
     String msg = null;
-    Map<String, dynamic> requestBody = {"body": content};
+    final Map<String, dynamic> requestBody = {"body": content};
     try {
-      http.Response response = await http.post(
+      final http.Response response = await http.post(
         Uri.parse(this.url),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(requestBody),
       );
-      String responseBody = response.body;
-      dynamic jsonResponse = jsonDecode(responseBody);
+      final String responseBody = response.body;
+      final dynamic jsonResponse = jsonDecode(responseBody);
       if (jsonResponse["statusCode"] != 201) {
         msg = "Error: ${jsonResponse["body"]}";
       }
@@ -136,15 +140,33 @@ class DynamoDBUserDao {
     return msg;
   }
 
+  Future<String> deleteUserFromCredentials(Map<String, String> content) async {
+    String msg = null;
+    final Map<String, dynamic> requestBody = {...content};
+    try {
+      final http.Response response = await http.delete(
+        Uri.parse(this.url),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(requestBody),
+      );
+      if (response.statusCode != 200) {
+        msg = response.body.toString();
+      }
+    } catch (error) {
+      msg = error.toString();
+    }
+    return msg;
+  }
+
   Future<String> uploadUsersPhotoToS3(Map<String, String> content) async {
     String msg = null;
-    Map<String, dynamic> requestBody = {"body": content};
+    final Map<String, dynamic> requestBody = {"body": content};
     try {
       http.Response response = await http.post(Uri.parse(this.url),
           headers: {"Content-Type": "application/json"},
           body: jsonEncode(requestBody));
-      String responseBody = response.body;
-      dynamic jsonResponse = jsonDecode(responseBody);
+      final String responseBody = response.body;
+      final dynamic jsonResponse = jsonDecode(responseBody);
       if (jsonResponse["statusCode"] != 201) {
         msg = "Error: ${jsonResponse["body"]}";
       }
@@ -158,21 +180,21 @@ class DynamoDBUserDao {
     String msg = null;
     String photoBase64 = null;
     try {
-      http.Response response = await http.get(Uri.parse(this.url));
+      final http.Response response = await http.get(Uri.parse(this.url));
       if (response.statusCode == 200) {
         photoBase64 = response.body;
       }
     } catch (e) {
       msg = "Exception when fetching a file from S3 bucket: ${e}";
     }
-    return msg == null ? photoBase64 : msg;
+    return msg ?? photoBase64;
   }
 
   Future<String> updateUsersFavouriteDrinks(Map<String, String> content) async {
     String msg = null;
     try {
-      Map<String, dynamic> requestBody = {"body": content};
-      http.Response response = await http.put(Uri.parse(this.url),
+      final Map<String, dynamic> requestBody = {"body": content};
+      final http.Response response = await http.put(Uri.parse(this.url),
           headers: {"Content-Type": "application/json"},
           body: jsonEncode(requestBody));
       msg = "Successfully updated the favourite drinks";

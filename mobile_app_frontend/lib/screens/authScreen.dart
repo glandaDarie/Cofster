@@ -79,8 +79,10 @@ class _AuthPageState extends State<AuthPage> {
 
             const String usernameKey = "<username>";
             String setUsernameStatusResponse =
-                await LoggedInService.setSharedPreferenceValue(usernameKey,
-                    value: signupData.name);
+                await LoggedInService.setSharedPreferenceValue(
+              usernameKey,
+              value: signupData.name,
+            );
             if (setUsernameStatusResponse != null) {
               ToastUtils.showToast("Problems when setting the key: "
                   "${usernameKey.substring(1, usernameKey.length - 1)} to : ${signupData.name}, "

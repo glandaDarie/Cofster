@@ -9,16 +9,17 @@ import 'package:coffee_orderer/components/mainScreen/badgeWithLabel.dart'
 import 'package:coffee_orderer/utils/message.dart' show Message;
 
 ValueListenableBuilder bottomNavigationBar(
-    ValueNotifier<int> selectedIndexValueNotifier,
-    void Function(int) callbackSelectedIndex,
-    bool speechStatus,
-    void Function(bool) callbackSpeechStatus,
-    bool startListening,
-    dynamic Function(bool) callbackToggleListeningState,
-    {ValueNotifier<int> numberFavoritesValueNotifier = null,
-    ValueNotifier<int> Function(BuildContext context) callbackFavoritesOn,
-    GiftController giftController,
-    @required ValueNotifier<bool> userGiftsNotifier}) {
+  ValueNotifier<int> selectedIndexValueNotifier,
+  void Function(int) callbackSelectedIndex,
+  bool speechStatus,
+  void Function(bool) callbackSpeechStatus,
+  bool startListening,
+  dynamic Function(bool) callbackToggleListeningState, {
+  ValueNotifier<int> numberFavoritesValueNotifier = null,
+  ValueNotifier<int> Function(BuildContext context) callbackFavoritesOn,
+  GiftController giftController,
+  @required ValueNotifier<bool> userGiftsNotifier,
+}) {
   int numberOfGifts = 0;
   ValueNotifier<bool> speechStatusValueNotifier =
       ValueNotifier<bool>(speechStatus);

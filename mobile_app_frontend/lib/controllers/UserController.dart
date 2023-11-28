@@ -14,6 +14,10 @@ class UserController {
   String urlInsertNewUser;
   DynamoDBUserDao userDaoInsertNewUser;
 
+  UrlService urlServiceDeleteUserFromUsers;
+  String urlDeleteUser;
+  DynamoDBUserDao userDaoDeleteUser;
+
   UrlService urlServiceUploadUsersPhoto;
   String urlUploadUsersPhoto;
   DynamoDBUserDao userDaoUploadUsersPhoto;
@@ -63,6 +67,15 @@ class UserController {
     this.urlInsertNewUser = this.urlServiceInsertNewUser.createUrl();
     this.userDaoInsertNewUser = new DynamoDBUserDao(this.urlInsertNewUser);
     return await this.userDaoInsertNewUser.insertNewUser(content);
+  }
+
+  Future<String> deleteUserFromCredentials(Map<String, String> content) async {
+    this.urlServiceDeleteUserFromUsers = UrlService(
+        "https://2rbfw9r283.execute-api.us-east-1.amazonaws.com/prod",
+        "/users");
+    this.urlDeleteUser = this.urlServiceDeleteUserFromUsers.createUrl();
+    this.userDaoDeleteUser = new DynamoDBUserDao(this.urlDeleteUser);
+    return await this.userDaoDeleteUser.deleteUserFromCredentials(content);
   }
 
   Future<String> updateUsersPassword(

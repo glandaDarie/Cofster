@@ -179,7 +179,7 @@ class _HomePageState extends State<HomePage> {
                                 await LoggedInService.getSharedPreferenceValue(
                                     "<nameUser>");
                             return nameFromPreferences ??
-                                this.authController.loadName();
+                                await this.authController.loadName();
                           }(),
                           builder: (BuildContext context,
                               AsyncSnapshot<dynamic> snapshot) {

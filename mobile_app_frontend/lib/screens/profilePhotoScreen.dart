@@ -135,8 +135,13 @@ class _ProfilePhotoPageState extends State<ProfilePhotoPage>
                   );
                   return;
                 }
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (BuildContext context) => QuestionnairePage()));
+                cacheStr = await loadUserInformationFromCache();
+                cache = fromStringCachetoMapCache(cacheStr);
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => QuestionnairePage(),
+                  ),
+                );
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
