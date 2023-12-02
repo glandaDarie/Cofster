@@ -45,7 +45,7 @@ class AuthController extends ValidateCredentialsService {
           return null;
         }
       }
-      return "Credentials Username and/or password are not correct";
+      return "Username and/or password is/are not correct";
     });
   }
 

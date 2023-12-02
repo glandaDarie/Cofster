@@ -48,7 +48,7 @@ Future<String> showDeleteConfirmationDialog({
         IconsButton(
           onPressed: () async {
             if (deleteFn != null) {
-              await deleteFn();
+              await deleteFn(context);
             }
           },
           text: "Delete",

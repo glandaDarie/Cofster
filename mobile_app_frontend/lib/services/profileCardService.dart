@@ -100,17 +100,11 @@ class ProfileCardService {
   static Future<String> deleteAccount({@required BuildContext context}) async {
     String errorMsg = null;
     try {
-      final String cacheStr = await loadUserInformationFromCache();
-      final Map<String, String> cache = fromStringCachetoMapCache(cacheStr);
       final String confirmationDialogMsg = await showDeleteConfirmationDialog(
         context: context,
-        deleteFn: (BuildContext context) async {
-          final String errorMsgSignOut = await singOut(context: context);
-          print("errorMsgSignOut: ${errorMsgSignOut}");
-          assert(
-            errorMsgSignOut == null,
-            "Error on Sign Out button: ${errorMsgSignOut}",
-          );
+        deleteFn: (final BuildContext context) async {
+          final String cacheStr = await loadUserInformationFromCache();
+          final Map<String, String> cache = fromStringCachetoMapCache(cacheStr);
           final UserController userController = UserController();
           String username = null;
           try {
@@ -129,7 +123,11 @@ class ProfileCardService {
           if (deleteUserErrrorMsg != null) {
             errorMsg = deleteUserErrrorMsg.toString();
           }
-          Navigator.of(context).pop();
+          final String errorMsgSignOut = await singOut(context: context);
+          assert(
+            errorMsgSignOut == null,
+            "Error on Sign Out button: ${errorMsgSignOut}",
+          );
         },
         cancelFn: (final BuildContext context) {
           Navigator.of(context).pop();
