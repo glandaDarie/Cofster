@@ -19,15 +19,15 @@ class _LLMUpdaterFormularPageState extends State<LLMUpdaterFormularPage> {
     this._fetchedQuestions = false;
   }
 
-  Future<void> _llmUpdaterFormularQuestions() async {
-    this._questions = await this._questionnaireController.getAllQuestions();
+  Future<List<Question>> llmUpdaterFormularQuestions() async {
+    return await this._questionnaireController.getAllQuestions();
   }
 
   @override
   Widget build(BuildContext context) {
     return !this._fetchedQuestions
         ? FutureBuilder(
-            future: _llmUpdaterFormularQuestions(),
+            future: llmUpdaterFormularQuestions(),
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(
@@ -37,10 +37,12 @@ class _LLMUpdaterFormularPageState extends State<LLMUpdaterFormularPage> {
                 return Text(
                     "The formular was not loaded successfully, error: ${snapshot.error}");
               } else {
+                List<Question> questions = [...snapshot.data];
                 this._fetchedQuestions = true;
                 return questionnaireBackbone(
                   title: "Questionnaire",
                   fn: fetchQuestions,
+                  params: {"questions": questions},
                 );
               }
             },
@@ -51,8 +53,11 @@ class _LLMUpdaterFormularPageState extends State<LLMUpdaterFormularPage> {
           );
   }
 
-  Scaffold questionnaireBackbone(
-      {@required String title, @required Function fn}) {
+  Scaffold questionnaireBackbone({
+    @required String title,
+    @required Function fn,
+    Map<String, dynamic> params = const {},
+  }) {
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
@@ -69,13 +74,16 @@ class _LLMUpdaterFormularPageState extends State<LLMUpdaterFormularPage> {
         ),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: fn(),
+          child: fn(params: params),
         ),
       ),
     );
   }
 
-  Widget fetchQuestions() {
+  Widget fetchQuestions({Map<String, dynamic> params = const {}}) {
+    if (params.length != 0) {
+      this._questions = params["questions"];
+    }
     print("Display dummy questions: ${this._questions}");
     return Column();
   }

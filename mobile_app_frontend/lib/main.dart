@@ -16,6 +16,8 @@ import 'package:coffee_orderer/utils/localUserInformation.dart'
     show createUserInformationFile;
 // import 'package:coffee_orderer/screens/questionnaireScreen.dart';
 // import 'package:coffee_orderer/screens/loginScreen.dart';
+import 'package:coffee_orderer/screens/llmUpdaterFormularScreen.dart'
+    show LLMUpdaterFormularPage;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -61,7 +63,8 @@ class CofsterPage extends StatelessWidget {
             // home: QuestionnairePage(),
             // home: Home(),
             // home: HomePage(),
-            home: loggingStatusResponse ? HomePage() : AuthPage(),
+            // home: loggingStatusResponse ? HomePage() : AuthPage(),
+            home: LLMUpdaterFormularPage(),
             debugShowCheckedModeBanner: false,
           );
         } else if (snapshot.hasError) {
