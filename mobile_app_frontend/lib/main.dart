@@ -63,8 +63,8 @@ class CofsterPage extends StatelessWidget {
             // home: QuestionnairePage(),
             // home: Home(),
             // home: HomePage(),
+            home: LLMUpdaterFormularPage(), // debugging
             // home: loggingStatusResponse ? HomePage() : AuthPage(),
-            home: LLMUpdaterFormularPage(),
             debugShowCheckedModeBanner: false,
           );
         } else if (snapshot.hasError) {

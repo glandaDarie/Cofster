@@ -2,6 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:coffee_orderer/controllers/QuestionnaireController.dart'
     show QuestionnaireController;
 import 'package:coffee_orderer/models/question.dart' show Question;
+import 'package:coffee_orderer/components/llmUpdaterFormularScreen/questionnaireBackbone.dart'
+    show QuestionnaireBackbone;
+import 'package:coffee_orderer/utils/fileReaders.dart'
+    show loadLlmUpdaterQuestions;
+import 'package:coffee_orderer/models/llmUpdaterQuestion.dart'
+    show LlmUpdaterQuestion;
+import 'package:dartz/dartz.dart' show Either;
 
 class LLMUpdaterFormularPage extends StatefulWidget {
   @override
@@ -11,7 +18,7 @@ class LLMUpdaterFormularPage extends StatefulWidget {
 class _LLMUpdaterFormularPageState extends State<LLMUpdaterFormularPage> {
   QuestionnaireController _questionnaireController;
   bool _fetchedQuestions;
-  List<Question> _questions;
+  List<LlmUpdaterQuestion> _questions;
 
   _LLMUpdaterFormularPageState() {
     this._questionnaireController = QuestionnaireController();
@@ -27,8 +34,10 @@ class _LLMUpdaterFormularPageState extends State<LLMUpdaterFormularPage> {
   Widget build(BuildContext context) {
     return !this._fetchedQuestions
         ? FutureBuilder(
-            future: llmUpdaterFormularQuestions(),
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
+            future: loadLlmUpdaterQuestions("llmUpdaterQuestions.txt"),
+            builder: (BuildContext context,
+                AsyncSnapshot<Either<List<LlmUpdaterQuestion>, String>>
+                    snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(
                     child: CircularProgressIndicator(
@@ -37,9 +46,19 @@ class _LLMUpdaterFormularPageState extends State<LLMUpdaterFormularPage> {
                 return Text(
                     "The formular was not loaded successfully, error: ${snapshot.error}");
               } else {
-                List<Question> questions = [...snapshot.data];
+                if (snapshot.data.isRight()) {
+                  snapshot.data.fold(
+                    (List<LlmUpdaterQuestion> left) => "",
+                    (String right) => throw (Exception(right)),
+                  );
+                }
+                List<LlmUpdaterQuestion> left = snapshot.data.fold(
+                  (List<LlmUpdaterQuestion> left) => left,
+                  (String right) => throw (Exception(right)),
+                );
+                List<LlmUpdaterQuestion> questions = [...left];
                 this._fetchedQuestions = true;
-                return questionnaireBackbone(
+                return QuestionnaireBackbone(
                   title: "Questionnaire",
                   fn: fetchQuestions,
                   params: {"questions": questions},
@@ -47,44 +66,21 @@ class _LLMUpdaterFormularPageState extends State<LLMUpdaterFormularPage> {
               }
             },
           )
-        : questionnaireBackbone(
+        : QuestionnaireBackbone(
             title: "Questionnaire",
             fn: fetchQuestions,
           );
-  }
-
-  Scaffold questionnaireBackbone({
-    @required String title,
-    @required Function fn,
-    Map<String, dynamic> params = const {},
-  }) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-        centerTitle: true,
-        backgroundColor: Colors.brown,
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.brown.shade200, Colors.brown.shade700],
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: fn(params: params),
-        ),
-      ),
-    );
   }
 
   Widget fetchQuestions({Map<String, dynamic> params = const {}}) {
     if (params.length != 0) {
       this._questions = params["questions"];
     }
-    print("Display dummy questions: ${this._questions}");
+    for (LlmUpdaterQuestion question in this._questions) {
+      print("Question: ${question.question}");
+      print("Options: ${question.options}");
+    }
+    // do the questionnaire UI part here
     return Column();
   }
 }

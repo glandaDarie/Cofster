@@ -44,3 +44,4 @@ const int DEFAULT_SUGAR_CUBES_QUANTITY = 0;
 const int DEFAULT_ICE_CUBES_QUANTITY = 1;
 const int DEFAULT_CREAM = 1;
 const String FREE_DRINK_TAX = "0.50";
+const String FILES_PATH = "assets/files";

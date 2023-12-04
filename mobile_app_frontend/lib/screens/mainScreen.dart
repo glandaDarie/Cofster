@@ -11,7 +11,7 @@ import 'package:coffee_orderer/controllers/GiftController.dart'
     show GiftController;
 import 'package:coffee_orderer/models/card.dart' show CoffeeCard;
 import 'package:flutter/material.dart';
-import 'package:coffee_orderer/utils/coffeeFunFact.dart' show generateFunFact;
+import 'package:coffee_orderer/utils/fileReaders.dart' show generateFunFact;
 import 'package:coffee_orderer/components/mainScreen/navigationBar.dart'
     show bottomNavigationBar;
 import 'package:coffee_orderer/components/mainScreen/popupFreeDrink.dart'
@@ -226,7 +226,7 @@ class _HomePageState extends State<HomePage> {
                       padding: const EdgeInsets.only(right: 40.0),
                       child: Container(
                         child: FutureBuilder<String>(
-                          future: generateFunFact(),
+                          future: generateFunFact("coffeeFunFact.txt"),
                           builder: (BuildContext context,
                               AsyncSnapshot<String> snapshot) {
                             if (snapshot.hasData) {
