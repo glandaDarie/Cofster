@@ -9,6 +9,9 @@ import 'package:dartz/dartz.dart' show Either;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:coffee_orderer/components/llmUpdaterFormularScreen/optionsBox.dart'
     show OptionsBox;
+import 'package:coffee_orderer/screens/mainScreen.dart' show HomePage;
+import 'package:coffee_orderer/utils/toast.dart' show ToastUtils;
+import 'package:coffee_orderer/utils/logger.dart' show LOGGER;
 
 class LLMUpdaterFormularPage extends StatefulWidget {
   @override
@@ -74,8 +77,10 @@ class _LLMUpdaterFormularPageState extends State<LLMUpdaterFormularPage> {
     if (params.length != 0) {
       this._questions = params["questions"];
     }
-    LlmUpdaterQuestion currentQuestion = this._questions[_questionIndex];
-    List<String> currentQuestionOptions = currentQuestion.options;
+    final LlmUpdaterQuestion currentLLmUpdaterQuestion =
+        this._questions[_questionIndex];
+    final String currentQuestion = currentLLmUpdaterQuestion.question;
+    final List<String> currentOptions = currentLLmUpdaterQuestion.options;
     bool questionnaireFinished = false;
     return SingleChildScrollView(
         child: Container(
@@ -102,7 +107,7 @@ class _LLMUpdaterFormularPageState extends State<LLMUpdaterFormularPage> {
               child: Column(
                 children: [
                   Text(
-                    currentQuestion.question,
+                    currentQuestion,
                     style: GoogleFonts.quicksand(
                       textStyle: TextStyle(
                         fontSize: 20,
@@ -114,26 +119,49 @@ class _LLMUpdaterFormularPageState extends State<LLMUpdaterFormularPage> {
                   ),
                   SizedBox(height: 16),
                   ...OptionsBox(
-                      fn: () {
-                        setState(() {
-                          this
-                              ._selectedOptions
-                              .add(currentQuestionOptions[_questionIndex]);
-                          this._questionIndex >= this._questions.length - 1
-                              ? questionnaireFinished = true
-                              : this._questionIndex += 1;
-                        });
-                      },
-                      params: {
-                        "options": this._selectedOptions,
-                        "questionOption": currentQuestionOptions,
-                        "questionIndex": this._questionIndex,
-                        "questions": this._questions,
-                        "questionnaireFinished": questionnaireFinished,
-                      },
-                      questionnaireFinishedFn: () {
-                        return questionnaireFinished;
-                      })
+                    nextQuestion: () {
+                      setState(() {
+                        this._selectedOptions.add(currentOptions[0]);
+                        this._questionIndex >= this._questions.length - 1
+                            ? questionnaireFinished = true
+                            : this._questionIndex += 1;
+                      });
+                    },
+                    params: {
+                      "options": this._selectedOptions,
+                      "questionOption": currentOptions,
+                      "questionIndex": this._questionIndex,
+                      "questions": this._questions,
+                      "questionnaireFinished": questionnaireFinished,
+                    },
+                    questionnaireFinished: () {
+                      return questionnaireFinished;
+                    },
+                    collectQuestionnaireResponse: () {
+                      final List<String> questions = this
+                          ._questions
+                          .map((LlmUpdaterQuestion question) =>
+                              question.question)
+                          .toList();
+                      if (questions.length != this._selectedOptions.length) {
+                        ToastUtils.showToast(
+                            "Internal system error. Please contact the developer.");
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (BuildContext context) => HomePage(),
+                          ),
+                        );
+                        LOGGER.e(
+                          "Both the question list and the option list must be of some length.",
+                        );
+                        return null;
+                      }
+                      return Map.fromIterables(
+                          questions, this._selectedOptions);
+                    },
+                    context: context,
+                    routeBuilder: HomePage(),
+                  )
                 ],
               ),
             ),
@@ -149,7 +177,7 @@ class _LLMUpdaterFormularPageState extends State<LLMUpdaterFormularPage> {
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           LinearProgressIndicator(
             value: (_questionIndex + 1) / _questions.length,
             valueColor: AlwaysStoppedAnimation<Color>(Colors.brown),

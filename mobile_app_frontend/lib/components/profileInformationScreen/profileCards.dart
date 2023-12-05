@@ -70,16 +70,11 @@ List<Card> ProfileCards(BuildContext context) {
       name: "Delete Account",
       icon: Icons.delete,
       onTapCallback: () async {
-        String errorMsg =
+        final String errorMsg =
             await ProfileCardService.deleteAccount(context: context);
         assert(
           errorMsg == null,
           "Error on Delete Account button: ${errorMsg}",
-        );
-        errorMsg = await ProfileCardService.singOut(context: context);
-        assert(
-          errorMsg == null,
-          "Error when signing out: ${errorMsg}",
         );
       },
     ),
