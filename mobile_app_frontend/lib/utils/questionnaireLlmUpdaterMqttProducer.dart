@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'dart:io';
 import 'package:coffee_orderer/utils/logger.dart' show LOGGER;
+import 'package:coffee_orderer/utils/toast.dart' show ToastUtils;
 
-class QuestionnaireLlmUpdaterMqttProducer with ChangeNotifier {
+class QuestionnaireLlmUpdaterMqttProducer {
   MqttServerClient _client;
   QuestionnaireLlmUpdaterMqttProducer({
     @required String messageBrokerName,
@@ -50,7 +50,11 @@ class QuestionnaireLlmUpdaterMqttProducer with ChangeNotifier {
     this._client.connectionMessage = MqttConnectMessage().startClean();
   }
 
-  Future<void> makeConnection() async {
+  Future<void> makeConnection({
+    @required final String topicName,
+    @required final String data,
+    bool retainData = false,
+  }) async {
     try {
       await this._client.connect();
     } on NoConnectionException catch (e) {
@@ -62,8 +66,27 @@ class QuestionnaireLlmUpdaterMqttProducer with ChangeNotifier {
     }
     if (!(this._client.connectionStatus.state ==
         MqttConnectionState.connected)) {
-      LOGGER.i("ERROR Mosquitto client connection failed");
+      LOGGER.i("ERROR:: Mosquitto client connection failed");
+      ToastUtils.showToast("ERROR:: Mosquitto client connection failed");
       this._client.disconnect();
+      return;
+    }
+
+    final MqttClientPayloadBuilder builder = MqttClientPayloadBuilder();
+    builder.addString(data);
+    this
+        ._client
+        .publishMessage(topicName, MqttQos.exactlyOnce, builder.payload);
+    if (!retainData) {
+      builder.clear();
+    }
+  }
+
+  void disconnect() {
+    try {
+      this._client.disconnect();
+    } catch (error) {
+      LOGGER.i("Could not disconnect, error?: $error");
       return;
     }
   }
