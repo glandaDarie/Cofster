@@ -121,6 +121,7 @@ class _LLMUpdaterFormularPageState extends State<LLMUpdaterFormularPage> {
                   ...OptionsBox(
                     nextQuestion: () {
                       setState(() {
+                        // need to fix this here, it add None and I want the data from the TextField
                         this._selectedOptions.add(currentOptions[0]);
                         this._questionIndex >= this._questions.length - 1
                             ? questionnaireFinished = true

@@ -48,7 +48,7 @@ Padding WriteOption({
                 LOGGER.e("Problems when reciving the data.");
                 throw (Exception("Problems when reciving the data."));
               }
-              print("Questionnaire response: ${questionnaireResponse}");
+              print("Questionnaire response: ${questionnaireResponse.values}");
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (BuildContext context) => routeBuilder,

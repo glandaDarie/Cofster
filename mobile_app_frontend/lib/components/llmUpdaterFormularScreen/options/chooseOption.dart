@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:coffee_orderer/utils/logger.dart' show LOGGER;
 
 Padding ChooseOption(
   String option, {
@@ -17,7 +18,10 @@ Padding ChooseOption(
         if (questionnaireFinished()) {
           Map<String, dynamic> questionnaireResponse =
               collectQuestionnaireResponse();
-          if (questionnaireResponse == null) {}
+          if (questionnaireResponse == null) {
+            LOGGER.e("Problems when reciving the data.");
+            throw (Exception("Problems when reciving the data."));
+          }
           print("Questionnaire response: ${questionnaireResponse}");
           Navigator.of(context).push(
             MaterialPageRoute(
