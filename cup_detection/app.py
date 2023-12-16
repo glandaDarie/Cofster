@@ -49,7 +49,7 @@ Usage:
 """
 
 if __name__ == "__main__":
-    cli_arguments = ArgumentParser.get_arguments()
+    cli_arguments = ArgumentParser.get_recipe_arguments()
     drinks_information_consumer : DrinkInformationConsumer = DrinkInformationConsumer(table_name=TABLE_NAME, options=DATABASE_OPTIONS)
     main_thread_terminated_event : Event = Event()
     background_firebase_table_update_thread : Thread = Thread(target=drinks_information_consumer.listen_for_updates_on_drink_message_broker)

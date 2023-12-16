@@ -42,7 +42,6 @@ class QuestionnaireLlmUpdaterMqttPublisher {
     final void Function() onConnected = null,
     final void Function() pongCallback = null,
   }) {
-    this._client = _client;
     this._client = MqttServerClient(messageBrokerName, clientIdentifier ?? "");
     this._client.keepAlivePeriod = keepAlivePeriod;
     this._client.connectTimeoutPeriod = connectTimeoutPeriod;
@@ -50,25 +49,33 @@ class QuestionnaireLlmUpdaterMqttPublisher {
     this._client.onConnected = onConnected;
     this._client.onSubscribed = onSubscribed;
     this._client.pongCallback = pongCallback;
-    this._client.connectionMessage = MqttConnectMessage().startClean();
+    this._client.connectionMessage = MqttConnectMessage()
+        .withClientIdentifier("Mqtt_MyClientUniqueId")
+        .withWillTopic("willtopic")
+        .withWillMessage("My Will message")
+        .startClean()
+        .withWillQos(MqttQos.atLeastOnce);
   }
 
   Future<void> publish({
     @required final String topicName,
     @required final dynamic data,
+    final int syncTimeMiliseconds = 100,
     bool clearBuilder = true,
   }) async {
-    await this._makeConnection(
+    await this._makeConnectionAndPublishMessage(
       topicName: topicName,
       data: data,
+      syncTimeMiliseconds: syncTimeMiliseconds,
       clearBuilder: clearBuilder,
     );
     this._disconnect();
   }
 
-  Future<void> _makeConnection({
+  Future<void> _makeConnectionAndPublishMessage({
     @required final String topicName,
     @required final dynamic data,
+    final int syncTimeMiliseconds = 100,
     bool clearBuilder = true,
   }) async {
     try {
@@ -87,7 +94,6 @@ class QuestionnaireLlmUpdaterMqttPublisher {
       this._client.disconnect();
       return;
     }
-
     String convertedData = this._convToString(data);
     if (convertedData == "") {
       LOGGER.e(
@@ -97,9 +103,17 @@ class QuestionnaireLlmUpdaterMqttPublisher {
 
     final MqttClientPayloadBuilder builder = MqttClientPayloadBuilder();
     builder.addString(convertedData);
-    this
-        ._client
-        .publishMessage(topicName, MqttQos.exactlyOnce, builder.payload);
+    try {
+      this
+          ._client
+          .publishMessage(topicName, MqttQos.exactlyOnce, builder.payload);
+    } on InvalidTopicException catch (error) {
+      LOGGER.e("An error occurred while publishing the message: $error");
+      ToastUtils.showToast("Server problems: ${error}");
+      return;
+    }
+    await Future.delayed(Duration(milliseconds: syncTimeMiliseconds));
+    print("Sent data to message queue");
     if (clearBuilder) {
       builder.clear();
     }
@@ -109,7 +123,8 @@ class QuestionnaireLlmUpdaterMqttPublisher {
     if (data is String) {
       return data;
     } else if (data is Map<String, dynamic>) {
-      List<String> keys = data.keys;
+      data = data as Map<String, dynamic>;
+      List<String> keys = data.keys.toList();
       return keys
           .map(
             (String key) =>
