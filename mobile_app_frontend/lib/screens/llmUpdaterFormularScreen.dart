@@ -82,8 +82,7 @@ class _LLMUpdaterFormularPageState extends State<LLMUpdaterFormularPage> {
     final String currentQuestion = currentLLmUpdaterQuestion.question;
     final List<String> currentOptions = currentLLmUpdaterQuestion.options;
     bool questionnaireFinished = false;
-    return SingleChildScrollView(
-        child: Container(
+    return Container(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
       child: Column(
@@ -92,7 +91,7 @@ class _LLMUpdaterFormularPageState extends State<LLMUpdaterFormularPage> {
         children: [
           Expanded(
             child: Container(
-              padding: EdgeInsets.all(16),
+              padding: EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
@@ -104,66 +103,67 @@ class _LLMUpdaterFormularPageState extends State<LLMUpdaterFormularPage> {
                   ),
                 ],
               ),
-              child: Column(
-                children: [
-                  Text(
-                    currentQuestion,
-                    style: GoogleFonts.quicksand(
-                      textStyle: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.brown,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Text(
+                      currentQuestion,
+                      style: GoogleFonts.quicksand(
+                        textStyle: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.brown,
+                        ),
                       ),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 16),
-                  ...OptionsBox(
-                    nextQuestion: () {
-                      setState(() {
-                        // need to fix this here, it add None and I want the data from the TextField
-                        this._selectedOptions.add(currentOptions[0]);
-                        this._questionIndex >= this._questions.length - 1
-                            ? questionnaireFinished = true
-                            : this._questionIndex += 1;
-                      });
-                    },
-                    params: {
-                      "options": this._selectedOptions,
-                      "questionOption": currentOptions,
-                      "questionIndex": this._questionIndex,
-                      "questions": this._questions,
-                      "questionnaireFinished": questionnaireFinished,
-                    },
-                    questionnaireFinished: () {
-                      return questionnaireFinished;
-                    },
-                    collectQuestionnaireResponse: () {
-                      final List<String> questions = this
-                          ._questions
-                          .map((LlmUpdaterQuestion question) =>
-                              question.question)
-                          .toList();
-                      if (questions.length != this._selectedOptions.length) {
-                        ToastUtils.showToast(
-                            "Internal system error. Please contact the developer.");
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (BuildContext context) => HomePage(),
-                          ),
-                        );
-                        LOGGER.e(
-                          "Both the question list and the option list must be of some length.",
-                        );
-                        return null;
-                      }
-                      return Map.fromIterables(
-                          questions, this._selectedOptions);
-                    },
-                    context: context,
-                    routeBuilder: HomePage(),
-                  )
-                ],
+                    SizedBox(height: 16),
+                    ...OptionsBox(
+                      params: {
+                        "options": this._selectedOptions,
+                        "questionOption": currentOptions,
+                        "questionIndex": this._questionIndex,
+                        "questions": this._questions,
+                        "questionnaireFinished": questionnaireFinished,
+                      },
+                      context: context,
+                      routeBuilder: HomePage(),
+                      onNextQuestion: (String selectedOption) {
+                        setState(() {
+                          this._selectedOptions.add(selectedOption);
+                          this._questionIndex >= this._questions.length - 1
+                              ? questionnaireFinished = true
+                              : this._questionIndex += 1;
+                        });
+                      },
+                      onQuestionnaireFinished: () {
+                        return questionnaireFinished;
+                      },
+                      onCollectQuestionnaireResponses: () {
+                        final List<String> questions = this
+                            ._questions
+                            .map((LlmUpdaterQuestion question) =>
+                                question.question)
+                            .toList();
+                        if (questions.length != this._selectedOptions.length) {
+                          ToastUtils.showToast(
+                              "Internal system error. Please contact the developer.");
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (BuildContext context) => HomePage(),
+                            ),
+                          );
+                          LOGGER.e(
+                            "Both the question list and the option list must be of some length.",
+                          );
+                          return null;
+                        }
+                        return Map.fromIterables(
+                            questions, this._selectedOptions);
+                      },
+                    )
+                  ],
+                ),
               ),
             ),
           ),
@@ -186,6 +186,6 @@ class _LLMUpdaterFormularPageState extends State<LLMUpdaterFormularPage> {
           ),
         ],
       ),
-    ));
+    );
   }
 }

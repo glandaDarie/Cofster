@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:coffee_orderer/utils/logger.dart' show LOGGER;
+import 'package:coffee_orderer/patterns/questionnaireLlmUpdaterMqqtPublisherFascade.dart'
+    show QuestionnaireLlmUpdaterMqttPublisherFascade;
 
 Padding WriteOption({
-  @required void Function() nextQuestion,
-  @required bool Function() questionnaireFinished,
-  @required Map<String, dynamic> Function() collectQuestionnaireResponse,
   BuildContext context,
   StatefulWidget routeBuilder,
+  @required void Function(String) onNextQuestion,
+  @required bool Function() onQuestionnaireFinished,
+  @required Map<String, dynamic> Function() onCollectQuestionnaireResponses,
 }) {
+  final TextEditingController optionTextEditingController =
+      TextEditingController();
   return Padding(
     padding: EdgeInsets.symmetric(vertical: 8.0),
     child: Column(
@@ -19,6 +23,7 @@ Padding WriteOption({
             border: Border.all(color: Colors.brown, width: 1.0),
           ),
           child: TextField(
+            controller: optionTextEditingController,
             style: TextStyle(
               fontSize: 16.0,
               color: Colors.black87,
@@ -40,15 +45,21 @@ Padding WriteOption({
         ),
         ElevatedButton(
           onPressed: () {
-            nextQuestion();
-            if (questionnaireFinished()) {
-              Map<String, dynamic> questionnaireResponse =
-                  collectQuestionnaireResponse();
-              if (questionnaireResponse == null) {
-                LOGGER.e("Problems when reciving the data.");
-                throw (Exception("Problems when reciving the data."));
+            String option = optionTextEditingController.text;
+            onNextQuestion(option);
+            if (onQuestionnaireFinished()) {
+              Map<String, dynamic> questionnaireResponses =
+                  onCollectQuestionnaireResponses();
+              if (questionnaireResponses == null) {
+                LOGGER.e("Problems when receiving the data.");
+                throw (Exception("Problems when receiving the data."));
               }
-              print("Questionnaire response: ${questionnaireResponse.values}");
+              // send data async to backend using MQTT
+              QuestionnaireLlmUpdaterMqttPublisherFascade.publish(
+                data: questionnaireResponses,
+                messageBrokerName: "test.mosquitto.org",
+                topicName: "questionnaire_LLM_updater_topic",
+              );
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (BuildContext context) => routeBuilder,

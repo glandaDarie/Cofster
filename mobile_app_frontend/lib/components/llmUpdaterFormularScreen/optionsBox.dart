@@ -5,12 +5,12 @@ import 'package:coffee_orderer/components/llmUpdaterFormularScreen/options/write
     show WriteOption;
 
 List<Padding> OptionsBox({
-  @required void Function() nextQuestion,
   @required Map<String, dynamic> params,
-  @required bool Function() questionnaireFinished,
-  @required Map<String, dynamic> Function() collectQuestionnaireResponse,
-  BuildContext context,
-  StatefulWidget routeBuilder,
+  @required BuildContext context,
+  @required StatefulWidget routeBuilder,
+  @required void Function(String) onNextQuestion,
+  @required bool Function() onQuestionnaireFinished,
+  @required Map<String, dynamic> Function() onCollectQuestionnaireResponses,
 }) {
   List<String> options = [];
   if (params["questionOption"] != null) {
@@ -21,18 +21,20 @@ List<Padding> OptionsBox({
         (String option) => option != "None"
             ? ChooseOption(
                 option,
-                nextQuestion: nextQuestion,
-                questionnaireFinished: questionnaireFinished,
-                collectQuestionnaireResponse: collectQuestionnaireResponse,
                 context: context,
                 routeBuilder: routeBuilder,
+                onNextQuestion: onNextQuestion,
+                onQuestionnaireFinished: onQuestionnaireFinished,
+                onCollectQuestionnaireResponses:
+                    onCollectQuestionnaireResponses,
               )
             : WriteOption(
-                nextQuestion: nextQuestion,
-                questionnaireFinished: questionnaireFinished,
-                collectQuestionnaireResponse: collectQuestionnaireResponse,
                 context: context,
                 routeBuilder: routeBuilder,
+                onNextQuestion: onNextQuestion,
+                onQuestionnaireFinished: onQuestionnaireFinished,
+                onCollectQuestionnaireResponses:
+                    onCollectQuestionnaireResponses,
               ),
       )
       .toList();
