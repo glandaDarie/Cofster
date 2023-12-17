@@ -1,4 +1,4 @@
-import 'package:coffee_orderer/patterns/CoffeeCardSingleton.dart';
+import 'package:coffee_orderer/patterns/coffeeCardSingleton.dart';
 import 'package:flutter/material.dart';
 import 'package:coffee_orderer/models/card.dart' show CoffeeCard;
 

@@ -30,7 +30,7 @@ class LoggedInService {
       } else if (key == "<username>") {
         preferences.setString(key.substring(1, key.length - 1), value);
       } else {
-        return "Error, the key provided is invalid";
+        throw Exception("Error, the key provided is invalid");
       }
     } catch (error) {
       return "Error when trying to set default logging status, error: ${error}";
@@ -49,7 +49,7 @@ class LoggedInService {
       } else if (key == "<username>") {
         value = preferences.getString(key.substring(1, key.length - 1));
       } else {
-        return "Error, the key provided is invalid";
+        throw Exception("Error, the key provided is invalid");
       }
     } catch (error) {
       return "Error when trying to get the value from ${key}, ${error}";
@@ -67,7 +67,7 @@ class LoggedInService {
       } else if (key == "<username>") {
         preferences.remove(key.substring(1, key.length - 1));
       } else {
-        return "Error, the key provided is invalid";
+        throw Exception("Error, the key provided is invalid");
       }
     } catch (error) {
       return "Error when trying to remove the key: ${key}, ${error}";

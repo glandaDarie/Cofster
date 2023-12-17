@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:coffee_orderer/utils/logger.dart' show LOGGER;
-import 'package:coffee_orderer/patterns/questionnaireLlmUpdaterMqqtPublisherFascade.dart'
-    show QuestionnaireLlmUpdaterMqttPublisherFascade;
+import 'package:coffee_orderer/utils/optionCallbacks.dart' show onPressed;
 
 Padding ChooseOption(
   String option, {
@@ -18,26 +16,14 @@ Padding ChooseOption(
       height: 48.0,
       child: ElevatedButton(
         onPressed: () {
-          onNextQuestion(option);
-          if (onQuestionnaireFinished()) {
-            Map<String, dynamic> questionnaireResponses =
-                onCollectQuestionnaireResponses();
-            if (questionnaireResponses == null) {
-              LOGGER.e("Problems when receiving the data.");
-              throw (Exception("Problems when receiving the data."));
-            }
-            // send data async to backend using MQTT
-            QuestionnaireLlmUpdaterMqttPublisherFascade.publish(
-              data: questionnaireResponses,
-              messageBrokerName: "test.mosquitto.org",
-              topicName: "questionnaire_LLM_updater_topic",
-            );
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (BuildContext context) => routeBuilder,
-              ),
-            );
-          }
+          onPressed(
+            context: context,
+            routeBuilder: routeBuilder,
+            option: option,
+            onNextQuestion: onNextQuestion,
+            onQuestionnaireFinished: onQuestionnaireFinished,
+            onCollectQuestionnaireResponses: onCollectQuestionnaireResponses,
+          );
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.brown,

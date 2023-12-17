@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:coffee_orderer/components/mainScreen/coffeeCard.dart'
     show coffeeCard;
 import 'package:coffee_orderer/models/card.dart' show CoffeeCard;
-import 'package:coffee_orderer/patterns/CoffeeCardSingleton.dart'
+import 'package:coffee_orderer/patterns/coffeeCardSingleton.dart'
     show CoffeeCardSingleton;
 import 'package:coffee_orderer/services/stringSimiliarityService.dart'
     show scoreProbability;

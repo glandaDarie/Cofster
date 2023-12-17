@@ -89,8 +89,7 @@ class QuestionnaireLlmUpdaterMqttPublisher {
     }
     if (!(this._client.connectionStatus.state ==
         MqttConnectionState.connected)) {
-      LOGGER.i("ERROR:: Mosquitto client connection failed");
-      ToastUtils.showToast("ERROR:: Mosquitto client connection failed");
+      LOGGER.i("ERROR:: Message broker client connection failed");
       this._client.disconnect();
       return;
     }
@@ -113,7 +112,7 @@ class QuestionnaireLlmUpdaterMqttPublisher {
       return;
     }
     await Future.delayed(Duration(milliseconds: syncTimeMiliseconds));
-    print("Sent data to message queue");
+    LOGGER.i("Sent data to message queue");
     if (clearBuilder) {
       builder.clear();
     }
