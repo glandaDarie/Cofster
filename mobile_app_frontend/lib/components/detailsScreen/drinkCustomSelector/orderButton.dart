@@ -42,7 +42,7 @@ ElevatedButton OrderButton({
     child: Text(
       textData,
       textScaleFactor: textScaleFactor,
-      style: TextStyle(fontFamily: 'varela', color: foregroundColor)
+      style: TextStyle(fontFamily: "varela", color: foregroundColor)
           .copyWith(fontWeight: FontWeight.w700),
     ),
   );

@@ -300,9 +300,11 @@ FutureBuilder<Information> DetailsScreenBody({
                         } else if (snapshot.hasError) {
                           return Text("Error loading image");
                         } else {
+                          double height = MediaQuery.of(context).size.height;
+                          double width = MediaQuery.of(context).size.width;
                           return Container(
-                            height: 310.0,
-                            width: 310.0,
+                            height: height * 0.37,
+                            width: width * 0.75,
                             decoration: BoxDecoration(
                               image: DecorationImage(
                                 image: snapshot.data,

@@ -164,7 +164,7 @@ FutureBuilder<String> customizeDrink(
                       ),
                       SizedBox(
                         height: 60,
-                        width: 250,
+                        width: MediaQuery.of(context).size.width - 160,
                         child: OrderButton(
                           context: context,
                           paymentService: paymentService,

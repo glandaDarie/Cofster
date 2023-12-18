@@ -26,7 +26,6 @@ class QuestionnaireLlmUpdaterMqttPublisherFascade {
         LOGGER.i("Ping response client callback invoked");
       },
     );
-
     questionnaireLlmUpdaterMqttPublisher.publish(
       topicName: topicName,
       data: data,

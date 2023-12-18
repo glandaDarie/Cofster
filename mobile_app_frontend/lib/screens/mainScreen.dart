@@ -20,7 +20,7 @@ import 'package:coffee_orderer/controllers/CoffeeCardFavouriteDrinksController.d
     show CoffeeCardFavouriteDrinksController;
 import 'package:coffee_orderer/services/notificationService.dart'
     show NotificationService;
-import 'package:coffee_orderer/patterns/CoffeeCardSingleton.dart';
+import 'package:coffee_orderer/patterns/coffeeCardSingleton.dart';
 import 'package:coffee_orderer/services/speechToTextService.dart'
     show SpeechToTextService;
 import 'package:speech_to_text/speech_recognition_result.dart';

@@ -36,7 +36,7 @@ class _GiftCardPageState extends State<GiftCardPage>
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "        Redeem gifts",
+          "Redeem gifts",
           style: TextStyle(
             fontSize: 30,
             color: Colors.white,

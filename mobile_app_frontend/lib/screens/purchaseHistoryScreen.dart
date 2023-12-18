@@ -30,7 +30,7 @@ class _ProfilePhotoPageState extends State<PurchaseHistoryPage> {
     return Scaffold(
         appBar: AppBar(
           title: const Text(
-            "    Purchase History",
+            "Purchase History",
             style: TextStyle(
               fontSize: 30,
               color: Colors.white,

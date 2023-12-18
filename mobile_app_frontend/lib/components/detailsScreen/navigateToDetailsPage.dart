@@ -1,5 +1,5 @@
 import 'package:coffee_orderer/models/card.dart' show CoffeeCard;
-import 'package:coffee_orderer/patterns/CoffeeCardSingleton.dart'
+import 'package:coffee_orderer/patterns/coffeeCardSingleton.dart'
     show CoffeeCardSingleton;
 import 'package:coffee_orderer/screens/detailsScreen.dart' show DetailsPage;
 import 'package:flutter/material.dart';

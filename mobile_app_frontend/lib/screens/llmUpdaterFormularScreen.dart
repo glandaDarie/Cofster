@@ -60,6 +60,7 @@ class _LLMUpdaterFormularPageState extends State<LLMUpdaterFormularPage> {
                 List<LlmUpdaterQuestion> questions = [...left];
                 this._fetchedQuestions = true;
                 return QuestionnaireBackbone(
+                  context: context,
                   title: "Questionnaire",
                   fn: fetchQuestions,
                   params: {"questions": questions},
@@ -68,6 +69,7 @@ class _LLMUpdaterFormularPageState extends State<LLMUpdaterFormularPage> {
             },
           )
         : QuestionnaireBackbone(
+            context: context,
             title: "Questionnaire",
             fn: fetchQuestions,
           );

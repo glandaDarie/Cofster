@@ -47,8 +47,14 @@ class _OrderPageState extends State<OrderPage> {
         FirebaseDatabase.instance.ref().child("Orders");
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         title: const Text(
-          "            Orders",
+          "Orders",
           style: TextStyle(
             fontSize: 30,
             color: Colors.white,
