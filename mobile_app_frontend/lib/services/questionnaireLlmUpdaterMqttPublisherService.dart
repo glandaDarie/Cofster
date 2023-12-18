@@ -5,9 +5,9 @@ import 'dart:io';
 import 'package:coffee_orderer/utils/logger.dart' show LOGGER;
 import 'package:coffee_orderer/utils/toast.dart' show ToastUtils;
 
-class QuestionnaireLlmUpdaterMqttPublisher {
+class QuestionnaireLlmUpdaterMqttPublisherService {
   MqttServerClient _client;
-  QuestionnaireLlmUpdaterMqttPublisher({
+  QuestionnaireLlmUpdaterMqttPublisherService({
     @required final String messageBrokerName,
     final String clientIdentifier,
     final bool logging = false,

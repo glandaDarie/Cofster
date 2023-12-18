@@ -1,5 +1,5 @@
-import 'package:coffee_orderer/utils/questionnaireLlmUpdaterMqttPublisher.dart'
-    show QuestionnaireLlmUpdaterMqttPublisher;
+import 'package:coffee_orderer/services/questionnaireLlmUpdaterMqttPublisherService.dart'
+    show QuestionnaireLlmUpdaterMqttPublisherService;
 import 'package:coffee_orderer/utils/logger.dart' show LOGGER;
 import 'package:flutter/material.dart';
 
@@ -9,8 +9,9 @@ class QuestionnaireLlmUpdaterMqttPublisherFascade {
     @required String messageBrokerName,
     @required String topicName,
   }) {
-    QuestionnaireLlmUpdaterMqttPublisher questionnaireLlmUpdaterMqttPublisher =
-        QuestionnaireLlmUpdaterMqttPublisher(
+    QuestionnaireLlmUpdaterMqttPublisherService
+        questionnaireLlmUpdaterMqttPublisher =
+        QuestionnaireLlmUpdaterMqttPublisherService(
       messageBrokerName: messageBrokerName,
       onSubscribed: (String topicName) {
         LOGGER.i("Successfully subscribed to topic: ${topicName}");
