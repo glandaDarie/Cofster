@@ -19,6 +19,8 @@ import 'package:coffee_orderer/components/profileInformationScreen/deleteUserDia
     show showDeleteConfirmationDialog;
 import 'package:coffee_orderer/controllers/UserController.dart'
     show UserController;
+import 'package:coffee_orderer/utils/logger.dart' show LOGGER;
+import 'package:coffee_orderer/utils/toast.dart' show ToastUtils;
 
 class ProfileCardService {
   static String ordersInProgress({@required BuildContext context}) {
@@ -114,8 +116,9 @@ class ProfileCardService {
             errorMsg = error.toString();
             return errorMsg;
           }
+          final String name = cache["name"];
           final Map<String, String> content = {
-            "name": cache["name"],
+            "name": name,
             "username": username,
           };
           final String deleteUserErrrorMsg =
@@ -123,6 +126,10 @@ class ProfileCardService {
           if (deleteUserErrrorMsg != null) {
             errorMsg = deleteUserErrrorMsg.toString();
           }
+
+          ToastUtils.showToast("Deleted account of user: ${name} succesfully!");
+          LOGGER.i("Deleted account of user: ${name} succesfully!");
+
           final String errorMsgSignOut = await singOut(context: context);
           assert(
             errorMsgSignOut == null,
