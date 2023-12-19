@@ -6,7 +6,7 @@ import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart'
     show IconsOutlineButton;
 
 Future<String> showDeleteConfirmationDialog({
-  @required BuildContext context,
+  @required final BuildContext context,
   @required final String title,
   @required String msg,
   @required final IconData proccedIconData,

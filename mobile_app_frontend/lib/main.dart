@@ -19,6 +19,10 @@ import 'package:coffee_orderer/utils/localUserInformation.dart'
 import 'package:coffee_orderer/screens/llmUpdaterFormularScreen.dart'
     show LLMUpdaterFormularPage;
 
+import 'package:coffee_orderer/providers/testScreenProvider.dart'
+    show TestScreenProvider;
+import 'package:coffee_orderer/screens/testScreen.dart' show TestScreen;
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   try {
@@ -38,6 +42,8 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => UpdateProvider()),
         ChangeNotifierProvider(create: (_) => OrderIDProvider.instance),
+        ChangeNotifierProvider(
+            create: (_) => TestScreenProvider()), // dummy test
       ],
       child: MaterialApp(
         home: CofsterPage(),
@@ -63,7 +69,8 @@ class CofsterPage extends StatelessWidget {
             // home: QuestionnairePage(),
             // home: Home(),
             // home: HomePage(),
-            home: LLMUpdaterFormularPage(), // debugging
+            // home: LLMUpdaterFormularPage(), // debugging
+            home: TestScreen(),
             // home: loggingStatusResponse ? HomePage() : AuthPage(),
             debugShowCheckedModeBanner: false,
           );
