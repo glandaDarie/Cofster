@@ -104,7 +104,13 @@ class ProfileCardService {
     try {
       final String confirmationDialogMsg = await showDeleteConfirmationDialog(
         context: context,
-        deleteFn: (final BuildContext context) async {
+        title: "Delete Account",
+        msg:
+            "Are you sure you want to delete your account?\nYou can't recover it later on!",
+        proccedIconData: Icons.delete,
+        proceedText: "Delete",
+        cancelText: "Cancel",
+        proceedFn: (final BuildContext context) async {
           final String cacheStr = await loadUserInformationFromCache();
           final Map<String, String> cache = fromStringCachetoMapCache(cacheStr);
           final UserController userController = UserController();

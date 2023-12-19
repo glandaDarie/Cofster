@@ -7,16 +7,18 @@ import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart'
 
 Future<String> showDeleteConfirmationDialog({
   @required BuildContext context,
-  final String title = "Delete Account",
-  String msg =
-      "Are you sure you want to delete your account?\nYou can't recover it later on!",
+  @required final String title,
+  @required String msg,
+  @required final IconData proccedIconData,
+  @required final String proceedText,
+  @required final String cancelText,
   final double titleSize = 24,
   final double msgSize = 14,
   final Function cancelFn = null,
-  final Function deleteFn = null,
+  final Function proceedFn = null,
 }) async {
   String errorMsg = null;
-  msg = msg.replaceAllMapped(RegExp(r'\n\s*'), (match) => '\n' + ' ' * 15);
+  msg = msg.replaceAllMapped(RegExp(r"\n\s*"), (match) => "\n" + " " * 15);
   try {
     await Dialogs.bottomMaterialDialog(
       context: context,
@@ -39,7 +41,7 @@ Future<String> showDeleteConfirmationDialog({
               cancelFn(context);
             }
           },
-          text: "Cancel",
+          text: cancelText,
           iconData: Icons.cancel_outlined,
           color: Colors.white,
           textStyle: TextStyle(color: Colors.brown),
@@ -47,12 +49,12 @@ Future<String> showDeleteConfirmationDialog({
         ),
         IconsButton(
           onPressed: () async {
-            if (deleteFn != null) {
-              await deleteFn(context);
+            if (proceedFn != null) {
+              await proceedFn(context);
             }
           },
-          text: "Delete",
-          iconData: Icons.delete,
+          text: proceedText,
+          iconData: proccedIconData,
           color: Colors.brown,
           textStyle: TextStyle(color: Colors.white),
           iconColor: Colors.white,
