@@ -18,7 +18,6 @@ import 'package:coffee_orderer/utils/localUserInformation.dart'
 // import 'package:coffee_orderer/screens/loginScreen.dart';
 import 'package:coffee_orderer/screens/llmUpdaterFormularScreen.dart'
     show LLMUpdaterFormularPage;
-
 import 'package:coffee_orderer/providers/testScreenProvider.dart'
     show TestScreenProvider;
 import 'package:coffee_orderer/screens/testScreen.dart' show TestScreen;
@@ -32,18 +31,29 @@ void main() async {
     ToastUtils.showToast(error.toString());
     return;
   }
+  // temporary fix - uncomment this whenever you change countries or the device,
+  // because it will reset the shared preferences
+  // await LoggedInService.setSharedPreferenceValue("<keepMeLoggedIn>");
+
+
   if (!(await LoggedInService.checkSharedPreferenceExistence(
       "<keepMeLoggedIn>"))) {
-    LoggedInService.setSharedPreferenceValue("<keepMeLoggedIn>");
+    await LoggedInService.setSharedPreferenceValue(
+        "<keepMeLoggedIn>"); // whenever changing countries, toggle this sharedPreferenceValue
   }
   NotificationService().initNotification("coffee_cappuccino");
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => UpdateProvider()),
-        ChangeNotifierProvider(create: (_) => OrderIDProvider.instance),
         ChangeNotifierProvider(
-            create: (_) => TestScreenProvider()), // dummy test
+          create: (_) => UpdateProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => OrderIDProvider.instance,
+        ),
+        ChangeNotifierProvider(
+          create: (_) => TestScreenProvider(),
+        ), // dummy test
       ],
       child: MaterialApp(
         home: CofsterPage(),
@@ -69,9 +79,9 @@ class CofsterPage extends StatelessWidget {
             // home: QuestionnairePage(),
             // home: Home(),
             // home: HomePage(),
+            // home: TestScreen(),
             // home: LLMUpdaterFormularPage(), // debugging
-            home: TestScreen(),
-            // home: loggingStatusResponse ? HomePage() : AuthPage(),
+            home: loggingStatusResponse ? HomePage() : AuthPage(),
             debugShowCheckedModeBanner: false,
           );
         } else if (snapshot.hasError) {

@@ -56,6 +56,7 @@ if __name__ == "__main__":
     background_firebase_table_update_thread.daemon = True
     background_firebase_table_update_thread.start()
     recipe_controller : RecipeController = RecipeController(RecipeService())
+    # print(f"LLM_RECIPE: {cli_arguments.llm_recipe}")
     while True:
         if len(drinks_information_consumer.drinks_information) > 0:
             coffee_name : str = drinks_information_consumer.drinks_information[0]["coffeeName"]

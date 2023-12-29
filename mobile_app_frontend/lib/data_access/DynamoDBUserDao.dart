@@ -2,6 +2,7 @@ import 'package:coffee_orderer/models/user.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:coffee_orderer/services/encryptPasswordService.dart';
+import 'package:coffee_orderer/utils/logger.dart' show LOGGER;
 
 class DynamoDBUserDao {
   String url;
@@ -21,6 +22,7 @@ class DynamoDBUserDao {
         usersInformation = parseJson(information);
       }
     } catch (error) {
+      LOGGER.e("Could not fetch all the users information, error: ${error}");
       throw Exception(
           "Could not fetch all the users information, error: ${error}");
     }
