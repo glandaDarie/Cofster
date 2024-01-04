@@ -15,8 +15,9 @@ import 'package:coffee_orderer/controllers/PurchaseHistoryController.dart'
     show PurchaseHistoryController;
 import 'package:coffee_orderer/utils/localUserInformation.dart'
     show loadUserInformationFromCache, fromStringCachetoMapCache;
-import 'package:coffee_orderer/components/profileInformationScreen/deleteUserDialog.dart'
-    show showDeleteConfirmationDialog;
+// import 'package:coffee_orderer/components/profileInformationScreen/deleteUserDialog.dart'
+//     show showDeleteConfirmationDialog;
+import 'package:coffee_orderer/utils/formularDialog.dart' show formularDialog;
 import 'package:coffee_orderer/controllers/UserController.dart'
     show UserController;
 import 'package:coffee_orderer/utils/logger.dart' show LOGGER;
@@ -102,7 +103,7 @@ class ProfileCardService {
   static Future<String> deleteAccount({@required BuildContext context}) async {
     String errorMsg = null;
     try {
-      final String confirmationDialogMsg = await showDeleteConfirmationDialog(
+      final String confirmationDialogMsg = await formularDialog(
         context: context,
         title: "Delete Account",
         msg:

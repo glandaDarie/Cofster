@@ -13,7 +13,7 @@ def on_connect(client : Any, userdata : Any, flags : Any, rc : Any):
 
 def on_message(client : Any, userdata : Any, msg : Any):
     data : str = msg.payload.decode()
-    # preprocess here with Spark, modify the LLM file and save in a RDS database
+    # preprocess here data with Spark, modify the LLM file and save the data in RedShift 
     LOGGER.info(f"Received data: {data} on topic {msg.topic}")
     print(f"Received data: {data} on topic {msg.topic}")
 

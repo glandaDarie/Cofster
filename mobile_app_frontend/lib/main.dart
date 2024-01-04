@@ -20,7 +20,8 @@ import 'package:coffee_orderer/screens/llmUpdaterFormularScreen.dart'
     show LLMUpdaterFormularPage;
 import 'package:coffee_orderer/providers/testScreenProvider.dart'
     show TestScreenProvider;
-import 'package:coffee_orderer/screens/testScreen.dart' show TestScreen;
+import 'package:coffee_orderer/screens/testFormularCompletionDialogScreen.dart'
+    show TestScreen;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,7 +35,6 @@ void main() async {
   // temporary fix - uncomment this whenever you change countries or the device,
   // because it will reset the shared preferences
   // await LoggedInService.setSharedPreferenceValue("<keepMeLoggedIn>");
-
 
   if (!(await LoggedInService.checkSharedPreferenceExistence(
       "<keepMeLoggedIn>"))) {
@@ -79,9 +79,9 @@ class CofsterPage extends StatelessWidget {
             // home: QuestionnairePage(),
             // home: Home(),
             // home: HomePage(),
-            // home: TestScreen(),
+            home: TestScreen(),
             // home: LLMUpdaterFormularPage(), // debugging
-            home: loggingStatusResponse ? HomePage() : AuthPage(),
+            // home: loggingStatusResponse ? HomePage() : AuthPage(),
             debugShowCheckedModeBanner: false,
           );
         } else if (snapshot.hasError) {

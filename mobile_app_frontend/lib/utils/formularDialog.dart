@@ -5,7 +5,7 @@ import 'package:material_dialogs/widgets/buttons/icon_button.dart'
 import 'package:material_dialogs/widgets/buttons/icon_outline_button.dart'
     show IconsOutlineButton;
 
-Future<String> showDeleteConfirmationDialog({
+Future<String> formularDialog({
   @required final BuildContext context,
   @required final String title,
   @required String msg,
@@ -43,7 +43,6 @@ Future<String> showDeleteConfirmationDialog({
             }
           },
           text: cancelText,
-          // iconData: Icons.cancel_outlined,
           iconData: cancelIconData,
           color: Colors.white,
           textStyle: TextStyle(color: Colors.brown),

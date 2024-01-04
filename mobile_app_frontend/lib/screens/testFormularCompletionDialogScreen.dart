@@ -3,9 +3,8 @@ import 'dart:async';
 import 'package:coffee_orderer/providers/testScreenProvider.dart'
     show TestScreenProvider;
 import 'package:provider/provider.dart';
-import 'package:coffee_orderer/components/profileInformationScreen/deleteUserDialog.dart'
-    show showDeleteConfirmationDialog;
 import 'package:coffee_orderer/utils/logger.dart' show LOGGER;
+import 'package:coffee_orderer/utils/formularDialog.dart' show formularDialog;
 
 // only for debugging a mini test
 class TestScreen extends StatefulWidget {
@@ -30,11 +29,15 @@ class _TestScreenState extends State<TestScreen> {
       Duration(milliseconds: 300),
       () {
         try {
-          showDeleteConfirmationDialog(
+          formularDialog(
             context: context,
             title: "Formular completion",
-            msg: "Make your drink better?\nTell us what we can improve",
-            proccedIconData: Icons.delete,
+            msg: '''
+      ${' ' * 3} Make your drink better?
+  Please complete the formular
+        ''',
+            proccedIconData: Icons.rate_review,
+            cancelIconData: Icons.cancel,
             proceedText: "Rate",
             cancelText: "Cancel",
             cancelFn: () {},

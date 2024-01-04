@@ -6,14 +6,14 @@ from ultralytics import YOLO
 from utils.constants import CAMERA_INDEX, WINDOW_NAME
 from detectors.YOLOv8 import YOLOv8Detector
 from utils.firebase_rtd_url import DATABASE_OPTIONS
-from messaging.drinkInformationConsumer import DrinkInformationConsumer
+from messaging.drink_information_consumer import DrinkInformationConsumer
 from threading import Thread
 from threading import Lock
 from utils.logger import LOGGER
 from utils.arguments_parser import ArgumentParser
 from utils.constants import TABLE_NAME
-from services.drinkCreationService import DrinkCreationSevice
-from services.imageProcessorService import ImageProcessorBuilderService
+from services.drink_creation_service import DrinkCreationSevice
+from services.image_processor_service import ImageProcessorBuilderService
 from time import time
 from threading import Event
 from controllers.recipe_controller import RecipeController
