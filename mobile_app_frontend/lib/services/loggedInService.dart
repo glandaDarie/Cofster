@@ -29,6 +29,8 @@ class LoggedInService {
         preferences.setString(key.substring(1, key.length - 1), value);
       } else if (key == "<username>") {
         preferences.setString(key.substring(1, key.length - 1), value);
+      } else if (key == "<elapsedTime>") {
+        preferences.setString(key.substring(1, key.length - 1), value);
       } else {
         throw Exception("Error, the key provided is invalid");
       }

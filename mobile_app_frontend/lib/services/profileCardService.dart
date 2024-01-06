@@ -103,11 +103,15 @@ class ProfileCardService {
   static Future<String> deleteAccount({@required BuildContext context}) async {
     String errorMsg = null;
     try {
+      String msg =
+          "Are you sure you want to delete your account?\nYou can't recover it later on!";
+      msg = msg.replaceAllMapped(RegExp(r"\n\s*"), (match) => "\n" + " " * 15);
       final String confirmationDialogMsg = await formularDialog(
         context: context,
         title: "Delete Account",
-        msg:
-            "Are you sure you want to delete your account?\nYou can't recover it later on!",
+        msg: msg,
+        // msg:
+        //     "Are you sure you want to delete your account?\nYou can't recover it later on!",
         proccedIconData: Icons.delete,
         proceedText: "Delete",
         cancelText: "Cancel",
