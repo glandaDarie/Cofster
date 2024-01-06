@@ -7,12 +7,30 @@ import 'package:coffee_orderer/services/loggedInService.dart'
 class DialogFormularTimerProvider extends ChangeNotifier {
   Timer timer;
   DateTime previousDateAndTime;
+  bool debug;
   bool displayDialog;
-  DialogFormularTimerProvider({
-    Timer timer = null,
+
+  static DialogFormularTimerProvider _instance;
+
+  static DialogFormularTimerProvider getInstance({
     DateTime previousDateAndTime = null,
-  })  : this.timer = timer,
-        this.previousDateAndTime = previousDateAndTime,
+    bool debug = false,
+  }) {
+    if (_instance == null) {
+      _instance = DialogFormularTimerProvider._(
+        previousDateAndTime: previousDateAndTime,
+        debug: debug,
+      );
+    }
+    return _instance;
+  }
+
+  DialogFormularTimerProvider._({
+    DateTime previousDateAndTime = null,
+    bool debug = false,
+  })  : this.previousDateAndTime = previousDateAndTime,
+        this.timer = null,
+        this.debug = debug,
         this.displayDialog = false;
 
   void setTimer({
@@ -44,12 +62,15 @@ class DialogFormularTimerProvider extends ChangeNotifier {
         milliseconds * Duration.microsecondsPerMillisecond +
         microseconds;
 
-    this.previousDateAndTime =
-        DateTime.now().add(Duration(microseconds: totalMicroseconds));
+    this.previousDateAndTime = DateTime.now().add(
+      Duration(microseconds: totalMicroseconds),
+    );
     await LoggedInService.setSharedPreferenceValue("<elapsedTime>",
         value: this.previousDateAndTime.toString());
     const Duration periodicDuration = Duration(seconds: 1);
-    timer.cancel();
+    if (this.timer != null) {
+      this.timer.cancel();
+    }
     this.timer = new Timer.periodic(
       periodicDuration,
       (Timer timer) {
@@ -57,7 +78,6 @@ class DialogFormularTimerProvider extends ChangeNotifier {
         if (this.previousDateAndTime.isBefore(currentDateAndTime) ||
             this.previousDateAndTime.isAtSameMomentAs(currentDateAndTime)) {
           this.displayDialog = true;
-          timer.cancel();
           notifyListeners();
           resetTimer();
         }

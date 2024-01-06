@@ -19,7 +19,6 @@ Future<String> formularDialog({
   IconData cancelIconData = Icons.cancel_outlined,
 }) async {
   String errorMsg = null;
-  // msg = msg.replaceAllMapped(RegExp(r"\n\s*"), (match) => "\n" + " " * 15);
   try {
     await Dialogs.bottomMaterialDialog(
       context: context,

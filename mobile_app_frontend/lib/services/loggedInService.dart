@@ -30,6 +30,8 @@ class LoggedInService {
       } else if (key == "<username>") {
         preferences.setString(key.substring(1, key.length - 1), value);
       } else if (key == "<elapsedTime>") {
+        // second-minute-hour:day-month-year
+        print("Value: ${value}");
         preferences.setString(key.substring(1, key.length - 1), value);
       } else {
         throw Exception("Error, the key provided is invalid");
@@ -50,6 +52,8 @@ class LoggedInService {
         value = preferences.getString(key.substring(1, key.length - 1));
       } else if (key == "<username>") {
         value = preferences.getString(key.substring(1, key.length - 1));
+      } else if (key == "<elapsedTime>") {
+        preferences.getString(key.substring(1, key.length - 1));
       } else {
         throw Exception("Error, the key provided is invalid");
       }
