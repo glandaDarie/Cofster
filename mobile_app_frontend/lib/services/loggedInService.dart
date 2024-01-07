@@ -55,7 +55,8 @@ class LoggedInService {
       } else if (key == "<elapsedTime>") {
         preferences.getString(key.substring(1, key.length - 1));
       } else {
-        throw Exception("Error, the key provided is invalid");
+        return "Key not found";
+        // throw Exception("Error, the key provided is invalid");
       }
     } catch (error) {
       return "Error when trying to get the value from ${key}, ${error}";

@@ -38,7 +38,7 @@ void main() {
         futureDateAndTime: futureDateAndTime != null
             ? DateTime.tryParse(futureDateAndTime)
             : null,
-        setSharedPreferenceValue: (String key, {@required dynamic value}) =>
+        onSetSharedPreferenceValue: (String key, {@required dynamic value}) =>
             MockSharedPreferences.setSharedPreferenceValue(
           key: "<elapsedTime>",
           value: null,

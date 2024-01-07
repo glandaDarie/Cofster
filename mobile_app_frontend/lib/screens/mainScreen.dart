@@ -30,8 +30,10 @@ import 'package:coffee_orderer/services/loggedInService.dart'
     show LoggedInService;
 import 'package:coffee_orderer/utils/message.dart' show Message;
 import 'package:coffee_orderer/components/mainScreen/footer.dart' show Footer;
-// import 'package:coffee_orderer/providers/dialogFormularTimerProvider.dart'
-//     show DialogFormularTimerProvider;
+import 'package:coffee_orderer/providers/dialogFormularTimerSingletonProvider.dart'
+    show DialogFormularTimerSingletonProvider;
+import 'package:coffee_orderer/services/loggedInService.dart'
+    show LoggedInService;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);
@@ -145,6 +147,31 @@ class _HomePageState extends State<HomePage> {
   dynamic _onToggleListeningState(bool newListeningState) {
     this._listeningState = !newListeningState;
     return this._listeningState;
+  }
+
+  // work on the actual implementation here for integration
+  Future<void> fascadeDialogFormular() async {
+    dynamic elapsedTime =
+        await LoggedInService.getSharedPreferenceValue("<elapsedTime>");
+    if (elapsedTime == "Key not found") {
+      await LoggedInService.setSharedPreferenceValue(
+        "<elapsedTime>",
+        value: null,
+      );
+    }
+    final DialogFormularTimerSingletonProvider dialogFormularTimerProvider =
+        DialogFormularTimerSingletonProvider.getInstance(
+      futureDateAndTime:
+          elapsedTime != null ? DateTime.tryParse(elapsedTime) : null,
+      onSetSharedPreferenceValue: (String key, {@required dynamic value}) =>
+          LoggedInService.setSharedPreferenceValue(
+        "<elapsedTime>",
+        value: null,
+      ),
+      debug: true,
+    );
+    // in prod it should be 30 minutes
+    dialogFormularTimerProvider.setTimer(seconds: 10);
   }
 
   @override
