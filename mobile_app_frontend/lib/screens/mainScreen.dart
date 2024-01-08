@@ -32,8 +32,6 @@ import 'package:coffee_orderer/utils/message.dart' show Message;
 import 'package:coffee_orderer/components/mainScreen/footer.dart' show Footer;
 import 'package:coffee_orderer/providers/dialogFormularTimerSingletonProvider.dart'
     show DialogFormularTimerSingletonProvider;
-import 'package:coffee_orderer/services/loggedInService.dart'
-    show LoggedInService;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);
@@ -149,13 +147,14 @@ class _HomePageState extends State<HomePage> {
     return this._listeningState;
   }
 
-  // work on the actual implementation here for integration
-  Future<void> fascadeDialogFormular() async {
-    dynamic elapsedTime =
-        await LoggedInService.getSharedPreferenceValue("<elapsedTime>");
+  // work on the actual implementation here
+  Future<void> _onDialogFormularSet() async {
+    final String sharedPreferenceKey = "<elapsedTime>";
+    final dynamic elapsedTime =
+        await LoggedInService.getSharedPreferenceValue(sharedPreferenceKey);
     if (elapsedTime == "Key not found") {
       await LoggedInService.setSharedPreferenceValue(
-        "<elapsedTime>",
+        sharedPreferenceKey,
         value: null,
       );
     }
@@ -163,15 +162,18 @@ class _HomePageState extends State<HomePage> {
         DialogFormularTimerSingletonProvider.getInstance(
       futureDateAndTime:
           elapsedTime != null ? DateTime.tryParse(elapsedTime) : null,
+      sharedPreferenceKey: sharedPreferenceKey,
       onSetSharedPreferenceValue: (String key, {@required dynamic value}) =>
           LoggedInService.setSharedPreferenceValue(
-        "<elapsedTime>",
+        sharedPreferenceKey,
         value: null,
       ),
+      onGetSharedPreferenceValue: (String key) =>
+          LoggedInService.getSharedPreferenceValue(sharedPreferenceKey),
       debug: true,
     );
     // in prod it should be 30 minutes
-    dialogFormularTimerProvider.setTimer(seconds: 10);
+    dialogFormularTimerProvider.startTimer(seconds: 10); // dev environment
   }
 
   @override

@@ -15,7 +15,7 @@ class MockSharedPreferences extends Mock implements LoggedInService {
     return await "Key: ${key}, value: ${value}";
   }
 
-  static dynamic getSharedPreferenceValue({@required String key}) {
+  static dynamic getSharedPreferenceValue(String key) {
     return _sharedPreferences[key];
   }
 }
@@ -24,31 +24,34 @@ void main() {
   testWidgets(
     "Test setTimer method",
     (WidgetTester tester) async {
+      final String sharedPreferenceKey = "<elapsedTime>";
       MockSharedPreferences.setSharedPreferenceValue(
-        key: "<elapsedTime>",
+        key: sharedPreferenceKey,
         value: null,
       );
-
       String futureDateAndTime =
-          MockSharedPreferences.getSharedPreferenceValue(key: "<elapsedTime>");
+          MockSharedPreferences.getSharedPreferenceValue(sharedPreferenceKey);
       expect(futureDateAndTime, equals(null));
 
       final DialogFormularTimerSingletonProvider dialogFormularTimerProvider =
           DialogFormularTimerSingletonProvider.getInstance(
+        sharedPreferenceKey: sharedPreferenceKey,
         futureDateAndTime: futureDateAndTime != null
             ? DateTime.tryParse(futureDateAndTime)
             : null,
         onSetSharedPreferenceValue: (String key, {@required dynamic value}) =>
             MockSharedPreferences.setSharedPreferenceValue(
-          key: "<elapsedTime>",
+          key: sharedPreferenceKey,
           value: null,
         ),
+        onGetSharedPreferenceValue: (String key) =>
+            MockSharedPreferences.getSharedPreferenceValue(sharedPreferenceKey),
         debug: true,
       );
 
       expect(dialogFormularTimerProvider.displayDialog, isFalse);
 
-      dialogFormularTimerProvider.setTimer(seconds: 10);
+      dialogFormularTimerProvider.startTimer(seconds: 10);
       await tester.pump();
       await tester.pump(const Duration(seconds: 10));
       await tester.pump();
@@ -56,7 +59,6 @@ void main() {
       // cannot test this, because of async nature of the code (only in prod should work)
       // temporary turnaround is setting to true displayDialog if the logger is called in the dialogFormularTimerProvider
       dialogFormularTimerProvider.displayDialog = true;
-
       expect(dialogFormularTimerProvider.displayDialog, isTrue);
     },
   );
