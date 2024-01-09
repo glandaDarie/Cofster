@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:coffee_orderer/screens/authScreen.dart';
-import 'package:coffee_orderer/screens/mainScreen.dart';
 import 'package:coffee_orderer/services/notificationService.dart'
     show NotificationService;
 import 'package:firebase_core/firebase_core.dart';
@@ -18,10 +16,12 @@ import 'package:coffee_orderer/utils/localUserInformation.dart'
 // import 'package:coffee_orderer/screens/loginScreen.dart';
 // import 'package:coffee_orderer/screens/llmUpdaterFormularScreen.dart'
 //     show LLMUpdaterFormularPage;
-import 'package:coffee_orderer/providers/testScreenProvider.dart'
-    show TestScreenProvider;
+// import 'package:coffee_orderer/screens/authScreen.dart' show AuthPage;
+import 'package:coffee_orderer/screens/mainScreen.dart' show HomePage;
 import 'package:coffee_orderer/screens/testFormularCompletionDialogScreen.dart'
     show TestScreen;
+import 'package:coffee_orderer/providers/testScreenProvider.dart'
+    show TestScreenProvider;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,6 +32,7 @@ void main() async {
     ToastUtils.showToast(error.toString());
     return;
   }
+
   // temporary fix - uncomment this whenever you change countries or the device,
   // because it will reset the shared preferences
   // await LoggedInService.setSharedPreferenceValue("<keepMeLoggedIn>");
@@ -53,7 +54,7 @@ void main() async {
         ),
         ChangeNotifierProvider(
           create: (_) => TestScreenProvider(),
-        ), // dummy test
+        ), // dummy code to check the dialog is working
       ],
       child: MaterialApp(
         home: CofsterPage(),
@@ -78,8 +79,8 @@ class CofsterPage extends StatelessWidget {
             // home: AuthPage(),
             // home: QuestionnairePage(),
             // home: Home(),
-            // home: HomePage(),
-            home: TestScreen(),
+            home: HomePage(),
+            // home: TestScreen(),
             // home: LLMUpdaterFormularPage(), // debugging
             // home: loggingStatusResponse ? HomePage() : AuthPage(),
             debugShowCheckedModeBanner: false,

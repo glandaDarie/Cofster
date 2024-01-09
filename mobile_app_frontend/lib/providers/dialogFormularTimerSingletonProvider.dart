@@ -51,12 +51,12 @@ class DialogFormularTimerSingletonProvider extends ChangeNotifier {
         this.displayDialog = false;
 
   void startTimer({
-    int days = 0,
-    int hours = 0,
-    int minutes = 0,
-    int seconds = 0,
-    int milliseconds = 0,
-    int microseconds = 0,
+    final int days = 0,
+    final int hours = 0,
+    final int minutes = 0,
+    final int seconds = 0,
+    final int milliseconds = 0,
+    final int microseconds = 0,
   }) async {
     int numberOfArgumentsPassed = 0;
     numberOfArgumentsPassed += (days != 0) ? 1 : 0;
@@ -117,10 +117,10 @@ class DialogFormularTimerSingletonProvider extends ChangeNotifier {
   }
 
   void _resetTimer() async {
-    this.timer.cancel();
     this.futureDateAndTime = null;
     await this
         .onSetSharedPreferenceValue(this.sharedPreferenceKey, value: null);
     this.displayDialog = false;
+    this.timer.cancel();
   }
 }

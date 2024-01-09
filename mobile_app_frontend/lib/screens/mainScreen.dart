@@ -30,6 +30,8 @@ import 'package:coffee_orderer/services/loggedInService.dart'
     show LoggedInService;
 import 'package:coffee_orderer/utils/message.dart' show Message;
 import 'package:coffee_orderer/components/mainScreen/footer.dart' show Footer;
+import 'package:coffee_orderer/callbacks/mainScreenCallbacks.dart'
+    show MainScreenCallbacks;
 import 'package:coffee_orderer/providers/dialogFormularTimerSingletonProvider.dart'
     show DialogFormularTimerSingletonProvider;
 
@@ -57,6 +59,7 @@ class _HomePageState extends State<HomePage> {
   ValueNotifier<int> _numberFavoritesValueNotifier;
   GiftController _giftController;
   ValueNotifier<bool> _userGiftsNotifier;
+  MainScreenCallbacks _mainScreenCallbacks;
 
   _HomePageState() {
     this.userController = UserController();
@@ -68,12 +71,23 @@ class _HomePageState extends State<HomePage> {
     this._favouriteDrinks = [];
     this.coffeeCardObjects = [];
     this.speechToTextService = SpeechToTextService(
-        _onRerenderUI, _onSetTextToSpeechResult, _onGetSpeechResult);
+      () => setState(() {}),
+      (SpeechRecognitionResult result) => setState(() {
+        this._rawTextFromSpeech = result.recognizedWords;
+        // debugging
+        // print(this._rawTextFromSpeech);
+      }),
+      () => this._rawTextFromSpeech,
+    );
     this._rawTextFromSpeech = "";
     this._speechState = false;
     this._listeningState = false;
     this._giftController = GiftController();
     this._userGiftsNotifier = ValueNotifier<bool>(true);
+    this._mainScreenCallbacks = MainScreenCallbacks(
+        speechState: this._speechState,
+        navBarItemSelected: this._navBarItemSelected,
+        listeningState: this._listeningState);
   }
 
   @override
@@ -83,7 +97,10 @@ class _HomePageState extends State<HomePage> {
     this._numberFavoritesValueNotifier = ValueNotifier<int>(
         this.coffeeCardSingleton.getNumberOfSetFavoriteFromCoffeeCardObjects());
     this.coffeeCardController = CoffeeCardController(
-        context, _onTapHeartLogo, _numberFavoritesValueNotifier);
+      context,
+      this._mainScreenCallbacks.onTapHeartLogo,
+      this._numberFavoritesValueNotifier,
+    );
     WidgetsBinding.instance.addPostFrameCallback((Duration timeStamp) {
       this
           .questionnaireController
@@ -112,68 +129,6 @@ class _HomePageState extends State<HomePage> {
         });
       });
     });
-  }
-
-  void _onSpeechStateChanged(bool newSpeechStatus) {
-    this._speechState = !newSpeechStatus;
-  }
-
-  void _onRerenderUI() {
-    setState(() {});
-  }
-
-  void _onSetTextToSpeechResult(SpeechRecognitionResult result) {
-    setState(() {
-      this._rawTextFromSpeech = result.recognizedWords;
-      // debugging
-      // print(this._rawTextFromSpeech);
-    });
-  }
-
-  String _onGetSpeechResult() {
-    return this._rawTextFromSpeech;
-  }
-
-  void _onSelectedIndicesNavBar(int newNavBarItemSelected) {
-    this._navBarItemSelected.value = newNavBarItemSelected;
-  }
-
-  void _onTapHeartLogo(CoffeeCard coffeeCard, ValueNotifier<bool> isFavorite) {
-    coffeeCard.isFavoriteNotifier.value = !isFavorite.value;
-  }
-
-  dynamic _onToggleListeningState(bool newListeningState) {
-    this._listeningState = !newListeningState;
-    return this._listeningState;
-  }
-
-  // work on the actual implementation here
-  Future<void> _onDialogFormularSet() async {
-    final String sharedPreferenceKey = "<elapsedTime>";
-    final dynamic elapsedTime =
-        await LoggedInService.getSharedPreferenceValue(sharedPreferenceKey);
-    if (elapsedTime == "Key not found") {
-      await LoggedInService.setSharedPreferenceValue(
-        sharedPreferenceKey,
-        value: null,
-      );
-    }
-    final DialogFormularTimerSingletonProvider dialogFormularTimerProvider =
-        DialogFormularTimerSingletonProvider.getInstance(
-      futureDateAndTime:
-          elapsedTime != null ? DateTime.tryParse(elapsedTime) : null,
-      sharedPreferenceKey: sharedPreferenceKey,
-      onSetSharedPreferenceValue: (String key, {@required dynamic value}) =>
-          LoggedInService.setSharedPreferenceValue(
-        sharedPreferenceKey,
-        value: null,
-      ),
-      onGetSharedPreferenceValue: (String key) =>
-          LoggedInService.getSharedPreferenceValue(sharedPreferenceKey),
-      debug: true,
-    );
-    // in prod it should be 30 minutes
-    dialogFormularTimerProvider.startTimer(seconds: 10); // dev environment
   }
 
   @override
@@ -390,16 +345,16 @@ class _HomePageState extends State<HomePage> {
                   right: 0,
                   bottom: 0,
                   child: bottomNavigationBar(
-                    this._navBarItemSelected,
-                    _onSelectedIndicesNavBar,
-                    this._speechState,
-                    _onSpeechStateChanged,
-                    this._listeningState,
-                    _onToggleListeningState,
-                    userGiftsNotifier: this._userGiftsNotifier,
-                    numberFavoritesValueNotifier: _numberFavoritesValueNotifier,
-                    giftController: this._giftController,
-                  ),
+                      this._mainScreenCallbacks.navBarItemSelected,
+                      this._mainScreenCallbacks.onSelectedIndicesNavBar,
+                      this._mainScreenCallbacks.speechState,
+                      this._mainScreenCallbacks.onSpeechStateChanged,
+                      this._mainScreenCallbacks.listeningState,
+                      this._mainScreenCallbacks.onToggleListeningState,
+                      userGiftsNotifier: this._userGiftsNotifier,
+                      numberFavoritesValueNotifier:
+                          this._numberFavoritesValueNotifier,
+                      giftController: this._giftController),
                 ),
               ],
             ),
