@@ -11,6 +11,9 @@ import 'package:coffee_orderer/utils/toast.dart' show ToastUtils;
 
 Future<void> navigateToDetailsPage({
   @required String currentScreenName,
+  // @required -> should also have required later on, not right now alteast
+  Future<String> Function({@required String sharedPreferenceKey})
+      onSetDialogFormular,
   String gift = null,
   CoffeeCard card = null,
   BuildContext context,

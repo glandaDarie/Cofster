@@ -1,0 +1,7 @@
+version: "3.8"
+
+services:
+  classifier:
+    image: coffee-recommender-model:latest
+    ports:
+      - "8001:8000"

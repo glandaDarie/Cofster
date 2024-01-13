@@ -11,6 +11,8 @@ import 'package:coffee_orderer/services/stringSimiliarityService.dart'
 class CoffeeCardController {
   BuildContext _context;
   Function(CoffeeCard, ValueNotifier<bool>) _onTapHeartLogo;
+  Future<String> Function({@required String sharedPreferenceKey})
+      _onSetDialogFormular;
   List<Padding> _coffeeCards;
   List<CoffeeCard> _objectsCoffeeCards;
   CoffeeCardSingleton _coffeeCardSingleton;
@@ -18,6 +20,8 @@ class CoffeeCardController {
 
   CoffeeCardController(
       [BuildContext context,
+      Future<String> Function({@required String sharedPreferenceKey})
+          _onSetDialogFormular,
       void Function(CoffeeCard, ValueNotifier<bool>) onTapHeartLogo,
       ValueNotifier<int> _numberFavoritesValueNotifier]) {
     this._context = context;
@@ -25,6 +29,7 @@ class CoffeeCardController {
     this._coffeeCardSingleton = CoffeeCardSingleton(this._context);
     this._objectsCoffeeCards = _coffeeCardSingleton.getCoffeeCardObjects();
     this._numberFavoritesValueNotifier = _numberFavoritesValueNotifier;
+    this._onSetDialogFormular = _onSetDialogFormular;
   }
 
   Padding getParticularCoffeeCard(int index) {
@@ -42,8 +47,8 @@ class CoffeeCardController {
   List<Padding> getCoffeeCards() {
     return [
       for (CoffeeCard objectCoffeeCard in this._objectsCoffeeCards)
-        coffeeCard(objectCoffeeCard, this._onTapHeartLogo,
-            this._numberFavoritesValueNotifier),
+        coffeeCard(objectCoffeeCard, this._onSetDialogFormular,
+            this._onTapHeartLogo, this._numberFavoritesValueNotifier),
     ].toList();
   }
 

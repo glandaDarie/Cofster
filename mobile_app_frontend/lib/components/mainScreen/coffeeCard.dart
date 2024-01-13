@@ -7,9 +7,13 @@ import 'package:coffee_orderer/notifiers/favoriteDrinkNotifier.dart'
 import 'package:coffee_orderer/components/detailsScreen/navigateToDetailsPage.dart'
     show navigateToDetailsPage;
 
-Padding coffeeCard(CoffeeCard card,
-    [void Function(CoffeeCard, ValueNotifier<bool>) callbackSetFavorite,
-    ValueNotifier<int> numberFavoritesValueNotifier]) {
+Padding coffeeCard(
+  CoffeeCard card,
+  Future<String> Function({@required String sharedPreferenceKey})
+      onSetDialogFormular, [
+  void Function(CoffeeCard, ValueNotifier<bool>) callbackSetFavorite,
+  ValueNotifier<int> numberFavoritesValueNotifier,
+]) {
   return Padding(
       padding: EdgeInsets.only(left: 15.0, right: 15.0),
       child: Container(
@@ -95,6 +99,7 @@ Padding coffeeCard(CoffeeCard card,
                 onTap: () async {
                   navigateToDetailsPage(
                     currentScreenName: "MainPage",
+                    onSetDialogFormular: onSetDialogFormular,
                     card: card,
                   );
                 },

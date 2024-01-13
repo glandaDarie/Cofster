@@ -98,6 +98,7 @@ class _HomePageState extends State<HomePage> {
         this.coffeeCardSingleton.getNumberOfSetFavoriteFromCoffeeCardObjects());
     this.coffeeCardController = CoffeeCardController(
       context,
+      this._mainScreenCallbacks.onSetDialogFormular,
       this._mainScreenCallbacks.onTapHeartLogo,
       this._numberFavoritesValueNotifier,
     );

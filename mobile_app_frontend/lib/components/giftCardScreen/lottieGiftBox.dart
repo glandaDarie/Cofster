@@ -4,9 +4,10 @@ import 'package:coffee_orderer/utils/appAssets.dart' show GIFT_ANIMATION;
 import 'package:coffee_orderer/components/detailsScreen/navigateToDetailsPage.dart'
     show navigateToDetailsPage;
 
-Widget lottieGiftBox(
-    {@required String gift,
-    @required ValueNotifier<bool> animationPlayingNotifier}) {
+Widget lottieGiftBox({
+  @required String gift,
+  @required ValueNotifier<bool> animationPlayingNotifier,
+}) {
   return ValueListenableBuilder(
     valueListenable: animationPlayingNotifier,
     builder: (BuildContext context, bool animationPlaying, Widget child) {
@@ -35,6 +36,7 @@ Widget lottieGiftBox(
                   animationPlayingNotifier.value = !animationPlaying;
                   navigateToDetailsPage(
                     currentScreenName: "GiftCardPage",
+                    onSetDialogFormular: null,
                     gift: gift,
                     context: context,
                   );
