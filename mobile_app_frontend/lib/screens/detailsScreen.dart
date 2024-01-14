@@ -22,8 +22,7 @@ import 'package:coffee_orderer/components/detailsScreen/detailsScreenBody.dart'
 
 class DetailsPage extends StatefulWidget {
   final bool isGift;
-  final Future<String> Function({String sharedPreferenceKey})
-      onSetDialogFormular;
+  final Future<void> Function({String sharedPreferenceKey}) onSetDialogFormular;
 
   const DetailsPage({
     Key key,
@@ -52,10 +51,11 @@ class _DetailsPageState extends State<DetailsPage> {
   ValueNotifier<bool> _isGiftValueNotifier;
   ValueNotifier<bool> _microtaskNotExecutedNotifier;
   bool _isGift;
+  Future<void> Function({String sharedPreferenceKey}) onSetDialogFormular;
 
   _DetailsPageState(
     bool isGift,
-    Future<String> Function({String sharedPreferenceKey})
+    Future<void> Function({String sharedPreferenceKey})
         onSetDialogFormular, // the callback is either null or it exists
   ) {
     this.hotSelectedNotifier = ValueNotifier<bool>(false);
@@ -71,6 +71,7 @@ class _DetailsPageState extends State<DetailsPage> {
     this._isGiftValueNotifier = ValueNotifier<bool>(isGift);
     this._isGift = isGift;
     this._microtaskNotExecutedNotifier = ValueNotifier<bool>(true);
+    this.onSetDialogFormular = onSetDialogFormular;
   }
 
   @override

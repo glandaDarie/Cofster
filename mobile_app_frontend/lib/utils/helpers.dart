@@ -1,4 +1,4 @@
-String dateAndTimePairs(DateTime dateTime) {
+String dateAndTimeFormatted(DateTime dateTime) {
   String date = dateTime.toString();
   List<String> dateAndTime = date.split(" ");
   dateAndTime[0] = dateAndTime[0].replaceAll("-", ":");

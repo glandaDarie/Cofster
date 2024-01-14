@@ -3,7 +3,7 @@ from helpers.coffee_machine_controller import CoffeeMachineController
 import concurrent.futures
 from threading import Event
 from utils.logger import thread_information_logger
-from messaging.drinkInformationConsumer import DrinkInformationConsumer
+from messaging.drink_information_consumer import DrinkInformationConsumer
 
 class DrinkCreationSevice(CoffeeMachineController):
     """

@@ -14,12 +14,12 @@ import 'package:coffee_orderer/utils/localUserInformation.dart'
     show createUserInformationFile;
 // import 'package:coffee_orderer/screens/questionnaireScreen.dart';
 // import 'package:coffee_orderer/screens/loginScreen.dart';
-// import 'package:coffee_orderer/screens/llmUpdaterFormularScreen.dart'
-//     show LLMUpdaterFormularPage;
+import 'package:coffee_orderer/screens/llmUpdaterFormularScreen.dart'
+    show LLMUpdaterFormularPage;
 // import 'package:coffee_orderer/screens/authScreen.dart' show AuthPage;
-import 'package:coffee_orderer/screens/mainScreen.dart' show HomePage;
-import 'package:coffee_orderer/screens/testFormularCompletionDialogScreen.dart'
-    show TestScreen;
+// import 'package:coffee_orderer/screens/mainScreen.dart' show HomePage;
+// import 'package:coffee_orderer/screens/testFormularCompletionDialogScreen.dart'
+//     show TestScreen;
 import 'package:coffee_orderer/providers/testScreenProvider.dart'
     show TestScreenProvider;
 
@@ -79,9 +79,9 @@ class CofsterPage extends StatelessWidget {
             // home: AuthPage(),
             // home: QuestionnairePage(),
             // home: Home(),
-            home: HomePage(),
+            // home: HomePage(),
             // home: TestScreen(),
-            // home: LLMUpdaterFormularPage(), // debugging
+            home: LLMUpdaterFormularPage(), // debugging
             // home: loggingStatusResponse ? HomePage() : AuthPage(),
             debugShowCheckedModeBanner: false,
           );

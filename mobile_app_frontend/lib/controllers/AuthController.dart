@@ -27,7 +27,6 @@ class AuthController extends ValidateCredentialsService {
     List<dynamic> _users;
     try {
       _users = await this.userController.getAllUsers();
-      print(_users);
     } catch (e) {
       ToastUtils.showToast("Exception when trying to fetch users: $e");
       return null;

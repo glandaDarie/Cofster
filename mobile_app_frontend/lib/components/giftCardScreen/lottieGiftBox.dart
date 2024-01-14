@@ -36,7 +36,7 @@ Widget lottieGiftBox({
                   animationPlayingNotifier.value = !animationPlaying;
                   navigateToDetailsPage(
                     currentScreenName: "GiftCardPage",
-                    onSetDialogFormular: null,
+                    // onSetDialogFormular: null,
                     gift: gift,
                     context: context,
                   );

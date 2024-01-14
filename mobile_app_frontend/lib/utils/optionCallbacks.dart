@@ -25,7 +25,7 @@ Future<void> onPressed({
     // but easier for testing right now (beacuse I am using the same email to create multiple users)
     questionnaireResponses["name"] =
         await LoggedInService.getSharedPreferenceValue("<nameUser>");
-    LOGGER.i("QUESTIONNAIRE NAME: ${questionnaireResponses["name"]}");
+    LOGGER.i("user questionnaire name: ${questionnaireResponses["name"]}");
     // send data async to backend using MQTT
     QuestionnaireLlmUpdaterMqttPublisherFascade.publish(
       data: questionnaireResponses,

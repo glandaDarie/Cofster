@@ -11,7 +11,7 @@ import 'package:coffee_orderer/services/stringSimiliarityService.dart'
 class CoffeeCardController {
   BuildContext _context;
   Function(CoffeeCard, ValueNotifier<bool>) _onTapHeartLogo;
-  Future<String> Function({@required String sharedPreferenceKey})
+  Future<void> Function({@required String sharedPreferenceKey})
       _onSetDialogFormular;
   List<Padding> _coffeeCards;
   List<CoffeeCard> _objectsCoffeeCards;
@@ -20,7 +20,7 @@ class CoffeeCardController {
 
   CoffeeCardController(
       [BuildContext context,
-      Future<String> Function({@required String sharedPreferenceKey})
+      Future<void> Function({@required String sharedPreferenceKey})
           _onSetDialogFormular,
       void Function(CoffeeCard, ValueNotifier<bool>) onTapHeartLogo,
       ValueNotifier<int> _numberFavoritesValueNotifier]) {

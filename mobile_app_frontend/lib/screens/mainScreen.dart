@@ -85,51 +85,58 @@ class _HomePageState extends State<HomePage> {
     this._giftController = GiftController();
     this._userGiftsNotifier = ValueNotifier<bool>(true);
     this._mainScreenCallbacks = MainScreenCallbacks(
-        speechState: this._speechState,
-        navBarItemSelected: this._navBarItemSelected,
-        listeningState: this._listeningState);
+      speechState: this._speechState,
+      navBarItemSelected: this._navBarItemSelected,
+      listeningState: this._listeningState,
+    );
   }
 
   @override
   void initState() {
     super.initState();
     this.coffeeCardSingleton = CoffeeCardSingleton(context);
+    print(
+        "this._mainScreenCallbacks.onSetDialogFormular: ${this._mainScreenCallbacks.onSetDialogFormular}");
     this._numberFavoritesValueNotifier = ValueNotifier<int>(
         this.coffeeCardSingleton.getNumberOfSetFavoriteFromCoffeeCardObjects());
+    // here it crashes right now for the LLMUpdaterFormular
     this.coffeeCardController = CoffeeCardController(
       context,
       this._mainScreenCallbacks.onSetDialogFormular,
       this._mainScreenCallbacks.onTapHeartLogo,
       this._numberFavoritesValueNotifier,
     );
-    WidgetsBinding.instance.addPostFrameCallback((Duration timeStamp) {
-      this
-          .questionnaireController
-          .loadFavouriteDrinksFrom()
-          .then((Map<String, List<String>> favouriteDrinks) {
-        if (!mounted) return;
-        setState(() {
-          this._favouriteDrinks = favouriteDrinks.values.first;
-          String loadedFrom = favouriteDrinks.keys.first;
-          String favouriteDrink = this._favouriteDrinks.first;
-          if (loadedFrom == "db") {
-            return;
-          }
-          showPopup(context, favouriteDrink);
-          this._giftController.createGift(favouriteDrink).then(
-              (String response) {
-            if (response != null) {
-              return Message.error(message: response);
-            }
-          }, onError: (dynamic error) => Message.error(message: error));
-          NotificationService().showNotification(
-            title: "New user reward",
-            body:
-                "You won a free ${favouriteDrink.toLowerCase()} coffee. Enjoy!",
-          );
-        });
-      });
-    });
+    WidgetsBinding.instance.addPostFrameCallback(
+      (Duration timeStamp) {
+        this.questionnaireController.loadFavouriteDrinksFrom().then(
+          (Map<String, List<String>> favouriteDrinks) {
+            if (!mounted) return;
+            setState(
+              () {
+                this._favouriteDrinks = favouriteDrinks.values.first;
+                String loadedFrom = favouriteDrinks.keys.first;
+                String favouriteDrink = this._favouriteDrinks.first;
+                if (loadedFrom == "db") {
+                  return;
+                }
+                showPopup(context, favouriteDrink);
+                this._giftController.createGift(favouriteDrink).then(
+                    (String response) {
+                  if (response != null) {
+                    return Message.error(message: response);
+                  }
+                }, onError: (dynamic error) => Message.error(message: error));
+                NotificationService().showNotification(
+                  title: "New user reward",
+                  body:
+                      "You won a free ${favouriteDrink.toLowerCase()} coffee. Enjoy!",
+                );
+              },
+            );
+          },
+        );
+      },
+    );
   }
 
   @override
