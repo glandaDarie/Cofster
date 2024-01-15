@@ -99,7 +99,6 @@ class _HomePageState extends State<HomePage> {
         "this._mainScreenCallbacks.onSetDialogFormular: ${this._mainScreenCallbacks.onSetDialogFormular}");
     this._numberFavoritesValueNotifier = ValueNotifier<int>(
         this.coffeeCardSingleton.getNumberOfSetFavoriteFromCoffeeCardObjects());
-    // here it crashes right now for the LLMUpdaterFormular
     this.coffeeCardController = CoffeeCardController(
       context,
       this._mainScreenCallbacks.onSetDialogFormular,
