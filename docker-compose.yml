@@ -7,7 +7,7 @@ services:
       - "8001:8000" 
 
   mqtt-subscriber:
-    image: mqtt-subscriber:latest
+    image: questionnaire-llm-updater:latest
 
   spark:
     image: docker.io/bitnami/spark:3.5

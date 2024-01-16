@@ -1,12 +1,8 @@
 from typing import Any
 import paho.mqtt.client as mqtt
-import sys
 from pyspark.sql import SparkSession
 from typing import List, Tuple
-
-sys.path.append("../")
-
-from utils.arguments_parser import ArgumentParser
+from utils.argument_parser import ArgumentParser
 from utils.logger import LOGGER
 
 def on_connect(client : Any, userdata : Any, flags : Any, rc : Any):
@@ -15,7 +11,11 @@ def on_connect(client : Any, userdata : Any, flags : Any, rc : Any):
 
 def on_message(client : Any, userdata : Any, msg : Any):
     data : str = msg.payload.decode()
+    LOGGER.info(f"Received data: {data} on topic {msg.topic}")
+    print(f"Received data: {data} on topic {msg.topic}")
     # sample code testing here
+    # preprocess here data with Spark, modify the LLM file and save the data in RedShift 
+    # -------------------------------
     spark_session : SparkSession = SparkSession.builder \
         .appName(msg.topic) \
         .getOrCreate()
@@ -28,9 +28,7 @@ def on_message(client : Any, userdata : Any, msg : Any):
         print(result_query.show())
     finally: 
         spark_session.stop()
-    # preprocess here data with Spark, modify the LLM file and save the data in RedShift 
-    LOGGER.info(f"Received data: {data} on topic {msg.topic}")
-    print(f"Received data: {data} on topic {msg.topic}")
+    # -------------------------------
 
 if __name__ == "__main__":
     client : mqtt.Client = mqtt.Client() 
