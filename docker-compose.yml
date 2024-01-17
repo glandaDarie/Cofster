@@ -22,8 +22,8 @@ services:
       - '8010:8010'
     volumes:
       - "./cup_detection/messaging/:/opt/spark"
-    depends_on:
-      - mqtt-subscriber
+    # depends_on:
+    #   - mqtt-subscriber
 
   spark-worker:
     image: docker.io/bitnami/spark:3.5
@@ -37,5 +37,5 @@ services:
       - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
       - SPARK_SSL_ENABLED=no
       - SPARK_USER=spark
-    depends_on:
-      - mqtt-subscriber
+    # depends_on:
+    #   - mqtt-subscriber
