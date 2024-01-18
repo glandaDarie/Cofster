@@ -1,19 +1,23 @@
-from database_strategy import DatabaseStrategy
-from utils.logger import LOGGER
-from entity.questionnaire_entity import Base, QuestionnaireEntity
 from sqlalchemy import Table, MetaData, create_engine, inspect, Engine, inspect
 from sqlalchemy.orm import sessionmaker, Session
-from typing import Self, Dict, Any
+from typing import Dict, Any
 
-class PostgresStrategyDAO(DatabaseStrategy):
+import sys
+sys.path.append("../")
+
+from data_access.database_strategies.database_strategy_dao import DatabaseStrategyDAO
+from utils.logger import LOGGER
+from entity.questionnaire_entity import Base, QuestionnaireEntity
+
+class PostgresStrategyDAO(DatabaseStrategyDAO):
     """
-    Concrete implementation of DatabaseStrategy for PostgreSQL databases.
+    Concrete implementation of DatabaseStrategyDAO for PostgreSQL databases.
 
     This class provides methods to connect to a PostgreSQL database, create tables, insert entities,
     and disconnect from the database.
     """
     
-    def __init__(self, database, username : str, password : str, host : str = "localhost", port : int = 5432):
+    def __init__(self, database : str, username : str, password : str, host : str = "localhost", port : int = 5432):
         """
         Initialize a PostgresStrategyDAO instance.
 
@@ -33,12 +37,12 @@ class PostgresStrategyDAO(DatabaseStrategy):
         self.engine : Engine | None = None
         self.session : Session | None = None
         
-    def connect(self) -> Self:
+    def connect(self) -> None:
         """
         Connect to the PostgreSQL database.
 
-        Returns:
-        - Self: Returns the instance of the class.
+         Returns:
+        - None: nothing.
         """
         LOGGER.info(f"Connecting to PostgreSQL database as {self.username}@{self.host}:{self.port}.")
         database_url : str = f"postgresql://{self.username}:{self.password}@{self.host}:{self.port}/{self.database}"
@@ -46,9 +50,8 @@ class PostgresStrategyDAO(DatabaseStrategy):
         self.inspector = inspect(subject=self.engine)
         Session = sessionmaker(bind=self.engine)
         self.session = Session()
-        return self
 
-    def create_table(self, table_name : str) -> Self:
+    def create_table(self, table_name : str) -> None:
         """
         Create a table in the PostgreSQL database.
 
@@ -56,7 +59,7 @@ class PostgresStrategyDAO(DatabaseStrategy):
         - table_name (str): The name of the table to be created.
         
         Returns:
-        - Self: Returns the instance of the class.
+        - None: nothing.
         """
         table_exists : bool = self.inspector.has_table(table_name=table_name)
         if table_exists:
@@ -66,7 +69,6 @@ class PostgresStrategyDAO(DatabaseStrategy):
             metadata : MetaData = MetaData(self.engine)
             table : Table = Table(name=table_name, metadata=metadata, autoload_with=self.engine)
             table.create()
-        return self
     
     @staticmethod
     def __is_entity(cls: Any) -> bool:
@@ -81,7 +83,7 @@ class PostgresStrategyDAO(DatabaseStrategy):
         """
         return isinstance(cls, type) and issubclass(cls, Base)
 
-    def insert(self, entity : QuestionnaireEntity, **params : Dict[str, Any]) -> Self:
+    def insert(self, entity : QuestionnaireEntity, **params : Dict[str, Any]) -> None:
         """
         Insert a new entity into the database.
 
@@ -90,9 +92,9 @@ class PostgresStrategyDAO(DatabaseStrategy):
         - params (Dict[str, Any]): Keyword arguments representing the attributes of the entity.
 
         Returns:
-        - Self: Returns the instance of the class.
+        - None: nothing.
         """
-        error_msg : str | None
+        error_msg : str | None = None
         if not self.__is_entity(entity):
             error_msg = f"{entity} is not a valid SQLAlchemy entity."
             LOGGER.error(error_msg)
@@ -100,15 +102,13 @@ class PostgresStrategyDAO(DatabaseStrategy):
         entity_instance = entity(*params.values())
         self.session.add(entity_instance)
         self.session.commit()
-        return self
     
-    def disconnect(self) -> Self:
+    def disconnect(self) -> None:
         """
         Disconnect from the PostgreSQL database.
 
         Returns:
-        - PostgresStrategyDAO: Returns the instance of the class.
+        - None: nothing.
         """
         self.session.close()
         self.engine.dispose()
-        return self

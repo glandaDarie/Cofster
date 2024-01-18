@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Self, Dict, Any
 
-class DatabaseStrategy(ABC):
+class DatabaseStrategyDAO(ABC):
     """
     Abstract base class for database strategies.
 
@@ -14,7 +14,7 @@ class DatabaseStrategy(ABC):
         pass
 
     @abstractmethod
-    def create_table(self, table_name : str) -> Self:
+    def create_table(self) -> Self:
         """
         Abstract method to create a table in the database.
 
