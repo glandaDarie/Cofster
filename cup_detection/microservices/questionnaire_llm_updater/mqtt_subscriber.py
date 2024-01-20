@@ -3,7 +3,7 @@ import paho.mqtt.client as mqtt
 from utils.argument_parser import ArgumentParser
 from utils.logger import LOGGER
 from services.monad_preprocessing import MonadPreprocessing
-from services.preprocessing import SparkPreprocessorStrategy
+from services.spark_preprocessing_strategy import SparkPreprocessorStrategy
 from data_access.database_strategies.postgres_strategy_dao import PostgresStrategyDAO
 
 def on_connect(client : Any, userdata : Any, flags : Any, rc : Any):
@@ -26,7 +26,7 @@ def on_message(client : Any, userdata : Any, msg : Any):
         data=data, \
         table_save_data="Questionnaire", \
         loader_db_dao_strategy=PostgresStrategyDAO( \
-            database="database", \
+            database="Database", \
             username="username", \
             password="password" \
         ) \
@@ -36,22 +36,6 @@ def on_message(client : Any, userdata : Any, msg : Any):
         .bind(callback=spark_preprocessor_strategy.transform) \
         .bind(callback=spark_preprocessor_strategy.save) \
         .bind(callback=spark_preprocessor_strategy.stop_session)
-        
-    # SPARK test
-    # -------------------------------
-    # spark_session : SparkSession = SparkSession.builder \
-    #     .appName(msg.topic) \
-    #     .getOrCreate()
-    # try:
-    #     data : List[Tuple[str, int]] = [("Alice", "Wonder", 25), ("Bob", "Builder", 30), ("Charlie", "Manson", 35)]
-    #     features : List[str] = ["name", "surname", "age"]
-    #     df = spark_session.createDataFrame(data=data, schema=features)
-    #     df.createOrReplaceTempView("people")
-    #     result_query = spark_session.sql("SELECT surname, age FROM people WHERE age >= 30")
-    #     print(result_query.show())
-    # finally: 
-    #     spark_session.stop()
-    # # -------------------------------
 
 if __name__ == "__main__":
     LOGGER.info("---MQTT subscriber started---")

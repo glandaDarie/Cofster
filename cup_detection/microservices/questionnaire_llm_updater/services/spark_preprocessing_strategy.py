@@ -37,6 +37,7 @@ class SparkPreprocessorStrategy:
         self.spark_session : SparkSession = SparkSession.builder \
             .appName(self.session_name) \
             .getOrCreate()
+        self.loader_db_dao_strategy.connect()
     
     def transform(self) -> None:
         """
@@ -46,7 +47,10 @@ class SparkPreprocessorStrategy:
             None
         """
         self.loader_db_dao_strategy.create_table(table_name=self.table_save_data)
+        # work on self.data
         # transform data here
+        print(f"Actual data type: {type(self.data)}")
+        print(f"Actual data not preprocessed: {self.data}")
 
     def save(self) -> None:
         """

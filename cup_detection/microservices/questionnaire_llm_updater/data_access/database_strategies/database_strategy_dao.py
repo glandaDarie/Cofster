@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Self, Dict, Any
+from typing import Dict, Any
 
 class DatabaseStrategyDAO(ABC):
     """
@@ -9,12 +9,17 @@ class DatabaseStrategyDAO(ABC):
     """
     
     @abstractmethod
-    def connect(self) -> Self:
-        """Abstract method to connect to the database."""
+    def connect(self) -> None:
+        """
+        Abstract method to connect to the database.
+        
+        Returns:
+        - None: nothing.
+        """
         pass
 
     @abstractmethod
-    def create_table(self) -> Self:
+    def create_table(self) -> None:
         """
         Abstract method to create a table in the database.
 
@@ -22,12 +27,12 @@ class DatabaseStrategyDAO(ABC):
         - table_name (str): The name of the table to be created.
 
         Returns:
-        - DatabaseStrategy: Returns the instance of the class.
+        - None: nothing.
         """
         pass
 
     @abstractmethod
-    def insert(self, entity, **params : Dict[str, Any]) -> Self:
+    def insert(self, entity, **params : Dict[str, Any]) -> None:
         """
         Abstract method to insert a new entity into the database.
 
@@ -36,17 +41,16 @@ class DatabaseStrategyDAO(ABC):
         - params (Dict[str, Any]): Keyword arguments representing the attributes of the entity.
 
         Returns:
-        - DatabaseStrategy: Returns the instance of the class.
+        - None: nothing.
         """
         pass
 
     @abstractmethod
-    def disconnect() -> Self:
+    def disconnect() -> None:
         """
         Abstract method to disconnect from the database.
 
         Returns:
-        - DatabaseStrategy: Returns the instance of the class.
+        - None: nothing.
         """
         pass
-    

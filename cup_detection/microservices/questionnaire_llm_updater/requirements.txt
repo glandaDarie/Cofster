@@ -1,2 +1,4 @@
 paho-mqtt==1.6.1
+SQLAlchemy==2.0.18
+psycopg2-binary==2.9.5
 pyspark==3.5.0

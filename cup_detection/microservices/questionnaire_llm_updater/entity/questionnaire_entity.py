@@ -4,9 +4,9 @@ from sqlalchemy import Column, Integer, String
 Base = declarative_base()
 
 class QuestionnaireEntity(Base):
-    __table__ = "questionnaire"
+    __tablename__ = "questionnaire"
 
-    id : Column = Column(Integer)
+    id : Column = Column(Integer, primary_key=True)
     question_1 : Column = Column(String)
     question_2 : Column = Column(String)
 
