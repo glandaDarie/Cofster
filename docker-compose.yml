@@ -5,9 +5,23 @@ services:
     image: coffee-recommender-model:latest
     ports:
       - "8001:8000" 
+  
+  postgres:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: Questionnaires
+    ports:
+      - "5433:5432"
+    networks:
+      - questionnaire-llm-updater-network
 
   mqtt-subscriber:
     image: questionnaire-llm-updater:latest
+    networks:
+      - questionnaire-llm-updater-network
 
   spark:
     image: docker.io/bitnami/spark:3.5
@@ -39,3 +53,7 @@ services:
       - SPARK_USER=spark
     depends_on:
       - mqtt-subscriber
+
+networks:
+  questionnaire-llm-updater-network:
+    driver: bridge

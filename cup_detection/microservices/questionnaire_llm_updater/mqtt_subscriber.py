@@ -26,7 +26,7 @@ def on_message(client : Any, userdata : Any, msg : Any):
         data=data, \
         table_save_data="Questionnaire", \
         loader_db_dao_strategy=PostgresStrategyDAO( \
-            database="Database", \
+            database="Questionnaires", \
             username="username", \
             password="password" \
         ) \

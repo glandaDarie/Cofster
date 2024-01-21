@@ -1,3 +1,4 @@
+import 'package:coffee_orderer/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:coffee_orderer/services/notificationService.dart'
     show NotificationService;
@@ -36,6 +37,9 @@ void main() async {
   // temporary fix - uncomment this whenever you change countries or the device,
   // because it will reset the shared preferences
   // await LoggedInService.setSharedPreferenceValue("<keepMeLoggedIn>");
+  // String getKeepMeLoggedIn =
+  //     await LoggedInService.getSharedPreferenceValue("<keepMeLoggedIn>");
+  // LOGGER.i("getKeepMeLoggedIn: $getKeepMeLoggedIn");
 
   if (!(await LoggedInService.checkSharedPreferenceExistence(
       "<keepMeLoggedIn>"))) {
