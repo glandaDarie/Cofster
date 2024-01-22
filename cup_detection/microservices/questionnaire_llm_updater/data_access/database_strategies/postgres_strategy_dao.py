@@ -46,7 +46,6 @@ class PostgresStrategyDAO(DatabaseStrategyDAO):
         """
         LOGGER.info(f"Connecting to PostgreSQL database as {self.username}@{self.host}:{self.port}.")
         database_url : str = f"postgresql://{self.username}:{self.password}@{self.host}:{self.port}/{self.database}"
-        print(f"{database_url = }")
         self.engine = create_engine(url=database_url, echo=True)
         self.inspector = inspect(subject=self.engine)
         Session = sessionmaker(bind=self.engine)
@@ -67,9 +66,7 @@ class PostgresStrategyDAO(DatabaseStrategyDAO):
             LOGGER.info(f"Table: {table_name} exists in database: {self.database}")
         else:
             LOGGER.info(f"Table: {table_name} does not exist in database: {self.database}")
-            metadata : MetaData = MetaData(self.engine)
-            table : Table = Table(name=table_name, metadata=metadata, autoload_with=self.engine)
-            table.create()
+            Base.metadata.create_all(self.engine)
     
     @staticmethod
     def __is_entity(cls: Any) -> bool:
