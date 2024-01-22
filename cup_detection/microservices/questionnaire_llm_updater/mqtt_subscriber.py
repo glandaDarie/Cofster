@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Dict, Any
 import paho.mqtt.client as mqtt
 from utils.argument_parser import ArgumentParser
 from utils.logger import LOGGER
@@ -15,20 +15,23 @@ def on_message(client : Any, userdata : Any, msg : Any):
     # check if data is received correctly from frontend
     LOGGER.info(f"Received data: {data} on topic {msg.topic}")
     print(f"Received data: {data} on topic {msg.topic}")
+    cli_arguments_postgres : Dict[str, Any] = ArgumentParser.get_llm_updater_arguments_postgres()
+    print(f"cli_arguments_postgres: {cli_arguments_postgres}")
     
     # sample code testing here
     # preprocess here data with Spark, modify the LLM file and save the data in a SQL database (can use a columnar later to perform writes on it)
     # should add the code from the preprocessing here
-
     monad_preprocessing : MonadPreprocessing = MonadPreprocessing(args=None)
     spark_preprocessor_strategy : SparkPreprocessorStrategy = SparkPreprocessorStrategy(
         session_name=msg.topic, \
         data=data, \
         table_save_data="Questionnaire", \
         loader_db_dao_strategy=PostgresStrategyDAO( \
-            database="Questionnaires", \
-            username="username", \
-            password="password" \
+            database=cli_arguments_postgres["database"], \
+            username=cli_arguments_postgres["username"], \
+            password=cli_arguments_postgres["password"], \
+            host=cli_arguments_postgres["host"], \
+            port=cli_arguments_postgres["port"], \
         ) \
     )
     monad_preprocessing \
@@ -42,6 +45,6 @@ if __name__ == "__main__":
     client : mqtt.Client = mqtt.Client() 
     client.on_connect = on_connect
     client.on_message = on_message
-    cli_arguments = ArgumentParser.get_llm_updater_arguments()
-    client.connect(host=cli_arguments.message_broker, port=cli_arguments.port, keepalive=cli_arguments.keepalive)
+    cli_arguments_mqtt = ArgumentParser.get_llm_updater_arguments_mqtt()
+    client.connect(host=cli_arguments_mqtt.message_broker, port=cli_arguments_mqtt.port, keepalive=cli_arguments_mqtt.keepalive)
     client.loop_forever()

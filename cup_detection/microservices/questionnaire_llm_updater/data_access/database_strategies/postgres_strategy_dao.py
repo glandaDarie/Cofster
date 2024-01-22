@@ -46,7 +46,8 @@ class PostgresStrategyDAO(DatabaseStrategyDAO):
         """
         LOGGER.info(f"Connecting to PostgreSQL database as {self.username}@{self.host}:{self.port}.")
         database_url : str = f"postgresql://{self.username}:{self.password}@{self.host}:{self.port}/{self.database}"
-        self.engine = create_engine(database_url, echo=True)
+        print(f"{database_url = }")
+        self.engine = create_engine(url=database_url, echo=True)
         self.inspector = inspect(subject=self.engine)
         Session = sessionmaker(bind=self.engine)
         self.session = Session()

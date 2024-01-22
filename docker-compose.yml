@@ -10,18 +10,22 @@ services:
     image: postgres:latest
     restart: always
     environment:
-      POSTGRES_USER: ${DB_USERNAME}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: Questionnaires
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}   
     ports:
-      - "5433:5432"
+      - "5432:5432"
     networks:
       - questionnaire-llm-updater-network
 
   mqtt-subscriber:
     image: questionnaire-llm-updater:latest
+    restart: always
+    env_file: cup_detection/microservices/questionnaire_llm_updater/.env
     networks:
       - questionnaire-llm-updater-network
+    depends_on:
+      - postgres
 
   spark:
     image: docker.io/bitnami/spark:3.5
