@@ -1,6 +1,6 @@
-from sqlalchemy import Table, MetaData, create_engine, inspect, Engine, inspect
+from sqlalchemy import create_engine, inspect, Engine, inspect
 from sqlalchemy.orm import sessionmaker, Session
-from typing import Dict, Any
+from typing import List, Dict, Any
 
 import sys
 sys.path.append("../")
@@ -69,7 +69,7 @@ class PostgresStrategyDAO(DatabaseStrategyDAO):
             Base.metadata.create_all(self.engine)
     
     @staticmethod
-    def __is_entity(cls: Any) -> bool:
+    def __is_entity(cls : Any) -> bool:
         """
         Check if a class is a valid SQLAlchemy entity.
 
@@ -81,13 +81,13 @@ class PostgresStrategyDAO(DatabaseStrategyDAO):
         """
         return isinstance(cls, type) and issubclass(cls, Base)
 
-    def insert(self, entity : QuestionnaireEntity, **params : Dict[str, Any]) -> None:
+    def insert(self, entity : QuestionnaireEntity, params : Dict[str, List[Dict[str, Any]]]) -> None:
         """
         Insert a new entity into the database.
 
         Parameters:
         - entity (QuestionnaireEntity): The SQLAlchemy entity class.
-        - params (Dict[str, Any]): Keyword arguments representing the attributes of the entity.
+        - params (Dict[str, List[Dict[str, Any]]]): Keyword arguments representing the attributes of the entity.
 
         Returns:
         - None: nothing.
@@ -97,7 +97,8 @@ class PostgresStrategyDAO(DatabaseStrategyDAO):
             error_msg = f"{entity} is not a valid SQLAlchemy entity."
             LOGGER.error(error_msg)
             raise ValueError(error_msg)
-        entity_instance = entity(*params.values())
+        params : List[Any] = [list(param.values())[0] for param in params]
+        entity_instance = entity(question_1=params[0], question_2=params[1], user_name=params[2])
         self.session.add(entity_instance)
         self.session.commit()
     

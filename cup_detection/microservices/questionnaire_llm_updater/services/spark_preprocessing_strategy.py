@@ -1,5 +1,6 @@
 from pyspark.sql import SparkSession
-from typing import Any
+from typing import List, Dict, Any
+from re import sub
 
 import sys
 sys.path.append("../")
@@ -41,16 +42,16 @@ class SparkPreprocessorStrategy:
     
     def transform(self) -> None:
         """
-        Creates a table in the database if it does not already exist and transforms the data.
+        Transforms the data in a List[Dict[str, Any]].
 
         Returns:
             None
         """
-        self.loader_db_dao_strategy.create_table(table_name=self.table_save_data)
-        # work on self.data
-        # transform data here
-        print(f"Actual data type: {type(self.data)}")
-        print(f"Actual data not preprocessed: {self.data}")
+        qas : List[str] = self.data.split("\n")
+        self.data : List[Dict[str, Any]] = [{"user_name" if index >= (len(qas) - 1) else f"question_{index+1}" : \
+            sub(r'\s+', ' ', qa).replace("question: ", "").replace("Answer: ", "").split(" - ")[1].strip()} \
+            for index, qa in enumerate(qas) \
+        ]
 
     def save(self) -> None:
         """
@@ -59,7 +60,6 @@ class SparkPreprocessorStrategy:
         Returns:
             None
         """
-        print(f"Actual data in sparkPreprocessorStrategy: {self.data}")
         self.loader_db_dao_strategy.insert(entity=QuestionnaireEntity, params=self.data)
 
     def stop_session(self) -> None:

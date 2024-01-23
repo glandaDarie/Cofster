@@ -16,7 +16,6 @@ def on_message(client : Any, userdata : Any, msg : Any):
     LOGGER.info(f"Received data: {data} on topic {msg.topic}")
     print(f"Received data: {data} on topic {msg.topic}")
     cli_arguments_postgres : Dict[str, Any] = ArgumentParser.get_llm_updater_arguments_postgres()
-    print(f"cli_arguments_postgres: {cli_arguments_postgres}")
     
     # sample code testing here
     # preprocess here data with Spark, modify the LLM file and save the data in a SQL database (can use a columnar later to perform writes on it)

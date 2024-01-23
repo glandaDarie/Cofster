@@ -21,6 +21,9 @@ RUN apk add --no-cache python3 \
 RUN apk add --no-cache postgresql-libs \
     && apk add --no-cache postgresql-client
 
+# Install Vim
+RUN apk add --no-cache vim
+
 # Set Java environment variable
 ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk
 RUN export JAVA_HOME
