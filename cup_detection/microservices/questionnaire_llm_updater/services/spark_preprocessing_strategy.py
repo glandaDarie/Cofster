@@ -60,6 +60,7 @@ class SparkPreprocessorStrategy:
         Returns:
             None
         """
+        self.loader_db_dao_strategy.create_table(table_name=self.table_save_data)
         self.loader_db_dao_strategy.insert(entity=QuestionnaireEntity, params=self.data)
 
     def stop_session(self) -> None:
