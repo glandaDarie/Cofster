@@ -2,6 +2,7 @@ apiKeys.dart
 credentials_firebase.json
 firebase_rtd_url.py
 .env
+.pytest_cache
 __pycache__
 users_prompt_files
 logging_information.log

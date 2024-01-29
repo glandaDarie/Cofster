@@ -52,6 +52,9 @@ class SparkPreprocessorStrategy:
             sub(r'\s+', ' ', qa).replace("question: ", "").replace("Answer: ", "").split(" - ")[1].strip()} \
             for index, qa in enumerate(qas) \
         ]
+    
+    def update_prompt(self) -> None:
+        pass
 
     def save(self) -> None:
         """

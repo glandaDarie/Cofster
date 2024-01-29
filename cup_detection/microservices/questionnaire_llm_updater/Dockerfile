@@ -1,3 +1,4 @@
+# Set the base image to Alpine 3.14
 FROM alpine:3.14
 
 # Install Java 8
