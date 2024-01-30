@@ -56,7 +56,7 @@ class UserPromptGenerator:
         return [f"{id}_{name.lower()}" for name, id in self.users_information] if data is None \
             else [f"{id}_{name.lower()}" for name, id in data]
 
-    def __create_hierarchical_structure(self, data : List[Tuple[str, int]] | None = None) -> str | FileNotFoundError:
+    def __create_hierarchical_structure(self, data : List[Tuple[str, int]] | None = None, command : str = "<create>") -> str | FileNotFoundError:
         """
         Create prompt data for users, generating directories and copying content from source files.
 
@@ -68,15 +68,10 @@ class UserPromptGenerator:
         """
         if data is None:
             os.makedirs(name=self.prompt_files_path)
-            
             os.chdir(path=self.prompt_files_path)
-            sub_directories : List[str] = self.__generate_user_subdirectories()
-            subdirs_merged : List[str] = copy.deepcopy(sub_directories)
-        else:
-            sub_directories : List[str] = self.__generate_user_subdirectories(data=data)
-            subdirs_merged : List[str] = self.__generate_user_subdirectories() + sub_directories
+        sub_directories : List[str] = self.__generate_user_subdirectories()
+        subdirs_merged : List[str] = copy.deepcopy(sub_directories)
 
-        # need to check when update is performed on previous_users_information.txt file
         response_msg : bool | str = self.__store_previous_users_information(file_path=self.previous_users_prompt_files_path, subdirs=subdirs_merged)
         assert response_msg == "Successfully cached the users information", response_msg
 
@@ -128,7 +123,7 @@ class UserPromptGenerator:
                 if error_msg is not None:
                     raise RuntimeError(error_msg)
                 LOGGER.info("Successfully removed a prompt file/prompt files")
-            else:
+            else: 
                 error_msg : str = self.__delete_prompt_files(prompt_files=list(difference_previous_info))
                 if error_msg is not None:
                     raise RuntimeError(error_msg)

@@ -14,12 +14,8 @@ def on_message(client : Any, userdata : Any, msg : Any):
     data : str = msg.payload.decode()
     # check if data is received correctly from frontend
     LOGGER.info(f"Received data: {data} on topic {msg.topic}")
-    print(f"Received data: {data} on topic {msg.topic}")
     cli_arguments_postgres : Dict[str, Any] = ArgumentParser.get_llm_updater_arguments_postgres()
     
-    # sample code testing here
-    # preprocess here data with Spark, modify the LLM file and save the data in a SQL database (can use a columnar later to perform writes on it)
-    # should add the code from the preprocessing here
     monad_preprocessing : MonadPreprocessing = MonadPreprocessing(args=None)
     spark_preprocessor_strategy : SparkPreprocessorStrategy = SparkPreprocessorStrategy(
         session_name=msg.topic, \

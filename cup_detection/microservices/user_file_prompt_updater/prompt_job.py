@@ -6,8 +6,8 @@ from time import sleep
 from utils.logger import LOGGER
 from utils.paths import ROOT_PATH
 
-@repeat(every(10).seconds) # test
-# @repeat(every(4).minutes) # prod
+# @repeat(every(10).seconds) # test
+@repeat(every(4).minutes) # prod
 def format_and_generate_prompt_hierarchial_structure_for_users():
     """
     Fetches user information, transforms it, generates prompts based on the information, and logs the job information.
