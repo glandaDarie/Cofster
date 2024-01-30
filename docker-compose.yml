@@ -3,8 +3,15 @@ version: "3.8"
 services:
   classifier:
     image: coffee-recommender-model:latest
+    restart: always
     ports:
       - "8001:8000" 
+
+  user-file-prompt-updater:
+    image: user-file-prompt-updater:latest
+    restart: always
+    ports:
+      - "2500:2500"
   
   postgres:
     image: postgres:latest
