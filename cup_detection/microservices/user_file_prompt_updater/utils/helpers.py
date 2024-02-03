@@ -66,6 +66,7 @@ class UserPromptGenerator:
         Returns:
             bool: True if the operation was successful.
         """
+        
         if data is None:
             os.makedirs(name=self.prompt_files_path)
             os.chdir(path=self.prompt_files_path)

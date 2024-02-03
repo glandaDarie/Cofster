@@ -17,13 +17,13 @@ app = Flask(__name__)
 @app.route("/coffee_recipe", methods=["GET", "PUT"])
 def coffee_recipe() -> (tuple[Response, Literal[200]] | None):
     if request.method == "GET":
-        return get_coffee_recipe()
+        return __get_coffee_recipe()
     elif request.method == "PUT":
-        return put_coffee_recipe()
+        return __put_coffee_recipe()
     else:
         return "Method Not Allowed", 405
 
-def get_coffee_recipe() -> Tuple[Response, int]:
+def __get_coffee_recipe() -> Tuple[Response, int]:
     coffee_name : str = request.args.get("coffee_name")
     if not coffee_name:
         return jsonify({"error", "Coffee name was not provided"}), 400
@@ -31,15 +31,17 @@ def get_coffee_recipe() -> Tuple[Response, int]:
         openai_service : OpenAIService = OpenAIService()
         prompt_recipe : str = PROMPT_TEMPLATE.format(coffee_name)
         coffee_ingredients : Dict[str, str] = openai_service(prompt=prompt_recipe)
-        response : Dict[str, str] = {"ingredients": coffee_ingredients}
+        response : Dict[str, str] = {
+            "ingredients": coffee_ingredients
+        }
     except Exception as exception:
         return jsonify({"error" : f"Server side error: {exception}"}), 500
     return jsonify(response), 200
 
-def put_coffee_recipe() -> Tuple[Response, int]:
+def __put_coffee_recipe() -> Tuple[Response, int]:
     #TODO
     pass
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8001)
+    app.run(host="192.168.1.102", port=8001)
     
