@@ -1,3 +1,27 @@
+from typing import Any, Dict
+from urllib.parse import urlsplit, urljoin
+
+def url_builder(base_url : str, endpoint : str) -> str:
+    """
+    Build a complete URL from a base URL, and an endpoint.
+
+    Parameters:
+    - base_url (str): The base URL.
+    - endpoint (str): The endpoint to append to the base URL.
+
+    Returns:
+    - str: The constructed URL.
+
+    Raises:
+    - ValueError: If the base URL is missing a valid scheme (http/https) or network location.
+    - ValueError: If the endpoint is an empty string.
+    """
+    url : str = urljoin(base_url, endpoint)
+    scheme, netloc, _, _, _ = urlsplit(url)
+    if not scheme or not netloc:
+        raise ValueError("Invalid base URL. Must have a scheme (http/https) and network location.")
+    return url
+
 class FileLoader:
     def __init__(self, file_path):
         """
