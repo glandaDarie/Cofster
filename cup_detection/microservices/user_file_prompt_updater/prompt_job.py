@@ -5,10 +5,13 @@ from schedule import every, repeat, run_pending
 from time import sleep
 from utils.logger import LOGGER
 from utils.paths import ROOT_PATH
+from threading import Thread
+from flask import Flask
+from routes.prompt import prompt_blueprint
 
 # @repeat(every(10).seconds) # test
 @repeat(every(4).minutes) # prod
-def format_and_generate_prompt_hierarchial_structure_for_users():
+def format_and_generate_prompt_hierarchial_structure_for_users() -> None | TypeError | ValueError:
     """
     Fetches user information, transforms it, generates prompts based on the information, and logs the job information.
 
@@ -17,6 +20,7 @@ def format_and_generate_prompt_hierarchial_structure_for_users():
 
     Raises:
         TypeError: If the fetched user information does not conform to the expected data types.
+        ValueError: If it cannot updater the prompt hierarchy.
 
     Note:
         This function is designed to be used with a scheduler to run periodically.
@@ -33,13 +37,19 @@ def format_and_generate_prompt_hierarchial_structure_for_users():
         raise TypeError("Not all elements at the second position are of type integer.")
     LOGGER.info(f"--USERS INFORMATION-- : {users_information}")
 
-    user_prompt_generator : UserPromptGenerator = UserPromptGenerator(users_information=users_information, root_path=ROOT_PATH) 
+    user_prompt_generator : UserPromptGenerator = UserPromptGenerator(root_path=ROOT_PATH, users_information=users_information) 
     message : str = user_prompt_generator.generate()
     if message != "Successfully updated the directories and files for the respective user/users":
         raise ValueError(f"Problems when trying to update the prompt hierarchy, error: {message}")
     LOGGER.info(f"--JOB INFORMATION-- : {message}")
 
+app = Flask(__name__)
+
+app.register_blueprint(prompt_blueprint)
+
 if __name__ == "__main__":
+    thread_web_server : Thread = Thread(target=lambda : app.run(host="0.0.0.0", port=8050, debug=True, use_reloader=False))
+    thread_web_server.start()
     while True:
         run_pending()
         sleep(1)

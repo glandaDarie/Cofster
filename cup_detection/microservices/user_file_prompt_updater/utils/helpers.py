@@ -1,4 +1,4 @@
-from typing import List, Tuple, Set
+from typing import List, Tuple, Set, Dict, Any
 from io import TextIOWrapper
 import os
 from utils.logger import LOGGER
@@ -7,12 +7,12 @@ import shutil
 
 class UserPromptGenerator:
     """Generates default prompt data for each user based on provided information."""
-    def __init__(self, users_information : List[Tuple[str, int]], root_path : str):
+    def __init__(self, root_path : str, users_information : List[Tuple[str, int]] = []):
         """
         Initializes UserPromptGenerator object.
         
         Args:
-            users_information (List[Tuple[str, int]]): List of tuples containing user information.
+            users_information (List[Tuple[str, int]]): List of tuples containing user information (default empty list).
             source_path (str): Path to the source file containing data.
         """
         self.prompt_files_path : str = os.path.join(root_path, "assets", "users_prompt_files")
@@ -38,6 +38,83 @@ class UserPromptGenerator:
         else:
             success : bool | str = self.__update_hierarchical_structure()
         return success
+
+    def get_user_prompt_file_information(self, name : str) -> Dict[str, Any]:
+        """
+        Retrieve information about the prompt_data.txt file for a given user.
+
+        Parameters:
+            name (str): The name of the user.
+
+        Returns:
+            Dict[str, Any]: A dictionary containing information about the file, including its name, extension, size,
+                          last modified timestamp, and content.
+        """
+        directory_names : List[str] = os.listdir(self.prompt_files_path)
+        directory_name : str = self.__get_matching_directory_name(directory_names=directory_names, user_name=name)
+        if not directory_name:
+            return {
+                "error_message" : "The given user is not present in the database."
+            }
+        user_directory : str = os.path.join(self.prompt_files_path, directory_name)
+        user_entries : List[str] = os.listdir(user_directory)
+        
+        if len(user_entries) > 1:
+            return {
+                "error_message" : "There are more files/directories present, not only the prompt_data.txt file."
+            }
+        user_prompt_content_file : str = os.path.join(user_directory, user_entries[-1])
+
+        file_name_extension : str = os.path.splitext(os.path.basename(user_prompt_content_file))
+        file_name : str = file_name_extension[0]
+        file_extension : str = file_name_extension[1]
+        file_size : int = os.path.getsize(user_prompt_content_file)
+        last_modified : float = os.path.getmtime(user_prompt_content_file)
+        content : str = self.__read_file(file_path=user_prompt_content_file)
+        return {    
+            "file_name" : file_name,
+            "file_extension" : file_extension,
+            "file_size" : file_size,
+            "last_modified" : last_modified,
+            "content" : content
+        }
+
+    def __read_file(self, file_path : str) -> str:
+        """
+        Read the contents of a file and return them as a string.
+
+        Parameters:
+            file_path (str): The path to the file to be read.
+
+        Returns:
+            str: The contents of the file as a string.
+
+        Raises:
+            IOError: If the file is not found or there is an error while reading the file.
+        """
+        try:
+            with open(file_path, "r") as input_file:
+                return input_file.read()
+        except FileNotFoundError as error:
+            raise IOError(f"Error: File not found - {file_path}. Reason {error}")
+        except Exception as error:
+            raise IOError(f"Error: Unable to read file - {file_path}. Reason: {error}")
+
+    def __get_matching_directory_name(self, directory_names : List[str], user_name : str) -> str:
+        """
+        Find and return the first directory name in the list that matches the given user name.
+
+        Parameters:
+            directory_names (List[str]): A list of directory names to search through.
+            user_name (str): The target user name to match.
+
+        Returns:
+            str: The matching directory name if found, otherwise an empty string.
+        """
+        for directory_name in directory_names:
+            if user_name in directory_name:
+                return directory_name
+        return ""
 
     def __generate_user_subdirectories(self, data : List[Tuple[str, int]] | None = None) -> List[str]:
         """

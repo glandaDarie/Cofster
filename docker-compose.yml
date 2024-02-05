@@ -11,7 +11,7 @@ services:
     image: user-file-prompt-updater:latest
     restart: always
     ports:
-      - "2500:2500"
+      - "8050:8050"
   
   postgres:
     image: postgres:latest

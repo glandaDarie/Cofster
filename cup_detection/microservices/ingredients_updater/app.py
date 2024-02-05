@@ -1,7 +1,7 @@
 from typing import Dict, List, Literal
 from flask import Flask, Response, jsonify, request
 import sys
-from typing import Any, Tuple
+from typing import Tuple
 
 sys.path.append("../")
 
@@ -29,7 +29,7 @@ def __get_coffee_recipe() -> Tuple[Response, int]:
         openai_service : OpenAIService = OpenAIService()
         prompt_recipe : str = PROMPT_TEMPLATE.format(coffee_name)
         previousPromptService : PreviousPromptService =  PreviousPromptService()
-        chat_history : List[str] = []
+        # chat_history : List[str] = []
         # should write the changes to the file that are recieved from the prompt so you can read them later, 
         # inside the promptService I should also update that, fetch the data from the postgresql history database
         # work on the data, and pass it as param to generate an update prompt for the user given the information it has
@@ -38,13 +38,14 @@ def __get_coffee_recipe() -> Tuple[Response, int]:
         # OR
         
         # should fetch only the new prompt and save it in the text file, to use it later for the prompt service
-        chat_history_prompt : str = previousPromptService.get_prompt(base_url="http://192.168.1.102:8050", \
+        previous_prompt : str = previousPromptService.get_prompt(base_url="http://192.168.1.102:8050", \
                                                         endpoint="/user_prompt", \
                                                         customer_name=customer_name)
+        
         # get the data from the database for that specific user, something like:
         # SELECT question_1, question_2 from Questionnaire WHERE name = customer_name
         # should return a List[List[str]] back and that should be out chat history
-        chat_history.append(chat_history_prompt)
+        # chat_history.append(chat_history_prompt)
         coffee_ingredients : Dict[str, str] = openai_service(prompt=prompt_recipe)
         # coffee_ingredients : Dict[str, str] = openai_service(prompt=prompt_recipe, chat_history=chat_history)
         response : Dict[str, str] = {
