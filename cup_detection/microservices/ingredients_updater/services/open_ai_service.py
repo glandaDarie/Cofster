@@ -6,7 +6,6 @@ from langchain.document_loaders import TextLoader
 from langchain.indexes import VectorstoreIndexCreator
 from langchain.chains import ConversationalRetrievalChain
 from utils.paths import COFFEE_CREATION_PATH
-from utils.helpers import FileLoader
 import json
 from dotenv import load_dotenv
 
@@ -15,7 +14,7 @@ class OpenAIService:
         """
         Initialize the OpenAI instance.
 
-        Sets the OpenAI API key from the environment variable API_TOKEN_OPENAI and initializes a FileLoader instance.
+        Sets the OpenAI API key from the environment variable API_TOKEN_OPENAI.
 
         """
         load_dotenv(".env")
