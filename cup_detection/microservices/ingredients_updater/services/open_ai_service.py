@@ -5,20 +5,24 @@ from langchain.chat_models import ChatOpenAI
 from langchain.document_loaders import TextLoader
 from langchain.indexes import VectorstoreIndexCreator
 from langchain.chains import ConversationalRetrievalChain
-from utils.paths import COFFEE_CREATION_PATH
+# from utils.paths import COFFEE_CREATION_PATH
 import json
 from dotenv import load_dotenv
 
 class OpenAIService:
-    def __init__(self):
+    def __init__(self, file_path : str):
         """
         Initialize the OpenAI instance.
 
         Sets the OpenAI API key from the environment variable API_TOKEN_OPENAI.
 
+         Args:
+            file_path (str): The path of the prompt file.
+
         """
         load_dotenv(".env")
         os.environ["OPEN_AI_KEY"] = os.getenv("OPENAI_API_KEY")
+        self.file_path : str = file_path
         
     def __generate_available_ingredients(self, prompt : str, \
                                         model : str = "gpt-3.5-turbo", \
@@ -36,7 +40,7 @@ class OpenAIService:
         Returns:
             Dict[str, str]: The generated response.
         """
-        text_loader : TextLoader = TextLoader(file_path=COFFEE_CREATION_PATH) # file should be changed with the new data fetched from the backend
+        text_loader : TextLoader = TextLoader(file_path=self.file_path) # file should be changed with the new data fetched from the backend
         index : VectorstoreIndexCreator = VectorstoreIndexCreator().from_loaders([text_loader])
         chain : ConversationalRetrievalChain = ConversationalRetrievalChain.from_llm(
             llm=ChatOpenAI(model=model, temperature=temperature_prompt),

@@ -15,5 +15,5 @@ class PreviousPromptService:
         response_data : requests.Response = requests.get(url=url, params=params)
         status_code : int = response_data["status_code"]
         if status_code != 200:
-            raise(f"Error: {response_data['error_message']}")
+            raise RuntimeError(f"Error: {response_data['error_message']}")
         return response_data["prompt"]
