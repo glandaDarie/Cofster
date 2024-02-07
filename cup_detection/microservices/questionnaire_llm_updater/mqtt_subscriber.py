@@ -5,6 +5,7 @@ from utils.logger import LOGGER
 from services.monad_preprocessing import MonadPreprocessing
 from services.spark_preprocessing_strategy import SparkPreprocessorStrategy
 from data_access.database_strategies.postgres_strategy_dao import PostgresStrategyDAO
+import requests
 
 def on_connect(client : Any, userdata : Any, flags : Any, rc : Any):
     LOGGER.info(f"Connected with result code {rc}")
@@ -34,6 +35,14 @@ def on_message(client : Any, userdata : Any, msg : Any):
         .bind(callback=spark_preprocessor_strategy.transform) \
         .bind(callback=spark_preprocessor_strategy.save) \
         .bind(callback=spark_preprocessor_strategy.stop_session)
+
+    customer_name : str = data.split("name")[-1].split(":")[1].strip()
+    response_data : requests.Response = requests.get(url="http://192.168.1.102:8030/coffee_recipe", customer_name=customer_name)
+    status_code : int = response_data.status_code
+    if status_code != 200:
+        raise RuntimeError(f"Error: {response_data['error_message']}")
+    
+    # return response_data["prompt"]
 
 if __name__ == "__main__":
     LOGGER.info("---MQTT subscriber started---")

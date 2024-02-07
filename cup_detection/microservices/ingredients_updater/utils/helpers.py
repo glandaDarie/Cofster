@@ -1,20 +1,21 @@
-from typing import List, Tuple
+from typing import List, Tuple, Dict, Any
 from urllib.parse import urlsplit, urljoin
+import os
 
 def url_builder(base_url : str, endpoint : str) -> str:
     """
     Build a complete URL from a base URL, and an endpoint.
 
     Parameters:
-    - base_url (str): The base URL.
-    - endpoint (str): The endpoint to append to the base URL.
+      base_url (str): The base URL.
+      endpoint (str): The endpoint to append to the base URL.
 
     Returns:
-    - str: The constructed URL.
+      str: The constructed URL.
 
     Raises:
-    - ValueError: If the base URL is missing a valid scheme (http/https) or network location.
-    - ValueError: If the endpoint is an empty string.
+      ValueError: If the base URL is missing a valid scheme (http/https) or network location.
+      ValueError: If the endpoint is an empty string.
     """
     url : str = urljoin(base_url, endpoint)
     scheme, netloc, _, _, _ = urlsplit(url)
@@ -22,37 +23,17 @@ def url_builder(base_url : str, endpoint : str) -> str:
         raise ValueError("Invalid base URL. Must have a scheme (http/https) and network location.")
     return url
 
-# def bellman_updater(elements : List[str], discount_factor : float = 0.9, previous_probability : float = 1.0 ) -> List[Tuple]:
-#     """
-#     Update probabilities using the Bellman equation.
-
-#     Parameters:
-#     - elements (List[str]): List of data elements.
-#     - discount_factor (float): Discount factor for the Bellman equation. Default is 0.9.
-#     - initial_probability (float): Initial probability value. Default is 1.0.
-
-#     Returns:
-#     - List[Tuple]: List of tuples containing updated data and corresponding probabilities.
-#     """
-#     trajectory : List[Tuple] = []      
-#     for d in data:
-#         current_probability = previous_probability * discount_factor
-#         trajectory.append(tuple(d) + (current_probability, ))
-#         previous_probability = current_probability
-
-from typing import List, Tuple
-
 def add_probabilities_using_bellman_equation(elements: List[str], discount_factor: float = 0.9, initial_probability: float = 1.0) -> List[Tuple]:
     """
     Add probabilities using the Bellman equation.
 
     Parameters:
-    - elements (List[str]): List of data elements.
-    - discount_factor (float): Discount factor for the Bellman equation. Default is 0.9.
-    - initial_probability (float): Initial probability value. Default is 1.0.
+      elements (List[str]): List of data elements.
+      discount_factor (float): Discount factor for the Bellman equation. Default is 0.9.
+      initial_probability (float): Initial probability value. Default is 1.0.
 
     Returns:
-    - List[Tuple]: List of tuples containing the trajectory with the probabilites for each timestamp.
+      List[Tuple]: List of tuples containing the trajectory with the probabilites for each timestamp.
     """
     trajectory : List[Tuple] = []      
     current_probability : float = initial_probability
@@ -60,6 +41,29 @@ def add_probabilities_using_bellman_equation(elements: List[str], discount_facto
         current_probability *= discount_factor
         trajectory.append(tuple(element) + (current_probability,))
     return trajectory
+
+class Arguments:
+    @staticmethod
+    def database_arguments() -> Dict[str, Any]:
+        """
+        Retrieve database connection arguments from environment variables.
+
+        Returns:
+            Dict[str, Any]: Dictionary containing database connection arguments.
+                  Keys: 'database', 'username', 'password', 'host', 'port'.
+        """
+        database : str = os.environ.get('POSTGRES_DB')
+        username : str = os.environ.get('POSTGRES_USER')
+        password : str = os.environ.get('POSTGRES_PASSWORD'),
+        host : str = os.environ.get('POSTGRES_HOST', '127.0.0.1')
+        port = int(os.environ.get('POSTGRES_PORT', 5432))
+        return {
+            "database" : database,
+            "username" : username,
+            "password" : password,
+            "host" : host,
+            "port" : port
+        }
 
 class FileLoader:
     def __init__(self, file_path):

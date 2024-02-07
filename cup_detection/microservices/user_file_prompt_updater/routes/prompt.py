@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Dict, Any, Tuple
 from flask import jsonify, Blueprint, request
 import sys
 
@@ -10,7 +10,21 @@ from utils.paths import ROOT_PATH
 from utils.helpers import UserPromptGenerator
 
 @prompt_blueprint.get("/prompt")
-def prompt():
+def prompt() -> Tuple[jsonify, int]:
+    """
+    Endpoint to retrieve user prompt information.
+
+    Args:
+        request.args.get("customer_name"): The username provided in the query parameters.
+
+    Returns:
+        jsonify: JSON response containing user prompt information or error messages.
+
+        Possible HTTP Status Codes:
+        - 200: Successful response with user prompt information.
+        - 400: Bad request if username is missing in the query parameters.
+        - 500: Internal server error if there are issues fetching or processing user prompt information.
+    """
     user_name : str = request.args.get("customer_name")
     if user_name is None:
         return jsonify({
