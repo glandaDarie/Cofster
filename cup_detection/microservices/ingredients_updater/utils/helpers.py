@@ -54,7 +54,7 @@ class Arguments:
         """
         database : str = os.environ.get('POSTGRES_DB')
         username : str = os.environ.get('POSTGRES_USER')
-        password : str = os.environ.get('POSTGRES_PASSWORD'),
+        password : str = os.environ.get('POSTGRES_PASSWORD')
         host : str = os.environ.get('POSTGRES_HOST', '127.0.0.1')
         port = int(os.environ.get('POSTGRES_PORT', 5432))
         return {

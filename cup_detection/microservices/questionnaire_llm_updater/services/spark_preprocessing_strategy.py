@@ -24,7 +24,7 @@ class SparkPreprocessorStrategy:
         """
         self.session_name : str = session_name
         self.data : Any = data
-        self.table_save_data = table_save_data
+        self.table_save_data : str = table_save_data
         self.loader_db_dao_strategy : DatabaseStrategyDAO = loader_db_dao_strategy
         self.spark_session : None | SparkSession = None
 

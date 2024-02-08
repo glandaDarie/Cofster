@@ -19,14 +19,14 @@ services:
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
     networks:
-      - questionnaire-llm-updater-network  
+      - questionnaire-network  
   
   ingredients-updater:
-    image: ingredients_updater:latest
+    image: ingredients-updater:latest
     restart: always
     env_file: cup_detection/microservices/ingredients_updater/.env
     networks:
-      - questionnaire-llm-updater-network
+      - questionnaire-network
     ports:
       - "8030:8030"
 
@@ -35,7 +35,7 @@ services:
     restart: always
     env_file: cup_detection/microservices/questionnaire_llm_updater/.env
     networks:
-      - questionnaire-llm-updater-network
+      - questionnaire-network
     depends_on:
       - postgres
   
@@ -43,7 +43,7 @@ services:
     image: user-file-prompt-updater:latest
     restart: always
     networks:
-      - questionnaire-llm-updater-network
+      - questionnaire-network
     ports:
       - "8050:8050"
   
@@ -79,7 +79,6 @@ services:
       - questionnaire-llm-updater
 
 networks:
-  questionnaire-llm-updater-network:
+  questionnaire-network:
     driver: bridge
-
-
+    name: questionnaire_network

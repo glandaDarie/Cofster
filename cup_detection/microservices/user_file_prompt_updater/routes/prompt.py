@@ -25,21 +25,19 @@ def prompt() -> Tuple[jsonify, int]:
         - 400: Bad request if username is missing in the query parameters.
         - 500: Internal server error if there are issues fetching or processing user prompt information.
     """
-    user_name : str = request.args.get("customer_name")
-    if user_name is None:
+    customer_name : str = request.args.get("customer_name")
+    if customer_name is None:
         return jsonify({
-            "error" : "Username is missing in the query parameters"
+            "error_message" : "Customer name is missing in the query parameters"
         }), 400
-    
+
     userPromptGenerator : UserPromptGenerator = UserPromptGenerator(root_path=ROOT_PATH)
-    user_prompt_information : Dict[str, Any] = userPromptGenerator.get_user_prompt_file_information(name=user_name)
+    user_prompt_information : Dict[str, Any] = userPromptGenerator.get_user_prompt_file_information(name=customer_name.lower())
     
-    if "error_message" in user_prompt_information:
-        return jsonify(user_prompt_information), 500
-    
-    if not user_prompt_information["content"] or user_prompt_information["content"] is None:
+    if "content" not in user_prompt_information:
         return jsonify({
-            "error" : "Could not fetch the user prompt content."
+            "error_message" : "Could not fetch the user prompt content.",
+            "error_information" : f"Error information: {user_prompt_information['error_message']}"
         }), 500
-    
+
     return jsonify(user_prompt_information), 200

@@ -10,7 +10,7 @@ class QuestionnaireEntity(Base):
     question_1 : Column = Column(String)
     question_2 : Column = Column(String)
     user_name : Column = Column(String)
-    timestamp : Column = Column(DateTime, default=func.now())
+    timestamp : Column = Column(DateTime, server_default=func.now())
 
     def __str__(self):
         return f"Person(id={self.id}, user_name={self.user_name}, question_1={self.question_1}, question_2={self.question_2}, created_timestamp={self.timestamp})"
