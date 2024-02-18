@@ -1,15 +1,19 @@
-from typing import Dict, List, Literal, Any
+from typing import Dict, List, Tuple, Literal, Any
 from flask import Flask, Response, jsonify, request
-from sqlalchemy import create_engine, Table, MetaData, Engine, func, String, DateTime 
+from sqlalchemy import create_engine, Table, MetaData, Engine, desc, String, DateTime
+from sqlalchemy.exc import NoSuchTableError
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.query import Query
-from typing import Tuple
+from sqlalchemy.engine.row import Row
+from requests.exceptions import RequestException
+
 # from utils.constants import PROMPT_TEMPLATE
 from services.open_ai_service import OpenAIService
 from services.previous_prompt_service import PreviousPromptService
 from utils.helpers import FileLoader, Arguments, concat_probabilities_using_bellman_equation
 from utils.paths import COFFEE_CREATION_PATH
 from utils.logger import LOGGER
+from utils.constants import PROMPT_TEMPLATE
 
 app = Flask(__name__)
 
@@ -25,10 +29,12 @@ def coffee_recipe() -> (tuple[Response, Literal[200]] | None):
         }), 405
 
 def __get_coffee_recipe() -> Tuple[Response, int]:
-    # coffee_name : str = request.args.get("coffee_name")
     customer_name : str = request.args.get("customer_name")
+    # coffee_name : str = request.args.get("coffee_name")
+
     if not customer_name or not isinstance(customer_name, str):
         return jsonify({"error" : "Customer was not provided correctly"}), 400
+    
     try:
         # prompt_recipe : str = PROMPT_TEMPLATE.format(coffee_name)
 
@@ -45,7 +51,7 @@ def __get_coffee_recipe() -> Tuple[Response, int]:
         prompt : str = previous_prompt_sevice.get_prompt(base_url="http://user-file-prompt-updater:8050", \
                                                         endpoint="/prompt", \
                                                         customer_name=customer_name) 
-        # print(f"Actual prompt recieved: {prompt}")
+        print(f"Actual prompt recieved: {prompt}") # check the prompt for debugging purposes
 
         # should save the previous_prompt in the coffee_creation_data.txt -> previous_prompt["content"]
         file_loader : FileLoader = FileLoader(file_path=COFFEE_CREATION_PATH)
@@ -76,35 +82,25 @@ def __get_coffee_recipe() -> Tuple[Response, int]:
             questionnaire_table : Table = metadata.tables.get(table_name)
 
             if questionnaire_table is None:
-                raise RuntimeError(f"Table {table_name} could not be found in the reflected metadata.")
+                raise NoSuchTableError(f"Table {table_name} could not be found in the reflected metadata.")
 
             Session = sessionmaker(bind=engine)
             session = Session()
 
-            row_count = session.query(func.count().label('row_count')).select_from(questionnaire_table).scalar()
-            print(f"Number of rows in the 'questionnaire' table: {row_count}")
-
-            # statement : Select = select([questionnaire_table.c.timestamp, questionnaire_table.c.question_1, questionnaire_table.c.question_2]) \
-            #     .where(questionnaire_table.c.column_name == customer_name) \
-            #     .order_by(questionnaire_table.c.timestamp)
-            # : Query[Tuple[DateTime, String, String]]
-            person_query = session.query( \
+            person_query : Query[Tuple[DateTime, String, String]] = session.query( \
                 questionnaire_table.c.timestamp, \
                 questionnaire_table.c.question_1, \
                 questionnaire_table.c.question_2 \
             ) \
                 .filter(questionnaire_table.c.user_name == customer_name) \
-                .order_by(questionnaire_table.c.timestamp) 
+                .order_by(desc(questionnaire_table.c.timestamp)) 
             
-            person_responses : List[Tuple[DateTime, String, String]] = person_query.all()
-
-            # print(f"person_responses: {person_responses}")
-            # THIS WORKS
+            person_responses : List[Row] = person_query.all()
 
             person_responses_with_probabilities : List[Tuple[DateTime, String, String, float]] = \
                 concat_probabilities_using_bellman_equation(elements=person_responses)
             
-            print(f"{person_responses_with_probabilities = }") # debugging as of now
+            print(f"{person_responses_with_probabilities = }") 
         
             # openai_service : OpenAIService = OpenAIService()
             # coffee_ingredients : Dict[str, str] = openai_service(prompt=prompt_recipe)
@@ -113,46 +109,24 @@ def __get_coffee_recipe() -> Tuple[Response, int]:
             #     "ingredients": coffee_ingredients
             # }
 
-        except Exception as error:
-            LOGGER.error(f"Table {table_name} could not be found in the database. Error: {error}")
-            raise 
-    except Exception as exception:
-        return jsonify({"error" : f"Server side error: {exception}"}), 500
+        except NoSuchTableError as table_error:
+            error_msg : str = f"Table {table_name} could not be found in the database. Error: {table_error}"
+            return jsonify({"error" : error_msg}), 500
+
+    except RequestException as network_error:
+        if "Failed to establish a new connection" in str(network_error):
+            error_msg : str = "Failed to establish a connection to the server. Please check your network connection."
+        else:
+            error_msg : str = f"An error occurred during the network request: {network_error}"
+        LOGGER.error(error_msg)
+        return jsonify({"error": error_msg}), 500
     
+    except FileNotFoundError as file_error:
+        error_msg : str = f"An error occurred while writing to the file: {file_error}"
+        LOGGER.error(error_msg)
+        return jsonify({"error": error_msg}), 500
+
     return jsonify({"message" : "correct_dummy"}), 200    
-    
-        # print(f"All tables: {metadata.tables['questionnaire']}")
-
-    #     try:
-    #         questionnaire_table : Table = Table(table_name, metadata, autoload_with=engine)
-    #     except Exception as error:
-    #         print(f"Table {table_name} could not be found in the database. Error: {error}")
-    #         LOGGER.error(f"Table {table_name} could not be found in the database. Error: {error}")
-    #         raise 
-        
-    #     statement : Select = select([questionnaire_table.timestamp, questionnaire_table.c.question_1, questionnaire_table.c.question_2])
-    #     print("ALIVE (2)")
-    #     # statement : Select = select([questionnaire_table.c.timestamp, questionnaire_table.c.question_1, questionnaire_table.c.question_2]) \
-    #     #         .where(questionnaire_table.c.column_name == customer_name) \
-    #     #         .order_by(questionnaire_table.c.timestamp)
-    #     person_responses : List[str] = engine.execute(statement).fetchall()
-    #     print("ALIVE (3)")
-    #     print(f"person_responses: {person_responses}")
-
-    #     # person_responses_with_probabilities : List[Tuple] = add_probabilities_using_bellman_equation(elements=person_responses)
-    #     # print(f"{person_responses_with_probabilities = }") # debugging as of now
-
-
-    #     # openai_service : OpenAIService = OpenAIService()
-    #     # coffee_ingredients : Dict[str, str] = openai_service(prompt=prompt_recipe)
-    #     # coffee_ingredients : Dict[str, str] = openai_service(prompt=prompt_recipe, chat_history=chat_history)
-    #     # response : Dict[str, str] = {
-    #     #     "ingredients": coffee_ingredients
-    #     # }
-    # except Exception as exception:
-    #     return jsonify({"error" : f"Server side error: {exception}"}), 500
-    # return jsonify({"message" : "correct_dummy"}), 200    
-    # return jsonify(response), 200
 
 def __put_coffee_recipe() -> Tuple[Response, int]:
     #TODO

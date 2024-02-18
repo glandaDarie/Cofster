@@ -32,7 +32,7 @@ def concat_probabilities_using_bellman_equation(elements: List[AnyTuple], discou
     current_probability : float = initial_probability
     for element in elements:
         current_probability *= discount_factor
-        trajectory.append(element + (current_probability,))
+        trajectory.append(tuple(element) + (current_probability,))
     return trajectory
 
 def url_builder(base_url : str, endpoint : str) -> str:
