@@ -1,6 +1,39 @@
-from typing import List, Tuple, Dict, Any
+from typing import List, Tuple, Dict, Any, TypeVar
 from urllib.parse import urlsplit, urljoin
 import os
+
+T = TypeVar('T')
+
+class AnyTuple(Tuple[T, ...]):
+    """
+    A generic tuple that can hold elements of any type.
+
+    This class is a subclass of Tuple and is designed to represent a tuple
+    where each element can be of any type.
+
+    Example:
+        any_tuple = AnyTuple(1, 'hello', 3.14)
+    """
+    pass
+
+def concat_probabilities_using_bellman_equation(elements: List[AnyTuple], discount_factor: float = 0.9, initial_probability: float = 1.0) -> List[Tuple[AnyTuple, float]]:
+    """
+    Add probabilities using the Bellman equation.
+
+    Parameters:
+      elements (List[str]): List of data elements.
+      discount_factor (float): Discount factor for the Bellman equation. Default is 0.9.
+      initial_probability (float): Initial probability value. Default is 1.0.
+
+    Returns:
+      List[Tuple[AnyTuple, float]]: List of tuples containing the trajectory with the probabilites for each timestamp.
+    """
+    trajectory : List[Tuple[AnyTuple, float]] = []      
+    current_probability : float = initial_probability
+    for element in elements:
+        current_probability *= discount_factor
+        trajectory.append(element + (current_probability,))
+    return trajectory
 
 def url_builder(base_url : str, endpoint : str) -> str:
     """
@@ -22,25 +55,6 @@ def url_builder(base_url : str, endpoint : str) -> str:
     if not scheme or not netloc:
         raise ValueError("Invalid base URL. Must have a scheme (http/https) and network location.")
     return url
-
-def add_probabilities_using_bellman_equation(elements: List[str], discount_factor: float = 0.9, initial_probability: float = 1.0) -> List[Tuple]:
-    """
-    Add probabilities using the Bellman equation.
-
-    Parameters:
-      elements (List[str]): List of data elements.
-      discount_factor (float): Discount factor for the Bellman equation. Default is 0.9.
-      initial_probability (float): Initial probability value. Default is 1.0.
-
-    Returns:
-      List[Tuple]: List of tuples containing the trajectory with the probabilites for each timestamp.
-    """
-    trajectory : List[Tuple] = []      
-    current_probability : float = initial_probability
-    for element in elements:
-        current_probability *= discount_factor
-        trajectory.append(tuple(element) + (current_probability,))
-    return trajectory
 
 class Arguments:
     @staticmethod
