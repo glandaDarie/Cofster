@@ -56,6 +56,29 @@ def url_builder(base_url : str, endpoint : str) -> str:
         raise ValueError("Invalid base URL. Must have a scheme (http/https) and network location.")
     return url
 
+class Convertor:
+    @staticmethod
+    def stringify_items(data : List[Tuple[Any, ...]]) -> List[Tuple[str, ...]]:
+        """
+        Convert items inside tuples within a list to strings.
+
+        Args:
+            data (List[Tuple]): A list of tuples containing items.
+
+        Returns:
+            List[Tuple[str, ...]]: A list of tuples with converted items to strings.
+
+        Examples:
+            >>> data = [(1, 'apple'), (2, 'banana'), (3, 'cherry')]
+            >>> Convertor.stringfy_items(data)
+            [('1', 'apple'), ('2', 'banana'), ('3', 'cherry')]
+        """
+        return \
+        [ \
+            tuple(str(item) if not isinstance(item, str) else item \
+            for item in items) for items in data \
+        ]
+
 class Arguments:
     @staticmethod
     def database_arguments() -> Dict[str, Any]:

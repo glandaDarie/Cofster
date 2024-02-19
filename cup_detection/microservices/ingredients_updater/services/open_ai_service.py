@@ -5,7 +5,7 @@ from langchain.chat_models import ChatOpenAI
 from langchain.document_loaders import TextLoader
 from langchain.indexes import VectorstoreIndexCreator
 from langchain.chains import ConversationalRetrievalChain
-# from utils.paths import COFFEE_CREATION_PATH
+from utils.logger import LOGGER
 import json
 from dotenv import load_dotenv
 
@@ -20,10 +20,23 @@ class OpenAIService:
             file_path (str): The path of the prompt file.
 
         """
-        load_dotenv(".env")
-        os.environ["OPEN_AI_KEY"] = os.getenv("OPENAI_API_KEY")
-        self.file_path : str = file_path
+        try:
+            load_dotenv(".env")
+            os.environ["OPEN_AI_KEY"] = os.getenv("OPENAI_API_KEY")
+            self.file_path : str = file_path
         
+        except FileNotFoundError as file_not_found_error:
+            LOGGER.error(f"Error loading .env file: {file_not_found_error}")
+            raise 
+        
+        except TypeError as type_error:
+            LOGGER.error(f"Error setting OPEN_AI_KEY: {type_error}")
+            raise 
+        
+        except Exception as exception:
+            LOGGER.error(f"Unexpected error during OpenAIService initialization: {exception}")
+            raise 
+
     def __generate_available_ingredients(self, prompt : str, \
                                         model : str = "gpt-3.5-turbo", \
                                         temperature_prompt : float = 0, \
@@ -40,14 +53,15 @@ class OpenAIService:
         Returns:
             Dict[str, str]: The generated response.
         """
-        text_loader : TextLoader = TextLoader(file_path=self.file_path) # file should be changed with the new data fetched from the backend
+        text_loader : TextLoader = TextLoader(file_path=self.file_path) 
         index : VectorstoreIndexCreator = VectorstoreIndexCreator().from_loaders([text_loader])
         chain : ConversationalRetrievalChain = ConversationalRetrievalChain.from_llm(
             llm=ChatOpenAI(model=model, temperature=temperature_prompt),
-            retriever=index.vectorstore.as_retriever(search_kwargs={"k": 1}),
+            retriever=index.vectorstore.as_retriever(search_kwargs= {"k": 1}),
         )
         result : Dict[str, str] = chain({"question": prompt, "chat_history": chat_history})
-        return json.loads(result["answer"]) 
+        print(f"result_type: {type(result)}, result: {result}")
+        return result["answer"] 
     
     def __call__(self, prompt : str, \
                 model : str = "gpt-3.5-turbo", \

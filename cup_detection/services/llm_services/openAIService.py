@@ -6,6 +6,7 @@ from langchain.document_loaders import TextLoader
 from langchain.indexes import VectorstoreIndexCreator
 from langchain.chains import ConversationalRetrievalChain
 from utils.paths import PATH_COFFEE_CREATION
+from utils.logger import LOGGER
 from utils.helpers import FileLoader
 import json
 from dotenv import load_dotenv
@@ -18,10 +19,26 @@ class OpenAIService:
         Sets the OpenAI API key from the environment variable API_TOKEN_OPENAI and initializes a FileLoader instance.
 
         """
-        load_dotenv(".env")
-        os.environ["OPEN_AI_KEY"] = os.getenv("OPENAI_API_KEY")
-        self.file_loader : FileLoader = FileLoader(file_path=PATH_COFFEE_CREATION) 
-    
+        try:
+            load_dotenv(".env")
+            os.environ["OPEN_AI_KEY"] = os.getenv("OPENAI_API_KEY")
+            self.file_loader : FileLoader = FileLoader(file_path=PATH_COFFEE_CREATION) 
+            
+        except FileNotFoundError as file_not_found_error:
+            print(f"Error loading .env file: {file_not_found_error}")
+            LOGGER.error(f"Error loading .env file: {file_not_found_error}")
+            raise 
+        
+        except TypeError as type_error:
+            print(f"Error loading .env file: {file_not_found_error}")
+            LOGGER.error(f"Error setting OPEN_AI_KEY: {type_error}")
+            raise 
+        
+        except Exception as exception:
+            print(f"Unexpected error during OpenAIService initialization: {exception}")
+            LOGGER.error(f"Unexpected error during OpenAIService initialization: {exception}")
+            raise 
+
     def __generate_available_ingredients(self, prompt : str, model : str = "gpt-3.5-turbo", temperature_prompt : float = 0) -> Dict[str, str]:
         """
         Helper method to generate a response to a query using the OpenAI model.
