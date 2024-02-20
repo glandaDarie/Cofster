@@ -43,15 +43,19 @@ def __get_coffee_recipe() -> Tuple[Response, int]:
 
         arguments : Dict[str, Any] = Arguments.database_arguments()
         database_url : str = f"postgresql://{arguments['username']}:{arguments['password']}@{arguments['host']}:{arguments['port']}/{arguments['database']}"
-        
+
         prompt_updater_service : PromptUpdaterService = PromptUpdaterService(\
             questionnaire_database_service=QuestionnaireDatabaseService(database_url=database_url, table_name="questionnaire"),
             openai_service=OpenAIService(file_path=COFFEE_CREATION_PATH)
         )
-        prompt_updater_service(customer_name=customer_name, \
+
+        error_msg : str = prompt_updater_service(customer_name=customer_name, \
                                prompt_recipe=prompt_recipe, \
                                limit_nr_responses=10 \
         )
+
+        if error_msg:
+            return jsonify({"error" : error_msg}), 500
 
     except RequestException as network_error:
         if "Failed to establish a new connection" in str(network_error):

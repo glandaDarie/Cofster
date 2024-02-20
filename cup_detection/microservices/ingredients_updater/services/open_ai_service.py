@@ -6,7 +6,6 @@ from langchain.document_loaders import TextLoader
 from langchain.indexes import VectorstoreIndexCreator
 from langchain.chains import ConversationalRetrievalChain
 from utils.logger import LOGGER
-import json
 from dotenv import load_dotenv
 
 class OpenAIService:
@@ -53,6 +52,7 @@ class OpenAIService:
         Returns:
             Dict[str, str]: The generated response.
         """
+        print(f"chat_history: {chat_history}")
         text_loader : TextLoader = TextLoader(file_path=self.file_path) 
         index : VectorstoreIndexCreator = VectorstoreIndexCreator().from_loaders([text_loader])
         chain : ConversationalRetrievalChain = ConversationalRetrievalChain.from_llm(
@@ -60,7 +60,6 @@ class OpenAIService:
             retriever=index.vectorstore.as_retriever(search_kwargs= {"k": 1}),
         )
         result : Dict[str, str] = chain({"question": prompt, "chat_history": chat_history})
-        print(f"result_type: {type(result)}, result: {result}")
         return result["answer"] 
     
     def __call__(self, prompt : str, \
