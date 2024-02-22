@@ -15,7 +15,7 @@ class PromptUpdaterService:
         self.questionnaire_database_service : QuestionnaireDatabaseService = questionnaire_database_service
         self.openai_service : OpenAIService = openai_service
 
-    def __call__(self, customer_name : str, prompt_recipe : str, model : str = "gpt-3.5-turbo", limit_nr_responses : int = 10) -> str | None:
+    def __call__(self, customer_name : str, prompt_recipe : str, model : str = "gpt-3.5-turbo", temperature_prompt : float = 0, limit_nr_responses : int = 10) -> str | None:
         try:
             person_responses : Query[Tuple[DateTime, String, String]] = self.questionnaire_database_service.get_customer_responses(\
                                                                                         customer_name=customer_name, \
@@ -23,7 +23,8 @@ class PromptUpdaterService:
             chat_history : List[Tuple[DateTime, String, String, float]] \
                 = Convertor.stringify_items(concat_probabilities_using_bellman_equation(elements=person_responses))
 
-            new_user_file_prompt = self.openai_service(prompt=prompt_recipe, model=model, chat_history=chat_history)
+            prompt_recipe : str = prompt_recipe + "\n" + str(chat_history)
+            new_user_file_prompt : str = self.openai_service(prompt=prompt_recipe, model=model, temperature_prompt=temperature_prompt)
             print(f"API call GPT 3.5 response: {new_user_file_prompt}")
             
             # should make here a PUT request to the endpoint "http://user-file-prompt-updater:8050/prompt?name=passed_name" 

@@ -52,13 +52,14 @@ class OpenAIService:
         Returns:
             Dict[str, str]: The generated response.
         """
-        print(f"chat_history: {chat_history}")
-        text_loader : TextLoader = TextLoader(file_path=self.file_path) 
+        text_loader : TextLoader = TextLoader(file_path=self.file_path)
         index : VectorstoreIndexCreator = VectorstoreIndexCreator().from_loaders([text_loader])
         chain : ConversationalRetrievalChain = ConversationalRetrievalChain.from_llm(
             llm=ChatOpenAI(model=model, temperature=temperature_prompt),
             retriever=index.vectorstore.as_retriever(search_kwargs= {"k": 1}),
         )
+        result : Dict[str, str] = chain({"question": prompt, "chat_history": []})
+
         result : Dict[str, str] = chain({"question": prompt, "chat_history": chat_history})
         return result["answer"] 
     

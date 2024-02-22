@@ -33,7 +33,7 @@ def __get_coffee_recipe() -> Tuple[Response, int]:
     prompt_recipe : str = PROMPT_TEMPLATE.format(coffee_name) if coffee_name and isinstance(coffee_name, str) else PROMPT_TEMPLATE
 
     try:
-        previous_prompt_sevice : PreviousPromptService =  PreviousPromptService()
+        previous_prompt_sevice : PreviousPromptService =  PreviousPromptService() 
         prompt : str = previous_prompt_sevice.get_prompt(base_url="http://user-file-prompt-updater:8050", \
                                                         endpoint="/prompt", \
                                                         customer_name=customer_name) 
@@ -49,11 +49,16 @@ def __get_coffee_recipe() -> Tuple[Response, int]:
             openai_service=OpenAIService(file_path=COFFEE_CREATION_PATH)
         )
 
-        error_msg : str = prompt_updater_service(customer_name=customer_name, \
-                               prompt_recipe=prompt_recipe, \
-                               limit_nr_responses=10 \
-        )
+        prompt_updater_service_params : Dict[str, Any] = {
+            "customer_name" : customer_name,
+            "prompt_recipe" : prompt_recipe,
+            "model" : "gpt-3.5-turbo-0125",
+            # "model" : "gpt-4-0125-preview",
+            "temperature_prompt" : 0,
+            "limit_nr_responses" : 10
+        }
 
+        error_msg : str = prompt_updater_service(**prompt_updater_service_params)
         if error_msg:
             return jsonify({"error" : error_msg}), 500
 
