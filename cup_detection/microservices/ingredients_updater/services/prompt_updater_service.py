@@ -22,9 +22,10 @@ class PromptUpdaterService:
                                                                                         limit_nr_responses=limit_nr_responses)
             chat_history : List[Tuple[DateTime, String, String, float]] \
                 = Convertor.stringify_items(concat_probabilities_using_bellman_equation(elements=person_responses))
+            chat_history : str = str(chat_history)
+            prompt_recipe : str = prompt_recipe.format(chat_history)
 
-            prompt_recipe : str = prompt_recipe + "\n" + str(chat_history)
-            new_user_file_prompt : str = self.openai_service(prompt=prompt_recipe, model=model, temperature_prompt=temperature_prompt)
+            new_user_file_prompt : str = self.openai_service(prompt=prompt_recipe, model=model, temperature_prompt=temperature_prompt, chat_history=[])
             print(f"API call GPT 3.5 response: {new_user_file_prompt}")
             
             # should make here a PUT request to the endpoint "http://user-file-prompt-updater:8050/prompt?name=passed_name" 

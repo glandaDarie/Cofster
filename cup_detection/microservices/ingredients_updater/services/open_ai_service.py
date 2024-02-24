@@ -58,9 +58,9 @@ class OpenAIService:
             llm=ChatOpenAI(model=model, temperature=temperature_prompt),
             retriever=index.vectorstore.as_retriever(search_kwargs= {"k": 1}),
         )
-        result : Dict[str, str] = chain({"question": prompt, "chat_history": []})
-
         result : Dict[str, str] = chain({"question": prompt, "chat_history": chat_history})
+
+        # result : Dict[str, str] = chain({"question": prompt, "chat_history": chat_history})
         return result["answer"] 
     
     def __call__(self, prompt : str, \
