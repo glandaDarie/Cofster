@@ -33,10 +33,11 @@ def __get_coffee_recipe() -> Tuple[Response, int]:
     prompt_recipe : str = PROMPT_TEMPLATE.format(coffee_name) if coffee_name and isinstance(coffee_name, str) else PROMPT_TEMPLATE
 
     try:
-        previous_prompt_sevice : PreviousPromptService =  PreviousPromptService() 
-        prompt : str = previous_prompt_sevice.get_prompt(base_url="http://user-file-prompt-updater:8050", \
-                                                        endpoint="/prompt", \
-                                                        customer_name=customer_name) 
+        prompt : str = PreviousPromptService.get_prompt( \
+            base_url="http://user-file-prompt-updater:8050", \
+            endpoint="/prompt", \
+            customer_name=customer_name \
+        )
 
         file_loader : FileLoader = FileLoader(file_path=COFFEE_CREATION_PATH)
         file_loader.write_to_file(content=prompt)
@@ -53,7 +54,6 @@ def __get_coffee_recipe() -> Tuple[Response, int]:
             "customer_name" : customer_name,
             "prompt_recipe" : prompt_recipe,
             "model" : "gpt-3.5-turbo-0125",
-            # "model" : "gpt-4-0125-preview",
             "temperature_prompt" : 0,
             "limit_nr_responses" : 10
         }

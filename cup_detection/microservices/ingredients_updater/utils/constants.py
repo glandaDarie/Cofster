@@ -78,5 +78,7 @@ Ensure that you also add the rest of the content from the file, so it will not l
 
 The goal is to generate an enhanced recipe for the coffee drink that aligns with user preferences and feedback, considering the chat_history passed in this prompt and GPT-3.5 response.
 
+If you don't think you have sufficient information, or don't understand what to do, return strictly this: I don't know.  
+
 Thank you for ensuring that the updates align with user preferences and feedback.
 """
