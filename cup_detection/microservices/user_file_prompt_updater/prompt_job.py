@@ -7,7 +7,7 @@ from utils.logger import LOGGER
 from utils.paths import ROOT_PATH
 from threading import Thread
 from flask import Flask
-from routes.prompt import prompt_blueprint
+from routes.prompt import prompt_blueprint, prompt_update_blueprint
 
 # @repeat(every(10).seconds) # test
 @repeat(every(4).minutes) # prod
@@ -45,7 +45,8 @@ def format_and_generate_prompt_hierarchial_structure_for_users() -> None | TypeE
 
 app = Flask(__name__)
 
-app.register_blueprint(prompt_blueprint)
+app.register_blueprint(blueprint=prompt_blueprint)
+app.register_blueprint(blueprint=prompt_update_blueprint)
 
 if __name__ == "__main__":
     thread_web_server : Thread = Thread(target=lambda : app.run(host="0.0.0.0", port=8050, debug=True, use_reloader=False))

@@ -1,12 +1,63 @@
 from typing import List, Tuple, Set, Dict, Any
 from io import TextIOWrapper
 import os
-from utils.logger import LOGGER
 import copy
 import shutil
+from utils.logger import LOGGER
+from utils.exceptions import InvalidReadTypeError
+from utils.enums import ReadType
+
+class IOFile:
+    @staticmethod
+    def read(path : str, read_type : ReadType) -> str | List[str]:
+        """
+        Reads content from the file based on the specified read type.
+
+        Args:
+            read_type (str): The type of reading (either 'str' or 'list').
+
+        Returns:
+            str | List[str]: The content read from the file.
+        
+        Raises:
+            InvalidReadTypeError: If the specified read type is not supported.
+        """
+        try:
+            with open(path, "r") as input_file:
+                if read_type == ReadType.STRING:
+                    return input_file.read()
+                elif read_type == ReadType.LIST:
+                    return input_file.readlines()
+                else:
+                    raise InvalidReadTypeError(f"The type: {read_type} cannot be used when reading the respective type")
+        except FileNotFoundError as file_not_found_error:
+            return f"File not found error: {file_not_found_error}. File path: {path}"
+        except Exception as error:
+            return f"An unexpected error occurred: {error}"
+
+    @staticmethod
+    def write(path : str, content : str) -> None | str:
+        """
+        Writes content to the file.
+
+        Args:
+            content (str): The content to be written to the file.
+
+        Returns:
+            None | str: Returns None on success or an error message on failure.
+        """
+        try:
+            with open(path, "w") as output_file:
+                output_file.write(content)
+            return None  
+        except FileNotFoundError as file_not_found_error:
+            return f"File not found error: {file_not_found_error}. File path: {path}"
+        except Exception as error:
+            return f"An unexpected error occurred: {error}"
 
 class UserPromptGenerator:
     """Generates default prompt data for each user based on provided information."""
+
     def __init__(self, root_path : str, users_information : List[Tuple[str, int]] = []):
         """
         Initializes UserPromptGenerator object.
@@ -19,6 +70,31 @@ class UserPromptGenerator:
         self.source_path : str = os.path.join(root_path, "assets", "coffee_creation_data.txt")
         self.previous_users_prompt_files_path : str = os.path.join(root_path, "assets", "previous_users_information.txt")
         self.users_information : List[Tuple[str, int]] = users_information
+
+    @staticmethod
+    def save_updated_prompt_to_specific_user_file(prompt_files_path : str, customer_name : str, updated_prompt : str, file_dependency : IOFile) -> str | None:
+        users_directory_path : List[str] = os.listdir(prompt_files_path)
+        user_file_name : str | None = None
+        for user_directory_path in users_directory_path:
+            if customer_name.lower() in user_directory_path:
+                user_file_name = user_directory_path
+                break
+        
+        LOGGER.info(f"File name: {user_file_name}")
+
+        if user_file_name is None:
+            return "Customer name does not exist."
+
+        user_file_path : str = os.path.join(prompt_files_path, user_file_name, "prompt_data.txt")
+
+        # read the file
+        content : str = file_dependency.read(path=user_file_path, read_type=ReadType.STRING)
+        print(f"Content: {content}")
+        
+        # perform REGEX on that to update the file
+        
+        # update the file
+        return None
 
     def generate(self) -> str:
         """
@@ -304,4 +380,4 @@ class UserPromptGenerator:
                 except AttributeError as error:
                     raise AttributeError(f"Cannot convert name to lowercase. Error: {error}")
                 previous_users_information.append((name, id))
-        return previous_users_information
+        return previous_users_information,

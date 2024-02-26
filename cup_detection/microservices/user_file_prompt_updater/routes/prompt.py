@@ -1,16 +1,19 @@
 from typing import Dict, Any, Tuple
 from flask import jsonify, Blueprint, request
+import os
 import sys
 
 prompt_blueprint : Blueprint = Blueprint(name="prompt", import_name=__name__)
+prompt_update_blueprint : Blueprint = Blueprint(name="update_prompt", import_name=__name__)
 
 sys.path.append("../")
 
 from utils.paths import ROOT_PATH
-from utils.helpers import UserPromptGenerator
+from utils.helpers import UserPromptGenerator, IOFile
+from utils.logger import LOGGER
 
 @prompt_blueprint.get("/prompt")
-def prompt() -> Tuple[jsonify, int]:
+def get_prompt() -> Tuple[jsonify, int]:
     """
     Endpoint to retrieve user prompt information.
 
@@ -26,13 +29,16 @@ def prompt() -> Tuple[jsonify, int]:
         - 500: Internal server error if there are issues fetching or processing user prompt information.
     """
     customer_name : str = request.args.get("customer_name")
+    
+    LOGGER.info(f"Customer_name: {customer_name}")
+
     if customer_name is None:
         return jsonify({
             "error_message" : "Customer name is missing in the query parameters"
         }), 400
 
-    userPromptGenerator : UserPromptGenerator = UserPromptGenerator(root_path=ROOT_PATH)
-    user_prompt_information : Dict[str, Any] = userPromptGenerator.get_user_prompt_file_information(name=customer_name.lower())
+    user_prompt_generator : UserPromptGenerator = UserPromptGenerator(root_path=ROOT_PATH)
+    user_prompt_information : Dict[str, Any] = user_prompt_generator.get_user_prompt_file_information(name=customer_name.lower())
     
     if "content" not in user_prompt_information:
         return jsonify({
@@ -41,3 +47,57 @@ def prompt() -> Tuple[jsonify, int]:
         }), 500
 
     return jsonify(user_prompt_information), 200
+
+@prompt_update_blueprint.put("/prompt")
+def update_prompt() -> Tuple[jsonify, int]:
+    """
+    Handles HTTP PUT request for updating prompt information.
+
+    Returns:
+        Tuple[jsonify, int]: A tuple containing a JSON response and an HTTP status code.
+            - If the request is invalid or missing parameters, returns a 400 status code with an error message.
+            - If an unexpected error occurs, returns a 500 status code with an error message.
+            - If the update is successful, returns a 200 status code with a success message.
+    """
+    try:
+        if not request.is_json:
+            return jsonify({
+                "error_message" : "Invalid request. Content-Type must be application/json."
+            }), 400
+
+        data : Any = request.get_json()
+        LOGGER.info(f"Data: {data}")
+
+        if not "customer_name" in data:
+            return jsonify({
+                "error_message" : "Missing required parameter 'customer_name' in the request body."
+            }), 400
+
+        if not "prompt" in data:
+            return jsonify({
+                "error_message" : "Missing required parameter 'prompt' in the request body."
+            }), 400
+        
+        customer_name : str = data["customer_name"]
+        prompt : str = data["prompt"]
+
+        error_msg : str = UserPromptGenerator.save_updated_prompt_to_specific_user_file( \
+            prompt_files_path=os.path.join(ROOT_PATH, "assets", "users_prompt_files"), \
+            customer_name=customer_name, \
+            updated_prompt=prompt, \
+            file_dependency=IOFile \
+        )
+
+        if isinstance(error_msg, str):
+            LOGGER.error(f"Error updating prompt: {error_msg}")
+            return jsonify({
+                "error_message" : error_msg
+            }), 400
+
+        return jsonify( {
+            "message": f"Update on the prompt for customer {data['customer_name']} was done successfully."
+        }), 200
+    
+    except Exception as error:
+        LOGGER.error(f"An unexpected error occurred: {error}")
+        return jsonify({"error_message": "An unexpected error occurred. Please try again later."}), 500

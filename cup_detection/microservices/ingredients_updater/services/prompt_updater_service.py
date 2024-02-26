@@ -36,9 +36,9 @@ class PromptUpdaterService:
             response_information : str = PreviousPromptService.put_new_prompt( \
                 base_url="http://user-file-prompt-updater:8050", \
                 endpoint="/prompt", \
-                body_data={ 
-                    "prompt" : new_user_file_prompt, 
-                    "customer_name" : customer_name 
+                body_data={ \
+                    "customer_name" : customer_name, \
+                    "prompt" : new_user_file_prompt, \
                 }, \
                 headers={'Content-Type': 'application/json'}, \
                 timeout=7, \
