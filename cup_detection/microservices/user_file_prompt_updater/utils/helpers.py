@@ -6,6 +6,25 @@ import shutil
 from utils.logger import LOGGER
 from utils.exceptions import InvalidReadTypeError
 from utils.enums import ReadType
+import re
+
+def find(items : List[int | str], target : int | str, case_insensitive : bool = False) -> int | str:
+    """
+    Search for a target value in a list of items.
+
+    Parameters:
+    - items (List[int | str]): List of items to search through.
+    - target (int | str): Value to search for in the list.
+    - case_insensitive (bool): If True, perform a case-insensitive search for strings.
+
+    Returns:
+    - int | str: The found item or "N/A" if not found.
+    """
+    for item in items:
+        item : str = item.lower() if case_insensitive else item
+        if target in item:
+            return item
+    return "N/A"
 
 class IOFile:
     @staticmethod
@@ -75,26 +94,33 @@ class UserPromptGenerator:
     def save_updated_prompt_to_specific_user_file(prompt_files_path : str, customer_name : str, updated_prompt : str, file_dependency : IOFile) -> str | None:
         users_directory_path : List[str] = os.listdir(prompt_files_path)
         user_file_name : str | None = None
-        for user_directory_path in users_directory_path:
-            if customer_name.lower() in user_directory_path:
-                user_file_name = user_directory_path
-                break
-        
+
+        user_file_name : str = find(items=users_directory_path, target=customer_name)
+
         LOGGER.info(f"File name: {user_file_name}")
 
-        if user_file_name is None:
+        if user_file_name == "N/A":
             return "Customer name does not exist."
 
         user_file_path : str = os.path.join(prompt_files_path, user_file_name, "prompt_data.txt")
 
         # read the file
-        content : str = file_dependency.read(path=user_file_path, read_type=ReadType.STRING)
-        print(f"Content: {content}")
+        prompt_content : str = file_dependency.read(path=user_file_path, read_type=ReadType.STRING)
+        LOGGER.info(f"Prompt content: {prompt_content}")
+
+        # update prompt format
+        updated_prompt : str = re.sub(r'^\{\n', '', updated_prompt, flags=re.MULTILINE)
+        updated_prompt : str = re.sub(r'\}$', '', updated_prompt, flags=re.MULTILINE)
+        updated_prompt : str = re.sub(r'^\s+', '', updated_prompt, flags=re.MULTILINE)
         
-        # perform REGEX on that to update the file
-        
+        # perform REGEX to update the prompt format
+        updated_prompt_file_content : str = re.sub(r'\{\s*[^{}]+\}', f'{{ {updated_prompt} }}', prompt_content, flags=re.DOTALL)
+
         # update the file
-        return None
+        error_msg : str = file_dependency.write(path=user_file_path, content=updated_prompt_file_content)
+        if isinstance(error_msg, str):
+            return error_msg
+
 
     def generate(self) -> str:
         """
