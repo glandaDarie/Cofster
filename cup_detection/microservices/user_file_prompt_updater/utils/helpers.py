@@ -6,7 +6,11 @@ import shutil
 from utils.logger import LOGGER
 from utils.exceptions import InvalidReadTypeError
 from utils.enums import ReadType
-import re
+import sys
+
+sys.path.append("../")
+
+from services.prompt_convertor_builder_service import PromptConvertorBuilderService
 
 def find(items : List[int | str], target : int | str, case_insensitive : bool = False) -> int | str:
     """
@@ -74,6 +78,36 @@ class IOFile:
         except Exception as error:
             return f"An unexpected error occurred: {error}"
 
+def get_prompt_information(prompt_files_path : str, customer_name : str, updated_prompt : str, file_dependency : IOFile) -> Tuple[str, str, str] | str:
+    """
+    Retrieve prompt information for a given customer from prompt files.
+
+    Parameters:
+    - prompt_files_path (str): The path to the directory containing prompt files.
+    - customer_name (str): The name of the customer.
+    - updated_prompt (str): The updated prompt information.
+    - file_dependency (IOFile): An instance of the IOFile dependency for file operations.
+
+    Returns:
+    - Tuple[str, str, str] | str: A tuple containing the updated prompt, existing prompt content, and the user file path. 
+      If the customer name does not exist, the function returns a string indicating the absence of the customer name.
+    """
+    users_directory_path : List[str] = os.listdir(prompt_files_path)
+    user_file_name : str | None = None
+    user_file_name : str = find(items=users_directory_path, target=customer_name)
+
+    LOGGER.info(f"File name: {user_file_name}")
+
+    if user_file_name == "N/A":
+        return "Customer name does not exist."
+
+    user_file_path : str = os.path.join(prompt_files_path, user_file_name, "prompt_data.txt")
+
+    prompt_content : str = file_dependency.read(path=user_file_path, read_type=ReadType.STRING)
+    LOGGER.info(f"Prompt content: {prompt_content}")
+
+    return updated_prompt, prompt_content, user_file_path
+
 class UserPromptGenerator:
     """Generates default prompt data for each user based on provided information."""
 
@@ -91,37 +125,36 @@ class UserPromptGenerator:
         self.users_information : List[Tuple[str, int]] = users_information
 
     @staticmethod
-    def save_updated_prompt_to_specific_user_file(prompt_files_path : str, customer_name : str, updated_prompt : str, file_dependency : IOFile) -> str | None:
-        users_directory_path : List[str] = os.listdir(prompt_files_path)
-        user_file_name : str | None = None
+    def save_updated_prompt_to_specific_user_file( \
+        user_file_path : str,
+        prompt_convertor_builder_service_dependency : PromptConvertorBuilderService, \
+        file_dependency : IOFile, \
+    ) -> str | None:
+        """
+        Save the updated prompt to a specific user file.
 
-        user_file_name : str = find(items=users_directory_path, target=customer_name)
+        Parameters:
+        - user_file_path (str): The path to the user file.
+        - prompt_convertor_builder_service_dependency (PromptConvertorBuilderService):
+            An instance of PromptConvertorBuilderService to handle prompt transformations.
+        - file_dependency (IOFile): An instance of IOFile for file operations.
 
-        LOGGER.info(f"File name: {user_file_name}")
-
-        if user_file_name == "N/A":
-            return "Customer name does not exist."
-
-        user_file_path : str = os.path.join(prompt_files_path, user_file_name, "prompt_data.txt")
-
-        # read the file
-        prompt_content : str = file_dependency.read(path=user_file_path, read_type=ReadType.STRING)
-        LOGGER.info(f"Prompt content: {prompt_content}")
-
-        # update prompt format
-        updated_prompt : str = re.sub(r'^\{\n', '', updated_prompt, flags=re.MULTILINE)
-        updated_prompt : str = re.sub(r'\}$', '', updated_prompt, flags=re.MULTILINE)
-        updated_prompt : str = re.sub(r'^\s+', '', updated_prompt, flags=re.MULTILINE)
+        Returns:
+        - str | None: An error message if the operation fails, otherwise None.
+        """
+        updated_prompt_file_content : str = prompt_convertor_builder_service_dependency \
+            .remove_curly_brackets() \
+            .update_old_prompt_with_new_information() \
+            .update_coffee_name( \
+                "Corretto coffee", \
+                "whatever coffee drink" \
+            ) \
+            .build()
         
-        # perform REGEX to update the prompt format
-        updated_prompt_file_content : str = re.sub(r'\{\s*[^{}]+\}', f'{{ {updated_prompt} }}', prompt_content, flags=re.DOTALL)
-
-        # update the file
         error_msg : str = file_dependency.write(path=user_file_path, content=updated_prompt_file_content)
         if isinstance(error_msg, str):
             return error_msg
-
-
+        
     def generate(self) -> str:
         """
         Generates prompt data for users by generating directories and copying content from the source file.

@@ -9,7 +9,8 @@ prompt_update_blueprint : Blueprint = Blueprint(name="update_prompt", import_nam
 sys.path.append("../")
 
 from utils.paths import ROOT_PATH
-from utils.helpers import UserPromptGenerator, IOFile
+from utils.helpers import UserPromptGenerator, IOFile, get_prompt_information
+from services.prompt_convertor_builder_service import PromptConvertorBuilderService
 from utils.logger import LOGGER
 
 @prompt_blueprint.get("/prompt")
@@ -81,18 +82,29 @@ def update_prompt() -> Tuple[jsonify, int]:
         customer_name : str = data["customer_name"]
         prompt : str = data["prompt"]
 
-        error_msg : str = UserPromptGenerator.save_updated_prompt_to_specific_user_file( \
+        prompt_information = get_prompt_information( \
             prompt_files_path=os.path.join(ROOT_PATH, "assets", "users_prompt_files"), \
             customer_name=customer_name, \
             updated_prompt=prompt, \
             file_dependency=IOFile \
         )
 
-        if isinstance(error_msg, str):
-            LOGGER.error(f"Error updating prompt: {error_msg}")
+        if isinstance(prompt_information, str):
+            LOGGER.error(f"Error updating prompt: {prompt_information}")
             return jsonify({
-                "error_message" : error_msg
+                "error_message" : prompt_information
             }), 400
+        
+        new_prompt_information, old_prompt, user_file_path = prompt_information
+
+        UserPromptGenerator.save_updated_prompt_to_specific_user_file( \
+            user_file_path=user_file_path, \
+            prompt_convertor_builder_service_dependency=PromptConvertorBuilderService( \
+                new_prompt_information=new_prompt_information, \
+                old_prompt=old_prompt \
+            ), \
+            file_dependency=IOFile, \
+        )
 
         return jsonify( {
             "message": f"Update on the prompt for customer {data['customer_name']} was done successfully."
@@ -100,4 +112,5 @@ def update_prompt() -> Tuple[jsonify, int]:
     
     except Exception as error:
         LOGGER.error(f"An unexpected error occurred: {error}")
+        print(f"An unexpected error occurred: {error}")
         return jsonify({"error_message": "An unexpected error occurred. Please try again later."}), 500

@@ -60,6 +60,8 @@ if __name__ == "__main__":
             coffee_name : str = drinks_information_consumer.drinks_information[0]["coffeeName"]
             # customer_name : str = drinks_information_consumer.drinks_information[0]["customerName"] -> to be done in frontend
             # llm_recipe : bool = drinks_information_consumer.drinks_information[0]["llmRecipe"] -> to be done in frontend
+            # if llm_recipe:
+
             if cli_arguments.llm_recipe:
                 try:                 
                     
@@ -67,15 +69,17 @@ if __name__ == "__main__":
                     #                                             endpoint="/coffee_recipe", \
                     #                                             coffee_name=coffee_name, customer_name=customer_name)
 
-                    response : str = recipe_controller.get_recipe(base_url="http://192.168.1.102:8030", \
-                                                                endpoint="/coffee_recipe", \
-                                                                coffee_name=coffee_name)
-                    response_data : Dict[Dict[str, str], Dict[str, int]] = json.loads(response)
-                    status_code : int = response_data["status_code"]
+                    coffee_recipe_response : str = recipe_controller.get_recipe(  
+                        base_url="http://user-file-prompt-updater:8050", \
+                        endpoint="/coffee_recipe", \
+                        coffee_name=coffee_name, \
+                    )
+                    coffee_recipe_response_data : Dict[Dict[str, str], Dict[str, int]] = json.loads(coffee_recipe_response)
+                    status_code : int = coffee_recipe_response["status_code"]
                     assert status_code == 200, f"Error, status code: {status_code}"
-                    coffee_ingredients : str = response_data["ingredients"]
+                    coffee_ingredients : str = coffee_recipe_response["ingredients"]
                     drinks_information_consumer.drinks_information[0] = {**drinks_information_consumer.drinks_information[0], \
-                                                                                      **coffee_ingredients}
+                                                                        **coffee_ingredients}
                 except Exception as exception:
                     raise f"Error from fetching the ingredients from the Large Language Model: {exception}"
                 
