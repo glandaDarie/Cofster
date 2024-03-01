@@ -61,16 +61,16 @@ if __name__ == "__main__":
             # customer_name : str = drinks_information_consumer.drinks_information[0]["customerName"] -> to be done in frontend
             # llm_recipe : bool = drinks_information_consumer.drinks_information[0]["llmRecipe"] -> to be done in frontend
             # if llm_recipe:
-
             if cli_arguments.llm_recipe:
                 try:                 
                     
+                    # this should be the one that is called (we also need to customer_name to be passed (changes should happen inside the frontend and firebase))
                     # response : str = recipe_controller.get_recipe(base_url="http://192.168.1.102:8030", \
                     #                                             endpoint="/coffee_recipe", \
                     #                                             coffee_name=coffee_name, customer_name=customer_name)
 
                     coffee_recipe_response : str = recipe_controller.get_recipe(  
-                        base_url="http://user-file-prompt-updater:8050", \
+                        base_url="http://user-file-prompt-updater:8030", \
                         endpoint="/coffee_recipe", \
                         coffee_name=coffee_name, \
                     )

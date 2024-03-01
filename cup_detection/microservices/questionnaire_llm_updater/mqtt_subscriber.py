@@ -38,9 +38,10 @@ def on_message(client : Any, userdata : Any, msg : Any):
 
     customer_name : str = data.split("name")[-1].split(":")[1].strip()
     coffee_prompt : CoffeePrompt = CoffeePrompt()
-    response_data : str = coffee_prompt.get( \
+    response_data : str = coffee_prompt.put( \
         base_url="http://ingredients-updater:8030", \
         endpoint="/coffee_recipe", \
+        headers={"Content-Type" : "application/json"}, \
         customer_name=customer_name \
     )
     print(f"Response data: ${response_data}")

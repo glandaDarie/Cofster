@@ -1,4 +1,3 @@
-// import 'package:coffee_orderer/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:coffee_orderer/services/notificationService.dart'
     show NotificationService;
@@ -13,16 +12,17 @@ import 'package:coffee_orderer/providers/orderIDProvider.dart'
     show OrderIDProvider;
 import 'package:coffee_orderer/utils/localUserInformation.dart'
     show createUserInformationFile;
-// import 'package:coffee_orderer/screens/questionnaireScreen.dart';
-// import 'package:coffee_orderer/screens/loginScreen.dart';
-import 'package:coffee_orderer/screens/llmUpdaterFormularScreen.dart'
-    show LLMUpdaterFormularPage;
-// import 'package:coffee_orderer/screens/authScreen.dart' show AuthPage;
-// import 'package:coffee_orderer/screens/mainScreen.dart' show HomePage;
-// import 'package:coffee_orderer/screens/testFormularCompletionDialogScreen.dart'
-//     show TestScreen;
 import 'package:coffee_orderer/providers/testScreenProvider.dart'
     show TestScreenProvider;
+import 'package:coffee_orderer/screens/authScreen.dart' show AuthPage;
+import 'package:coffee_orderer/screens/mainScreen.dart' show HomePage;
+import 'package:coffee_orderer/utils/logger.dart' show LOGGER;
+// import 'package:coffee_orderer/screens/llmUpdaterFormularScreen.dart'
+//     show LLMUpdaterFormularPage;
+// import 'package:coffee_orderer/screens/questionnaireScreen.dart';
+// import 'package:coffee_orderer/screens/loginScreen.dart';
+// import 'package:coffee_orderer/screens/testFormularCompletionDialogScreen.dart'
+//     show TestScreen;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,7 +44,7 @@ void main() async {
   if (!(await LoggedInService.checkSharedPreferenceExistence(
       "<keepMeLoggedIn>"))) {
     await LoggedInService.setSharedPreferenceValue(
-        "<keepMeLoggedIn>"); // whenever changing countries, toggle this sharedPreferenceValue
+        "<keepMeLoggedIn>"); // whenever changing the IPv4, toggle this sharedPreferenceValue
   }
   NotificationService().initNotification("coffee_cappuccino");
   runApp(
@@ -85,8 +85,8 @@ class CofsterPage extends StatelessWidget {
             // home: Home(),
             // home: HomePage(),
             // home: TestScreen(),
-            home: LLMUpdaterFormularPage(), // debugging
-            // home: loggingStatusResponse ? HomePage() : AuthPage(),
+            // home: LLMUpdaterFormularPage(), // debugging
+            home: loggingStatusResponse ? HomePage() : AuthPage(),
             debugShowCheckedModeBanner: false,
           );
         } else if (snapshot.hasError) {

@@ -8,7 +8,7 @@ opencv-contrib-python==4.7.0.68
 Flask==2.3.2
 firebase-admin==6.2.0
 attrs==22.2.0
-RPi.GPIO==0.7.0
+# RPi.GPIO==0.7.0
 Flask==2.3.2
 Flask-Cors==4.0.0
 Flask-SocketIO==5.3.5

@@ -15,7 +15,7 @@ def parse_key_value_args(args : Any) -> Dict[str, Any]:
     parsed_args : Dict[str, Any] = {}
     for arg in args:
         key, value = arg.split('=')
-        parsed_args[key] : str = value
+        parsed_args[key] = value
     return parsed_args
 
 def url_builder(base_url : str, endpoint : str) -> str:
@@ -43,23 +43,26 @@ class CoffeePrompt:
     def __init__(self):
         pass
     
-    def get(self, base_url : str, endpoint : str, **params : Dict[str, Any]) -> str:
-        """Fetches coffee recipe data from an API using a GET request.
+    def put(self, base_url : str, endpoint : str, headers : Dict[str, str], **data : Dict[str, Any]) -> str:
+        """Updates coffee recipe data from an API using a PUT request.
 
         Args:
             base_url (str): The base URL of the API.
             endpoint (str): The specific endpoint for the API.
-            **params (Dict[str, Any]): Additional parameters to include in the request.
+            **data (Dict[str, Any]): Parameters to include in the request.
 
         Returns:
-            str: The fetched coffee recipe data.
+            str: The data to update the coffee recipe data.
 
         Raises:
             RuntimeError: If the API response status code is not 200.
 
         """
         url : str = url_builder(base_url=base_url, endpoint=endpoint)
-        response_data : requests.Response = requests.get(url=url, params=params)
+
+        response_data : requests.Response = requests.put(url=url, headers=headers, json=data)
+        # response_data : requests.Response = requests.get(url=url, params=params)
+
         status_code : int = response_data.status_code
         if status_code != 200:
             raise RuntimeError(f"Error: {response_data['error_message']}")

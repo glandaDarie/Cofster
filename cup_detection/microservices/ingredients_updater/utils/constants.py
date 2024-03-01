@@ -1,4 +1,4 @@
-PROMPT_TEMPLATE: str = """
+PROMPT_TEMPLATE_RECIPE : str = """
 Given the coffee drink: cortado, update the provided file to the TextLoader (the coffee_creation_data.txt) by leveraging information from the chat_history.
 The chat_history, converted from PostgreSQL SELECT responses to List[Tuple[str, str, str, str]], includes Bellman updater probabilities (found in the last column). It represents user feedback on the respective drink.
 
@@ -81,4 +81,9 @@ The goal is to generate an enhanced recipe for the coffee drink that aligns with
 If you don't think you have sufficient information, or don't understand what to do, return strictly this: I don't know.  
 
 Thank you for ensuring that the updates align with user preferences and feedback.
+"""
+
+
+PROMPT_TEMPLATE_INGREDIENTS : str = """
+    Given the coffee drink that I provided: {}, please generate a JSON with the ingredients necessary to make that respective drink.
 """
