@@ -36,6 +36,25 @@ Include screenshots here to showcase the user interface of the mobile applicatio
     <img src="mobile_app_images/details_screen.png" width="300" alt="Details screen">
     <img src="mobile_app_images/details_order_screen.png" width="300" alt="Details order screen">
   </div>
+
+  <div style="display: inline-block; text-align: center;">
+    <img src="mobile_app_images/details_stripe_screen.png" width="300" alt="Details stripe screen">
+    <img src="mobile_app_images/gift_screen.png" width="300" alt="Gift screen">
+  </div>
+  
+  <div style="display: inline-block; text-align: center;">
+    <img src="mobile_app_images/information_screen.png" width="300" alt="Information screen">
+    <img src="mobile_app_images/information_delete_account_screen.png" width="300" alt="Information delete account screen">
+  </div>
+
+  <div style="display: inline-block; text-align: center;">
+    <img src="mobile_app_images/orders_in_progress_screen.png" width="300" alt="Orders in progress screen">
+    <img src="mobile_app_images/purchase_history_screen.png" width="300" alt="Purchase history screen">
+  </div>
+
+  <div style="display: inline-block; text-align: center;">
+    <img src="mobile_app_images/invite_a_friend_screen" width="300" alt="Invite a friend screen">
+  </div>
 </div>
 
 ## Getting Started
