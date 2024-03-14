@@ -53,7 +53,8 @@ Include screenshots here to showcase the user interface of the mobile applicatio
   </div>
 
   <div style="display: inline-block; text-align: center;">
-    <img src="mobile_app_images/invite_a_friend_screen" width="300" alt="Invite a friend screen">
+    <img src="mobile_app_images/invite_a_friend_screen.png" width="300" alt="Invite a friend screen">
+    <img src="mobile_app_images/help_and_support_screen.png" width="300" alt="Help and support screen">
   </div>
 </div>
 
