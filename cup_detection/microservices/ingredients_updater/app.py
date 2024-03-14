@@ -1,4 +1,4 @@
-from typing import Dict, Tuple, Literal, Any
+from typing import Dict, Tuple, Literal, Any, Callable
 from flask import Flask, Response, jsonify, request
 from requests.exceptions import RequestException
 from services.open_ai_service import OpenAIService
@@ -9,25 +9,25 @@ from utils.helpers import FileLoader, Arguments
 from utils.paths import COFFEE_CREATION_PATH
 from utils.logger import LOGGER
 from utils.constants import PROMPT_TEMPLATE_RECIPE, PROMPT_TEMPLATE_INGREDIENTS
-import json 
 
 app = Flask(__name__)
 
 @app.route("/coffee_recipe", methods=["GET", "PUT"])
-def coffee_recipe() -> (tuple[Response, Literal[200]] | None):
-    print("ALIVE?")
-    if request.method == "GET":
-        return __get_coffee_recipe()
-    elif request.method == "PUT":
-        return __put_coffee_recipe()
-    else:
-        return jsonify({
-            "error_message" : "Method Not Allowed"
-        }), 405
+def coffee_recipe() -> (tuple[Response, Literal[200]] | None):    
+    method_options : Dict[str, Callable] = {
+        "GET" : __get_coffee_recipe,
+        "PUT" : __put_coffee_recipe,
+    }
+    try:
+        return method_options[request.method]()
+    except KeyError:
+        return {
+            "error_message": "Method Not Allowed"
+        }, 405
+    
 
 def __get_coffee_recipe() -> Tuple[Response, int]:
     coffee_name : str = request.args.get("coffee_name")
-    
     
     if not coffee_name or not isinstance(coffee_name, str):
         return jsonify({"error" : "The coffee name query parameter was not passed"}), 400
@@ -40,7 +40,6 @@ def __get_coffee_recipe() -> Tuple[Response, int]:
     print(f"coffee_name: {coffee_name}, customer_name: {customer_name}")
 
     try:
-
         previous_file_prompt : str = PreviousPromptService.get_prompt( \
             base_url="http://user-file-prompt-updater:8050", \
             endpoint="/prompt", \
@@ -90,10 +89,7 @@ def __put_coffee_recipe() -> Tuple[Response, int]:
 
     data : Dict[str, Any] = request.json
     customer_name : str = data.get("customer_name")
-    coffee_name : str = data.get("coffee_name")
-
-    print(f"customer_name: {customer_name}")
-    print(f"coffee_name: {coffee_name}")
+    coffee_name : str = data.get("coffee_name", None)
 
     if not customer_name or not isinstance(customer_name, str):
         return jsonify({"error" : "Customer was not provided correctly"}), 400
@@ -143,7 +139,7 @@ def __put_coffee_recipe() -> Tuple[Response, int]:
         LOGGER.error(error_msg)
         return jsonify({"error": error_msg}), 500
 
-    return jsonify({"message" : "correct_dummy"}), 200 # this needs to change  
+    return jsonify({"message" : f"Changed the coffee prompt for user: {customer_name}"}), 200 # this needs to change  
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8030)

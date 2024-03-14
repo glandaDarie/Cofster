@@ -13,7 +13,6 @@ def on_connect(client : Any, userdata : Any, flags : Any, rc : Any):
 
 def on_message(client : Any, userdata : Any, msg : Any):
     data : str = msg.payload.decode()
-    # check if data is received correctly from frontend
     LOGGER.info(f"Received data: {data} on topic {msg.topic}")
     cli_arguments_postgres : Dict[str, Any] = ArgumentParser.get_llm_updater_arguments_postgres()
     
