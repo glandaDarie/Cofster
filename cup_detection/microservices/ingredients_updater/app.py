@@ -1,5 +1,5 @@
 from typing import Dict, Tuple, Literal, Any, Callable
-from flask import Flask, Response, jsonify, request
+from flask import Flask, Response, jsonify, request, abort
 from requests.exceptions import RequestException
 from services.open_ai_service import OpenAIService
 from services.previous_prompt_service import PreviousPromptService
@@ -12,7 +12,7 @@ from utils.constants import PROMPT_TEMPLATE_RECIPE, PROMPT_TEMPLATE_INGREDIENTS
 
 app = Flask(__name__)
 
-@app.route("/coffee_recipe", methods=["GET", "PUT"])
+@app.route("/coffee_recipe", methods=["GET", "PUT", "POST", "DELETE", "PATCH"])
 def coffee_recipe() -> (tuple[Response, Literal[200]] | None):    
     method_options : Dict[str, Callable] = {
         "GET" : __get_coffee_recipe,
@@ -21,11 +21,8 @@ def coffee_recipe() -> (tuple[Response, Literal[200]] | None):
     try:
         return method_options[request.method]()
     except KeyError:
-        return {
-            "error_message": "Method Not Allowed"
-        }, 405
+        return jsonify({"error_message": "Method Not Allowed"}), 405
     
-
 def __get_coffee_recipe() -> Tuple[Response, int]:
     coffee_name : str = request.args.get("coffee_name")
     
