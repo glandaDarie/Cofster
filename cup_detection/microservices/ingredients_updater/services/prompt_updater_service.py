@@ -10,7 +10,6 @@ import sys
 sys.path.append("\..")
 
 from utils.helpers import Convertor, concat_probabilities_using_bellman_equation
-from utils.exceptions import LLMResponseError
 from utils.logger import LOGGER
 
 class PromptUpdaterService:
@@ -29,11 +28,10 @@ class PromptUpdaterService:
                 prompt : str = prompt.format(str(chat_history))
 
             data : str = self.openai_service(prompt=prompt, model=model, temperature_prompt=temperature_prompt, chat_history=[])
-
-            print(f"API call GPT 3.5 response: {data}")
+            LOGGER.info(f"GPT 3.5 response: {data}")
 
             if "I don't know".lower() == data.lower() or "I don't know".lower() in data.lower():
-                raise LLMResponseError(f"No LLM response available, response is: {data}")
+                return f"No LLM response available. LLM said {data}"
 
             if self.questionnaire_database_service is not None:
                 response_information : str = PreviousPromptService.put_new_prompt( \
@@ -51,9 +49,6 @@ class PromptUpdaterService:
                 LOGGER.info(f"Data: {data}")
                 return data
             
-            # should make here a PUT request to the endpoint "http://user-file-prompt-updater:8050/prompt?name=passed_name" 
-            # to update the given file with that respective name. Body params should be { name : param_name, user_file_prompt : data}
-
         except NoSuchTableError as table_error:
             error_msg : str = f"Table {self.questionnaire_database_service.table_name} could not be found in the database. Error: {table_error}"
             return error_msg

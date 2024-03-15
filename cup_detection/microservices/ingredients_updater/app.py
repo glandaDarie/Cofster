@@ -37,8 +37,6 @@ def __get_coffee_recipe() -> Tuple[Response, int]:
     if not customer_name or not isinstance(customer_name, str):
         return jsonify({"error" : "The customer name query parameter was not passed"}), 400
 
-    print(f"coffee_name: {coffee_name}, customer_name: {customer_name}")
-
     try:
         previous_file_prompt : str = PreviousPromptService.get_prompt( \
             base_url="http://user-file-prompt-updater:8050", \
@@ -56,14 +54,12 @@ def __get_coffee_recipe() -> Tuple[Response, int]:
         )
 
         prompt_updater_service_params : Dict[str, Any] = {
+            "customer_name": customer_name,
             "prompt" : prompt_ingredient,
             "model" : "gpt-3.5-turbo-0125",
             "temperature_prompt" : 0
         }
-        
         ingredients : str = prompt_updater_service(**prompt_updater_service_params)
-
-        print(f"ingredients: {ingredients}")
 
         LOGGER.info(f"Ingredients: {ingredients}")
 
@@ -122,9 +118,10 @@ def __put_coffee_recipe() -> Tuple[Response, int]:
             "limit_nr_responses" : 10
         }
 
-        error_msg : str = prompt_updater_service(**prompt_updater_service_params)
-        if error_msg:
-            return jsonify({"error" : error_msg}), 500
+        response_prompt_updater : str = prompt_updater_service(**prompt_updater_service_params)
+        if "I don't know".lower() in response_prompt_updater.lower():
+            LOGGER.error(response_prompt_updater)
+            return jsonify({"error" : response_prompt_updater}), 500
 
     except RequestException as network_error:
         if "Failed to establish a new connection" in str(network_error):
@@ -139,7 +136,7 @@ def __put_coffee_recipe() -> Tuple[Response, int]:
         LOGGER.error(error_msg)
         return jsonify({"error": error_msg}), 500
 
-    return jsonify({"message" : f"Changed the coffee prompt for user: {customer_name}"}), 200 # this needs to change  
+    return jsonify({"message" : f"Changed the coffee prompt for user {customer_name} successfully"}), 200 # this needs to change  
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8030)
