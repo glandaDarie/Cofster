@@ -9,8 +9,8 @@ from threading import Thread
 from flask import Flask
 from routes.prompt import prompt_blueprint, prompt_update_blueprint
 
-# @repeat(every(10).seconds) # test
-@repeat(every(4).minutes) # prod
+@repeat(every(10).seconds) # test
+# @repeat(every(4).minutes) # prod
 def format_and_generate_prompt_hierarchial_structure_for_users() -> None | TypeError | ValueError:
     """
     Fetches user information, transforms it, generates prompts based on the information, and logs the job information.
@@ -38,10 +38,8 @@ def format_and_generate_prompt_hierarchial_structure_for_users() -> None | TypeE
     LOGGER.info(f"--USERS INFORMATION-- : {users_information}")
 
     user_prompt_generator : UserPromptGenerator = UserPromptGenerator(root_path=ROOT_PATH, users_information=users_information) 
-    message : str = user_prompt_generator.generate()
-    if message != "Successfully updated the directories and files for the respective user/users":
-        raise ValueError(f"Problems when trying to update the prompt hierarchy, error: {message}")
-    LOGGER.info(f"--JOB INFORMATION-- : {message}")
+    user_prompt_response : str = user_prompt_generator.generate()
+    LOGGER.info(f"--JOB INFORMATION-- : {user_prompt_response}")
 
 app = Flask(__name__)
 

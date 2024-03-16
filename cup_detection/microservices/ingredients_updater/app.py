@@ -1,5 +1,5 @@
 from typing import Dict, Tuple, Literal, Any, Callable
-from flask import Flask, Response, jsonify, request, abort
+from flask import Flask, Response, jsonify, request
 from requests.exceptions import RequestException
 from services.open_ai_service import OpenAIService
 from services.previous_prompt_service import PreviousPromptService

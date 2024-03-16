@@ -28,7 +28,7 @@ def find(items : List[int | str], target : int | str, case_insensitive : bool = 
         item : str = item.lower() if case_insensitive else item
         if target in item:
             return item
-    return "N/A"
+    return ""
 
 class IOFile:
     @staticmethod
@@ -98,7 +98,7 @@ def get_prompt_information(prompt_files_path : str, customer_name : str, updated
 
     LOGGER.info(f"File name: {user_file_name}")
 
-    if user_file_name == "N/A":
+    if not user_file_name:
         return "Customer name does not exist."
 
     user_file_path : str = os.path.join(prompt_files_path, user_file_name, "prompt_data.txt")
@@ -439,4 +439,4 @@ class UserPromptGenerator:
                 except AttributeError as error:
                     raise AttributeError(f"Cannot convert name to lowercase. Error: {error}")
                 previous_users_information.append((name, id))
-        return previous_users_information,
+        return previous_users_information
