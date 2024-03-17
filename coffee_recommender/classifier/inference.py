@@ -65,4 +65,3 @@ def predict(responses : Dict[str, str] = None, k : int = 5) -> str|int:
         _, top_predicted_indecies = top_predictions 
     return top_predicted_indecies.tolist()[0]
 
-

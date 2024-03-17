@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 3
+names: ['big', 'medium', 'small']
+
+roboflow:
+  workspace: universitatea-politehnica-timioara
+  project: custom-cup-detection
+  version: 1
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/universitatea-politehnica-timioara/custom-cup-detection/dataset/1
