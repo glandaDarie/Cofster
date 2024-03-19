@@ -100,7 +100,7 @@ if __name__ == "__main__":
             cup_detection_lock : Lock = Lock()
             cup_detection_state : List[bool] = [False]
 
-            def callback_cup_detection(new_cup_detection_state : bool | None = None) -> bool:
+            def cup_detection_callback(new_cup_detection_state : bool | None = None) -> bool:
                 with cup_detection_lock:
                     if new_cup_detection_state is not None:
                         cup_detection_state[0] = new_cup_detection_state
@@ -117,7 +117,7 @@ if __name__ == "__main__":
 
             drink_creation_service : DrinkCreationSevice = DrinkCreationSevice(drink_finished_callback=drink_finished_callback)
             background_create_coffee_drink_thread : Thread = Thread(target=drink_creation_service.simulate_creation, \
-                                                                    args=(drinks_information_consumer, callback_cup_detection, main_thread_terminated_event))
+                                                                    args=(drinks_information_consumer, cup_detection_callback, main_thread_terminated_event))
             background_create_coffee_drink_thread.daemon = True
             background_create_coffee_drink_thread.start()
             
@@ -130,7 +130,7 @@ if __name__ == "__main__":
                 # cup_detection_placement_model, frame, cup_placement_detected, placement_bounding_boxes = YOLOv8Detector.detect(frame=frame, \
                 #                                                                                                                model=cup_detection_placement_model)
                 # cup_position_valid : bool = YOLOv8Detector.is_cup_in_correct_position(object1_boxes=cup_bounding_boxes, object2_boxes=placement_bounding_boxes, tolerance=6)
-                callback_cup_detection(cup_detected)
+                cup_detection_callback(cup_detected)
                 print(f"len(consumer.drinks_information): {len(drinks_information_consumer.drinks_information)}") # testing the message queue
                 frame : np.ndarray = image_processor_builder_service \
                     .add_text_number_of_frames(frame=frame, start_time=start_fps_time, end_time=end_fps_time) \
