@@ -13,6 +13,7 @@ ElevatedButton OrderButton({
   @required PurchaseHistoryController purchaseHistoryController,
   @required IngredientUpdater ingredientUpdater,
   @required ValueNotifier<bool> placedOrderNotifier,
+  BuildContext previousContext = null,
   String textData = "Order",
   double textScaleFactor = 1.5,
   Color backgroundColor = const Color(0xFF473D3A),
@@ -23,6 +24,7 @@ ElevatedButton OrderButton({
     onPressed: () async {
       await OrderService(
         context,
+        previousContext,
         paymentService,
         purchaseHistoryController,
         ingredientUpdater.ingredientUpdater,

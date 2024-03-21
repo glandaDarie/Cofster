@@ -1,3 +1,4 @@
+import 'package:coffee_orderer/providers/dialogFormularTimerSingletonProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:coffee_orderer/services/notificationService.dart'
     show NotificationService;
@@ -59,6 +60,16 @@ void main() async {
         ChangeNotifierProvider(
           create: (_) => TestScreenProvider(),
         ), // dummy code to check the dialog is working
+        ChangeNotifierProvider(
+          create: (_) => DialogFormularTimerSingletonProvider(
+            sharedPreferenceKey: "<elapsedTime>",
+            onSetSharedPreferenceValue:
+                LoggedInService.setSharedPreferenceValue,
+            onGetSharedPreferenceValue:
+                LoggedInService.getSharedPreferenceValue,
+            debug: true,
+          ),
+        )
       ],
       child: MaterialApp(
         home: CofsterPage(),
@@ -85,8 +96,8 @@ class CofsterPage extends StatelessWidget {
             // home: Home(),
             // home: HomePage(),
             // home: TestScreen(),
-            home: LLMUpdaterFormularPage(), // debugging
-            // home: loggingStatusResponse ? HomePage() : AuthPage(),
+            // home: LLMUpdaterFormularPage(), // debugging
+            home: loggingStatusResponse ? HomePage() : AuthPage(),
             debugShowCheckedModeBanner: false,
           );
         } else if (snapshot.hasError) {

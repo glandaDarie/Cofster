@@ -50,8 +50,8 @@ class RatingBarDrink {
 
   static void startRatingDisplayCountdown(
       BuildContext context, ValueNotifier<bool> placedOrderNotifier,
-      {int time = 30}) {
-    Future.delayed(Duration(seconds: time), () {
+      {int seconds = 30}) {
+    Future.delayed(Duration(seconds: seconds), () {
       placedOrderNotifier.value = true;
     });
   }

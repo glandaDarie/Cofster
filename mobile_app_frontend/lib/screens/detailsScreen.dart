@@ -23,16 +23,18 @@ import 'package:coffee_orderer/components/detailsScreen/detailsScreenBody.dart'
 class DetailsPage extends StatefulWidget {
   final bool isGift;
   final Future<void> Function({String sharedPreferenceKey}) onSetDialogFormular;
+  final BuildContext context;
 
   const DetailsPage({
     Key key,
     @required this.isGift,
     @required this.onSetDialogFormular,
+    this.context = null,
   }) : super(key: key);
 
   @override
   _DetailsPageState createState() =>
-      _DetailsPageState(isGift, onSetDialogFormular);
+      _DetailsPageState(isGift, onSetDialogFormular, context);
 }
 
 class _DetailsPageState extends State<DetailsPage> {
@@ -52,11 +54,13 @@ class _DetailsPageState extends State<DetailsPage> {
   ValueNotifier<bool> _microtaskNotExecutedNotifier;
   bool _isGift;
   Future<void> Function({String sharedPreferenceKey}) onSetDialogFormular;
+  BuildContext _context;
 
   _DetailsPageState(
     bool isGift,
     Future<void> Function({String sharedPreferenceKey})
         onSetDialogFormular, // the callback is either null or it exists
+    BuildContext context,
   ) {
     this.hotSelectedNotifier = ValueNotifier<bool>(false);
     this.placedOrderNotifier = ValueNotifier<bool>(false);
@@ -72,6 +76,7 @@ class _DetailsPageState extends State<DetailsPage> {
     this._isGift = isGift;
     this._microtaskNotExecutedNotifier = ValueNotifier<bool>(true);
     this.onSetDialogFormular = onSetDialogFormular;
+    this._context = context;
   }
 
   @override
@@ -105,6 +110,7 @@ class _DetailsPageState extends State<DetailsPage> {
         } else if (snapshotPreviousScreenData.hasData) {
           String coffeeName = snapshotPreviousScreenData.data;
           Function contentBodyCallback = () => DetailsScreenBody(
+                previousContext: this._context,
                 drinksInformationController: this.drinksInformationController,
                 coffeeName: coffeeName.replaceAll(" ", ""),
                 ingredients: this._ingredients,

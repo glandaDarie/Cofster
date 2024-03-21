@@ -34,6 +34,9 @@ import 'package:coffee_orderer/callbacks/mainScreenCallbacks.dart'
     show MainScreenCallbacks;
 import 'package:coffee_orderer/providers/dialogFormularTimerSingletonProvider.dart'
     show DialogFormularTimerSingletonProvider;
+import 'package:provider/provider.dart';
+// import 'package:coffee_orderer/providers/dialogFormularTimerSingletonProvider.dart'
+//     show DialogFormularTimerSingletonProvider;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);
@@ -157,217 +160,244 @@ class _HomePageState extends State<HomePage> {
           Map<String, List<String>> favouriteDrinksMap = snapshot.data;
           this._favouriteDrinks = List.from(favouriteDrinksMap.values.first);
           return Scaffold(
-            body: Stack(
-              children: [
-                ListView(
-                  padding: EdgeInsets.only(left: 10.0, top: 20.0),
-                  children: <Widget>[
-                    Padding(padding: EdgeInsets.only(top: 50.0)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        FutureBuilder<dynamic>(
-                          future: () async {
-                            dynamic nameFromPreferences =
-                                await LoggedInService.getSharedPreferenceValue(
-                                    "<nameUser>");
-                            return nameFromPreferences ??
-                                await this.authController.loadName();
-                          }(),
-                          builder: (BuildContext context,
-                              AsyncSnapshot<dynamic> snapshot) {
-                            if (snapshot.hasData) {
-                              return Text(
-                                "Hello, ${snapshot.data}",
-                                style: TextStyle(
-                                    fontFamily: "Baskerville",
-                                    fontSize: 35.0,
-                                    fontWeight: FontWeight.bold,
-                                    foreground: Paint()
-                                      ..shader = LinearGradient(
-                                        colors: [
-                                          Color.fromARGB(255, 167, 155, 143),
-                                          Color.fromARGB(255, 95, 76, 51),
-                                          Color.fromARGB(255, 71, 54, 32)
-                                        ],
-                                      ).createShader(
-                                          Rect.fromLTWH(0, 0, 100, 100))),
-                              );
-                            } else if (snapshot.hasError) {
-                              return Text("Error: ${snapshot.error}");
-                            } else {
-                              return CircularProgressIndicator(
-                                  color: Colors.brown,
-                                  backgroundColor: Colors.white);
-                            }
-                          },
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(right: 13.0),
-                          child: FutureBuilder<Uint8List>(
-                            future: this.authController.loadUserPhoto(),
-                            builder: (BuildContext context,
-                                AsyncSnapshot<Uint8List> snapshot) {
-                              return buildUserImage(snapshot);
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10.0),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 40.0),
-                      child: Container(
-                        child: FutureBuilder<String>(
-                          future: generateFunFact("coffeeFunFact.txt"),
-                          builder: (BuildContext context,
-                              AsyncSnapshot<String> snapshot) {
-                            if (snapshot.hasData) {
-                              return Text(
-                                "Fun fact: ${snapshot.data}.",
-                                style: TextStyle(
-                                  fontFamily: "nunito",
-                                  fontSize: 17.0,
-                                  fontWeight: FontWeight.w300,
-                                  color: Color(0xFFB0AAA7),
-                                ),
-                              );
-                            } else if (snapshot.hasError) {
-                              return Text("Error: ${snapshot.error}");
-                            } else {
-                              return CircularProgressIndicator(
-                                  color: Colors.brown,
-                                  backgroundColor: Colors.white);
-                            }
-                          },
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 25.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(
-                          "Drinks made for you",
-                          style: TextStyle(
-                            fontFamily: "varela",
-                            fontSize: 17.0,
-                            color: Color(0xFF473D3A),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 15.0),
-                          child: Text(
-                            "Drag to see all",
-                            style: TextStyle(
-                              fontFamily: "varela",
-                              fontSize: 15.0,
-                              color: Color(0xFFCEC7C4),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 15.0),
-                    Container(
-                      height: 310.0,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        children: this
-                            .coffeeCardFavouriteDrinksController
-                            .filteredCoffeeCardsWithFavouriteDrinksFromClassifier(
-                                this._favouriteDrinks),
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(
-                          "Drinks available",
-                          style: TextStyle(
-                            fontFamily: "varela",
-                            fontSize: 17.0,
-                            color: Color(0xFF473D3A),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 15.0),
-                          child: Text(
-                            "Drag to see all",
-                            style: TextStyle(
-                              fontFamily: "varela",
-                              fontSize: 15.0,
-                              color: Color(0xFFCEC7C4),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 15.0),
-                    Container(
-                      height: 410.0,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        children: this.coffeeCardController.getCoffeeCards(),
-                      ),
-                    ),
-                    SizedBox(height: 15.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(
-                          "Explore nearby",
-                          style: TextStyle(
-                            fontFamily: "varela",
-                            fontSize: 17.0,
-                            color: Color(0xFF473D3A),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 15.0),
-                          child: Text(
-                            "Drag to see all",
-                            style: TextStyle(
-                              fontFamily: "varela",
-                              fontSize: 15.0,
-                              color: Color(0xFFCEC7C4),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 15.0),
-                    Container(
-                      height: 125.0,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        children: Footer(context),
-                      ),
-                    ),
-                    SizedBox(height: 50.0)
-                  ],
-                ),
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  child: bottomNavigationBar(
-                      this._mainScreenCallbacks.navBarItemSelected,
-                      this._mainScreenCallbacks.onSelectedIndicesNavBar,
-                      this._mainScreenCallbacks.speechState,
-                      this._mainScreenCallbacks.onSpeechStateChanged,
-                      this._mainScreenCallbacks.listeningState,
-                      this._mainScreenCallbacks.onToggleListeningState,
-                      userGiftsNotifier: this._userGiftsNotifier,
-                      numberFavoritesValueNotifier:
-                          this._numberFavoritesValueNotifier,
-                      giftController: this._giftController),
-                ),
-              ],
-            ),
+            body: Consumer<DialogFormularTimerSingletonProvider>(builder:
+                (BuildContext context,
+                    DialogFormularTimerSingletonProvider value, Widget child) {
+              print("value.displayDialog: ${value.displayDialog}");
+              if (value.displayDialog) {
+                NotificationService().showNotification(
+                  title: "Works",
+                  body: "Works",
+                );
+              }
+              return body();
+              // return value.displayDialog
+              //     ? NotificationService().showNotification(
+              //         title: "Works",
+              //         body: "Works",
+              //       )
+              //     : body();
+              // // if (value.displayDialog) {
+              //   NotificationService().showNotification(
+              //     title: "Works",
+              //     body: "Works",
+              //   );
+              //   return body();
+              // } else {
+              //   return body();
+              // }
+            }),
           );
         }
       },
+    );
+  }
+
+  Widget body() {
+    return Stack(
+      children: [
+        ListView(
+          padding: EdgeInsets.only(left: 10.0, top: 20.0),
+          children: <Widget>[
+            Padding(padding: EdgeInsets.only(top: 50.0)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                FutureBuilder<dynamic>(
+                  future: () async {
+                    dynamic nameFromPreferences =
+                        await LoggedInService.getSharedPreferenceValue(
+                            "<nameUser>");
+                    return nameFromPreferences ??
+                        await this.authController.loadName();
+                  }(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                    if (snapshot.hasData) {
+                      return Text(
+                        "Hello, ${snapshot.data}",
+                        style: TextStyle(
+                            fontFamily: "Baskerville",
+                            fontSize: 35.0,
+                            fontWeight: FontWeight.bold,
+                            foreground: Paint()
+                              ..shader = LinearGradient(
+                                colors: [
+                                  Color.fromARGB(255, 167, 155, 143),
+                                  Color.fromARGB(255, 95, 76, 51),
+                                  Color.fromARGB(255, 71, 54, 32)
+                                ],
+                              ).createShader(Rect.fromLTWH(0, 0, 100, 100))),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Text("Error: ${snapshot.error}");
+                    } else {
+                      return CircularProgressIndicator(
+                          color: Colors.brown, backgroundColor: Colors.white);
+                    }
+                  },
+                ),
+                Padding(
+                  padding: EdgeInsets.only(right: 13.0),
+                  child: FutureBuilder<Uint8List>(
+                    future: this.authController.loadUserPhoto(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<Uint8List> snapshot) {
+                      return buildUserImage(snapshot);
+                    },
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 10.0),
+            Padding(
+              padding: const EdgeInsets.only(right: 40.0),
+              child: Container(
+                child: FutureBuilder<String>(
+                  future: generateFunFact("coffeeFunFact.txt"),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<String> snapshot) {
+                    if (snapshot.hasData) {
+                      return Text(
+                        "Fun fact: ${snapshot.data}.",
+                        style: TextStyle(
+                          fontFamily: "nunito",
+                          fontSize: 17.0,
+                          fontWeight: FontWeight.w300,
+                          color: Color(0xFFB0AAA7),
+                        ),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Text("Error: ${snapshot.error}");
+                    } else {
+                      return CircularProgressIndicator(
+                          color: Colors.brown, backgroundColor: Colors.white);
+                    }
+                  },
+                ),
+              ),
+            ),
+            SizedBox(height: 25.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  "Drinks made for you",
+                  style: TextStyle(
+                    fontFamily: "varela",
+                    fontSize: 17.0,
+                    color: Color(0xFF473D3A),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 15.0),
+                  child: Text(
+                    "Drag to see all",
+                    style: TextStyle(
+                      fontFamily: "varela",
+                      fontSize: 15.0,
+                      color: Color(0xFFCEC7C4),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 15.0),
+            Container(
+              height: 310.0,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: this
+                    .coffeeCardFavouriteDrinksController
+                    .filteredCoffeeCardsWithFavouriteDrinksFromClassifier(
+                        this._favouriteDrinks),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  "Drinks available",
+                  style: TextStyle(
+                    fontFamily: "varela",
+                    fontSize: 17.0,
+                    color: Color(0xFF473D3A),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 15.0),
+                  child: Text(
+                    "Drag to see all",
+                    style: TextStyle(
+                      fontFamily: "varela",
+                      fontSize: 15.0,
+                      color: Color(0xFFCEC7C4),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 15.0),
+            Container(
+              height: 410.0,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: this.coffeeCardController.getCoffeeCards(),
+              ),
+            ),
+            SizedBox(height: 15.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  "Explore nearby",
+                  style: TextStyle(
+                    fontFamily: "varela",
+                    fontSize: 17.0,
+                    color: Color(0xFF473D3A),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 15.0),
+                  child: Text(
+                    "Drag to see all",
+                    style: TextStyle(
+                      fontFamily: "varela",
+                      fontSize: 15.0,
+                      color: Color(0xFFCEC7C4),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 15.0),
+            Container(
+              height: 125.0,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: Footer(context),
+              ),
+            ),
+            SizedBox(height: 50.0)
+          ],
+        ),
+        Positioned(
+          left: 0,
+          right: 0,
+          bottom: 0,
+          child: bottomNavigationBar(
+            this._mainScreenCallbacks.navBarItemSelected,
+            this._mainScreenCallbacks.onSelectedIndicesNavBar,
+            this._mainScreenCallbacks.speechState,
+            this._mainScreenCallbacks.onSpeechStateChanged,
+            this._mainScreenCallbacks.listeningState,
+            this._mainScreenCallbacks.onToggleListeningState,
+            userGiftsNotifier: this._userGiftsNotifier,
+            numberFavoritesValueNotifier: this._numberFavoritesValueNotifier,
+            giftController: this._giftController,
+          ),
+        ),
+      ],
     );
   }
 }

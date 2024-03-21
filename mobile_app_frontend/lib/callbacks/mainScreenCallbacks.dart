@@ -35,7 +35,6 @@ class MainScreenCallbacks {
   // work on the actual implementation here
   Future<void> onSetDialogFormular(
       {@required final String sharedPreferenceKey}) async {
-    // final String sharedPreferenceKey = "<elapsedTime>";
     final dynamic elapsedTime =
         await LoggedInService.getSharedPreferenceValue(sharedPreferenceKey);
     if (elapsedTime == "Key not found") {
@@ -59,6 +58,7 @@ class MainScreenCallbacks {
       debug: true,
     );
     // in prod it should be 30 minutes
-    dialogFormularTimerProvider.startTimer(seconds: 10); // dev environment
+    dialogFormularTimerProvider.startTimer(
+        periodicChangeCheckTime: 1, microseconds: 10000000); // dev environment
   }
 }

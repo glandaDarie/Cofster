@@ -1,14 +1,16 @@
 from typing import Tuple, List
 import numpy as np
 from abc import ABC, abstractmethod
-from ultralytics import YOLO, yolo
 import torch
+
+from ultralytics import YOLO
+from ultralytics.engine.results import Boxes
 
 class Detector(ABC):
     @staticmethod
     @abstractmethod
     def detect(frame : np.ndarray = None, model : YOLO = None, path : str = None) -> YOLO | Tuple[YOLO, np.ndarray, bool, \
-                                                                                                  List[yolo.engine.results.Boxes]]:
+                                                                                                  List[Boxes]]:
         pass
 
     @staticmethod

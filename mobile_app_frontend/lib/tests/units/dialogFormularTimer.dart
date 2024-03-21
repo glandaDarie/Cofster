@@ -51,7 +51,10 @@ void main() {
 
       expect(dialogFormularTimerProvider.displayDialog, isFalse);
 
-      dialogFormularTimerProvider.startTimer(seconds: 10);
+      dialogFormularTimerProvider.startTimer(
+        periodicChangeCheckTime: 1,
+        microseconds: 10000000,
+      );
       await tester.pump();
       await tester.pump(const Duration(seconds: 10));
       await tester.pump();

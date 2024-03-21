@@ -13,6 +13,7 @@ Padding coffeeCard(
       onSetDialogFormular, [
   void Function(CoffeeCard, ValueNotifier<bool>) callbackSetFavorite,
   ValueNotifier<int> numberFavoritesValueNotifier,
+  BuildContext context,
 ]) {
   return Padding(
     padding: EdgeInsets.only(left: 15.0, right: 15.0),
@@ -105,6 +106,7 @@ Padding coffeeCard(
                 currentScreenName: "MainPage",
                 onSetDialogFormular: onSetDialogFormular,
                 card: card,
+                context: context,
               );
             },
             child: Container(

@@ -4,6 +4,7 @@ import 'package:coffee_orderer/controllers/PurchaseHistoryController.dart';
 import 'package:coffee_orderer/data_transfer/PurchaseHistoryDto.dart';
 import 'package:coffee_orderer/models/information.dart';
 import 'package:coffee_orderer/services/loggedInService.dart';
+import 'package:coffee_orderer/utils/logger.dart' show LOGGER;
 import 'package:flutter/material.dart';
 import 'package:coffee_orderer/utils/localUserInformation.dart';
 import 'package:coffee_orderer/services/paymentService.dart'
@@ -17,15 +18,20 @@ import 'package:coffee_orderer/services/timeOrdererService.dart'
 import 'package:coffee_orderer/controllers/DrinksInformationController.dart'
     show DrinksInformationController;
 import 'package:coffee_orderer/utils/toast.dart' show ToastUtils;
+import 'package:coffee_orderer/utils/llmFavoriteDrinkFormularPopup.dart'
+    show LlmFavoriteDrinkFormularPopup;
 
 class OrderService {
   BuildContext _context;
+  BuildContext _previousContext;
   PaymentService _paymentService;
   PurchaseHistoryController _purchaseHistoryController;
   Map<String, dynamic> _extraIngredients;
   ValueNotifier<bool> _placedOrderNotifier;
+
   OrderService(
     this._context,
+    this._previousContext,
     this._paymentService,
     this._purchaseHistoryController,
     this._extraIngredients,
@@ -63,17 +69,64 @@ class OrderService {
       return;
     }
 
-    String postUsersPurchaseResponse =
-        await this._placeOrderInUsersOrderHistory(coffeeName);
-    if (postUsersPurchaseResponse != null) {
-      ToastUtils.showToast(postUsersPurchaseResponse);
+    String placeOrderInUsersOrderHistoryWithRetryResponse =
+        await this._placeOrderInUsersOrderHistoryWithRetry(
+      orderData: coffeeName,
+      maxRetries: 5,
+      enableDebug: true,
+    );
+    if (placeOrderInUsersOrderHistoryWithRetryResponse != null) {
+      ToastUtils.showToast(placeOrderInUsersOrderHistoryWithRetryResponse);
       return;
     }
 
     RatingBarDrink.startRatingDisplayCountdown(
       this._context,
       this._placedOrderNotifier,
+      seconds: 60,
     );
+
+    LlmFavoriteDrinkFormularPopup.startPopupDisplayCountdown(
+      context: this._previousContext,
+      periodicChangeCheckTime: 3,
+      seconds: 10,
+      milliseconds: 2000,
+    );
+  }
+
+  /// Attempts to place an order in the user's order history with retry logic.
+  ///
+  /// [orderData]: The order data to be posted.
+  ///
+  /// [maxRetries]: The maximum number of retry attempts.
+  ///
+  /// [enableDebug]: Whether to print debug messages during retries.
+  ///
+  /// Returns the response message if the order is successfully placed, or an error message if all retry attempts fail.
+  Future<String> _placeOrderInUsersOrderHistoryWithRetry({
+    @required final String orderData,
+    @required final int maxRetries,
+    @required final bool enableDebug,
+  }) async {
+    int retryCount = 0;
+    String errorMessage = null;
+
+    while (retryCount < maxRetries) {
+      String postUsersPurchaseResponse =
+          await this._placeOrderInUsersOrderHistory(orderData);
+      errorMessage = postUsersPurchaseResponse;
+      if (errorMessage == null) {
+        break;
+      }
+      if (enableDebug) {
+        LOGGER.i(postUsersPurchaseResponse);
+      }
+      retryCount += 1;
+    }
+
+    return errorMessage == null
+        ? errorMessage
+        : "$errorMessage after $maxRetries retries.";
   }
 
   String _getProcessedCoffeeName(Map<String, String> cache) {

@@ -1,8 +1,8 @@
 from typing import List, Tuple
 import numpy as np
-from ultralytics import yolo
 from ultralytics import YOLO
-from ultralytics.yolo.utils.plotting import Annotator 
+from ultralytics.utils.plotting import Annotator 
+from ultralytics.engine.results import Results, Boxes
 import torch
 from utils.constants import THRESHOLD_SCORE
 from detectors.Detector import Detector
@@ -13,13 +13,15 @@ class YOLOv8Detector(Detector):
 
     @staticmethod
     def detect(frame : np.ndarray = None, model : YOLO = None, path_weights : str = None) -> YOLO | Tuple[YOLO, np.ndarray, bool, \
-                                                                                                    List[yolo.engine.results.Boxes]]:
+                                                                                                    List[Boxes]]:
         if model is None:
             model : YOLO = YOLO(path_weights)
             return model
+        
         has_bounding_box : bool = False
-        results : List[yolo.engine.results.Results] = model.predict(frame)
-        boxes : List[yolo.engine.results.Boxes] | None = None
+        boxes : List[Boxes] | None = None
+
+        results : List[Results] = model.predict(frame)
         for r in results:
             annotator : Annotator = Annotator(frame)
             boxes = r.boxes
@@ -33,11 +35,11 @@ class YOLOv8Detector(Detector):
         return (model, annotator.result(), has_bounding_box, boxes) if has_bounding_box else (model, frame, has_bounding_box, boxes)    
 
     @staticmethod
-    def is_cup_in_correct_position(object1_boxes : List[yolo.engine.results.Boxes], object2_boxes : List[yolo.engine.results.Boxes], tolerance: int = 0) -> bool:
+    def is_cup_in_correct_position(object1_boxes : List[Boxes], object2_boxes : List[Boxes], tolerance: int = 0) -> bool:
         assert len(object1_boxes) == 1, "There are multiple bounding boxes for object 1"
         assert len(object2_boxes) == 1, "There are multiple bounding boxes for object 2"
-        object1_box : yolo.engine.results.Boxes = object1_boxes[-1]
-        object2_box : yolo.engine.results.Boxes = object2_boxes[-1]
+        object1_box : Boxes = object1_boxes[-1]
+        object2_box : Boxes = object2_boxes[-1]
         object1_coordinates : torch.Tensor = object1_box.xyxy[0]
         object2_coordinates : torch.Tensor = object2_box.xyxy[0]
         object1_x, object1_y, object1_width, object1_height = object1_coordinates

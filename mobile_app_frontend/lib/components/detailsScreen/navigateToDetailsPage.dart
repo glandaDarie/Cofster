@@ -33,6 +33,7 @@ Future<void> navigateToDetailsPage({
         builder: (context) => DetailsPage(
           isGift: false,
           onSetDialogFormular: onSetDialogFormular,
+          context: context,
         ),
       ),
     );

@@ -20,6 +20,7 @@ import 'package:coffee_orderer/utils/informationLoaders.dart'
     show InformationLoaders;
 
 FutureBuilder<Information> DetailsScreenBody({
+  @required BuildContext previousContext,
   @required DrinksInformationController drinksInformationController,
   @required dynamic coffeeName,
   @required List<String> ingredients,
@@ -271,6 +272,7 @@ FutureBuilder<Information> DetailsScreenBody({
                                               placedOrderNotifier,
                                               paymentService,
                                               purchaseHistoryController,
+                                              previousContext: previousContext,
                                             );
                                           },
                                           child: bottomCoffeeDrinkButton(

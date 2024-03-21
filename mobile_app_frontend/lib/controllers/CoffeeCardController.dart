@@ -47,8 +47,13 @@ class CoffeeCardController {
   List<Padding> getCoffeeCards() {
     return [
       for (CoffeeCard objectCoffeeCard in this._objectsCoffeeCards)
-        coffeeCard(objectCoffeeCard, this._onSetDialogFormular,
-            this._onTapHeartLogo, this._numberFavoritesValueNotifier),
+        coffeeCard(
+          objectCoffeeCard,
+          this._onSetDialogFormular,
+          this._onTapHeartLogo,
+          this._numberFavoritesValueNotifier,
+          this._context,
+        ),
     ].toList();
   }
 

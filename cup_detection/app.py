@@ -49,6 +49,7 @@ Usage:
 """
 
 if __name__ == "__main__":
+    print("-----Coffee creation process is running on Raspberry Pi 4-----")
     cli_arguments = ArgumentParser.get_recipe_arguments()
     drinks_information_consumer : DrinkInformationConsumer = DrinkInformationConsumer(table_name=TABLE_NAME, options=DATABASE_OPTIONS)
     main_thread_terminated_event : Event = Event()

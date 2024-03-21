@@ -7,11 +7,12 @@ import 'package:coffee_orderer/components/detailsScreen/drinkCustomSelector.dart
     show customizeDrink;
 
 void drinkCustomSelectorSheet(
-  BuildContext detailsScreenContext,
+  BuildContext context,
   ValueNotifier<bool> placedOrderNotifier,
   PaymentService paymentService,
   PurchaseHistoryController purchaseHistoryController, {
   String previousScreenName = "MainPage",
+  BuildContext previousContext = null,
 }) {
   showModalBottomSheet(
     isScrollControlled: true,
@@ -22,7 +23,7 @@ void drinkCustomSelectorSheet(
         top: Radius.circular(25),
       ),
     ),
-    context: detailsScreenContext,
+    context: context,
     builder: (BuildContext context) {
       return customizeDrink(
         context,
@@ -30,6 +31,7 @@ void drinkCustomSelectorSheet(
         paymentService,
         purchaseHistoryController,
         previousScreenName: previousScreenName,
+        previousContext: previousContext,
       );
     },
   );

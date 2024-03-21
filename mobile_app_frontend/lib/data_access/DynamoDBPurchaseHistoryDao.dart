@@ -7,6 +7,7 @@ import 'package:coffee_orderer/utils/toast.dart' show ToastUtils;
 
 class DynamoDBPurchaseHistoryDao {
   final String _url;
+  final int _timeoutSeconds = 15;
 
   DynamoDBPurchaseHistoryDao(String url) : this._url = url.trim();
 
@@ -60,11 +61,15 @@ class DynamoDBPurchaseHistoryDao {
     const Map<String, String> headers = {"Content-Type": "application/json"};
     final String payload = purchaseHistoryDto.toJson();
     try {
-      final http.Response response = await http.post(
-        Uri.parse(this._url),
-        headers: headers,
-        body: payload,
-      );
+      final http.Response response = await http
+          .post(
+            Uri.parse(this._url),
+            headers: headers,
+            body: payload,
+          )
+          .timeout(
+            Duration(seconds: this._timeoutSeconds),
+          );
       dynamic responseBody = jsonDecode(response.body);
       if (responseBody["statusCode"] == 201) {
         return null;

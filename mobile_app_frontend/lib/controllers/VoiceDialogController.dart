@@ -73,6 +73,7 @@ class VoiceDialogController {
       MaterialPageRoute(
         builder: (context) => DetailsPage(
           isGift: false,
+          onSetDialogFormular: null,
         ),
       ),
     );

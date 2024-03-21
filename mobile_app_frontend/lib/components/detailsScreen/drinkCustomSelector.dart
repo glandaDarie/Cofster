@@ -38,6 +38,7 @@ FutureBuilder<String> customizeDrink(
   PaymentService paymentService,
   PurchaseHistoryController purchaseHistoryController, {
   String previousScreenName = "MainPage",
+  BuildContext previousContext = null,
 }) {
   Map<String, dynamic> extraIngredientUpdater = {};
   final IngredientUpdater ingredientUpdater =
@@ -171,6 +172,7 @@ FutureBuilder<String> customizeDrink(
                           purchaseHistoryController: purchaseHistoryController,
                           ingredientUpdater: ingredientUpdater,
                           placedOrderNotifier: placedOrderNotifier,
+                          previousContext: previousContext,
                         ),
                       ),
                     ],
