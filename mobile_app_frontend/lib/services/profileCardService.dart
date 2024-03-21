@@ -15,8 +15,6 @@ import 'package:coffee_orderer/controllers/PurchaseHistoryController.dart'
     show PurchaseHistoryController;
 import 'package:coffee_orderer/utils/localUserInformation.dart'
     show loadUserInformationFromCache, fromStringCachetoMapCache;
-// import 'package:coffee_orderer/components/profileInformationScreen/deleteUserDialog.dart'
-//     show showDeleteConfirmationDialog;
 import 'package:coffee_orderer/utils/formularDialog.dart' show formularDialog;
 import 'package:coffee_orderer/controllers/UserController.dart'
     show UserController;
@@ -110,8 +108,6 @@ class ProfileCardService {
         context: context,
         title: "Delete Account",
         msg: msg,
-        // msg:
-        //     "Are you sure you want to delete your account?\nYou can't recover it later on!",
         proccedIconData: Icons.delete,
         proceedText: "Delete",
         cancelText: "Cancel",

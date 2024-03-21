@@ -1,8 +1,9 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:coffee_orderer/controllers/DrinksInformationController.dart'
     show DrinksInformationController;
 import 'package:coffee_orderer/controllers/PurchaseHistoryController.dart'
     show PurchaseHistoryController;
-import 'package:flutter/material.dart';
 import 'package:coffee_orderer/controllers/IngredientController.dart'
     show IngredientController;
 import 'package:coffee_orderer/controllers/RatingController.dart'
@@ -12,13 +13,20 @@ import 'package:coffee_orderer/services/paymentService.dart'
 import 'package:coffee_orderer/components/detailsScreen/firebaseOrderAnimatedList.dart'
     show FirebaseOrderAnimatedList;
 import 'package:firebase_database/firebase_database.dart' show FirebaseDatabase;
-import 'package:provider/provider.dart';
 import 'package:coffee_orderer/providers/orderIDProvider.dart'
     show OrderIDProvider;
 import 'package:coffee_orderer/utils/informationLoaders.dart'
     show InformationLoaders;
 import 'package:coffee_orderer/components/detailsScreen/detailsScreenBody.dart'
     show DetailsScreenBody;
+import 'package:coffee_orderer/providers/dialogFormularTimerSingletonProvider.dart'
+    show DialogFormularTimerSingletonProvider;
+import 'package:coffee_orderer/screens/llmUpdaterFormularScreen.dart'
+    show LLMUpdaterFormularPage;
+import 'package:coffee_orderer/utils/llmFormularPopup.dart'
+    show LlmFormularPopup;
+import 'package:coffee_orderer/utils/constants.dart'
+    show NUMBER_FORMULAR_CONSUMERS;
 
 class DetailsPage extends StatefulWidget {
   final bool isGift;
@@ -89,7 +97,12 @@ class _DetailsPageState extends State<DetailsPage> {
     String orderID = context.watch<OrderIDProvider>().orderID;
     this._paymentService = PaymentService(context);
     return Scaffold(
-        body: FutureBuilder<dynamic>(
+      body: body(orderID: orderID),
+    );
+  }
+
+  Widget body({@required final String orderID}) {
+    return FutureBuilder<dynamic>(
       future: InformationLoaders.getCoffeeCardInformationFromPreviousScreen(
           "cardCoffeeName"),
       builder: (BuildContext context,
@@ -148,6 +161,6 @@ class _DetailsPageState extends State<DetailsPage> {
           );
         }
       },
-    ));
+    );
   }
 }

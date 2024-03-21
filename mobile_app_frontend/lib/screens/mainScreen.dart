@@ -35,8 +35,10 @@ import 'package:coffee_orderer/callbacks/mainScreenCallbacks.dart'
 import 'package:coffee_orderer/providers/dialogFormularTimerSingletonProvider.dart'
     show DialogFormularTimerSingletonProvider;
 import 'package:provider/provider.dart';
-// import 'package:coffee_orderer/providers/dialogFormularTimerSingletonProvider.dart'
-//     show DialogFormularTimerSingletonProvider;
+import 'package:coffee_orderer/screens/llmUpdaterFormularScreen.dart'
+    show LLMUpdaterFormularPage;
+import 'package:coffee_orderer/utils/LLMFormularPopup.dart'
+    show LlmFormularPopup;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);
@@ -98,8 +100,6 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     this.coffeeCardSingleton = CoffeeCardSingleton(context);
-    print(
-        "this._mainScreenCallbacks.onSetDialogFormular: ${this._mainScreenCallbacks.onSetDialogFormular}");
     this._numberFavoritesValueNotifier = ValueNotifier<int>(
         this.coffeeCardSingleton.getNumberOfSetFavoriteFromCoffeeCardObjects());
     this.coffeeCardController = CoffeeCardController(
@@ -160,33 +160,39 @@ class _HomePageState extends State<HomePage> {
           Map<String, List<String>> favouriteDrinksMap = snapshot.data;
           this._favouriteDrinks = List.from(favouriteDrinksMap.values.first);
           return Scaffold(
-            body: Consumer<DialogFormularTimerSingletonProvider>(builder:
-                (BuildContext context,
-                    DialogFormularTimerSingletonProvider value, Widget child) {
-              print("value.displayDialog: ${value.displayDialog}");
-              if (value.displayDialog) {
-                NotificationService().showNotification(
-                  title: "Works",
-                  body: "Works",
-                );
-              }
-              return body();
-              // return value.displayDialog
-              //     ? NotificationService().showNotification(
-              //         title: "Works",
-              //         body: "Works",
-              //       )
-              //     : body();
-              // // if (value.displayDialog) {
-              //   NotificationService().showNotification(
-              //     title: "Works",
-              //     body: "Works",
-              //   );
-              //   return body();
-              // } else {
-              //   return body();
-              // }
-            }),
+            body: Consumer<DialogFormularTimerSingletonProvider>(
+              builder: (BuildContext context,
+                  DialogFormularTimerSingletonProvider value, Widget child) {
+                if (value.displayDialog) {
+                  String msg =
+                      "Wanna have a special coffee recipe just for you?\nPlease help us by answering a formular."
+                          .replaceAllMapped(
+                              RegExp(r"\n\s*"), (match) => "\n" + " " * 8);
+                  LlmFormularPopup.create(
+                    postFrameCallback:
+                        WidgetsBinding.instance.addPostFrameCallback,
+                    context: context,
+                    title: "Rate drink",
+                    msg: msg,
+                    proccedIconData: Icons.rate_review,
+                    proceedText: "Answer",
+                    cancelText: "Cancel",
+                    proceedFn: (final BuildContext context) {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              LLMUpdaterFormularPage(),
+                        ),
+                      );
+                    },
+                    cancelFn: (final BuildContext context) {
+                      Navigator.of(context).pop();
+                    },
+                  );
+                }
+                return body();
+              },
+            ),
           );
         }
       },

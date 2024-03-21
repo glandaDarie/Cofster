@@ -90,19 +90,9 @@ class OrderService {
       context: this._previousContext,
       periodicChangeCheckTime: 3,
       seconds: 10,
-      milliseconds: 2000,
     );
   }
 
-  /// Attempts to place an order in the user's order history with retry logic.
-  ///
-  /// [orderData]: The order data to be posted.
-  ///
-  /// [maxRetries]: The maximum number of retry attempts.
-  ///
-  /// [enableDebug]: Whether to print debug messages during retries.
-  ///
-  /// Returns the response message if the order is successfully placed, or an error message if all retry attempts fail.
   Future<String> _placeOrderInUsersOrderHistoryWithRetry({
     @required final String orderData,
     @required final int maxRetries,
