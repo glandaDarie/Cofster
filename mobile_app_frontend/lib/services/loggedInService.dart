@@ -19,6 +19,16 @@ class LoggedInService {
     return preferences.containsKey(key.substring(1, key.length - 1));
   }
 
+  static Future<String> setDefaultSharedPreferenceValue(String key) async {
+    try {
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      preferences.setString(key, "default");
+    } catch (error) {
+      return "Error when trying to set preference key $key to value default: ${error}";
+    }
+    return null;
+  }
+
   static Future<String> setSharedPreferenceValue(String key,
       {String value}) async {
     try {
@@ -31,12 +41,12 @@ class LoggedInService {
         preferences.setString(key.substring(1, key.length - 1), value);
       } else if (key == "<elapsedTime>") {
         // second-minute-hour:day-month-year
-        preferences.setString(key.substring(1, key.length - 1), value);
+        preferences.setString(key, value);
       } else {
         throw Exception("Error, the key provided is invalid");
       }
     } catch (error) {
-      return "Error when trying to set default logging status, error: ${error}";
+      return "Error when trying to set preference key $key to value $value: ${error}";
     }
     return null;
   }
@@ -52,10 +62,9 @@ class LoggedInService {
       } else if (key == "<username>") {
         value = preferences.getString(key.substring(1, key.length - 1));
       } else if (key == "<elapsedTime>") {
-        preferences.getString(key.substring(1, key.length - 1));
+        value = preferences.getString(key);
       } else {
         return "Key not found";
-        // throw Exception("Error, the key provided is invalid");
       }
     } catch (error) {
       return "Error when trying to get the value from ${key}, ${error}";

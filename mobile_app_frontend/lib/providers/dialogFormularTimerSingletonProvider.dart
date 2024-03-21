@@ -7,6 +7,7 @@ class DialogFormularTimerSingletonProvider extends ChangeNotifier {
   DateTime futureDateAndTime;
   String sharedPreferenceKey;
   Future<String> Function(String, {String value}) onSetSharedPreferenceValue;
+  Future<String> Function(String) onSetDefaultSharedPreferenceValue;
   Future<dynamic> Function(String) onGetSharedPreferenceValue;
   bool displayDialog;
   bool debug;
@@ -19,6 +20,8 @@ class DialogFormularTimerSingletonProvider extends ChangeNotifier {
     @required
         final Future<String> Function(String, {String value})
             onSetSharedPreferenceValue,
+    @required
+        final Future<String> Function(String) onSetDefaultSharedPreferenceValue,
     @required final Future<dynamic> Function(String) onGetSharedPreferenceValue,
     final bool debug = false,
   }) {
@@ -26,6 +29,7 @@ class DialogFormularTimerSingletonProvider extends ChangeNotifier {
       _instance = DialogFormularTimerSingletonProvider(
         futureDateAndTime: futureDateAndTime,
         sharedPreferenceKey: sharedPreferenceKey,
+        onSetDefaultSharedPreferenceValue: onSetDefaultSharedPreferenceValue,
         onSetSharedPreferenceValue: onSetSharedPreferenceValue,
         onGetSharedPreferenceValue: onGetSharedPreferenceValue,
         debug: debug,
@@ -40,12 +44,16 @@ class DialogFormularTimerSingletonProvider extends ChangeNotifier {
     @required
         final Future<String> Function(String, {String value})
             onSetSharedPreferenceValue,
+    @required
+        final Future<String> Function(String) onSetDefaultSharedPreferenceValue,
     @required final Future<dynamic> Function(String) onGetSharedPreferenceValue,
     final bool debug = false,
   })  : this.timer = null,
         this.debug = debug,
         this.futureDateAndTime = futureDateAndTime,
         this.sharedPreferenceKey = sharedPreferenceKey,
+        this.onSetDefaultSharedPreferenceValue =
+            onSetDefaultSharedPreferenceValue,
         this.onSetSharedPreferenceValue = onSetSharedPreferenceValue,
         this.onGetSharedPreferenceValue = onGetSharedPreferenceValue,
         this.displayDialog = false;
@@ -54,19 +62,11 @@ class DialogFormularTimerSingletonProvider extends ChangeNotifier {
     @required final int periodicChangeCheckTime,
     @required final int microseconds,
   }) async {
-    final dynamic sharedPreferenceValue =
-        await this.onGetSharedPreferenceValue(this.sharedPreferenceKey);
-    if (sharedPreferenceValue == null) {
-      // set the future date so it works also when you close the screen
-      this.futureDateAndTime = DateTime.now().add(
-        Duration(microseconds: microseconds),
-      );
-      await this.onSetSharedPreferenceValue(this.sharedPreferenceKey,
-          value: this.futureDateAndTime.toString());
-    } else {
-      // load from sharedPreference if time is set there
-      this.futureDateAndTime = DateTime.tryParse(sharedPreferenceValue);
-    }
+    this.futureDateAndTime = DateTime.now().add(
+      Duration(microseconds: microseconds),
+    );
+    await this.onSetSharedPreferenceValue(this.sharedPreferenceKey,
+        value: this.futureDateAndTime.toString());
 
     final Duration periodicChangeCheck =
         Duration(seconds: periodicChangeCheckTime);
@@ -75,7 +75,7 @@ class DialogFormularTimerSingletonProvider extends ChangeNotifier {
     }
     this.timer = new Timer.periodic(
       periodicChangeCheck,
-      (final Timer timer) {
+      (final Timer timer) async {
         DateTime currentDateAndTime = DateTime.now();
         if (this.debug) {
           LOGGER.i(
@@ -85,8 +85,8 @@ class DialogFormularTimerSingletonProvider extends ChangeNotifier {
             this.futureDateAndTime.isAtSameMomentAs(currentDateAndTime)) {
           this.displayDialog = true;
           notifyListeners();
-          Future.delayed(Duration(milliseconds: 500), () {
-            this._resetTimer();
+          Future.delayed(Duration(milliseconds: 500), () async {
+            await this._resetTimer();
           });
         }
       },
@@ -95,8 +95,12 @@ class DialogFormularTimerSingletonProvider extends ChangeNotifier {
 
   void _resetTimer() async {
     this.futureDateAndTime = null;
-    await this
-        .onSetSharedPreferenceValue(this.sharedPreferenceKey, value: null);
+    String onSetDefaultSharedPreferenceResponse =
+        await this.onSetDefaultSharedPreferenceValue(this.sharedPreferenceKey);
+    if (onSetDefaultSharedPreferenceResponse != null) {
+      LOGGER.e(onSetDefaultSharedPreferenceResponse);
+      return;
+    }
     this.displayDialog = false;
     this.timer.cancel();
   }

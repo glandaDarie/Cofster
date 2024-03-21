@@ -45,3 +45,9 @@ const int DEFAULT_ICE_CUBES_QUANTITY = 1;
 const int DEFAULT_CREAM = 1;
 const String FREE_DRINK_TAX = "0.50";
 const String FILES_PATH = "assets/files";
+
+const String LLM_FORMULAR_POPUP_MESSAGE =
+    "Wanna have a special coffee recipe just for you?\nPlease help us by answering a formular.";
+const String LLM_FORMULAR_POPUP_TITLE = "Rate drink";
+const String LLM_FORMULAR_POPUP_PROCEED_TEXT = "Answer";
+const String LLM_FORMULAR_POPUP_CANCEL_TEXT = "Cancel";

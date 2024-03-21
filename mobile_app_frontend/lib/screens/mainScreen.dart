@@ -1,4 +1,6 @@
 import 'dart:typed_data';
+import 'package:provider/provider.dart';
+import 'package:coffee_orderer/utils/logger.dart' show LOGGER;
 import 'package:coffee_orderer/controllers/CoffeeCardController.dart'
     show CoffeeCardController;
 import 'package:coffee_orderer/controllers/UserController.dart'
@@ -34,11 +36,16 @@ import 'package:coffee_orderer/callbacks/mainScreenCallbacks.dart'
     show MainScreenCallbacks;
 import 'package:coffee_orderer/providers/dialogFormularTimerSingletonProvider.dart'
     show DialogFormularTimerSingletonProvider;
-import 'package:provider/provider.dart';
 import 'package:coffee_orderer/screens/llmUpdaterFormularScreen.dart'
     show LLMUpdaterFormularPage;
 import 'package:coffee_orderer/utils/LLMFormularPopup.dart'
     show LlmFormularPopup;
+import 'package:coffee_orderer/utils/constants.dart'
+    show
+        LLM_FORMULAR_POPUP_MESSAGE,
+        LLM_FORMULAR_POPUP_TITLE,
+        LLM_FORMULAR_POPUP_PROCEED_TEXT,
+        LLM_FORMULAR_POPUP_CANCEL_TEXT;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key key}) : super(key: key);
@@ -110,6 +117,48 @@ class _HomePageState extends State<HomePage> {
     );
     WidgetsBinding.instance.addPostFrameCallback(
       (Duration timeStamp) {
+        LoggedInService.getSharedPreferenceValue("<elapsedTime>").then(
+          (dynamic finishTimeFromStorage) {
+            if (finishTimeFromStorage != null &&
+                finishTimeFromStorage != "default") {
+              final DateTime currentTime = DateTime.now();
+              final DateTime finishTime =
+                  DateTime.tryParse(finishTimeFromStorage);
+              if (currentTime.isAfter(finishTime) ||
+                  currentTime.isAtSameMomentAs(finishTime)) {
+                LlmFormularPopup.create(
+                  postFrameCallback:
+                      WidgetsBinding.instance.addPostFrameCallback,
+                  context: context,
+                  title: LLM_FORMULAR_POPUP_TITLE,
+                  msg: LLM_FORMULAR_POPUP_MESSAGE,
+                  proccedIconData: Icons.rate_review,
+                  proceedText: LLM_FORMULAR_POPUP_PROCEED_TEXT,
+                  cancelText: LLM_FORMULAR_POPUP_CANCEL_TEXT,
+                  proceedFn: (final BuildContext context) {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            LLMUpdaterFormularPage(),
+                      ),
+                    );
+                  },
+                  cancelFn: (final BuildContext context) {
+                    Navigator.of(context).pop();
+                  },
+                );
+                LoggedInService.setDefaultSharedPreferenceValue("<elapsedTime>")
+                    .then((String response) {
+                  if (response == null) {
+                    LOGGER.i(response);
+                  }
+                }, onError: (dynamic error) => LOGGER.e(error));
+              }
+            }
+          },
+          onError: (dynamic error) => LOGGER.e(error),
+        );
+
         this.questionnaireController.loadFavouriteDrinksFrom().then(
           (Map<String, List<String>> favouriteDrinks) {
             if (!mounted) return;
@@ -164,19 +213,15 @@ class _HomePageState extends State<HomePage> {
               builder: (BuildContext context,
                   DialogFormularTimerSingletonProvider value, Widget child) {
                 if (value.displayDialog) {
-                  String msg =
-                      "Wanna have a special coffee recipe just for you?\nPlease help us by answering a formular."
-                          .replaceAllMapped(
-                              RegExp(r"\n\s*"), (match) => "\n" + " " * 8);
                   LlmFormularPopup.create(
                     postFrameCallback:
                         WidgetsBinding.instance.addPostFrameCallback,
                     context: context,
-                    title: "Rate drink",
-                    msg: msg,
+                    title: LLM_FORMULAR_POPUP_TITLE,
+                    msg: LLM_FORMULAR_POPUP_MESSAGE,
                     proccedIconData: Icons.rate_review,
-                    proceedText: "Answer",
-                    cancelText: "Cancel",
+                    proceedText: LLM_FORMULAR_POPUP_PROCEED_TEXT,
+                    cancelText: LLM_FORMULAR_POPUP_CANCEL_TEXT,
                     proceedFn: (final BuildContext context) {
                       Navigator.of(context).push(
                         MaterialPageRoute(

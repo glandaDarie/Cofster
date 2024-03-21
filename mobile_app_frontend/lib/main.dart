@@ -1,4 +1,5 @@
 import 'package:coffee_orderer/providers/dialogFormularTimerSingletonProvider.dart';
+import 'package:coffee_orderer/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:coffee_orderer/services/notificationService.dart'
     show NotificationService;
@@ -65,6 +66,8 @@ void main() async {
             sharedPreferenceKey: "<elapsedTime>",
             onSetSharedPreferenceValue:
                 LoggedInService.setSharedPreferenceValue,
+            onSetDefaultSharedPreferenceValue:
+                LoggedInService.setDefaultSharedPreferenceValue,
             onGetSharedPreferenceValue:
                 LoggedInService.getSharedPreferenceValue,
             debug: true,
