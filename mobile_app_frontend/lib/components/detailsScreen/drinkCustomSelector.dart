@@ -7,8 +7,8 @@ import 'package:coffee_orderer/controllers/PurchaseHistoryController.dart'
 import 'package:flutter/material.dart';
 import 'package:coffee_orderer/components/detailsScreen/boxQuantity.dart'
     show boxQuantity;
-import 'package:coffee_orderer/components/detailsScreen/boxTemperature.dart'
-    show boxTemperature;
+import 'package:coffee_orderer/components/detailsScreen/boxDrinkMadeBy.dart'
+    show boxDrinkMadeBy;
 import 'package:coffee_orderer/services/mergeNotifierService.dart'
     show MergeNotifiers;
 import 'package:coffee_orderer/services/paymentService.dart'
@@ -27,7 +27,7 @@ import 'package:coffee_orderer/utils/constants.dart'
     show
         DEFAULT_DRINK_QUANTITY,
         DEFAULT_DRINK_SIZE,
-        DEFAULT_IS_DRINK_HOT,
+        DEFAULT_ORDER_TYPE,
         DEFAULT_SUGAR_CUBES_QUANTITY,
         DEFAULT_ICE_CUBES_QUANTITY,
         DEFAULT_CREAM;
@@ -47,7 +47,7 @@ FutureBuilder<String> customizeDrink(
       NotifierCustomSelectorSetupService(
     DEFAULT_DRINK_QUANTITY,
     DEFAULT_DRINK_SIZE,
-    DEFAULT_IS_DRINK_HOT,
+    DEFAULT_ORDER_TYPE,
     DEFAULT_SUGAR_CUBES_QUANTITY,
     DEFAULT_ICE_CUBES_QUANTITY,
     DEFAULT_CREAM,
@@ -91,7 +91,7 @@ FutureBuilder<String> customizeDrink(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      boxTemperature(notifierService.hotSelectedNotifier),
+                      boxDrinkMadeBy(notifierService.orderTypeNotifier),
                       boxQuantity(notifierService.valueQuantityNotifier),
                     ],
                   ),
@@ -144,6 +144,7 @@ FutureBuilder<String> customizeDrink(
                                 coffeeName.replaceAll("-", " "),
                                 notifiers.selectedValue,
                                 notifiers.sugarQuantity,
+                                notifiers.orderType,
                                 notifiers.iceQuantity,
                                 notifiers.creamNotifier,
                                 quantity: notifiers.quantity,

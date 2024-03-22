@@ -58,9 +58,10 @@ if __name__ == "__main__":
     while True:
         if len(drinks_information_consumer.drinks_information) > 0:
             coffee_name : str = drinks_information_consumer.drinks_information[0]["coffeeName"]
+            # should be added to firebase to choose either we fetch from database, or make the LLM make the drink
             # customer_name : str = drinks_information_consumer.drinks_information[0]["customerName"] -> to be done in frontend
             # llm_recipe : bool = drinks_information_consumer.drinks_information[0]["llmRecipe"] -> to be done in frontend
-            # if llm_recipe:
+            # 1 fetch should be either form the database in DynamoDB, and the other one should be from LLM, depending on the llm_recipe flag passed from Firebase
             if cli_arguments.llm_recipe:
                 try:                 
                     

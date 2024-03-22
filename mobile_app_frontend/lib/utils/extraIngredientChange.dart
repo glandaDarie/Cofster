@@ -5,15 +5,17 @@ import 'package:coffee_orderer/utils/cardProperties.dart'
     show coffeePrices, coffeeNames;
 import 'package:coffee_orderer/utils/toast.dart';
 import 'package:coffee_orderer/utils/constants.dart' show FREE_DRINK_TAX;
+import 'package:coffee_orderer/utils/drinkMadeByOrderType.dart'
+    show OrderType, orderTypes;
 
 Map<String, dynamic> updateUIWithChangesOnExtraIngredients(
   String coffeeName,
   String coffeeSize,
   int numberSugarCubes,
+  OrderType orderType,
   int numberIceCubes,
   int hasCream, {
   int quantity = 1,
-  String coffeeTemperature = "Cold",
   String previousScreenName = "MainPage",
 }) {
   final double coffeePrice = previousScreenName == "MainPage"
@@ -27,6 +29,7 @@ Map<String, dynamic> updateUIWithChangesOnExtraIngredients(
     "quantity": quantity,
     "coffeeSize": coffeeSize,
     "numberSugarCubes": numberSugarCubes,
+    "orderType": orderTypes[orderType],
     "numberIceCubes": numberIceCubes,
     "hasCream": hasCream == 1 ? true : false,
     "price": ((coffeePrice * quantity * sizes[coffeeSize]) +
@@ -34,7 +37,6 @@ Map<String, dynamic> updateUIWithChangesOnExtraIngredients(
             ((numberIceCubes - 1) * additionalTopings["ice"]) +
             (hasCream == 1 ? additionalTopings["cream"] : 0))
         .toStringAsFixed(2),
-    "coffeeTemperature": coffeeTemperature
   };
 }
 
