@@ -42,13 +42,18 @@ class OrderService {
     String cacheStr = await loadUserInformationFromCache();
     Map<String, String> cache = fromStringCachetoMapCache(cacheStr);
     String paymentResponse = await this._paymentService.makePayment(
-        this._context,
-        (double.parse(this._extraIngredients["price"]) * 100)
-            .toInt()
-            .toStringAsFixed(0),
-        cache["cardCoffeeName"],
-        "USD",
-        numberOfCoffeeDrinks: this._extraIngredients["quantity"]);
+          this._context,
+          (double.parse(this._extraIngredients["price"]) * 100)
+              .toInt()
+              .toStringAsFixed(0),
+          cache["cardCoffeeName"],
+          "USD",
+          numberOfCoffeeDrinks: this._extraIngredients["quantity"],
+        );
+
+    if (paymentResponse == "The payment flow has been canceled") {
+      return;
+    }
     if (paymentResponse != "success") {
       ToastUtils.showToast(paymentResponse);
       return;
@@ -83,13 +88,13 @@ class OrderService {
     RatingBarDrink.startRatingDisplayCountdown(
       this._context,
       this._placedOrderNotifier,
-      seconds: 60,
+      seconds: 10,
     );
 
     LlmFavoriteDrinkFormularPopup.startPopupDisplayCountdown(
       context: this._previousContext,
       periodicChangeCheckTime: 3,
-      seconds: 10,
+      seconds: 20,
     );
   }
 

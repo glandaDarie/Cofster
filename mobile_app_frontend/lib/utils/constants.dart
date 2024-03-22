@@ -1,5 +1,6 @@
 import 'package:coffee_orderer/enums/coffeeTypes.dart' show CoffeeType;
 import 'package:coffee_orderer/utils/appAssets.dart' show FooterImages;
+import 'package:coffee_orderer/utils/drinkMadeByOrderType.dart' show OrderType;
 
 const String PHONE_NUMBER = "+40733209624";
 const String EMAIL_ADDRESS = "cofster2023@outlook.com";
@@ -39,7 +40,7 @@ const MAX_GIFTS = 1000;
 
 const int DEFAULT_DRINK_QUANTITY = 1;
 const String DEFAULT_DRINK_SIZE = "M";
-const bool DEFAULT_IS_DRINK_HOT = false;
+final OrderType DEFAULT_ORDER_TYPE = OrderType.recipe;
 const int DEFAULT_SUGAR_CUBES_QUANTITY = 0;
 const int DEFAULT_ICE_CUBES_QUANTITY = 1;
 const int DEFAULT_CREAM = 1;

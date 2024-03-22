@@ -36,15 +36,19 @@ class PaymentService {
           .then((PaymentSheetPaymentOption value) {});
       Navigator.of(contextPopupDrinkChooser).pop();
       String errorResponseDisplayPaymentSheet = await this._displayPaymentSheet(
-          amount, coffeeName,
-          numberOfCoffeeDrinks: numberOfCoffeeDrinks);
-      if (errorResponseDisplayPaymentSheet != null) {
-        return "Error when trying to display the payment sheet: $errorResponseDisplayPaymentSheet";
+        amount,
+        coffeeName,
+        numberOfCoffeeDrinks: numberOfCoffeeDrinks,
+      );
+
+      if (errorResponseDisplayPaymentSheet == "success") {
+        return msg;
       }
+
+      return errorResponseDisplayPaymentSheet;
     } catch (error) {
       return "Error when trying to make the payment: ${error}";
     }
-    return msg;
   }
 
   Future<dynamic> _createPaymentIntent(String amount, String currency) async {
@@ -68,55 +72,53 @@ class PaymentService {
 
   Future<String> _displayPaymentSheet(String amount, String coffeeName,
       {int numberOfCoffeeDrinks = 1}) async {
-    String error_msg = null;
+    String msg = "success";
     try {
-      await Stripe.instance.presentPaymentSheet().then(
-        (PaymentSheetPaymentOption value) {
-          showDialog(
-            context: _contextPaymentPage,
-            builder: (BuildContext context) {
-              return MessageDialog(
-                message: "Payment has been done successfully." +
-                    "\nPayed: ${(int.parse(amount) / 100).toStringAsFixed(2)} for " +
-                    "${numberOfCoffeeDrinks} ${numberOfCoffeeDrinks == 1 ? coffeeName : "${coffeeName}s"}",
-              );
-            },
+      await Stripe.instance.presentPaymentSheet();
+      showDialog(
+        context: _contextPaymentPage,
+        builder: (BuildContext context) {
+          return MessageDialog(
+            message: "Payment has been done successfully." +
+                "\nPayed: ${(int.parse(amount) / 100).toStringAsFixed(2)} for " +
+                "${numberOfCoffeeDrinks} ${numberOfCoffeeDrinks == 1 ? coffeeName : "${coffeeName}s"}",
           );
-          this._paymentIntent = null;
-        },
-      ).onError(
-        (error, stackTrace) {
-          String jsonError = error.toString();
-          Match errorMatch =
-              RegExp(r'localizedMessage:\s(.*?),\smessage:\s(.*?)(?:,|\))')
-                  .firstMatch(jsonError);
-          String errorMessage = errorMatch.group(1);
-          return errorMessage == "The payment flow has been canceled"
-              ? null
-              : throw Exception(error);
         },
       );
-    } on StripeException catch (e) {
-      error_msg = "$e";
-      AlertDialog(
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              children: const [
-                Icon(
-                  Icons.cancel,
-                  color: Colors.red,
-                ),
-                Text("Payment Failed"),
-              ],
-            ),
-          ],
-        ),
-      );
-    } catch (e) {
-      error_msg = "$e";
+      this._paymentIntent = null;
+    } catch (error, _) {
+      String jsonError = error.toString();
+      Match errorMatch =
+          RegExp(r'localizedMessage:\s(.*?),\smessage:\s(.*?)(?:,|\))')
+              .firstMatch(jsonError);
+      String errorMessage = errorMatch.group(1);
+      if (errorMessage == "The payment flow has been canceled") {
+        msg = errorMessage;
+      } else {
+        msg = error.toString();
+        showDialog(
+          context: _contextPaymentPage,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    children: const [
+                      Icon(
+                        Icons.cancel,
+                        color: Colors.red,
+                      ),
+                      Text("Payment Failed"),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      }
     }
-    return error_msg;
+    return msg;
   }
 }
