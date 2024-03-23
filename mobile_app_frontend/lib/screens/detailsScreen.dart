@@ -19,14 +19,7 @@ import 'package:coffee_orderer/utils/informationLoaders.dart'
     show InformationLoaders;
 import 'package:coffee_orderer/components/detailsScreen/detailsScreenBody.dart'
     show DetailsScreenBody;
-import 'package:coffee_orderer/providers/dialogFormularTimerSingletonProvider.dart'
-    show DialogFormularTimerSingletonProvider;
-import 'package:coffee_orderer/screens/llmUpdaterFormularScreen.dart'
-    show LLMUpdaterFormularPage;
-import 'package:coffee_orderer/utils/llmFormularPopup.dart'
-    show LlmFormularPopup;
-import 'package:coffee_orderer/utils/constants.dart'
-    show NUMBER_FORMULAR_CONSUMERS;
+import 'package:coffee_orderer/utils/constants.dart' show ORDERS_TABLE;
 
 class DetailsPage extends StatefulWidget {
   final bool isGift;
@@ -146,7 +139,7 @@ class _DetailsPageState extends State<DetailsPage> {
                     FirebaseOrderAnimatedList(
                       FirebaseDatabase.instance
                           .ref()
-                          .child("Orders")
+                          .child(ORDERS_TABLE)
                           .child(orderID),
                       context,
                       deleteGift: _isGift,

@@ -7,6 +7,7 @@ import 'package:firebase_core_platform_interface/firebase_core_platform_interfac
 import 'package:flutter/services.dart';
 import 'package:coffee_orderer/models/orderInformation.dart'
     show OrderInformation;
+import 'package:coffee_orderer/utils/constants.dart' show ORDERS_TABLE;
 
 typedef Callback = void Function(MethodCall call);
 
@@ -33,8 +34,7 @@ void main() {
 
   testWidgets('Test FirebaseOrderInformationDao', (WidgetTester tester) async {
     List<OrderInformation> ordersList =
-        await FirebaseOrderInformationDao.getAllOrdersInformation("Orders");
-    print("Orders: ${ordersList}");
+        await FirebaseOrderInformationDao.getAllOrdersInformation(ORDERS_TABLE);
     expect(ordersList, isA<List<Map<String, dynamic>>>());
   });
 }

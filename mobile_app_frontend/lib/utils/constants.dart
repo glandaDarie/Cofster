@@ -52,3 +52,5 @@ const String LLM_FORMULAR_POPUP_MESSAGE =
 const String LLM_FORMULAR_POPUP_TITLE = "Rate drink";
 const String LLM_FORMULAR_POPUP_PROCEED_TEXT = "Answer";
 const String LLM_FORMULAR_POPUP_CANCEL_TEXT = "Cancel";
+
+const String ORDERS_TABLE = "Orders";

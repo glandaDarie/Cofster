@@ -2,6 +2,7 @@ import 'package:coffee_orderer/data_access/DynamoDBGiftsDao.dart'
     show DynamoDBGiftsDao;
 import 'package:coffee_orderer/services/giftService.dart' show GiftService;
 import 'package:coffee_orderer/services/urlService.dart' show UrlService;
+import 'package:coffee_orderer/utils/constants.dart' show ORDERS_TABLE;
 
 class GiftController {
   UrlService _urlServiceGift;
@@ -9,7 +10,7 @@ class GiftController {
   DynamoDBGiftsDao _urlDaoGift;
   GiftService _giftService;
 
-  GiftController() : this._giftService = GiftService(tableName: "Orders");
+  GiftController() : this._giftService = GiftService(tableName: ORDERS_TABLE);
 
   Future<dynamic> getUserGifts() async {
     List<String> params = await this._giftService.loadGiftParams();

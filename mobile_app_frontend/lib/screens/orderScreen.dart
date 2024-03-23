@@ -5,6 +5,7 @@ import 'package:coffee_orderer/models/orderInformation.dart'
     show OrderInformation;
 import 'package:coffee_orderer/utils/displayContentCards.dart'
     show displayContentCards;
+import 'package:coffee_orderer/utils/constants.dart' show ORDERS_TABLE;
 
 class OrderPage extends StatefulWidget {
   @override
@@ -44,7 +45,7 @@ class _OrderPageState extends State<OrderPage> {
   @override
   Widget build(BuildContext context) {
     final DatabaseReference reference =
-        FirebaseDatabase.instance.ref().child("Orders");
+        FirebaseDatabase.instance.ref().child(ORDERS_TABLE);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -54,7 +55,7 @@ class _OrderPageState extends State<OrderPage> {
           },
         ),
         title: const Text(
-          "Orders",
+          ORDERS_TABLE,
           style: TextStyle(
             fontSize: 30,
             color: Colors.white,
@@ -78,29 +79,31 @@ class _OrderPageState extends State<OrderPage> {
                       "|coffeeOrderTime: "
                       "|coffeePrice: "
                       "|coffeeStatus: "
-                      "|coffeeTemperature: "
                       "|communication: "
+                      "|customerName: "
                       "|hasCream: "
                       "|numberOfIceCubes: "
                       "|numberOfSugarCubes: "
-                      "|quantity: "),
+                      "|quantity: "
+                      "|recipeType: "),
                   "")
               .trim();
           this._orderList = parsedCoffeeInformation.split(",");
           return displayContentCards(
               OrderInformation(
-                coffeeTemperature: this._orderList[0],
-                hasCream: this._orderList[1] == "true" ? true : false,
-                coffeeName: this._orderList[2],
-                quantity: int.tryParse(this._orderList[3]),
-                numberOfIceCubes: int.tryParse(this._orderList[4]),
-                coffeeCupSize: this._orderList[5],
-                coffeeEstimationTime: this._orderList[6],
-                numberOfSugarCubes: int.tryParse(this._orderList[7]),
-                coffeeStatus: int.tryParse(this._orderList[8]),
-                communication: this._orderList[9],
-                coffeePrice: this._orderList[10],
-                coffeeOrderTime: this._orderList[11],
+                coffeeName: this._orderList[0],
+                quantity: int.tryParse(this._orderList[1]),
+                recipeType: this._orderList[2],
+                coffeeEstimationTime: this._orderList[3],
+                coffeePrice: this._orderList[4],
+                customerName: this._orderList[5],
+                hasCream: this._orderList[6] == "true" ? true : false,
+                numberOfIceCubes: int.tryParse(this._orderList[7]),
+                coffeeCupSize: this._orderList[8],
+                numberOfSugarCubes: int.tryParse(this._orderList[9]),
+                coffeeStatus: int.tryParse(this._orderList[10]),
+                communication: this._orderList[11],
+                coffeeOrderTime: this._orderList[12],
               ),
               cardFlipParams: [_flipCard, _isCardFlipped, index]);
         },

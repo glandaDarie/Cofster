@@ -1,7 +1,9 @@
 class OrderInformation {
   String keyId;
   String coffeeName;
+  String customerName;
   String coffeePrice;
+  String recipeType;
   int quantity;
   String communication;
   int coffeeStatus;
@@ -13,24 +15,29 @@ class OrderInformation {
   int numberOfIceCubes;
   bool hasCream;
 
-  OrderInformation(
-      {this.keyId,
-      this.coffeeName,
-      this.coffeePrice,
-      this.quantity,
-      this.communication,
-      this.coffeeStatus,
-      this.coffeeOrderTime,
-      this.coffeeEstimationTime,
-      this.coffeeCupSize,
-      this.coffeeTemperature,
-      this.numberOfSugarCubes,
-      this.numberOfIceCubes,
-      this.hasCream});
+  OrderInformation({
+    this.keyId,
+    this.coffeeName,
+    this.customerName,
+    this.coffeePrice,
+    this.recipeType,
+    this.quantity,
+    this.communication,
+    this.coffeeStatus,
+    this.coffeeOrderTime,
+    this.coffeeEstimationTime,
+    this.coffeeCupSize,
+    this.coffeeTemperature,
+    this.numberOfSugarCubes,
+    this.numberOfIceCubes,
+    this.hasCream,
+  });
 
   String get keyId_ => this.keyId;
   String get coffeeName_ => this.coffeeName;
+  String get customerName_ => this.customerName;
   String get coffeePrice_ => this.coffeePrice;
+  String get recipeType_ => this.recipeType;
   int get quantity_ => this.quantity;
   String get communication_ => this.communication;
   int get coffeeStatus_ => this.coffeeStatus;
@@ -44,7 +51,10 @@ class OrderInformation {
 
   void set keyId_(String keyId) => this.keyId = keyId;
   void set coffeeName_(String coffeeName) => this.coffeeName = coffeeName;
+  void set customerName_(String customerName) =>
+      this.customerName = customerName;
   void set coffeePrice_(String coffeePrice) => this.coffeePrice = coffeePrice;
+  void set recipeType_(String recipeType) => this.recipeType = recipeType;
   void set quantity_(int quantity) => this.quantity = quantity;
   void set coffeeStatus_(int coffeeStatus) => this.coffeeStatus = coffeeStatus;
   void set communication_(String communication) =>
@@ -65,6 +75,6 @@ class OrderInformation {
 
   @override
   String toString() {
-    return "${this.keyId} ${this.coffeeName} ${this.coffeePrice} ${this.quantity} ${this.communication} ${this.coffeeStatus} ${this.coffeeOrderTime} ${this.coffeeEstimationTime}";
+    return "${this.keyId} ${this.coffeeName} ${this.customerName} ${this.coffeePrice} ${this.recipeType} ${this.quantity} ${this.communication} ${this.coffeeStatus} ${this.coffeeOrderTime} ${this.coffeeEstimationTime}";
   }
 }
