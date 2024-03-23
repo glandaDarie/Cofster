@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:coffee_orderer/screens/orderScreen.dart';
 import 'package:coffee_orderer/controllers/OrderInformationController.dart'
     show OrderInformationController;
+import 'package:coffee_orderer/utils/constants.dart' show ORDERS_TABLE;
 
 class AddNotePage extends StatefulWidget {
   @override
@@ -92,7 +93,7 @@ class _AddNoteState extends State<AddNotePage> {
                   "coffeeFinishTimeEstimation": _estimatedOrderTime(),
                 };
                 OrderInformationController.postOrderToOrdersInformation(
-                  "Orders",
+                  ORDERS_TABLE,
                   content,
                 );
                 Navigator.pushReplacement(

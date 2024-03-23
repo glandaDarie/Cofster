@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:coffee_orderer/services/passwordGeneratorService.dart'
     show generateNewPassword;
 import 'package:coffee_orderer/utils/toast.dart' show ToastUtils;
+import 'package:coffee_orderer/utils/constants.dart' show ORDERS_TABLE;
 
 class FirebaseCommunicationSubscriberService
     implements CommunicationSubscriberService {
@@ -34,7 +35,7 @@ class FirebaseCommunicationSubscriberService
       reference = FirebaseDatabase.instance
           .ref()
           .child("oder_id_${id}")
-          .child("Orders");
+          .child(ORDERS_TABLE);
       await reference.set(content);
     } catch (error) {
       ToastUtils.showToast(

@@ -20,6 +20,7 @@ import 'package:coffee_orderer/controllers/DrinksInformationController.dart'
 import 'package:coffee_orderer/utils/toast.dart' show ToastUtils;
 import 'package:coffee_orderer/utils/llmFavoriteDrinkFormularPopup.dart'
     show LlmFavoriteDrinkFormularPopup;
+import 'package:coffee_orderer/utils/constants.dart' show ORDERS_TABLE;
 
 class OrderService {
   BuildContext _context;
@@ -153,21 +154,29 @@ class OrderService {
   ) async {
     String postOrderResponse =
         await OrderInformationController.postOrderToOrdersInformation(
-            "Orders", {
-      "coffeeName": coffeeName,
-      "coffeePrice": "${this._extraIngredients["price"]}\$",
-      "quantity": this._extraIngredients["quantity"],
-      "communication": "broadcast",
-      "coffeeStatus": CoffeeOrderState.ORDER_PLACED.index,
-      "coffeeOrderTime": timeOfOrder(),
-      "coffeeFinishTimeEstimation": timeOfOrder(
-          secondsDelay: preparationTime * this._extraIngredients["quantity"]),
-      "coffeeCupSize": this._extraIngredients["coffeeSize"],
-      "coffeeTemperature": this._extraIngredients["coffeeTemperature"],
-      "numberOfSugarCubes": this._extraIngredients["numberSugarCubes"],
-      "numberOfIceCubes": this._extraIngredients["numberIceCubes"],
-      "hasCream": this._extraIngredients["hasCream"]
-    });
+      ORDERS_TABLE,
+      {
+        "coffeeName": coffeeName,
+        "customerName":
+            (await LoggedInService.getSharedPreferenceValue("<nameUser>"))
+                .toString()
+                .toLowerCase(),
+        "coffeePrice": "${this._extraIngredients["price"]}\$",
+        "recipeType":
+            this._extraIngredients["orderType"].toString().toLowerCase(),
+        "quantity": this._extraIngredients["quantity"],
+        "communication": "broadcast",
+        "coffeeStatus": CoffeeOrderState.ORDER_PLACED.index,
+        "coffeeOrderTime": timeOfOrder(),
+        "coffeeFinishTimeEstimation": timeOfOrder(
+            secondsDelay: preparationTime * this._extraIngredients["quantity"]),
+        "coffeeCupSize": this._extraIngredients["coffeeSize"],
+        "coffeeTemperature": this._extraIngredients["coffeeTemperature"],
+        "numberOfSugarCubes": this._extraIngredients["numberSugarCubes"],
+        "numberOfIceCubes": this._extraIngredients["numberIceCubes"],
+        "hasCream": this._extraIngredients["hasCream"]
+      },
+    );
     return postOrderResponse;
   }
 
