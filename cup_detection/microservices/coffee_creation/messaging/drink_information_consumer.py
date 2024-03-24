@@ -1,5 +1,6 @@
 from typing import Dict, List, Any
-import threading
+# import threading
+from threading import Lock
 import firebase_admin
 from firebase_admin import db, credentials
 import json
@@ -32,7 +33,7 @@ class DrinkInformationConsumer:
         firebase_admin.initialize_app(credential=cred, options=options)
         self.drinks_information : List[Dict] = []
         self.order_ids : List[str] = []
-        self.data_lock : threading.Lock() = threading.Lock() 
+        self.data_lock : Lock = Lock() 
 
     def __fetch_order_from_message_broker(self, endpoint : str = "/") -> Dict | str:
         """
@@ -152,10 +153,11 @@ class DrinkInformationConsumer:
                order_information_fetched.coffee_order_time.strip() == order_information["coffeeOrderTime"].strip() and \
                order_information_fetched.coffee_price.strip() == order_information["coffeePrice"].strip() and \
                order_information_fetched.coffee_status == order_information["coffeeStatus"] and \
-               order_information_fetched.coffee_temperature.strip() == order_information["coffeeTemperature"].strip() and \
                order_information_fetched.communication.strip() == order_information["communication"].strip() and \
+               order_information_fetched.customer_name.strip() == order_information["customerName"].strip() and \
                order_information_fetched.has_cream == order_information["hasCream"] and \
                order_information_fetched.number_of_ice_cubes == order_information["numberOfIceCubes"] and \
                order_information_fetched.number_of_sugar_cubes == order_information["numberOfSugarCubes"] and \
-               order_information_fetched.quantity == order_information["quantity"]:
+               order_information_fetched.quantity == order_information["quantity"] and \
+               order_information_fetched.recipe_type.strip() == order_information["recipeType"].strip():
                return order_id

@@ -1,5 +1,5 @@
 from typing import Dict
-from services.recipe_service import RecipeService
+from cup_detection.microservices.coffee_creation.services.recipe_service.recipe_service import RecipeService
 
 class RecipeController:
     def __init__(self, recipe_service : RecipeService):

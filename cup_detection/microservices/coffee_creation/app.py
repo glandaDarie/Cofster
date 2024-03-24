@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import List, Dict, Any
 import numpy as np
 import cv2
 import json
@@ -10,15 +10,15 @@ from ultralytics import YOLO
 from utils.constants import CAMERA_INDEX, WINDOW_NAME, TABLE_NAME
 from utils.logger import LOGGER
 from utils.firebase_rtd_url import DATABASE_OPTIONS
-from utils.argument_parser import ArgumentParser
 from utils.paths import PATH_MODEL_CUP_DETECTION
 # from utils.paths import PATH_MODEL_PLACEMENT_DETECTION
 from detectors.YOLOv8 import YOLOv8Detector
 from messaging.drink_information_consumer import DrinkInformationConsumer
 from services.drink_creation_service import DrinkCreationSevice
 from services.image_processor_service import ImageProcessorBuilderService
-from services.recipe_service import RecipeService
-from controllers.recipe_controller import RecipeController
+from cup_detection.microservices.coffee_creation.simple_factories.recipe_simple_factory import RecipeSimpleFactory
+
+# from utils.argument_parser import ArgumentParser
 
 """
 Handles the real-time processing of coffee drink information. It listens for updates from a message broker,
@@ -48,42 +48,27 @@ Usage:
 """
 
 if __name__ == "__main__":
-    cli_arguments = ArgumentParser.get_recipe_arguments()
     drinks_information_consumer : DrinkInformationConsumer = DrinkInformationConsumer(table_name=TABLE_NAME, options=DATABASE_OPTIONS)
     main_thread_terminated_event : Event = Event()
     background_firebase_table_update_thread : Thread = Thread(target=drinks_information_consumer.listen_for_updates_on_drink_message_broker)
     background_firebase_table_update_thread.daemon = True
     background_firebase_table_update_thread.start()
-    recipe_controller : RecipeController = RecipeController(RecipeService())
     while True:
         if len(drinks_information_consumer.drinks_information) > 0:
-            coffee_name : str = drinks_information_consumer.drinks_information[0]["coffeeName"]
-            # should be added to firebase to choose either we fetch from database, or make the LLM make the drink
-            # customer_name : str = drinks_information_consumer.drinks_information[0]["customerName"] -> to be done in frontend
-            # llm_recipe : bool = drinks_information_consumer.drinks_information[0]["llmRecipe"] -> to be done in frontend
-            # 1 fetch should be either form the database in DynamoDB, and the other one should be from LLM, depending on the llm_recipe flag passed from Firebase
-            if cli_arguments.llm_recipe:
-                try:                 
-                    
-                    # this should be the one that is called (we also need to customer_name to be passed (changes should happen inside the frontend and firebase))
-                    # response : str = recipe_controller.get_recipe(base_url="http://192.168.1.102:8030", \
-                    #                                             endpoint="/coffee_recipe", \
-                    #                                             coffee_name=coffee_name, customer_name=customer_name)
+            
+            coffee_information : Dict[str, Any] = drinks_information_consumer.drinks_information[0]
+            customer_name : str = coffee_information["customerName"]
+            coffee_name : str = coffee_information["coffeeName"]
+            recipe_type : str = coffee_information["recipeType"]
 
-                    coffee_recipe_response : str = recipe_controller.get_recipe(  
-                        base_url="http://user-file-prompt-updater:8030", \
-                        endpoint="/coffee_recipe", \
-                        coffee_name=coffee_name, \
-                    )
-                    coffee_recipe_response_data : Dict[Dict[str, str], Dict[str, int]] = json.loads(coffee_recipe_response)
-                    status_code : int = coffee_recipe_response["status_code"]
-                    assert status_code == 200, f"Error, status code: {status_code}"
-                    coffee_ingredients : str = coffee_recipe_response["ingredients"]
-                    drinks_information_consumer.drinks_information[0] = {**drinks_information_consumer.drinks_information[0], \
-                                                                        **coffee_ingredients}
-                except Exception as exception:
-                    raise f"Error from fetching the ingredients from the Large Language Model: {exception}"
-                
+            print(coffee_name, customer_name, recipe_type)
+            
+            coffee_ingredients_response : str = RecipeSimpleFactory.create(recipe_type=recipe_type)
+            drinks_information_consumer.drinks_information[0] = { \
+                **drinks_information_consumer.drinks_information[0], \
+                **coffee_ingredients_response \
+            } 
+
             print(f"new drinks information consumer : {drinks_information_consumer.drinks_information}")
             
             camera : object = cv2.VideoCapture(CAMERA_INDEX) 
