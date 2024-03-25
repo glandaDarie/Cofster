@@ -112,5 +112,4 @@ def update_prompt() -> Tuple[jsonify, int]:
     
     except Exception as error:
         LOGGER.error(f"An unexpected error occurred: {error}")
-        print(f"An unexpected error occurred: {error}")
         return jsonify({"error_message": "An unexpected error occurred. Please try again later."}), 500

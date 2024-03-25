@@ -1,24 +1,24 @@
 from typing import List, Dict, Any
 import numpy as np
 import cv2
-import json
 from time import time
 from threading import Event
 from threading import Thread
 from threading import Lock
-from ultralytics import YOLO
 from utils.constants import CAMERA_INDEX, WINDOW_NAME, TABLE_NAME
 from utils.logger import LOGGER
 from utils.firebase_rtd_url import DATABASE_OPTIONS
 from utils.paths import PATH_MODEL_CUP_DETECTION
+from detectors.Detector import Detector
 # from utils.paths import PATH_MODEL_PLACEMENT_DETECTION
 from detectors.YOLOv8 import YOLOv8Detector
 from messaging.drink_information_consumer import DrinkInformationConsumer
 from services.drink_creation_service import DrinkCreationSevice
 from services.image_processor_service import ImageProcessorBuilderService
-from cup_detection.microservices.coffee_creation.simple_factories.recipe_simple_factory import RecipeSimpleFactory
-
-# from utils.argument_parser import ArgumentParser
+from simple_factories.recipe_simple_factory import RecipeSimpleFactory
+import torch
+# debugging now with this
+from time import sleep
 
 """
 Handles the real-time processing of coffee drink information. It listens for updates from a message broker,
@@ -48,11 +48,14 @@ Usage:
 """
 
 if __name__ == "__main__":
+    print("-----Coffee creation process is running on Raspberry Pi 4-----")
     drinks_information_consumer : DrinkInformationConsumer = DrinkInformationConsumer(table_name=TABLE_NAME, options=DATABASE_OPTIONS)
     main_thread_terminated_event : Event = Event()
     background_firebase_table_update_thread : Thread = Thread(target=drinks_information_consumer.listen_for_updates_on_drink_message_broker)
     background_firebase_table_update_thread.daemon = True
     background_firebase_table_update_thread.start()
+    cup_detection_model : Detector = YOLOv8Detector(path_weights=PATH_MODEL_CUP_DETECTION, device=torch.device("cuda"))
+
     while True:
         if len(drinks_information_consumer.drinks_information) > 0:
             
@@ -61,13 +64,21 @@ if __name__ == "__main__":
             coffee_name : str = coffee_information["coffeeName"]
             recipe_type : str = coffee_information["recipeType"]
 
-            print(coffee_name, customer_name, recipe_type)
+            customer_data : Dict[str, Any] = {
+                "customer_name" : customer_name,
+                "coffee_name" : coffee_name
+            }
             
-            coffee_ingredients_response : str = RecipeSimpleFactory.create(recipe_type=recipe_type)
-            drinks_information_consumer.drinks_information[0] = { \
-                **drinks_information_consumer.drinks_information[0], \
-                **coffee_ingredients_response \
+            coffee_ingredients_response : str = RecipeSimpleFactory.create(recipe_type=recipe_type, customer_data=customer_data)
+            print(f"coffee_ingredients_response: {coffee_ingredients_response}")
+            drinks_information_consumer.drinks_information[0] = { 
+                **drinks_information_consumer.drinks_information[0], 
+                **coffee_ingredients_response
             } 
+
+            print(f"drinks_information_consumer.drinks_information[0]: {drinks_information_consumer.drinks_information[0]}")
+
+            sleep(10)
 
             print(f"new drinks information consumer : {drinks_information_consumer.drinks_information}")
             
@@ -80,7 +91,9 @@ if __name__ == "__main__":
                 LOGGER.error(f"Error when trying to read the frame: {frame}")
                 break
 
-            cup_detection_model : YOLO = YOLOv8Detector.detect(path_weights=PATH_MODEL_CUP_DETECTION)
+            frame, detected_classes, _, _, _ = cup_detection_model(frame=frame)
+
+            # cup_detection_model : YOLO = YOLOv8Detector.detect(path_weights=PATH_MODEL_CUP_DETECTION)
             # cup_detection_placement_model : YOLO = YOLOv8Detector.detect(path_weights=PATH_MODEL_PLACEMENT_DETECTION)
 
             cup_detection_lock : Lock = Lock()
@@ -112,7 +125,8 @@ if __name__ == "__main__":
             image_processor_builder_service : ImageProcessorBuilderService = ImageProcessorBuilderService()
             while success:
                 end_fps_time = time()
-                cup_detection_model, frame, cup_detected, cup_bounding_boxes = YOLOv8Detector.detect(frame=frame, model=cup_detection_model)
+                frame, detected_classes, cup_detected, _, _ = cup_detection_model(frame=frame)
+                # cup_detection_model, frame, cup_detected, cup_bounding_boxes = YOLOv8Detector.detect(frame=frame, model=cup_detection_model)
                 # cup_detection_placement_model, frame, cup_placement_detected, placement_bounding_boxes = YOLOv8Detector.detect(frame=frame, \
                 #                                                                                                                model=cup_detection_placement_model)
                 # cup_position_valid : bool = YOLOv8Detector.is_cup_in_correct_position(object1_boxes=cup_bounding_boxes, object2_boxes=placement_bounding_boxes, tolerance=6)

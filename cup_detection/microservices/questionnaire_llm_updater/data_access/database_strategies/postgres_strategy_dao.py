@@ -64,7 +64,6 @@ class PostgresStrategyDAO(DatabaseStrategyDAO):
         table_exists : bool = self.inspector.has_table(table_name=table_name)
         if table_exists:
             LOGGER.info(f"Table: {table_name} exists in database: {self.database}")
-            print("UPDATE!")
         else:
             LOGGER.info(f"Table: {table_name} does not exist in database: {self.database}")
             Base.metadata.create_all(self.engine)

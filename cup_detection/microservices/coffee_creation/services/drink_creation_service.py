@@ -3,7 +3,7 @@ import concurrent.futures
 from threading import Event
 from utils.logger import thread_information_logger
 from messaging.drink_information_consumer import DrinkInformationConsumer
-from coffee_machine_controller_service import CoffeeMachineControllerService
+from .coffee_machine_controller_service import CoffeeMachineControllerService
 
 class DrinkCreationSevice(CoffeeMachineControllerService):
     """

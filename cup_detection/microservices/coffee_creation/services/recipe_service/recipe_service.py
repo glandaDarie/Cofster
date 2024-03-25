@@ -5,8 +5,4 @@ class RecipeService(ABC):
     @abstractclassmethod
     def get_recipe(self, base_url: str, endpoint: str, **params: Dict[str, str]) -> str:   
         pass
-    
-    @abstractclassmethod
-    def update_recipe(self, base_url : str, endpoint : str, **params : Dict[str, str]) -> str:
-        pass
 

@@ -1,5 +1,4 @@
 from typing import Dict, List, Any
-import os
 import requests
 import json
 from requests.models import Response
@@ -10,8 +9,7 @@ class RecipeLlmService(RecipeService):
         if not isinstance(params, dict):
             raise ValueError("Invalid parameter format: Expected a dictionary.")
 
-        url : str = os.path.join(base_url, endpoint)
-
+        url : str = f"{base_url}/{endpoint}"
         try:
             response : Response = requests.get(url=url, params=params)
             response.raise_for_status() 
@@ -32,6 +30,3 @@ class RecipeLlmService(RecipeService):
 
         except ValueError as value_error:
             raise ValueError(str(value_error))
-    
-    def update_recipe(self, base_url : str, endpoint : str, **params : Dict[str, str]) -> str:
-        pass

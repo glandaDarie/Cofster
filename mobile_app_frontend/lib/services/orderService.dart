@@ -156,7 +156,7 @@ class OrderService {
         await OrderInformationController.postOrderToOrdersInformation(
       ORDERS_TABLE,
       {
-        "coffeeName": coffeeName,
+        "coffeeName": coffeeName.toString().toLowerCase(),
         "customerName":
             (await LoggedInService.getSharedPreferenceValue("<nameUser>"))
                 .toString()

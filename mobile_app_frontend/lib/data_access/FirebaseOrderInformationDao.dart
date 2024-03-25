@@ -87,7 +87,6 @@ class FirebaseOrderInformationDao {
     };
 
     OrderIDProvider.instance.orderID = orderID;
-    print("Actual length: ${orderData.length}");
     try {
       DatabaseReference reference =
           FirebaseDatabase.instance.ref().child(ORDERS_TABLE).child(orderID);

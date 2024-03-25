@@ -1,11 +1,10 @@
 import logging
-import os
 from typing import Dict
 import concurrent.futures
-from utils.paths import PATH_THREAD_INFORMATION_LOGGER
-from utils.paths import PATH_ROOT
-
-PATH_FILENAME : str = os.path.join(PATH_ROOT, "assets", "logging_information.log") 
+from utils.paths import (
+    PATH_FILENAME, 
+    PATH_THREAD_INFORMATION_LOGGER
+) 
 
 logging.basicConfig(filename=PATH_FILENAME,
                     format="%(asctime)s %(message)s",
