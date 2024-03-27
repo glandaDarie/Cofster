@@ -10,3 +10,11 @@ Map<String, int> classes = {
   "coretto": 8,
   "irish coffee": 9
 };
+
+Map<String, String> classMapper = {
+  "lattemachiatto": "latte machiatto",
+  "flatwhite": "flat white",
+  "coldespresso": "cold espresso",
+  "coldbrew": "cold brew",
+  "irishcoffee": "irish coffee"
+};

@@ -36,7 +36,8 @@ class RecipeDatabaseService(RecipeService):
             if data["statusCode"] != 200:
                 raise ValueError(f"Error: status code: {status_code} appeard from error {data}")
             
-            body : Dict[str, Any] = data["body"]
+            body : Dict[str, Any] = data["body"][0]
+            print(f"{body = }")
             ingredients : List[Dict[str, str]] = body.get("ingredients")
             if not ingredients:
                 raise ValueError("Error: No ingredients found in the response")

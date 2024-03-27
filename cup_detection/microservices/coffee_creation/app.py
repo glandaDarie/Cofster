@@ -64,6 +64,8 @@ if __name__ == "__main__":
             coffee_name : str = coffee_information["coffeeName"]
             recipe_type : str = coffee_information["recipeType"]
 
+            print(f"{customer_name = } | {coffee_name = } | {recipe_type}")
+
             customer_data : Dict[str, Any] = {
                 "customer_name" : customer_name,
                 "coffee_name" : coffee_name

@@ -88,6 +88,7 @@ class _OrderPageState extends State<OrderPage> {
                       "|recipeType: "),
                   "")
               .trim();
+          print("parsedCoffeeInformation: $parsedCoffeeInformation");
           this._orderList = parsedCoffeeInformation.split(",");
           return displayContentCards(
               OrderInformation(
