@@ -16,9 +16,11 @@ class RecipeSimpleFactory:
         if recipe_type == RecipeType.llm.value:
             # should be changed with the containers IP, so RPI and the rest of microservices should communicate
             recipe_service : RecipeService = RecipeController(RecipeLlmService()) \
-            .get_recipe(  
-                base_url="http://user-file-prompt-updater:8030", \
-                endpoint="/prompt", \
+            .get_recipe(
+                # base_url="http://ingredients-updater:8030", \
+                base_url="http://192.168.208.4:8030", \
+                endpoint="/coffee_recipe", \
+                coffee_name=customer_data["coffee_name"],
                 customer_name=customer_data["customer_name"]
             )
         elif recipe_type == RecipeType.recipe.value:

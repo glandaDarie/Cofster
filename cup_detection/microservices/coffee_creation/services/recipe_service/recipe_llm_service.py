@@ -3,13 +3,15 @@ import requests
 import json
 from requests.models import Response
 from services.recipe_service.recipe_service import RecipeService
+from urllib.parse import urljoin
 
 class RecipeLlmService(RecipeService):
     def get_recipe(self, base_url: str, endpoint: str, **params: Dict[str, str]) -> str:   
         if not isinstance(params, dict):
             raise ValueError("Invalid parameter format: Expected a dictionary.")
 
-        url : str = f"{base_url}/{endpoint}"
+        url : str = urljoin(base=base_url, url=endpoint)
+        print(f"url: {url}, params: {params}")
         try:
             response : Response = requests.get(url=url, params=params)
             response.raise_for_status() 

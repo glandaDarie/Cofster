@@ -37,13 +37,17 @@ class RecipeDatabaseService(RecipeService):
                 raise ValueError(f"Error: status code: {status_code} appeard from error {data}")
             
             body : Dict[str, Any] = data["body"][0]
-            print(f"{body = }")
             ingredients : List[Dict[str, str]] = body.get("ingredients")
             if not ingredients:
                 raise ValueError("Error: No ingredients found in the response")
 
-            recipe : Dict[str, str] = ingredients[0]
+            ingredients : Dict[str, str] = ingredients[0]
+            recipe : Dict[str, str] = self.__process_ingredients(ingredients=ingredients)
             return recipe
         
         except requests.exceptions.RequestException as request_exception:
             raise ValueError(f"Request failed: {request_exception}")
+    
+    def __process_ingredients(self, ingredients : Dict[str, str]) -> Dict[str, str]:
+        return {f"ingredient_{int(key.split()[-1])}": value for key, value in \
+                                                    sorted(ingredients.items(), key=lambda x: x[0])}
