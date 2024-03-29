@@ -6,23 +6,22 @@ from services.recipe_service.recipe_service import RecipeService
 from urllib.parse import urljoin
 
 class RecipeLlmService(RecipeService):
-    def get_recipe(self, base_url: str, endpoint: str, **params: Dict[str, str]) -> str:   
+    def get_recipe(self, base_url: str, endpoint: str, **params: Dict[str, str]) -> Dict[str, Any]:   
         if not isinstance(params, dict):
             raise ValueError("Invalid parameter format: Expected a dictionary.")
 
         url : str = urljoin(base=base_url, url=endpoint)
-        print(f"url: {url}, params: {params}")
         try:
             response : Response = requests.get(url=url, params=params)
             response.raise_for_status() 
             
-            data : Dict[str, Any] = json.loads(response.text)
+            str_data : str = json.loads(response.text)
+            data : Dict[str, Any] = json.loads(str_data)
             keys : List[str] = list(data.keys()) 
-
-            if len(keys) != 1:
+            if len(keys) <= 0:
                 raise ValueError("The output from the LLM is not in the correct shape.")
             
-            return json.dumps(data[keys[-1]])
+            return data
     
         except requests.exceptions.RequestException as request_exception:
             raise ValueError(f"Request failed: {request_exception}")
