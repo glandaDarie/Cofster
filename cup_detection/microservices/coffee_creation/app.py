@@ -5,20 +5,19 @@ from time import time
 from threading import Event
 from threading import Thread
 from threading import Lock
+import torch
+
 from utils.constants import CAMERA_INDEX, WINDOW_NAME, TABLE_NAME
 from utils.logger import LOGGER
 from utils.firebase_rtd_url import DATABASE_OPTIONS
 from utils.paths import PATH_MODEL_CUP_DETECTION
-from detectors.Detector import Detector
 # from utils.paths import PATH_MODEL_PLACEMENT_DETECTION
+from detectors.Detector import Detector
 from detectors.YOLOv8 import YOLOv8Detector
 from messaging.drink_information_consumer import DrinkInformationConsumer
 from services.drink_creation_service import DrinkCreationSevice
 from services.image_processor_service import ImageProcessorBuilderService
 from simple_factories.recipe_simple_factory import RecipeSimpleFactory
-import torch
-# debugging now with this
-from time import sleep
 
 """
 Handles the real-time processing of coffee drink information. It listens for updates from a message broker,
@@ -64,38 +63,30 @@ if __name__ == "__main__":
             coffee_name : str = coffee_information["coffeeName"]
             recipe_type : str = coffee_information["recipeType"]
 
-            print(f"{customer_name = } | {coffee_name = } | {recipe_type}")
-
             customer_data : Dict[str, Any] = {
                 "customer_name" : customer_name,
                 "coffee_name" : coffee_name
             }
             
             coffee_ingredients_response : str = RecipeSimpleFactory.create(recipe_type=recipe_type, customer_data=customer_data)
-            print(f"coffee_ingredients_response: {coffee_ingredients_response}")
             drinks_information_consumer.drinks_information[0] = { 
                 **drinks_information_consumer.drinks_information[0], 
                 **coffee_ingredients_response
             } 
 
-            print(f"drinks_information_consumer.drinks_information[0]: {drinks_information_consumer.drinks_information[0]}")
-
-            sleep(10)
-
             print(f"new drinks information consumer : {drinks_information_consumer.drinks_information}")
-            
+
             camera : object = cv2.VideoCapture(CAMERA_INDEX) 
             if not camera.isOpened():
                 LOGGER.error("Error when trying to open the camera")
                 break
+
             success, frame = camera.read()
             if not success or frame is None:
                 LOGGER.error(f"Error when trying to read the frame: {frame}")
                 break
 
             frame, detected_classes, _, _, _ = cup_detection_model(frame=frame)
-
-            # cup_detection_model : YOLO = YOLOv8Detector.detect(path_weights=PATH_MODEL_CUP_DETECTION)
             # cup_detection_placement_model : YOLO = YOLOv8Detector.detect(path_weights=PATH_MODEL_PLACEMENT_DETECTION)
 
             cup_detection_lock : Lock = Lock()

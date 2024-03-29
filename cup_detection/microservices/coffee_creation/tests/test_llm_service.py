@@ -7,7 +7,6 @@ from services.recipe_service.recipe_llm_service import RecipeLlmService
 if __name__ == "__main__":
     recipe_llm_service : RecipeLlmService = RecipeLlmService()
 
-    # container_service_ip : str = "172.28.0.4"
     container_service_ip : str = "127.0.0.1"
     container_service_port : str = "8030"
 

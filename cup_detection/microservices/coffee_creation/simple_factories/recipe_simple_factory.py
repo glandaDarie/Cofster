@@ -17,7 +17,6 @@ class RecipeSimpleFactory:
             # should be changed with the containers IP, so RPI and the rest of microservices should communicate
             recipe_service : RecipeService = RecipeController(RecipeLlmService()) \
             .get_recipe(
-                # base_url="http://ingredients-updater:8030", \
                 base_url="http://127.0.0.1:8030", \
                 endpoint="/coffee_recipe", \
                 coffee_name=customer_data["coffee_name"],
@@ -33,7 +32,5 @@ class RecipeSimpleFactory:
             )
         else:
             raise NoRecipeException(f"No such recipe type implemented: {recipe_type}")
-        
-        print(f"recipe_service: {recipe_service}")
 
         return recipe_service
