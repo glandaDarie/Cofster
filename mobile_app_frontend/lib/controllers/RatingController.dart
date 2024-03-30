@@ -13,7 +13,7 @@ class RatingController {
   Future<String> updateRatingResponseGivenDrink(
       String drinkName, String drinkRating) async {
     this._urlServiceUpdateRating = UrlService(
-        "https://jh80rgn246.execute-api.us-east-1.amazonaws.com/prod",
+        "https://mjed8soas4.execute-api.us-east-1.amazonaws.com/prod",
         "/rating",
         {"drinksId": "100", "drink": drinkName, "drink_rating": drinkRating});
     this._urlUpdateRating = this._urlServiceUpdateRating.createUrl();
@@ -23,7 +23,7 @@ class RatingController {
 
   Future<String> getDrinkRating(String drinkName) async {
     this._urlServiceGetRating = UrlService(
-        "https://jh80rgn246.execute-api.us-east-1.amazonaws.com/prod",
+        "https://mjed8soas4.execute-api.us-east-1.amazonaws.com/prod",
         "/rating",
         {"drinksId": "100", "drink": drinkName});
     this._urlGetRating = this._urlServiceGetRating.createUrl();

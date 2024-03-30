@@ -9,7 +9,7 @@ class DrinksInformationController {
 
   Future<Information> getInformationFromRespectiveDrink(String drink) async {
     this.urlServiceGetRespectiveDrinkInformation = UrlService(
-        " https://ood8852240.execute-api.us-east-1.amazonaws.com/prod",
+        "https://8ijqbugale.execute-api.us-east-1.amazonaws.com/prod",
         "/drink_information",
         {"drinkId": "100", "drink": drink});
     this.urlGetRespectiveDrinkInformation =

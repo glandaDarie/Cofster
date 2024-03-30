@@ -25,7 +25,7 @@ class RecipeSimpleFactory:
         elif recipe_type == RecipeType.recipe.value:
             recipe_service : RecipeService = RecipeController(RecipeDatabaseService()) \
             .get_recipe(
-                base_url="https://ood8852240.execute-api.us-east-1.amazonaws.com/prod", \
+                base_url="https://8ijqbugale.execute-api.us-east-1.amazonaws.com/prod", \
                 endpoint="/drink_information", \
                 drinkId="100", \
                 drink=customer_data["coffee_name"]

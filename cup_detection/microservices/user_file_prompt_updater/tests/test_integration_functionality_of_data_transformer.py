@@ -10,7 +10,7 @@ from utils.paths import ROOT_PATH
 def test_integration_functionality_of_data_transformer() -> None:
     data_transformer : DataTransformerService = DataTransformerService(data_transformer_dao=DataTransformerDAO())
     users_information = data_transformer \
-        .fetch(base_url="https://2rbfw9r283.execute-api.us-east-1.amazonaws.com", endpoint="prod/users", params={"usersInformation" : "info"}) \
+        .fetch(base_url="https://p5niyz4q2e.execute-api.us-east-1.amazonaws.com", endpoint="prod/users", params={"usersInformation" : "info"}) \
         .transform() \
         .collect()
     
