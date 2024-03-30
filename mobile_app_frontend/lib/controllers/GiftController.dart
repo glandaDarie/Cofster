@@ -15,7 +15,7 @@ class GiftController {
   Future<dynamic> getUserGifts() async {
     List<String> params = await this._giftService.loadGiftParams();
     this._urlServiceGift = UrlService(
-        "https://t90ka4phb9.execute-api.us-east-1.amazonaws.com/prod",
+        "https://q9lsyy63b3.execute-api.us-east-1.amazonaws.com/prod",
         "/gifts/user/gift",
         {"name": params[0], "username": params[1]});
     this._urlGift = this._urlServiceGift.createUrl();
@@ -25,7 +25,7 @@ class GiftController {
 
   Future<String> createGift(String gift) async {
     this._urlServiceGift = UrlService(
-        "https://t90ka4phb9.execute-api.us-east-1.amazonaws.com/prod",
+        "https://q9lsyy63b3.execute-api.us-east-1.amazonaws.com/prod",
         "/gifts/user");
     this._urlGift = this._urlServiceGift.createUrl();
     this._urlDaoGift = DynamoDBGiftsDao(this._urlGift);
@@ -34,7 +34,7 @@ class GiftController {
 
   Future<String> deleteUserGift(String gift) async {
     this._urlServiceGift = UrlService(
-        "https://t90ka4phb9.execute-api.us-east-1.amazonaws.com/prod",
+        "https://q9lsyy63b3.execute-api.us-east-1.amazonaws.com/prod",
         "/gifts/user/gift");
     this._urlGift = this._urlServiceGift.createUrl();
     this._urlDaoGift = DynamoDBGiftsDao(this._urlGift);

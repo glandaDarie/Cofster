@@ -32,7 +32,7 @@ class UserController {
 
   UserController() {
     this.urlServiceGetUsers = UrlService(
-        "https://2rbfw9r283.execute-api.us-east-1.amazonaws.com/prod",
+        "https://p5niyz4q2e.execute-api.us-east-1.amazonaws.com/prod",
         "/users",
         {"usersInformation": "info"});
     this.urlGetUsers = this.urlServiceGetUsers.createUrl();
@@ -62,7 +62,7 @@ class UserController {
 
   Future<String> insertNewUser(Map<String, String> content) async {
     this.urlServiceInsertNewUser = UrlService(
-        "https://2rbfw9r283.execute-api.us-east-1.amazonaws.com/prod",
+        "https://p5niyz4q2e.execute-api.us-east-1.amazonaws.com/prod",
         "/users");
     this.urlInsertNewUser = this.urlServiceInsertNewUser.createUrl();
     this.userDaoInsertNewUser = new DynamoDBUserDao(this.urlInsertNewUser);
@@ -71,7 +71,7 @@ class UserController {
 
   Future<String> deleteUserFromCredentials(Map<String, String> content) async {
     this.urlServiceDeleteUserFromUsers = UrlService(
-        "https://2rbfw9r283.execute-api.us-east-1.amazonaws.com/prod",
+        "https://p5niyz4q2e.execute-api.us-east-1.amazonaws.com/prod",
         "/users");
     this.urlDeleteUser = this.urlServiceDeleteUserFromUsers.createUrl();
     this.userDaoDeleteUser = new DynamoDBUserDao(this.urlDeleteUser);
@@ -81,7 +81,7 @@ class UserController {
   Future<String> updateUsersPassword(
       String username, String newPassword) async {
     this.urlServiceUpdateUsersPassword = UrlService(
-        "https://2rbfw9r283.execute-api.us-east-1.amazonaws.com/prod",
+        "https://p5niyz4q2e.execute-api.us-east-1.amazonaws.com/prod",
         "/users/password",
         {"username": username, "newPassword": newPassword});
     this.urlUpdateUsersPassword =
@@ -96,7 +96,7 @@ class UserController {
   //comment for better integration testing
   Future<String> uploadUsersPhotoToS3(Map<String, String> content) async {
     this.urlServiceUploadUsersPhoto = UrlService(
-        "https://2rbfw9r283.execute-api.us-east-1.amazonaws.com/prod",
+        "https://p5niyz4q2e.execute-api.us-east-1.amazonaws.com/prod",
         "/users/photo");
     this.urlUploadUsersPhoto = this.urlServiceUploadUsersPhoto.createUrl();
     this.userDaoUploadUsersPhoto = DynamoDBUserDao(this.urlUploadUsersPhoto);
@@ -106,7 +106,7 @@ class UserController {
   // comment for better integration testing
   Future<String> getUsersPhotoFromS3(Map<String, String> content) async {
     this.urlServiceGetUsersPhoto = UrlService(
-        "https://2rbfw9r283.execute-api.us-east-1.amazonaws.com/prod",
+        "https://p5niyz4q2e.execute-api.us-east-1.amazonaws.com/prod",
         "/users/photo",
         content);
     this.urlGetUsersPhoto = this.urlServiceGetUsersPhoto.createUrl();
@@ -116,7 +116,7 @@ class UserController {
 
   Future<String> updateUsersFavouriteDrinks(Map<String, String> content) async {
     this.urlServiceUpdateUsersFavouriteDrinks = UrlService(
-        "https://2rbfw9r283.execute-api.us-east-1.amazonaws.com/prod",
+        "https://p5niyz4q2e.execute-api.us-east-1.amazonaws.com/prod",
         "/users/favourite_drinks",
         content);
     this.urlUpdateUsersFavouriteDrinks =

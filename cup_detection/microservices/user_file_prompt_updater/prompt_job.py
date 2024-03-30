@@ -9,8 +9,8 @@ from threading import Thread
 from flask import Flask
 from routes.prompt import prompt_blueprint, prompt_update_blueprint
 
-@repeat(every(10).seconds) # test
-# @repeat(every(4).minutes) # prod
+# @repeat(every(10).seconds) # test
+@repeat(every(4).minutes) # prod
 def format_and_generate_prompt_hierarchial_structure_for_users() -> None | TypeError | ValueError:
     """
     Fetches user information, transforms it, generates prompts based on the information, and logs the job information.
@@ -27,7 +27,7 @@ def format_and_generate_prompt_hierarchial_structure_for_users() -> None | TypeE
     """
     data_tansformer_service : DataTransformerService = DataTransformerService(data_transformer_dao=DataTransformerDAO())
     users_information = data_tansformer_service \
-        .fetch(base_url="https://2rbfw9r283.execute-api.us-east-1.amazonaws.com", endpoint="prod/users", params={"usersInformation" : "info"}) \
+        .fetch(base_url="https://p5niyz4q2e.execute-api.us-east-1.amazonaws.com", endpoint="prod/users", params={"usersInformation" : "info"}) \
         .transform() \
         .collect()
     

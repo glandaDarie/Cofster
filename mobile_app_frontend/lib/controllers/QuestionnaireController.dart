@@ -22,7 +22,7 @@ class QuestionnaireController {
 
   Future<List<Question>> getAllQuestions() async {
     this.urlServiceGetQuestions = UrlService(
-        "https://1xihq64176.execute-api.us-east-1.amazonaws.com/prod",
+        "https://u7d7lbw2c3.execute-api.us-east-1.amazonaws.com/prod",
         "/questions",
         {"questionId": "09423213"});
     this.urlGetQuestions = this.urlServiceGetQuestions.createUrl();
