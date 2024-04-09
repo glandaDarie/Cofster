@@ -18,13 +18,13 @@ from enums.cup_classes import CupClasses
 from detectors.Detector import Detector
 
 class YOLOv8Detector(Detector):
-    def __init__(self, path_weights : str, device : torch.device = torch.device("cuda")):
+    def __init__(self, path_weights : str, device : torch.device = torch.device("cpu")):
         """
         Initialize the YOLOv8Detector.
 
         Args:
             path_weights (str): Path to the weights of the YOLO model.
-            device (torch.device, optional): Device to use for inference. Defaults to torch.device("cuda").
+            device (torch.device, optional): Device to use for inference. Defaults to torch.device("cpu") - it is set to cpu as default because some edge devices cannot make use of cuda
         """
         self.model : YOLO = YOLO(path_weights)
         self.model.to(device=device)

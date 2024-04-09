@@ -3,9 +3,8 @@ import concurrent.futures
 from threading import Event
 from utils.logger import thread_information_logger
 from messaging.drink_information_consumer import DrinkInformationConsumer
-from .coffee_machine_controller_service import CoffeeMachineControllerService
 
-class DrinkCreationSevice(CoffeeMachineControllerService):
+class DrinkCreationSevice:
     """
     A service for simulating drink creation in a coffee machine.
 
@@ -55,13 +54,15 @@ class DrinkCreationSevice(CoffeeMachineControllerService):
                     self.stop_drink_creation_event.clear()
                     self.stop_continuous_cup_checking.clear()
                     futures : Dict[concurrent.futures.ThreadPoolExecutor, str] = {}
+                    
                     futures[executor.submit(lambda : self.__create_drink(drink_information=drinks_information_consumer.drinks_information, \
                         callback_cup_detection=callback_cup_detection, main_thread_terminated_event=main_thread_terminated_event))] = "create_drink"
                     futures[executor.submit(lambda : self.__continuously_check_cup(callback_cup_detection=callback_cup_detection, \
-                        main_thread_terminated_event=main_thread_terminated_event))] = "continuously_check_cup"                     
+                        main_thread_terminated_event=main_thread_terminated_event))] = "continuously_check_cup" 
+                                        
                     for future in concurrent.futures.as_completed(futures):
                         try:
-                            result_drink_creation : bool|Generator = future.result()
+                            result_drink_creation : bool | str | Generator = future.result()
                             if isinstance(result_drink_creation, bool):
                                 print(f"Result: {result_drink_creation}")
                                 if result_drink_creation:
@@ -119,7 +120,7 @@ class DrinkCreationSevice(CoffeeMachineControllerService):
         Yields:
             str: "Cup detected" if the cup is detected, "Cup not detected" otherwise.
         """
-        while not self.stop_continuous_cup_checking.is_set() and not main_thread_terminated_event.is_set():
+        while not main_thread_terminated_event.is_set() and not self.stop_continuous_cup_checking.is_set():
             if callback_cup_detection():
                 yield "Cup detected"            
             else:

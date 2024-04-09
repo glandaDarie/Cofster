@@ -1,5 +1,4 @@
 from typing import Dict, List, Any
-# import threading
 from threading import Lock
 import firebase_admin
 from firebase_admin import db, credentials
