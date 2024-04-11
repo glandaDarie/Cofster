@@ -40,7 +40,6 @@ services:
       - postgres
   
   user-file-prompt-updater:
-  
     image: user-file-prompt-updater:latest
     restart: always
     networks:

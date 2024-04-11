@@ -48,6 +48,7 @@ Usage:
 
 if __name__ == "__main__":
     print("-----Coffee creation process is running on Raspberry Pi 4-----")
+    LOGGER.info("-----Coffee creation process is running on Raspberry Pi 4-----")
     drinks_information_consumer : DrinkInformationConsumer = DrinkInformationConsumer(table_name=TABLE_NAME, options=DATABASE_OPTIONS)
     main_thread_terminated_event : Event = Event()
     background_firebase_table_update_thread : Thread = Thread(target=drinks_information_consumer.listen_for_updates_on_drink_message_broker)
@@ -75,6 +76,7 @@ if __name__ == "__main__":
             } 
 
             print(f"new drinks information consumer : {drinks_information_consumer.drinks_information}")
+            LOGGER.info(f"app.py: drink information received from client: {drinks_information_consumer.drinks_information}")
 
             camera : object = cv2.VideoCapture(CAMERA_INDEX) 
             if not camera.isOpened():
@@ -124,7 +126,7 @@ if __name__ == "__main__":
                 #                                                                                                                model=cup_detection_placement_model)
                 # cup_position_valid : bool = YOLOv8Detector.is_cup_in_correct_position(object1_boxes=cup_bounding_boxes, object2_boxes=placement_bounding_boxes, tolerance=6)
                 cup_detection_callback(cup_detected)
-                print(f"len(consumer.drinks_information): {len(drinks_information_consumer.drinks_information)}") # testing the message queue
+                # print(f"len(consumer.drinks_information): {len(drinks_information_consumer.drinks_information)}") # testing the message queue
                 frame : np.ndarray = image_processor_builder_service \
                     .add_text_number_of_frames(frame=frame, start_time=start_fps_time, end_time=end_fps_time) \
                     .build()
