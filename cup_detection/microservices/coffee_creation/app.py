@@ -56,7 +56,7 @@ if __name__ == "__main__":
     background_firebase_table_update_thread.start()
     cup_detection_model : Detector = YOLOv8Detector(path_weights=PATH_MODEL_CUP_DETECTION, device=torch.device("cuda"))
 
-    while True: # should run till the process is stopped (automatically would like to stop the camera or something like that (handle race conditions))
+    while True: 
         if len(drinks_information_consumer.drinks_information) > 0:
             
             coffee_information : Dict[str, Any] = drinks_information_consumer.drinks_information[0]

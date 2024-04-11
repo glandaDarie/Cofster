@@ -1,4 +1,4 @@
-from typing import Dict, Callable, Generator
+from typing import Dict, Any, Callable, Generator
 from time import time
 import concurrent.futures
 from threading import Event
@@ -10,6 +10,8 @@ from utils.logger import (
     thread_information_logger, 
     LOGGER
 )
+from controllers.coffee_creation_controller import CoffeeCreationController
+from services.coffee_creation_service import CoffeeCreationService
 
 class DrinkCreationSevice:
     """
@@ -81,7 +83,6 @@ class DrinkCreationSevice:
                                 LOGGER.info(f"DrinkCreationSevice >> simulate_creation: Coffee information status: {result_drink_creation}")
                                 if result_drink_creation == CoffeeProcessTypes.DRINK_CREATED.value:
                                     self.stop_continuous_cup_checking_event.set()
-                                    main_thread_terminated_event.set()
                                     executor.shutdown()
                                     thread_information_logger(futures)
                                     drink_creation_completed = True
@@ -121,6 +122,15 @@ class DrinkCreationSevice:
                     print("Entered here safe and sound")
                     # make a HTTP call to create the coffee, without still continously performing cup checking
                     # requests.get("http://{ip}:{port}/app")
+
+                    payload : Dict[str, Any] = {}
+                    coffee_creation_service : CoffeeCreationService = CoffeeCreationController(CoffeeCreationService()) \
+                        .create_coffee(
+                            base_url="http://192.168.1.106:5000", \
+                            endpoint="/coffee", \
+                            payload=payload
+                    )
+                    
                     self.__reset_cup_detection_timer()
                     yield CoffeeProcessTypes.DRINK_CREATED.value
 
