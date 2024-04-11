@@ -4,7 +4,6 @@ import sys
 sys.path.append("../")
 
 from services.coffee_creation_service import CoffeeCreationService
-from utils.exceptions import CoffeeNotCreatedError
 
 class CoffeeCreationController:
     """
@@ -56,5 +55,4 @@ class CoffeeCreationController:
             headers=headers,
             timeout=timeout
         )
-        if "Error" in response_coffee_creation:
-            raise CoffeeNotCreatedError(response_coffee_creation)
+        return response_coffee_creation
