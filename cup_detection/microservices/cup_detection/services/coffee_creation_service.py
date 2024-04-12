@@ -36,7 +36,7 @@ class CoffeeCreationService:
             response.raise_for_status()  
             status_code : int = response.status_code
             if status_code == 201:
-                return response.coffee_recipe_information
+                return response.information
         
         except requests.exceptions.Timeout:
             error_message = "Error: Request timed out."

@@ -11,8 +11,8 @@ class CoffeeCreationFacadeService:
     def create(payload : Dict[str, Any]) -> str:
         coffee_creation_service_response : str = CoffeeCreationController(CoffeeCreationService()) \
             .create_coffee(
-                base_url="http://192.168.8.105:5000", 
-                endpoint="/coffee", 
+                base_url="http://192.168.0.192:5000/coffee", 
+                endpoint="/create", 
                 payload=payload
         )
         return coffee_creation_service_response
