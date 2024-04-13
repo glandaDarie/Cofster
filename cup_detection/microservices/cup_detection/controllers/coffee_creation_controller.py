@@ -32,7 +32,8 @@ class CoffeeCreationController:
         endpoint: str, 
         payload : Dict[str, Any],   
         headers : Dict[str, Any] = {"Content-Type" : "application/json"}, 
-        timeout : float = 7 
+        timeout : float = 7,
+        verbose : bool = False
     ) -> str | None:
         """
         Create coffee using the CoffeeCreationService.
@@ -53,6 +54,7 @@ class CoffeeCreationController:
             endpoint=endpoint, 
             payload=payload,
             headers=headers,
-            timeout=timeout
+            timeout=timeout,
+            verbose=verbose
         )
         return response_coffee_creation

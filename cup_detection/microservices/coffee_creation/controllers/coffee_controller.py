@@ -5,10 +5,6 @@ from fastapi import (
     HTTPException,
     status
 )
-import sys
-
-sys.path.append("../")
-
 from pydantic_types.coffee_creation.coffee_service_type import CoffeeServiceType
 from pydantic_types.coffee_creation.coffee_creation_response import Response
 

@@ -12,7 +12,8 @@ class CoffeeCreationFacadeService:
         coffee_creation_service_response : str = CoffeeCreationController(CoffeeCreationService()) \
             .create_coffee(
                 base_url="http://192.168.0.192:5000/coffee", 
-                endpoint="/create", 
+                endpoint="create", 
+                verbose=False,
                 payload=payload
         )
         return coffee_creation_service_response
