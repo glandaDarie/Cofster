@@ -7,10 +7,6 @@ from fastapi import (
 
 router : APIRouter = APIRouter()
 
-import sys
-
-sys.path.append("../")
-
 from controllers.coffee_controller import CoffeeController
 from pydantic_types.coffee_creation.coffee_creation_response import Response
 

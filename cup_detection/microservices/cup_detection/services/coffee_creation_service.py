@@ -12,6 +12,7 @@ class CoffeeCreationService:
         payload : Dict[str, Any], 
         headers : Dict[str, Any] = {"Content-Type" : "application/json"}, 
         timeout : float = 7, 
+        verbose : bool = False
     ) -> str:    
         """
         Send a POST request to create coffee.
@@ -36,7 +37,7 @@ class CoffeeCreationService:
             response.raise_for_status()  
             status_code : int = response.status_code
             if status_code == 201:
-                return response.information
+                return f"{response.message} {response.information}" if verbose else response.message
         
         except requests.exceptions.Timeout:
             error_message = "Error: Request timed out."

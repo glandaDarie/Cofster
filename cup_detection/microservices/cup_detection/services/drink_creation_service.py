@@ -1,4 +1,4 @@
-from typing import Dict, Any, Callable, Generator
+from typing import Tuple, Dict, Any, Callable, Generator
 from time import time, sleep
 import concurrent.futures
 from threading import Event
@@ -47,6 +47,8 @@ class DrinkCreationSevice:
         self.drink_finished_callback : Callable[[bool], bool] = drink_finished_callback
         self.stop_continuous_cup_checking_event : Event = Event()
         self.start_time_cup_detection : float = time()
+        self.coffee_creation_response_message :  None | str = None
+        self.coffee_creation_response_information : None | str = None
 
     def simulate_creation(self, drinks_information_consumer : DrinkInformationConsumer, callback_cup_detection : Callable[[bool], bool], \
                           main_thread_terminated_event : Event) -> str:
@@ -69,7 +71,6 @@ class DrinkCreationSevice:
         while not main_thread_terminated_event.is_set():
             if callback_cup_detection():
                 with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
-                    print(drinks_information_consumer.drinks_information)
                     self.stop_continuous_cup_checking_event.clear()
 
                     thread_futures : Dict[concurrent.futures.ThreadPoolExecutor, str] = {}
@@ -127,10 +128,17 @@ class DrinkCreationSevice:
               
                 if elapsed_time_cup_detection >= CUP_DETECTION_DURATION_SECONDS:
                     self.__reset_cup_detection_timer()                    
-                    
+
+                    # coffee_creation_facade_service_response : str = "success" 
                     coffee_creation_facade_service_response : str = CoffeeCreationFacadeService.create(payload=drinks_information)
-                    # coffee_creation_facade_service_response = "Success" 
-                    if "Error" in coffee_creation_facade_service_response:
+                    response_has_no_verbose_param : bool = len(coffee_creation_facade_service_response.split()) == 1
+                    if response_has_no_verbose_param:
+                        self.coffee_creation_response_message = coffee_creation_facade_service_response
+                    else:
+                        self.coffee_creation_response_message = coffee_creation_facade_service_response[0]
+                        self.coffee_creation_response_information = coffee_creation_facade_service_response[1] 
+
+                    if "Error" in self.coffee_creation_response_message:
                         yield CoffeeProcessTypes.DRINK_NOT_CREATED.value
                     else:
                         yield CoffeeProcessTypes.DRINK_CREATED.value
@@ -149,4 +157,4 @@ class DrinkCreationSevice:
 
         This method resets the start time of cup detection to the current time.
         """
-        self.start_time_cup_detection = time()
+        self.start_time_cup_detection = time() 
