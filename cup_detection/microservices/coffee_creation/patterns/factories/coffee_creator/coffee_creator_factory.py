@@ -14,6 +14,7 @@ from patterns.factories.coffee_creator.irish_coffee_creator import IrishCoffeeCr
 from interfaces.coffee_creator import CoffeeCreator
 from utils.enums.coffee_types import CoffeeTypes
 from utils.exceptions.no_such_coffee_type_error import NoSuchCoffeeTypeError
+from services.parallel_coffee_creator_service import ParallelCoffeeCreatorService
 
 class CoffeeCreatorFactory:
     _creators : Dict[str, CoffeeCreator] = {
@@ -33,6 +34,6 @@ class CoffeeCreatorFactory:
     def create(cls : type['CoffeeCreatorFactory'], coffee_type: str) -> CoffeeCreator:
         creator_class : CoffeeCreator = cls._creators.get(coffee_type)
         if creator_class:
-            return creator_class()
+            return creator_class(ParallelCoffeeCreatorService())
         else:
             raise NoSuchCoffeeTypeError(status_code=500)
