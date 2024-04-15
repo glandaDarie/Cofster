@@ -1,5 +1,5 @@
-from typing import Tuple, Dict, Any, Callable, Generator
-from time import time, sleep
+from typing import Dict, Any, Callable, Generator
+from time import time
 import concurrent.futures
 from threading import Event
 
