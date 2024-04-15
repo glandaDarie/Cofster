@@ -1,0 +1,12 @@
+[Unit]
+Description=Coffee creation process
+After=network-online.target
+
+[Service]
+WorkingDirectory=/home/darie/Desktop/cofster/coffee_creation/
+ExecStart=/home/darie/Desktop/cofster/coffee_creation/coffee-creation-venv/bin/python /home/darie/Desktop/cofster/coffee_creation/app.py > /home/darie/Desktop/cofster/coffee_creation/boostrap_service_logging.log 2>&1
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,1 @@
+INGREDIENT_WITH_LAST_CHARACTER_NUMBER : int = r"^ingredient_\d$"
