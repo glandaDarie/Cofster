@@ -5,7 +5,8 @@ Padding ChooseOption(
   String option, {
   @required void Function(String) onNextQuestion,
   @required bool Function() onQuestionnaireFinished,
-  @required Map<String, dynamic> Function() onCollectQuestionnaireResponses,
+  @required
+      Future<Map<String, String>> Function() onCollectQuestionnaireResponses,
   BuildContext context,
   StatefulWidget routeBuilder,
 }) {

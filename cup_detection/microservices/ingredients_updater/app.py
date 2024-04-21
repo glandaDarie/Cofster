@@ -10,7 +10,7 @@ from utils.paths import COFFEE_CREATION_PATH
 from utils.logger import LOGGER
 from utils.constants import PROMPT_TEMPLATE_RECIPE, PROMPT_TEMPLATE_INGREDIENTS
 
-app = Flask(__name__)
+app : Flask = Flask(__name__)
 
 @app.route("/coffee_recipe", methods=["GET", "PUT", "POST", "DELETE", "PATCH"])
 def coffee_recipe() -> (tuple[Response, Literal[200]] | None):    
@@ -38,7 +38,8 @@ def __get_coffee_recipe() -> Tuple[Response, int]:
         previous_file_prompt : str = PreviousPromptService.get_prompt( \
             base_url="http://user-file-prompt-updater:8050", \
             endpoint="/prompt", \
-            customer_name=customer_name \
+            customer_name=customer_name, \
+            coffee_name=coffee_name, \
         )
 
         file_loader : FileLoader = FileLoader(file_path=COFFEE_CREATION_PATH)
@@ -51,7 +52,7 @@ def __get_coffee_recipe() -> Tuple[Response, int]:
         )
 
         prompt_updater_service_params : Dict[str, Any] = {
-            "customer_name": customer_name,
+            "customer_name" : customer_name,
             "prompt" : prompt_ingredient,
             "model" : "gpt-3.5-turbo-0125",
             "temperature_prompt" : 0
@@ -93,7 +94,8 @@ def __put_coffee_recipe() -> Tuple[Response, int]:
         prompt : str = PreviousPromptService.get_prompt( \
             base_url="http://user-file-prompt-updater:8050", \
             endpoint="/prompt", \
-            customer_name=customer_name \
+            customer_name=customer_name, \
+            coffee_name=coffee_name, \
         )
 
         file_loader : FileLoader = FileLoader(file_path=COFFEE_CREATION_PATH)
@@ -109,6 +111,7 @@ def __put_coffee_recipe() -> Tuple[Response, int]:
 
         prompt_updater_service_params : Dict[str, Any] = {
             "customer_name" : customer_name,
+            "coffee_name": coffee_name,
             "prompt" : prompt_recipe,
             "model" : "gpt-3.5-turbo-0125",
             "temperature_prompt" : 0,
@@ -137,4 +140,4 @@ def __put_coffee_recipe() -> Tuple[Response, int]:
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8030)
-    
+

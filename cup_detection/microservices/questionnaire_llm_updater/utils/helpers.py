@@ -1,6 +1,49 @@
 from typing import Dict, Any
 from urllib.parse import urljoin, urlsplit
 import requests
+from utils.enums.mqtt_response_type import MqttResponseType
+from utils.errors.mqtt_response_error import MqttResponseError
+from utils.logger import LOGGER
+
+def __process_coffee_name_helper(current_data : str) -> str:
+    """
+    Process the coffee name.
+
+    Parameters:
+    - current_data (str): The current data containing the coffee name.
+
+    Returns:
+    - str: The processed coffee name.
+    """
+    current_data : str = current_data.split("\n")[0].lower()
+    return current_data.replace("-", "_") if "-" in current_data else current_data
+
+def get_mqtt_response_value(data : str, key_splitter : str) -> str:
+    """
+    Get the value corresponding to the given key from MQTT response data.
+
+    Parameters:
+    - data (str): The MQTT response data string.
+    - key_splitter (str): The key splitter used to extract the key from data.
+
+    Returns:
+    - str: The value corresponding to the key.
+
+    Raises:
+    - MqttResponseError: If the key is unknown or the key format is invalid.
+    """
+    try:
+        value : str = data.split(key_splitter)[-1].split(":")[1].strip()
+        if key_splitter == MqttResponseType.CUSTOMER_NAME.value:
+            return value
+        elif key_splitter == MqttResponseType.COFFEE_NAME.value:
+            return __process_coffee_name_helper(current_data=value)
+        else:
+            raise MqttResponseError(f"Unknown key: {key_splitter}")
+    except ValueError:
+        raise MqttResponseError("Invalid key format")
+    finally:
+        LOGGER.info(f"{key_splitter} : {value}")
 
 def parse_key_value_args(args : Any) -> Dict[str, Any]:
     """

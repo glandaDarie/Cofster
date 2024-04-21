@@ -12,6 +12,7 @@ import 'package:coffee_orderer/components/llmUpdaterFormularScreen/optionsBox.da
 import 'package:coffee_orderer/screens/mainScreen.dart' show HomePage;
 import 'package:coffee_orderer/utils/toast.dart' show ToastUtils;
 import 'package:coffee_orderer/utils/logger.dart' show LOGGER;
+import 'package:coffee_orderer/utils/localUserInformation.dart';
 
 class LLMUpdaterFormularPage extends StatefulWidget {
   @override
@@ -73,6 +74,12 @@ class _LLMUpdaterFormularPageState extends State<LLMUpdaterFormularPage> {
             title: "Questionnaire",
             fn: fetchQuestions,
           );
+  }
+
+  Future<String> _getCoffeeName({@required String coffeeNameKey}) async {
+    String cacheStr = await loadUserInformationFromCache();
+    Map<String, String> cache = fromStringCachetoMapCache(cacheStr);
+    return cache[coffeeNameKey];
   }
 
   Widget fetchQuestions({Map<String, dynamic> params = const {}}) {
@@ -141,7 +148,7 @@ class _LLMUpdaterFormularPageState extends State<LLMUpdaterFormularPage> {
                       onQuestionnaireFinished: () {
                         return questionnaireFinished;
                       },
-                      onCollectQuestionnaireResponses: () {
+                      onCollectQuestionnaireResponses: () async {
                         final List<String> questions = this
                             ._questions
                             .map((LlmUpdaterQuestion question) =>
@@ -160,6 +167,12 @@ class _LLMUpdaterFormularPageState extends State<LLMUpdaterFormularPage> {
                           );
                           return null;
                         }
+                        String coffeeName = await _getCoffeeName(
+                          coffeeNameKey: "cardCoffeeName",
+                        );
+                        questions.add("coffee name");
+                        this._selectedOptions.add(coffeeName);
+
                         return Map.fromIterables(
                             questions, this._selectedOptions);
                       },

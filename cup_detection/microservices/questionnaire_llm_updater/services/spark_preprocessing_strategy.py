@@ -9,13 +9,13 @@ from data_access.database_strategies.database_strategy_dao import DatabaseStrate
 from entity.questionnaire_entity import QuestionnaireEntity
 
 class SparkPreprocessorStrategy:
-    def __init__(self, session_name : str, data : Any, table_save_data : str, loader_db_dao_strategy : DatabaseStrategyDAO):
+    def __init__(self, session_name : str, data : str, table_save_data : str, loader_db_dao_strategy : DatabaseStrategyDAO):
         """
         Initializes a SparkPreprocessorStrategy instance.
 
         Parameters:
             - session_name (str): Name of the Spark session.
-            - data (Any): Data to be processed.
+            - data (str): Data to be processed.
             - table_save_data (str): Name of the table to save the processed data.
             - loader_db_dao_strategy (DatabaseStrategyDAO): Database strategy for loading data.
 
@@ -23,7 +23,7 @@ class SparkPreprocessorStrategy:
             None
         """
         self.session_name : str = session_name
-        self.data : Any = data
+        self.data : str = data
         self.table_save_data : str = table_save_data
         self.loader_db_dao_strategy : DatabaseStrategyDAO = loader_db_dao_strategy
         self.spark_session : None | SparkSession = None
@@ -43,16 +43,21 @@ class SparkPreprocessorStrategy:
     def transform(self) -> None:
         """
         Transforms the data in a List[Dict[str, Any]].
+        Should be changed later on to perform data manipulation using Spark, when scaling up. 
 
         Returns:
             None
         """
         qas : List[str] = self.data.split("\n")
-        self.data : List[Dict[str, Any]] = [{"user_name" if index >= (len(qas) - 1) else f"question_{index+1}" : \
-            sub(r'\s+', ' ', qa).replace("question: ", "").replace("Answer: ", "").split(" - ")[1].strip()} \
-            for index, qa in enumerate(qas) \
+        self.data : List[Dict[str, Any]] = [
+            {
+                "user_name" if index == len(qas) - 1 else
+                "user_coffee" if index == len(qas) - 2 else
+                f"question_{index+1}": " ".join(qa.split()).split(" - ")[1].strip().replace("Answer: ", "")
+            }
+            for index, qa in enumerate(qas)
         ]
-    
+        
     def update_prompt(self) -> None:
         pass
 

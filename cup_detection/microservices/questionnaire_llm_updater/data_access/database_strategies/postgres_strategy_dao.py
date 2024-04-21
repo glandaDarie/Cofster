@@ -65,7 +65,7 @@ class PostgresStrategyDAO(DatabaseStrategyDAO):
         if table_exists:
             LOGGER.info(f"Table: {table_name} exists in database: {self.database}")
         else:
-            LOGGER.info(f"Table: {table_name} does not exist in database: {self.database}")
+            LOGGER.info(f"Table: {table_name} does not exist in database: {self.database}. Creating the table now.")
             Base.metadata.create_all(self.engine)
     
     @staticmethod
@@ -93,12 +93,12 @@ class PostgresStrategyDAO(DatabaseStrategyDAO):
         - None: nothing.
         """
         error_msg : str | None = None
-        if not self.__is_entity(entity):
+        if not self.__is_entity(cls=entity):
             error_msg = f"{entity} is not a valid SQLAlchemy entity."
             LOGGER.error(error_msg)
             raise ValueError(error_msg)
         params : List[Any] = [list(param.values())[0] for param in params]
-        entity_instance = entity(question_1=params[0], question_2=params[1], user_name=params[2])
+        entity_instance : QuestionnaireEntity = entity(question_1=params[0], question_2=params[1], user_name=params[2], user_coffee=params[3])
         self.session.add(entity_instance)
         self.session.commit()
     

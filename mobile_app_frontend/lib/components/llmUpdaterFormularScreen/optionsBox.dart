@@ -10,7 +10,8 @@ List<Padding> OptionsBox({
   @required StatefulWidget routeBuilder,
   @required void Function(String) onNextQuestion,
   @required bool Function() onQuestionnaireFinished,
-  @required Map<String, dynamic> Function() onCollectQuestionnaireResponses,
+  @required
+      Future<Map<String, String>> Function() onCollectQuestionnaireResponses,
 }) {
   List<String> options = [];
   if (params["questionOption"] != null) {

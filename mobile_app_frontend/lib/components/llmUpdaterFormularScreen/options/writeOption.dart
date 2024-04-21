@@ -6,7 +6,8 @@ Padding WriteOption({
   StatefulWidget routeBuilder,
   @required void Function(String) onNextQuestion,
   @required bool Function() onQuestionnaireFinished,
-  @required Map<String, dynamic> Function() onCollectQuestionnaireResponses,
+  @required
+      Future<Map<String, String>> Function() onCollectQuestionnaireResponses,
 }) {
   final TextEditingController optionTextEditingController =
       TextEditingController();

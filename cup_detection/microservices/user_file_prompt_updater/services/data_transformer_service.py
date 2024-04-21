@@ -45,7 +45,7 @@ class DataTransformerService:
         self.data = self.data_transformer_dao.transform(data=self.data)
         return self
     
-    def collect(self):
+    def collect(self) -> Dict[str, Any] | None:
         """
         Property representing the fetched data.
 

@@ -30,6 +30,7 @@ def get_prompt() -> Tuple[jsonify, int]:
         - 500: Internal server error if there are issues fetching or processing user prompt information.
     """
     customer_name : str = request.args.get("customer_name")
+    coffee_name : str = request.args.get("coffee_name")
     
     LOGGER.info(f"Customer_name: {customer_name}")
 
@@ -39,7 +40,7 @@ def get_prompt() -> Tuple[jsonify, int]:
         }), 400
 
     user_prompt_generator : UserPromptGenerator = UserPromptGenerator(root_path=ROOT_PATH)
-    user_prompt_information : Dict[str, Any] = user_prompt_generator.get_user_prompt_file_information(name=customer_name.lower())
+    user_prompt_information : Dict[str, Any] = user_prompt_generator.get_user_prompt_file_information(name=customer_name.lower(), coffee_name=coffee_name)
     
     if "content" not in user_prompt_information:
         return jsonify({
@@ -73,6 +74,11 @@ def update_prompt() -> Tuple[jsonify, int]:
             return jsonify({
                 "error_message" : "Missing required parameter 'customer_name' in the request body."
             }), 400
+        
+        if not "coffee_name" in data:
+            return jsonify({
+                "error_message" : "Missing required parameter 'coffee_name' in the request body."
+            }), 400
 
         if not "prompt" in data:
             return jsonify({
@@ -80,11 +86,13 @@ def update_prompt() -> Tuple[jsonify, int]:
             }), 400
         
         customer_name : str = data["customer_name"]
+        coffee_name : str = data["coffee_name"]
         prompt : str = data["prompt"]
 
         prompt_information = get_prompt_information( \
             prompt_files_path=os.path.join(ROOT_PATH, "assets", "users_prompt_files"), \
             customer_name=customer_name, \
+            coffee_name=coffee_name, \
             updated_prompt=prompt, \
             file_dependency=IOFile \
         )

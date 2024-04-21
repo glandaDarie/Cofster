@@ -106,6 +106,7 @@ class DrinkCreationSevice:
                     main_thread_terminated_event.set()
             else:
                 print("Cup not detected")
+                self.__reset_cup_detection_timer()
                 LOGGER.info("DrinkCreationSevice >> simulate_creation: Cup not detected")
 
     def __continuously_check_cup(self, drinks_information : Dict[str, Any], callback_cup_detection : Callable[[bool], bool], main_thread_terminated_event : Event) -> Generator:

@@ -38,7 +38,7 @@ class QuestionnaireDatabaseService:
         self.metadata.reflect(bind=self.engine)
         return self.metadata.tables.get(self.table_name)
 
-    def get_customer_responses(self, customer_name : str, limit_nr_responses : int = 10) -> Query[Tuple[DateTime, String, String]]:
+    def get_customer_responses(self, customer_name : str, coffee_name : str, limit_nr_responses : int = 10) -> Query[Tuple[DateTime, String, String]]:
         """
         Retrieves the customer responses from the questionnaire table.
 
@@ -59,8 +59,10 @@ class QuestionnaireDatabaseService:
                 questionnaire_table.c.timestamp,
                 questionnaire_table.c.question_1,
                 questionnaire_table.c.question_2
-            ).filter(questionnaire_table.c.user_name == customer_name)\
-            .order_by(desc(questionnaire_table.c.timestamp))\
+            ).filter(
+                questionnaire_table.c.user_name == customer_name,
+                questionnaire_table.c.user_coffee == coffee_name,
+            ).order_by(desc(questionnaire_table.c.timestamp))\
             .limit(limit_nr_responses)
             return person_query.all()
         except NoSuchTableError as table_error:
