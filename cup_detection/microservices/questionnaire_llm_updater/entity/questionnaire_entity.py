@@ -1,16 +1,24 @@
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.ext.declarative import declarative_base, DeclarativeMeta
 from sqlalchemy import Column, Integer, String, DateTime, func
 
-Base = declarative_base()
+Base : DeclarativeMeta = declarative_base()
 
 class QuestionnaireEntity(Base):
-    __tablename__ = "questionnaire"
+    __tablename__ : str = "questionnaire"
 
     id : Column = Column(Integer, primary_key=True)
     question_1 : Column = Column(String)
     question_2 : Column = Column(String)
     user_name : Column = Column(String)
+    user_coffee : Column = Column(String)
     timestamp : Column = Column(DateTime, server_default=func.now())
 
-    def __str__(self):
-        return f"Person(id={self.id}, user_name={self.user_name}, question_1={self.question_1}, question_2={self.question_2}, created_timestamp={self.timestamp})"
+    def __str__(self) -> str:
+        return (
+            f"Person(id={self.id}, "
+            f"user_name={self.user_name}, "
+            f"question_1={self.question_1}, "
+            f"question_2={self.question_2}, "
+            f"user_coffee={self.user_coffee}, "
+            f"created_timestamp={self.timestamp})"
+        )

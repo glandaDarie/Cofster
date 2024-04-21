@@ -14,19 +14,29 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}   
-    ports:
-      - "5432:5432"
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
     networks:
-      - questionnaire-network  
+      coffee-creation-network:
+        ipv4_address: 172.28.0.2
+    ports:
+      - "5432:5432"
   
+  # SHOULD ADD THIS WHEN NVIDIA ENABLES EASIER BINDING OF CUDA TO THE DOCKER CONTAINER
+  # cup-detection:
+  #   image: cup-detection:latest
+  #   restart: always
+  #   networks:
+  #     coffee-creation-network:
+  #       ipv4_address: 172.28.0.3
+
   ingredients-updater:
     image: ingredients-updater:latest
     restart: always
     env_file: cup_detection/microservices/ingredients_updater/.env
     networks:
-      - questionnaire-network
+      coffee-creation-network:
+        ipv4_address: 172.28.0.4
     ports:
       - "8030:8030"
 
@@ -35,7 +45,8 @@ services:
     restart: always
     env_file: cup_detection/microservices/questionnaire_llm_updater/.env
     networks:
-      - questionnaire-network
+      coffee-creation-network:
+        ipv4_address: 172.28.0.5
     depends_on:
       - postgres
   
@@ -43,7 +54,8 @@ services:
     image: user-file-prompt-updater:latest
     restart: always
     networks:
-      - questionnaire-network
+      coffee-creation-network:
+        ipv4_address: 172.28.0.6
     ports:
       - "8050:8050"
   
@@ -79,6 +91,10 @@ services:
       - questionnaire-llm-updater
 
 networks:
-  questionnaire-network:
+  coffee-creation-network:
     driver: bridge
-    name: questionnaire_network
+    name: coffee_creation_network
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.28.0.0/26"

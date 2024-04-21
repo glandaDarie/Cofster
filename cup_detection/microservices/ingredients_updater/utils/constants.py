@@ -1,5 +1,5 @@
 PROMPT_TEMPLATE_RECIPE : str = """
-Given the coffee drink: cortado, update the provided file to the TextLoader (the coffee_creation_data.txt) by leveraging information from the chat_history.
+Given the coffee drink: {}, update the provided file to the TextLoader (the coffee_creation_data.txt) by leveraging information from the chat_history.
 The chat_history, converted from PostgreSQL SELECT responses to List[Tuple[str, str, str, str]], includes Bellman updater probabilities (found in the last column). It represents user feedback on the respective drink.
 
 The chat_history columns:

@@ -5,7 +5,7 @@ from utils.logger import LOGGER
 from services.monad_preprocessing import MonadPreprocessing
 from services.spark_preprocessing_strategy import SparkPreprocessorStrategy
 from data_access.database_strategies.postgres_strategy_dao import PostgresStrategyDAO
-from utils.helpers import CoffeePrompt
+from utils.helpers import CoffeePrompt, get_mqtt_response_value
 
 def on_connect(client : Any, userdata : Any, flags : Any, rc : Any):
     LOGGER.info(f"Connected with result code {rc}")
@@ -14,6 +14,7 @@ def on_connect(client : Any, userdata : Any, flags : Any, rc : Any):
 def on_message(client : Any, userdata : Any, msg : Any):
     data : str = msg.payload.decode()
     LOGGER.info(f"Received data: {data} on topic {msg.topic}")
+
     cli_arguments_postgres : Dict[str, Any] = ArgumentParser.get_llm_updater_arguments_postgres()
     
     monad_preprocessing : MonadPreprocessing = MonadPreprocessing(args=None)
@@ -35,15 +36,18 @@ def on_message(client : Any, userdata : Any, msg : Any):
         .bind(callback=spark_preprocessor_strategy.save) \
         .bind(callback=spark_preprocessor_strategy.stop_session)
 
-    customer_name : str = data.split("name")[-1].split(":")[1].strip()
+    customer_name : str = get_mqtt_response_value(data=data, key_splitter="name")
+    coffee_name : str = get_mqtt_response_value(data=data, key_splitter="coffee name")
     coffee_prompt : CoffeePrompt = CoffeePrompt()
     response_data : str = coffee_prompt.put( \
         base_url="http://ingredients-updater:8030", \
         endpoint="/coffee_recipe", \
         headers={"Content-Type" : "application/json"}, \
-        customer_name=customer_name \
+        customer_name=customer_name, \
+        coffee_name=coffee_name, \
     )
-    print(f"Response data: ${response_data}")
+
+    LOGGER.info(f"Response data: ${response_data}")
 
 if __name__ == "__main__":
     LOGGER.info("---MQTT subscriber started---")

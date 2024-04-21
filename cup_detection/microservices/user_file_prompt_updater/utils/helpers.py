@@ -4,8 +4,9 @@ import os
 import copy
 import shutil
 from utils.logger import LOGGER
+from utils.constants import COFFEE_NAMES
 from utils.exceptions import InvalidReadTypeError
-from utils.enums import ReadType
+from utils.enums import ReadType, DeleteFrom
 import sys
 
 sys.path.append("../")
@@ -78,13 +79,14 @@ class IOFile:
         except Exception as error:
             return f"An unexpected error occurred: {error}"
 
-def get_prompt_information(prompt_files_path : str, customer_name : str, updated_prompt : str, file_dependency : IOFile) -> Tuple[str, str, str] | str:
+def get_prompt_information(prompt_files_path : str, customer_name : str, coffee_name : str, updated_prompt : str, file_dependency : IOFile) -> Tuple[str, str, str] | str:
     """
     Retrieve prompt information for a given customer from prompt files.
 
     Parameters:
     - prompt_files_path (str): The path to the directory containing prompt files.
     - customer_name (str): The name of the customer.
+    - coffee_name (str): The name of the coffee to update.
     - updated_prompt (str): The updated prompt information.
     - file_dependency (IOFile): An instance of the IOFile dependency for file operations.
 
@@ -101,10 +103,11 @@ def get_prompt_information(prompt_files_path : str, customer_name : str, updated
     if not user_file_name:
         return "Customer name does not exist."
 
-    user_file_path : str = os.path.join(prompt_files_path, user_file_name, "prompt_data.txt")
+    user_file_path : str = os.path.join(prompt_files_path, user_file_name, coffee_name, "prompt_data.txt")
+    LOGGER.info(f"Updated prompt: {updated_prompt}")
 
     prompt_content : str = file_dependency.read(path=user_file_path, read_type=ReadType.STRING)
-    LOGGER.info(f"Prompt content: {prompt_content}")
+    LOGGER.info(f"Prompt content: {prompt_content}")    
 
     return updated_prompt, prompt_content, user_file_path
 
@@ -167,16 +170,16 @@ class UserPromptGenerator:
             raise TypeError("Not all elements at the first position are of type string.")
         if not all(isinstance(user_information[1], int) for user_information in self.users_information):
             raise TypeError("Not all elements at the second position are of type integer.")
-                
+        
         if not os.path.exists(self.prompt_files_path):
             success : bool | str = self.__create_hierarchical_structure()
         else:
             success : bool | str = self.__update_hierarchical_structure()
         return success
 
-    def get_user_prompt_file_information(self, name : str) -> Dict[str, Any]:
+    def get_user_prompt_file_information(self, user_name : str, coffee_name : str) -> Dict[str, Any]:
         """
-        Retrieve information about the prompt_data.txt file for a given user.
+        Retrieve information about the prompt_data.txt file for a given user with the given coffee drink.
 
         Parameters:
             name (str): The name of the user.
@@ -186,12 +189,12 @@ class UserPromptGenerator:
                           last modified timestamp, and content.
         """
         directory_names : List[str] = os.listdir(self.prompt_files_path)
-        directory_name : str = self.__get_matching_directory_name(directory_names=directory_names, user_name=name)
+        directory_name : str = self.__get_matching_directory_name(directory_names=directory_names, user_name=user_name)
         if not directory_name:
             return {
                 "error_message" : "The given user is not present in the database."
             }
-        user_directory : str = os.path.join(self.prompt_files_path, directory_name)
+        user_directory : str = os.path.join(self.prompt_files_path, directory_name, coffee_name)
         user_entries : List[str] = os.listdir(user_directory)
         
         if len(user_entries) > 1:
@@ -276,7 +279,7 @@ class UserPromptGenerator:
             FileNotFoundError: If the source file or directory is not found.
         
         Returns:
-            bool: True if the operation was successful.
+            str: message if the operation was successful.
         """
         
         if data is None:
@@ -289,17 +292,19 @@ class UserPromptGenerator:
         assert response_msg == "Successfully cached the users information", response_msg
 
         for sub_directory in sub_directories:
-            current_dir_path : str = os.path.join(self.prompt_files_path, sub_directory)
-            if not os.path.exists(current_dir_path):
-                os.makedirs(current_dir_path)
-                destination_path : str = os.path.join(current_dir_path, "prompt_data.txt")
-                LOGGER.info(f"Destination path: {destination_path}")
-                try:
-                    with open(file=self.source_path, mode="r") as source, open(file=destination_path, mode="w") as destination:
-                        content : str = source.read()
-                        destination.write(content)
-                except FileNotFoundError as error:
-                    raise FileNotFoundError(f"Error: {error}. Files/File not found. Please check the file paths")
+            dir_path_user : str = os.path.join(self.prompt_files_path, sub_directory)
+            for coffee_name in COFFEE_NAMES:
+                dir_path_user_and_coffee : str = os.path.join(dir_path_user, coffee_name)
+                if not os.path.exists(dir_path_user_and_coffee):
+                    os.makedirs(dir_path_user_and_coffee)
+                    destination_path : str = os.path.join(dir_path_user_and_coffee, "prompt_data.txt")
+                    LOGGER.info(f"Destination path: {destination_path}")
+                    try:
+                        with open(file=self.source_path, mode="r") as source, open(file=destination_path, mode="w") as destination:
+                            content : str = source.read()
+                            destination.write(content)
+                    except FileNotFoundError as error:
+                        raise FileNotFoundError(f"Error: {error}. Files/File not found. Please check the file paths")
         if data is None:
             return "Successfully created the users_prompt_files, the directories and files for each new user"
         return "Successfully created the directories and files for the new user/new users"
@@ -314,39 +319,42 @@ class UserPromptGenerator:
         Raises:
             Specific exceptions raised during the process.
         """
-        previous_info: List[Tuple[str, int]] = self.__load_previous_users_information(self.previous_users_prompt_files_path)
-        current_info: List[Tuple[str, int]] = [(user_info[0].lower(), user_info[1]) for user_info in self.users_information]
+        previous_info : List[Tuple[str, int]] = self.__load_previous_users_information(self.previous_users_prompt_files_path)
+        current_info : List[Tuple[str, int]] = [(user_info[0].lower(), user_info[1]) for user_info in self.users_information]
 
-        previous_info_set: Set[Tuple[str, int]] = set(previous_info)
-        current_info_set: Set[Tuple[str, int]] = set(current_info)
+        previous_info_set : Set[Tuple[str, int]] = set(previous_info)
+        current_info_set : Set[Tuple[str, int]] = set(current_info)
 
-        difference_current_info: Set[Tuple[str, int]] = current_info_set.difference(previous_info_set)
-        difference_previous_info: Set[Tuple[str, int]] = previous_info_set.difference(current_info_set)
+        difference_current_info : Set[Tuple[str, int]] = current_info_set.difference(previous_info_set)
+        difference_previous_info : Set[Tuple[str, int]] = previous_info_set.difference(current_info_set)
 
         if not difference_current_info and not difference_previous_info:
             return "No need to update the structure, there isn't any change in the backend"
         else:
             if difference_current_info and not difference_previous_info:
                 error_msg : str = self.__add_prompt_files(prompt_files=list(difference_current_info))
-                if error_msg is not None:
+                if error_msg:
                     raise RuntimeError(error_msg)
                 LOGGER.info("Successfully added a new prompt file/prompt files")
             elif not difference_current_info and difference_previous_info:
-                error_msg : str = self.__delete_prompt_files(prompt_files=list(difference_previous_info))
-                if error_msg is not None:
+                error_msg : str = self.__delete_prompt_files(
+                        prompt_files=list(difference_previous_info), 
+                        _from=DeleteFrom.USERS_PROMPT_FILES.value
+                )
+                if error_msg:
                     raise RuntimeError(error_msg)
                 LOGGER.info("Successfully removed a prompt file/prompt files")
             else: 
                 error_msg : str = self.__delete_prompt_files(prompt_files=list(difference_previous_info))
-                if error_msg is not None:
+                if error_msg:
                     raise RuntimeError(error_msg)
                 LOGGER.info("Successfully removed a prompt file/prompt files")
                 error_msg : str = self.__add_prompt_files(prompt_files=list(difference_current_info))
-                if error_msg is not None:
+                if error_msg:
                     raise RuntimeError(error_msg)
         return "Successfully updated the directories and files for the respective user/users"
 
-    def __add_prompt_files(self, prompt_files : List[Tuple[str, int]]) -> str:
+    def __add_prompt_files(self, prompt_files : List[Tuple[str, int]]) -> str | None:
         """
         Add prompt files and directories for newly added users to the Cofster mobile app.
 
@@ -368,9 +376,9 @@ class UserPromptGenerator:
             msg = recieved_msg
         return msg
 
-    def __delete_prompt_files(self, prompt_files : List[Tuple[str, int]]) -> str:
+    def __delete_prompt_files(self, prompt_files : List[Tuple[str, int]], _from : str = DeleteFrom.USERS_PROMPT_FILES.value) -> str | None:
         """
-        Deletes the prompt files and their content.
+        Deletes the prompt files (either from the previous users file or the users prompt ones) and their content.
 
         Args:
             prompt_files (List[Tuple[str, int]]): A list of tuples containing file names and IDs.
@@ -379,16 +387,39 @@ class UserPromptGenerator:
             str: The error message
         """
         msg : str | None = None
-        prompt_files : List[str] = self.__generate_user_subdirectories(data=prompt_files)
-        for prompt_file in prompt_files:
-            path : str = os.path.join(self.prompt_files_path, prompt_file)
-            try:
-                shutil.rmtree(path)
-            except Exception as e:
-                msg = f"Error while processing {prompt_file}: {e}"
+        prompt_files : List[str] = self.__generate_user_subdirectories(data=prompt_files)       
+        if _from == DeleteFrom.USERS_PROMPT_FILES.value:
+            for prompt_file in prompt_files:
+                path : str = os.path.join(self.prompt_files_path, prompt_file)
+                try:
+                    shutil.rmtree(path)
+                except Exception as e:
+                    msg = f"Error while processing {prompt_file}: {e}"
+        elif _from == DeleteFrom.PREVIOUS_USERS_INFORMATION.value:
+            previous_information : List[Tuple[str, int]] = self.__load_previous_users_information(self.previous_users_prompt_files_path)
+            new_previous_users_information : List[str] = []
+            for prompt_file in prompt_files:
+                    left_shift : bool = False
+                    for prev_name, prev_id in previous_information:
+                        delete_id, delete_name = prompt_file.split("_")
+                        delete_id : int = int(delete_id) - 1 if left_shift else int(delete_id)
+                        if prev_id == delete_id and prev_name == delete_name:
+                            left_shift = True
+                            continue
+                        current_information : str = f"{prev_id} {prev_name}"
+                        if current_information not in new_previous_users_information:
+                            new_previous_users_information.append(current_information)
+            error_msg : str = self.__store_previous_users_information(
+                file_path=self.previous_users_prompt_files_path, 
+                subdirs=new_previous_users_information
+            )
+            if not "success" in error_msg.lower():
+                msg = error_msg
+        else:
+            msg = "Error: DeleteFrom type is not found."
         return msg
 
-    def __store_previous_users_information(self, file_path : str, subdirs : List[str]) -> bool | str:
+    def __store_previous_users_information(self, file_path : str, subdirs : List[str]) -> str:
         """
         Store previous users' information in a file.
 
@@ -397,7 +428,7 @@ class UserPromptGenerator:
             subdirs (List[str]): List of strings containing the subdirectories.
 
         Returns:
-            bool: True if the information was stored successfully, False otherwise.
+            str: Successfull message if the information was stored successfully, error message otherwise.
         """
         file : TextIOWrapper | None = None
         try:

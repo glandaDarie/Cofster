@@ -11,12 +11,13 @@ Future<void> onPressed({
   @required String option,
   @required void Function(String) onNextQuestion,
   @required bool Function() onQuestionnaireFinished,
-  @required Map<String, dynamic> Function() onCollectQuestionnaireResponses,
+  @required
+      Future<Map<String, String>> Function() onCollectQuestionnaireResponses,
 }) async {
   onNextQuestion(option);
   if (onQuestionnaireFinished()) {
     Map<String, dynamic> questionnaireResponses =
-        onCollectQuestionnaireResponses();
+        await onCollectQuestionnaireResponses();
     if (questionnaireResponses == null) {
       LOGGER.e("Problems when receiving the data.");
       throw (Exception("Problems when receiving the data."));
@@ -25,7 +26,7 @@ Future<void> onPressed({
     // but easier for testing right now (beacuse I am using the same email to create multiple users)
     questionnaireResponses["name"] =
         await LoggedInService.getSharedPreferenceValue("<nameUser>");
-    LOGGER.i("user questionnaire name: ${questionnaireResponses["name"]}");
+    LOGGER.i("Questionnaire - user name: ${questionnaireResponses["name"]}");
     // send data async to backend using MQTT
     QuestionnaireLlmUpdaterMqttPublisherFascade.publish(
       data: questionnaireResponses,

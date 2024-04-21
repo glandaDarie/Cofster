@@ -5,9 +5,5 @@ torch==2.0.0
 torchvision==0.15.1
 pytest==7.4.3
 opencv-contrib-python==4.7.0.68
-Flask==2.3.2
 firebase-admin==6.2.0
 attrs==22.2.0
-Flask-Cors==4.0.0
-Flask-SocketIO==5.3.5
-Werkzeug==2.3.3
