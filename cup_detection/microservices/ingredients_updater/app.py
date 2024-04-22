@@ -77,18 +77,18 @@ def __get_coffee_recipe() -> Tuple[Response, int]:
 
 def __put_coffee_recipe() -> Tuple[Response, int]:
     content_type : str = request.headers.get("Content-Type")
-    
+
     if content_type != "application/json":
-        return jsonify({"error" : f"Content-Type {content_type} not supported!"}), 400
+        return jsonify({"error_message" : f"Content-Type {content_type} not supported!"}), 400
 
     data : Dict[str, Any] = request.json
     customer_name : str = data.get("customer_name")
     coffee_name : str = data.get("coffee_name", None)
-
-    if not customer_name or not isinstance(customer_name, str):
-        return jsonify({"error" : "Customer was not provided correctly"}), 400
     
-    prompt_recipe : str = PROMPT_TEMPLATE_RECIPE.format(coffee_name) if coffee_name and isinstance(coffee_name, str) else PROMPT_TEMPLATE_RECIPE
+    if not customer_name or not isinstance(customer_name, str):
+        return jsonify({"error_message" : "Customer was not provided correctly"}), 400
+
+    prompt_recipe : str = PROMPT_TEMPLATE_RECIPE
 
     try:
         prompt : str = PreviousPromptService.get_prompt( \
@@ -119,9 +119,9 @@ def __put_coffee_recipe() -> Tuple[Response, int]:
         }
 
         response_prompt_updater : str = prompt_updater_service(**prompt_updater_service_params)
-        if "I don't know".lower() in response_prompt_updater.lower():
+        if "No LLM response available".lower() in response_prompt_updater.lower():
             LOGGER.error(response_prompt_updater)
-            return jsonify({"error" : response_prompt_updater}), 500
+            return jsonify({"error_message" : response_prompt_updater}), 500
 
     except RequestException as network_error:
         if "Failed to establish a new connection" in str(network_error):
@@ -129,14 +129,14 @@ def __put_coffee_recipe() -> Tuple[Response, int]:
         else:
             error_msg : str = f"An error occurred during the network request: {network_error}"
         LOGGER.error(error_msg)
-        return jsonify({"error": error_msg}), 500
+        return jsonify({"error_message": error_msg}), 500
     
     except FileNotFoundError as file_error:
         error_msg : str = f"An error occurred while writing to the file: {file_error}"
         LOGGER.error(error_msg)
-        return jsonify({"error": error_msg}), 500
+        return jsonify({"error_message": error_msg}), 500
 
-    return jsonify({"message" : f"Changed the coffee prompt for user {customer_name} successfully"}), 200 # this needs to change  
+    return jsonify({"error_message" : f"Changed the coffee prompt for user {customer_name} successfully"}), 200 # this needs to change  
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8030)

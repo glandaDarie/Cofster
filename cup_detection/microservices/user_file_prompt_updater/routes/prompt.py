@@ -40,7 +40,11 @@ def get_prompt() -> Tuple[jsonify, int]:
         }), 400
 
     user_prompt_generator : UserPromptGenerator = UserPromptGenerator(root_path=ROOT_PATH)
-    user_prompt_information : Dict[str, Any] = user_prompt_generator.get_user_prompt_file_information(name=customer_name.lower(), coffee_name=coffee_name)
+
+    user_prompt_information : Dict[str, Any] = user_prompt_generator.get_user_prompt_file_information( \
+        customer_name=customer_name.lower(), \
+        coffee_name=coffee_name \
+    )
     
     if "content" not in user_prompt_information:
         return jsonify({
@@ -91,7 +95,7 @@ def update_prompt() -> Tuple[jsonify, int]:
 
         prompt_information = get_prompt_information( \
             prompt_files_path=os.path.join(ROOT_PATH, "assets", "users_prompt_files"), \
-            customer_name=customer_name, \
+            customer_name=customer_name.lower(), \
             coffee_name=coffee_name, \
             updated_prompt=prompt, \
             file_dependency=IOFile \

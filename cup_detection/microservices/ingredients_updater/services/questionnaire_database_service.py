@@ -1,7 +1,7 @@
-from typing import Callable, Tuple
+from typing import Tuple
 from sqlalchemy import create_engine, MetaData, Table, Engine, desc, String, DateTime
 from sqlalchemy.exc import NoSuchTableError
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.orm.query import Query
 
 class QuestionnaireDatabaseService:
@@ -16,16 +16,16 @@ class QuestionnaireDatabaseService:
         self.engine : Engine = create_engine(url=database_url, echo=True)
         self.table_name : str  = table_name
         self.metadata : MetaData = MetaData()
-        self.session : Callable = self.create_session()
+        self.session : Session = self.create_session()
 
-    def create_session(self) -> sessionmaker:
+    def create_session(self) -> Session:
         """
         Creates and returns a sessionmaker for the database engine.
 
         Returns:
             sessionmaker: An instance of sessionmaker.
         """
-        Session = sessionmaker(bind=self.engine)
+        Session : sessionmaker = sessionmaker(bind=self.engine)
         return Session()
 
     def __get_questionnaire_table(self) -> Table:
