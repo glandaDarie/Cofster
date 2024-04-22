@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Dict, Any, List, Callable
 import paho.mqtt.client as mqtt
 from utils.argument_parser import ArgumentParser
 from utils.logger import LOGGER
@@ -14,8 +14,10 @@ def on_connect(client : Any, userdata : Any, flags : Any, rc : Any):
 def on_message(client : Any, userdata : Any, msg : Any):
     data : str = msg.payload.decode()
     LOGGER.info(f"Received data: {data} on topic {msg.topic}")
-
     cli_arguments_postgres : Dict[str, Any] = ArgumentParser.get_llm_updater_arguments_postgres()
+
+    customer_name : str = get_mqtt_response_value(data=data, key_splitter="name")
+    coffee_name : str = get_mqtt_response_value(data=data, key_splitter="coffee name")
     
     monad_preprocessing : MonadPreprocessing = MonadPreprocessing(args=None)
     spark_preprocessor_strategy : SparkPreprocessorStrategy = SparkPreprocessorStrategy(
@@ -30,14 +32,13 @@ def on_message(client : Any, userdata : Any, msg : Any):
             port=cli_arguments_postgres["port"], \
         ) \
     )
+    
     monad_preprocessing \
         .bind(callback=spark_preprocessor_strategy.start_session) \
         .bind(callback=spark_preprocessor_strategy.transform) \
         .bind(callback=spark_preprocessor_strategy.save) \
         .bind(callback=spark_preprocessor_strategy.stop_session)
 
-    customer_name : str = get_mqtt_response_value(data=data, key_splitter="name")
-    coffee_name : str = get_mqtt_response_value(data=data, key_splitter="coffee name")
     coffee_prompt : CoffeePrompt = CoffeePrompt()
     response_data : str = coffee_prompt.put( \
         base_url="http://ingredients-updater:8030", \

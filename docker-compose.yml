@@ -3,6 +3,8 @@ version: "3.8"
 services:
   classifier:
     image: coffee-recommender-model:latest
+    environment:
+      - PYTHONUNBUFFERED=1
     restart: always
     ports:
       - "8001:8000" 
@@ -34,6 +36,8 @@ services:
     image: ingredients-updater:latest
     restart: always
     env_file: cup_detection/microservices/ingredients_updater/.env
+    environment:
+      - PYTHONUNBUFFERED=1
     networks:
       coffee-creation-network:
         ipv4_address: 172.28.0.4
@@ -44,6 +48,8 @@ services:
     image: questionnaire-llm-updater:latest
     restart: always
     env_file: cup_detection/microservices/questionnaire_llm_updater/.env
+    environment:
+      - PYTHONUNBUFFERED=1
     networks:
       coffee-creation-network:
         ipv4_address: 172.28.0.5
@@ -53,6 +59,8 @@ services:
   user-file-prompt-updater:
     image: user-file-prompt-updater:latest
     restart: always
+    environment:
+      - PYTHONUNBUFFERED=1
     networks:
       coffee-creation-network:
         ipv4_address: 172.28.0.6

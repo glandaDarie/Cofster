@@ -102,8 +102,9 @@ class CoffeePrompt:
 
         """
         url : str = url_builder(base_url=base_url, endpoint=endpoint)
-        response_data : requests.Response = requests.put(url=url, headers=headers, json=data)
-        status_code : int = response_data.status_code
+        response : requests.Response = requests.put(url=url, headers=headers, json=data)
+        status_code : int = response.status_code
+        response_data : Dict[str, Any] = response.json()
         if status_code != 200:
             raise RuntimeError(f"Error: {response_data['error_message']}")
         return response_data["prompt"]

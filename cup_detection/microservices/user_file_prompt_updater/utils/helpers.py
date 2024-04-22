@@ -177,19 +177,19 @@ class UserPromptGenerator:
             success : bool | str = self.__update_hierarchical_structure()
         return success
 
-    def get_user_prompt_file_information(self, user_name : str, coffee_name : str) -> Dict[str, Any]:
+    def get_user_prompt_file_information(self, customer_name : str, coffee_name : str) -> Dict[str, Any]:
         """
         Retrieve information about the prompt_data.txt file for a given user with the given coffee drink.
 
         Parameters:
-            name (str): The name of the user.
+            customer_name (str): The name of the customer.
 
         Returns:
             Dict[str, Any]: A dictionary containing information about the file, including its name, extension, size,
                           last modified timestamp, and content.
         """
         directory_names : List[str] = os.listdir(self.prompt_files_path)
-        directory_name : str = self.__get_matching_directory_name(directory_names=directory_names, user_name=user_name)
+        directory_name : str = self.__get_matching_directory_name(directory_names=directory_names, user_name=customer_name)
         if not directory_name:
             return {
                 "error_message" : "The given user is not present in the database."

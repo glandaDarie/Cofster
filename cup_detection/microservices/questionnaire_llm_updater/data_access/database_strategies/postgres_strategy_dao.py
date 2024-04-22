@@ -98,7 +98,7 @@ class PostgresStrategyDAO(DatabaseStrategyDAO):
             LOGGER.error(error_msg)
             raise ValueError(error_msg)
         params : List[Any] = [list(param.values())[0] for param in params]
-        entity_instance : QuestionnaireEntity = entity(question_1=params[0], question_2=params[1], user_name=params[2], user_coffee=params[3])
+        entity_instance : QuestionnaireEntity = entity(question_1=params[0], question_2=params[1], user_coffee=params[2], user_name=params[3])
         self.session.add(entity_instance)
         self.session.commit()
     

@@ -26,13 +26,14 @@ class PromptUpdaterService:
                                                                                             limit_nr_responses=limit_nr_responses)
                 chat_history : List[Tuple[DateTime, String, String, float]] \
                     = Convertor.stringify_items(concat_probabilities_using_bellman_equation(elements=person_responses))
-                prompt : str = prompt.format(str(chat_history))
+                LOGGER.info(f"chat_history {chat_history}")
+                prompt : str = prompt.format(coffee_name=coffee_name, chat_history=str(chat_history))
 
-            data : str = self.openai_service(prompt=prompt, model=model, temperature_prompt=temperature_prompt, chat_history=[])
-            LOGGER.info(f"GPT 3.5 response: {data}")
+            llm_response_data : str = self.openai_service(prompt=prompt, model=model, temperature_prompt=temperature_prompt, chat_history=[])
+            LOGGER.info(f"GPT 3.5 response: {llm_response_data}")
 
-            if "I don't know".lower() == data.lower() or "I don't know".lower() in data.lower():
-                return f"No LLM response available. LLM said {data}"
+            if "I don't know".lower() == llm_response_data.lower() or "I don't know".lower() in llm_response_data.lower():
+                return f"No LLM response available. LLM said {llm_response_data}"
 
             if self.questionnaire_database_service is not None:
                 response_information : str = PreviousPromptService.put_new_prompt( \
@@ -41,15 +42,15 @@ class PromptUpdaterService:
                     body_data={ \
                         "customer_name" : customer_name, \
                         "coffee_name" : coffee_name, \
-                        "prompt" : data, \
+                        "prompt" : llm_response_data, \
                     }, \
                     headers={'Content-Type': 'application/json'}, \
                     timeout=7, \
                 )
                 LOGGER.info(f"Message: {response_information}")
             else:
-                LOGGER.info(f"Data: {data}")
-                return data
+                LOGGER.info(f"Data: {llm_response_data}")
+                return llm_response_data
             
         except NoSuchTableError as table_error:
             error_msg : str = f"Table {self.questionnaire_database_service.table_name} could not be found in the database. Error: {table_error}"

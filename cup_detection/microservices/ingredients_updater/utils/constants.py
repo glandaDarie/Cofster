@@ -1,5 +1,5 @@
 PROMPT_TEMPLATE_RECIPE : str = """
-Given the coffee drink: {}, update the provided file to the TextLoader (the coffee_creation_data.txt) by leveraging information from the chat_history.
+Given the coffee drink: {coffee_name}, update the provided file to the TextLoader (the coffee_creation_data.txt) by leveraging information from the chat_history.
 The chat_history, converted from PostgreSQL SELECT responses to List[Tuple[str, str, str, str]], includes Bellman updater probabilities (found in the last column). It represents user feedback on the respective drink.
 
 The chat_history columns:
@@ -12,7 +12,7 @@ Consider the following factors for updating the file:
 1. **Bellman Updater Probabilities:** Assign a higher weight to newer responses.
 2. **User Ratings:** Based on this, it should be deduced if updates on the respective file should be needed or not, with the information gathered from the chat_history.
 
-This is the chat_history: {}
+This is the chat_history: {chat_history}
 
 Where The column inside this List[Tuple] that represents a questionnaire entity are: 
 

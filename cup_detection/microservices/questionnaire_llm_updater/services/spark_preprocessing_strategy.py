@@ -1,6 +1,5 @@
 from pyspark.sql import SparkSession
-from typing import List, Dict, Any
-from re import sub
+from typing import List, Dict, Any, Callable
 
 import sys
 sys.path.append("../")
@@ -23,7 +22,7 @@ class SparkPreprocessorStrategy:
             None
         """
         self.session_name : str = session_name
-        self.data : str = data
+        self.data : str | List[Dict[str, Any]] = data
         self.table_save_data : str = table_save_data
         self.loader_db_dao_strategy : DatabaseStrategyDAO = loader_db_dao_strategy
         self.spark_session : None | SparkSession = None
@@ -49,13 +48,30 @@ class SparkPreprocessorStrategy:
             None
         """
         qas : List[str] = self.data.split("\n")
+
+        cleaned_answers : List[str] = [
+            " ".join(qa.split()).split(" - ")[1].strip().replace("Answer: ", "") 
+            for qa in qas
+        ]
+
+        user_name_index : int = len(qas) - 1
+        user_coffee_index : int = len(qas) - 2
+        
+        cleaned_user_coffee_answer : Callable[[str], str] = lambda cleaned_answer: (
+            cleaned_answer.lower().replace("-", "_") 
+            if "-" in cleaned_answer 
+            else cleaned_answer.lower()
+        )
+
         self.data : List[Dict[str, Any]] = [
             {
-                "user_name" if index == len(qas) - 1 else
-                "user_coffee" if index == len(qas) - 2 else
-                f"question_{index+1}": " ".join(qa.split()).split(" - ")[1].strip().replace("Answer: ", "")
+                "user_coffee" if index == user_coffee_index else
+                "user_name" if index == user_name_index else
+                f"question_{index + 1}" : 
+                    cleaned_user_coffee_answer(cleaned_answer=cleaned_answer)
+                    if index == user_coffee_index else cleaned_answer
             }
-            for index, qa in enumerate(qas)
+            for index, cleaned_answer in enumerate(cleaned_answers)
         ]
         
     def update_prompt(self) -> None:
