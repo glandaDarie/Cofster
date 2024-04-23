@@ -47,7 +47,7 @@ def on_message(client : Any, userdata : Any, msg : Any):
         headers={"Content-Type" : "application/json"}, \
         customer_name=customer_name, \
         coffee_name=coffee_name, \
-        llm_model_name=GPTModelType.GPT_4_TURBO_2024_04_09.value \
+        llm_model_name=GPTModelType.GPT_3_5_TURBO_0125.value \
     )
 
     LOGGER.info(f"Response data: ${response_data}")
