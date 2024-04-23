@@ -7,4 +7,5 @@ __pycache__
 users_prompt_files
 logging_information.log
 previous_users_information.txt
-postgres-data
+/cup_detection/microservices/questionnaire_llm_updater/postgres_data
+/cup_detection/microservices/user_file_prompt_updater/users_assets_volume

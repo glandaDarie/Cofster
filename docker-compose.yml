@@ -17,7 +17,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}   
     volumes:
-      - ./postgres-data:/var/lib/postgresql/data
+      - ./cup_detection/microservices/questionnaire_llm_updater/postgres_data:/var/lib/postgresql/data
     networks:
       coffee-creation-network:
         ipv4_address: 172.28.0.2
@@ -61,11 +61,28 @@ services:
     restart: always
     environment:
       - PYTHONUNBUFFERED=1
+    volumes:
+      - ./cup_detection/microservices/user_file_prompt_updater/users_assets_volume:/usr/src/app/assets
     networks:
       coffee-creation-network:
         ipv4_address: 172.28.0.6
     ports:
       - "8050:8050"
+    depends_on:
+      - populate-volume
+
+  populate-volume:
+    image: busybox
+    volumes:
+      - ./cup_detection/microservices/user_file_prompt_updater/assets:/usr/src/app/assets
+      - ./cup_detection/microservices/user_file_prompt_updater/users_assets_volume:/usr/src/app/users_assets_volume
+    networks:
+      coffee-creation-network:
+        ipv4_address: 172.28.0.7
+    command: >
+      sh -c "
+      cp -r /usr/src/app/assets/* /usr/src/app/users_assets_volume/
+      "
   
   spark:
     image: docker.io/bitnami/spark:3.5

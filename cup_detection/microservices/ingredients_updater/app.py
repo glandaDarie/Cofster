@@ -82,11 +82,16 @@ def __put_coffee_recipe() -> Tuple[Response, int]:
         return jsonify({"error_message" : f"Content-Type {content_type} not supported!"}), 400
 
     data : Dict[str, Any] = request.json
-    customer_name : str = data.get("customer_name")
+
+    customer_name : str = data.get("customer_name", None)
     coffee_name : str = data.get("coffee_name", None)
-    
+    llm_model_name : str = data.get("llm_model_name", None)
+
     if not customer_name or not isinstance(customer_name, str):
         return jsonify({"error_message" : "Customer was not provided correctly"}), 400
+
+    if not llm_model_name or not isinstance(llm_model_name, str):
+        return jsonify({"error_message" : "No Large Language Model is provided to update the prompt"}), 400
 
     prompt_recipe : str = PROMPT_TEMPLATE_RECIPE
 
@@ -113,7 +118,7 @@ def __put_coffee_recipe() -> Tuple[Response, int]:
             "customer_name" : customer_name,
             "coffee_name": coffee_name,
             "prompt" : prompt_recipe,
-            "model" : "gpt-3.5-turbo-0125",
+            "model": llm_model_name,
             "temperature_prompt" : 0,
             "limit_nr_responses" : 10
         }

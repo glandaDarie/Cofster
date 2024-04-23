@@ -1,4 +1,4 @@
-from typing import Dict, Any, List, Callable
+from typing import Dict, Any
 import paho.mqtt.client as mqtt
 from utils.argument_parser import ArgumentParser
 from utils.logger import LOGGER
@@ -6,6 +6,7 @@ from services.monad_preprocessing import MonadPreprocessing
 from services.spark_preprocessing_strategy import SparkPreprocessorStrategy
 from data_access.database_strategies.postgres_strategy_dao import PostgresStrategyDAO
 from utils.helpers import CoffeePrompt, get_mqtt_response_value
+from utils.enums.gpt_model_type import GPTModelType
 
 def on_connect(client : Any, userdata : Any, flags : Any, rc : Any):
     LOGGER.info(f"Connected with result code {rc}")
@@ -46,6 +47,7 @@ def on_message(client : Any, userdata : Any, msg : Any):
         headers={"Content-Type" : "application/json"}, \
         customer_name=customer_name, \
         coffee_name=coffee_name, \
+        llm_model_name=GPTModelType.GPT_4_TURBO_2024_04_09.value \
     )
 
     LOGGER.info(f"Response data: ${response_data}")
