@@ -27,6 +27,7 @@ class PromptUpdaterService:
                 chat_history : List[Tuple[DateTime, String, String, float]] \
                     = Convertor.stringify_items(concat_probabilities_using_bellman_equation(elements=person_responses))
                 LOGGER.info(f"chat_history {chat_history}")
+                print(f"chat_history {chat_history}")
                 prompt : str = prompt.format(coffee_name=coffee_name, chat_history=str(chat_history))
 
             llm_response_data : str = self.openai_service(prompt=prompt, model=model, temperature_prompt=temperature_prompt, chat_history=[])
