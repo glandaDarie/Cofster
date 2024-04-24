@@ -17,7 +17,16 @@ class PromptUpdaterService:
         self.openai_service : OpenAIService = openai_service
         self.questionnaire_database_service : QuestionnaireDatabaseService = questionnaire_database_service
 
-    def __call__(self, customer_name : str, coffee_name : str, prompt : str, model : str = "gpt-3.5-turbo", temperature_prompt : float = 0, limit_nr_responses : int = 10) -> str | None:
+    def __call__( \
+        self, \
+        customer_name : str, \
+        coffee_name : str, \
+        previous_prompt_recipe : str, \
+        prompt : str, \
+        model : str = "gpt-3.5-turbo", \
+        temperature_prompt : float = 0, \
+        limit_nr_responses : int = 10 \
+    ) -> str | None:
         try:
             if self.questionnaire_database_service is not None:
                 person_responses : Query[Tuple[DateTime, String, String]] = self.questionnaire_database_service.get_customer_responses(\
@@ -28,7 +37,7 @@ class PromptUpdaterService:
                     = Convertor.stringify_items(concat_probabilities_using_bellman_equation(elements=person_responses))
                 LOGGER.info(f"chat_history {chat_history}")
                 print(f"chat_history {chat_history}")
-                prompt : str = prompt.format(coffee_name=coffee_name, chat_history=str(chat_history))
+                prompt : str = prompt.format(coffee_name=coffee_name, chat_history=str(chat_history), current_recipe=previous_prompt_recipe)
 
             llm_response_data : str = self.openai_service(prompt=prompt, model=model, temperature_prompt=temperature_prompt, chat_history=[])
             LOGGER.info(f"GPT 3.5 response: {llm_response_data}")

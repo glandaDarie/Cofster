@@ -1,23 +1,27 @@
 from typing import Type
 import sys
 import re
+from re import Match
 
 sys.path.append("../")
 
 from utils.logger import LOGGER
+from utils.patterns import CURRENT_COFFEE_RECIPE_REGEX_PATTERN
 
 class PromptConvertorBuilderService:
     """
     A class for building and transforming prompts.
     """
-    def __init__(self, new_prompt_information : str, old_prompt : str):
+    def __init__(self, new_prompt_information : str, old_prompt : str, coffee_name : str):
         """
         Initialize the PromptConvertorBuilderService.
 
         Parameters:
+        - coffee_name (str): the actual name of the coffee
         - new_prompt_information (str): The new prompt information.
         - old_prompt (str): The old prompt to be updated.
         """
+        self.coffee_name : str = coffee_name
         self.new_prompt_information : str = new_prompt_information
         self.old_prompt : str = old_prompt
 
@@ -41,7 +45,14 @@ class PromptConvertorBuilderService:
         Returns:
         - Type['PromptConvertorBuilderService']: The updated PromptConvertorBuilderService instance.
         """
-        self.new_prompt_information : str = re.sub(r"\{\s*[^{}]+\}", f"{{ {self.new_prompt_information} }}", self.old_prompt, flags=re.DOTALL)
+        coffee_matcher : Match = re.search(pattern=CURRENT_COFFEE_RECIPE_REGEX_PATTERN, strijng=self.old_prompt)
+        if coffee_matcher: # the coffee drink exists, update only that part
+            self.new_prompt_information = re.sub(pattern=CURRENT_COFFEE_RECIPE_REGEX_PATTERN, repl=self.new_prompt_information + "\n\n", string=self.old_prompt)
+        else: # the coffee drink doesn't exist, insert self.new_prompt_information before "Ensure that ..." part
+            insert_before_pattern : str = r'Ensure that the JSON format is a string.*'
+            self.new_prompt_information = f"For coffee drink {self.coffee_name}, current recipe is: \n {self.new_prompt_information}"
+            self.new_prompt_information = re.sub(pattern=insert_before_pattern, repl=self.new_prompt_information + "\n\n" + r'\g<0>', string=self.old_prompt)
+        print(f"self.new_prompt_information: {self.new_prompt_information}")
         return self
 
     def update_coffee_name(self, old_data : str, new_data : str) -> Type['PromptConvertorBuilderService']:

@@ -1,6 +1,8 @@
 from typing import List, Tuple, Dict, Any, TypeVar
 from urllib.parse import urlsplit, urljoin
 import os
+from re import search, DOTALL, Match
+from utils.patterns import CURRENT_COFFEE_RECIPE_REGEX_PATTERN
 
 T = TypeVar('T')
 
@@ -101,6 +103,15 @@ class Arguments:
             "host" : host,
             "port" : port
         }
+
+class CoffeeInformationExtractor:
+    @staticmethod
+    def extract_ingredients(recipe_prompt : str) -> str:
+        match : Match[str] | None = search(CURRENT_COFFEE_RECIPE_REGEX_PATTERN, recipe_prompt, DOTALL)
+        if match:
+            json_str : str | Any = match.group(1)
+            return json_str
+        return None
 
 class FileLoader:
     def __init__(self, file_path):
