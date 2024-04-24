@@ -55,7 +55,7 @@ class QuestionnaireDatabaseService:
             if questionnaire_table is None:
                 raise NoSuchTableError(f"Table {self.table_name} could not be found in the reflected metadata.")
             
-            person_query : Query[Tuple[DateTime, String, String]] = self.session.query(
+            person_coffee_query : Query[Tuple[DateTime, String, String]] = self.session.query(
                 questionnaire_table.c.timestamp,
                 questionnaire_table.c.question_1,
                 questionnaire_table.c.question_2
@@ -64,6 +64,6 @@ class QuestionnaireDatabaseService:
                 questionnaire_table.c.user_coffee == coffee_name,
             ).order_by(desc(questionnaire_table.c.timestamp))\
             .limit(limit_nr_responses)
-            return person_query.all()
+            return person_coffee_query.all()
         except NoSuchTableError as table_error:
             raise table_error

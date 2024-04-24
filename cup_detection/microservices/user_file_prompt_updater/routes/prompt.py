@@ -112,8 +112,9 @@ def update_prompt() -> Tuple[jsonify, int]:
         UserPromptGenerator.save_updated_prompt_to_specific_user_file( \
             user_file_path=user_file_path, \
             prompt_convertor_builder_service_dependency=PromptConvertorBuilderService( \
+                coffee_name=coffee_name, \
                 new_prompt_information=new_prompt_information, \
-                old_prompt=old_prompt \
+                old_prompt=old_prompt, \
             ), \
             file_dependency=IOFile, \
         )

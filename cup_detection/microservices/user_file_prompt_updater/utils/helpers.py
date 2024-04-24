@@ -148,10 +148,6 @@ class UserPromptGenerator:
         updated_prompt_file_content : str = prompt_convertor_builder_service_dependency \
             .remove_curly_brackets() \
             .update_old_prompt_with_new_information() \
-            .update_coffee_name( \
-                "Corretto coffee", \
-                "whatever coffee drink" \
-            ) \
             .build()
         
         error_msg : str = file_dependency.write(path=user_file_path, content=updated_prompt_file_content)
