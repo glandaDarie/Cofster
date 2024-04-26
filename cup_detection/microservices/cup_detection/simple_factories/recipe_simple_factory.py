@@ -11,13 +11,12 @@ from utils.exceptions import NoRecipeException
 from enums.recipe_types import RecipeType
 
 class RecipeSimpleFactory:
-    @staticmethod
+    @staticmethod       
     def create(recipe_type : str, customer_data : Dict[str, Any]) -> Dict[str, Any]:
         if recipe_type == RecipeType.llm.value:
             recipe_service : RecipeService = RecipeController(RecipeLlmService()) \
             .get_recipe(
-                # base_url="http://127.0.0.1:8030", \
-                base_url="http://172.28.0.4:8030", \
+                base_url="http://127.0.0.1:8030", \
                 endpoint="/coffee_recipe", \
                 coffee_name=customer_data["coffee_name"],
                 customer_name=customer_data["customer_name"]

@@ -107,4 +107,4 @@ class CoffeePrompt:
         response_data : Dict[str, Any] = response.json()
         if status_code != 200:
             raise RuntimeError(f"Error: {response_data['error_message']}")
-        return response_data["prompt"]
+        return response_data["message"]

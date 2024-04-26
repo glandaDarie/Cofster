@@ -128,7 +128,7 @@ class UserPromptGenerator:
         self.users_information : List[Tuple[str, int]] = users_information
 
     @staticmethod
-    def save_updated_prompt_to_specific_user_file( \
+    def update_and_save_prompt_to_specific_user_file( \
         user_file_path : str,
         prompt_convertor_builder_service_dependency : PromptConvertorBuilderService, \
         file_dependency : IOFile, \

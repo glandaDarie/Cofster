@@ -4,6 +4,7 @@ from langchain.indexes import VectorstoreIndexCreator
 from langchain.chat_models import ChatOpenAI
 from langchain.document_loaders import TextLoader
 from langchain.indexes import VectorstoreIndexCreator
+from langchain.indexes.vectorstore import VectorStoreIndexWrapper
 from langchain.chains import ConversationalRetrievalChain
 from utils.logger import LOGGER
 from dotenv import load_dotenv
@@ -53,7 +54,7 @@ class OpenAIService:
             Dict[str, str]: The generated response.
         """
         text_loader : TextLoader = TextLoader(file_path=self.file_path)
-        index : VectorstoreIndexCreator = VectorstoreIndexCreator().from_loaders([text_loader])
+        index : VectorStoreIndexWrapper = VectorstoreIndexCreator().from_loaders([text_loader])
         chain : ConversationalRetrievalChain = ConversationalRetrievalChain.from_llm(
             llm=ChatOpenAI(model=model, temperature=temperature_prompt),
             retriever=index.vectorstore.as_retriever(search_kwargs= {"k": 1}),
