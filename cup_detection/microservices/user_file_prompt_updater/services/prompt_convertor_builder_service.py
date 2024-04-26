@@ -45,14 +45,21 @@ class PromptConvertorBuilderService:
         Returns:
         - Type['PromptConvertorBuilderService']: The updated PromptConvertorBuilderService instance.
         """
-        coffee_matcher : Match = re.search(pattern=CURRENT_COFFEE_RECIPE_REGEX_PATTERN, strijng=self.old_prompt)
+        coffee_matcher : Match = re.search(pattern=CURRENT_COFFEE_RECIPE_REGEX_PATTERN, string=self.old_prompt)
+        self.new_prompt_information = f"For coffee drink {self.coffee_name}, current recipe is: \n {self.new_prompt_information}"
         if coffee_matcher: # the coffee drink exists, update only that part
-            self.new_prompt_information = re.sub(pattern=CURRENT_COFFEE_RECIPE_REGEX_PATTERN, repl=self.new_prompt_information + "\n\n", string=self.old_prompt)
+            self.new_prompt_information = re.sub(\
+                pattern=CURRENT_COFFEE_RECIPE_REGEX_PATTERN, \
+                repl=self.new_prompt_information, \
+                string=self.old_prompt \
+            )
         else: # the coffee drink doesn't exist, insert self.new_prompt_information before "Ensure that ..." part
             insert_before_pattern : str = r'Ensure that the JSON format is a string.*'
-            self.new_prompt_information = f"For coffee drink {self.coffee_name}, current recipe is: \n {self.new_prompt_information}"
-            self.new_prompt_information = re.sub(pattern=insert_before_pattern, repl=self.new_prompt_information + "\n\n" + r'\g<0>', string=self.old_prompt)
-        print(f"self.new_prompt_information: {self.new_prompt_information}")
+            self.new_prompt_information = re.sub(\
+                pattern=insert_before_pattern, \
+                repl=self.new_prompt_information + "\n\n" + r'\g<0>', \
+                string=self.old_prompt \
+            )
         return self
 
     def update_coffee_name(self, old_data : str, new_data : str) -> Type['PromptConvertorBuilderService']:

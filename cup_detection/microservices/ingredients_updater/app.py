@@ -9,6 +9,7 @@ from utils.helpers import FileLoader, Arguments, CoffeeInformationExtractor
 from utils.paths import COFFEE_CREATION_PATH
 from utils.logger import LOGGER
 from utils.constants import PROMPT_TEMPLATE_RECIPE, PROMPT_TEMPLATE_INGREDIENTS
+from utils.enums.gpt_model_type import GPTModelType
 
 app : Flask = Flask(__name__)
 
@@ -54,11 +55,11 @@ def __get_coffee_recipe() -> Tuple[Response, int]:
         prompt_updater_service_params : Dict[str, Any] = {
             "customer_name" : customer_name,
             "prompt" : prompt_ingredient,
-            "model" : "gpt-3.5-turbo-0125",
+            "model" : GPTModelType.GPT_3_5_TURBO_0125.value,
             "temperature_prompt" : 0
         }
-        ingredients : str = prompt_updater_service(**prompt_updater_service_params)
 
+        ingredients : str = prompt_updater_service(**prompt_updater_service_params)
         LOGGER.info(f"Ingredients: {ingredients}")
 
         if not isinstance(ingredients, str):
@@ -106,6 +107,8 @@ def __put_coffee_recipe() -> Tuple[Response, int]:
         file_loader : FileLoader = FileLoader(file_path=COFFEE_CREATION_PATH)
         file_loader.write_to_file(content=prompt)
         extracted_previous_prompt_recipe : str = CoffeeInformationExtractor.extract_ingredients(recipe_prompt=prompt)
+        if extracted_previous_prompt_recipe is None:
+            extracted_previous_prompt_recipe = "No recipe as of now."
 
         arguments : Dict[str, Any] = Arguments.database_arguments()
         database_url : str = f"postgresql://{arguments['username']}:{arguments['password']}@{arguments['host']}:{arguments['port']}/{arguments['database']}"
@@ -121,7 +124,7 @@ def __put_coffee_recipe() -> Tuple[Response, int]:
             "previous_prompt_recipe": extracted_previous_prompt_recipe,
             "prompt" : prompt_recipe,
             "model": llm_model_name,
-            "temperature_prompt" : 0.1,
+            "temperature_prompt" : 0,
             "limit_nr_responses" : 10
         }
 
@@ -143,7 +146,7 @@ def __put_coffee_recipe() -> Tuple[Response, int]:
         LOGGER.error(error_msg)
         return jsonify({"error_message": error_msg}), 500
 
-    return jsonify({"error_message" : f"Changed the coffee prompt for user {customer_name} successfully"}), 200 # this needs to change  
+    return jsonify({"message" : f"Changed the coffee prompt for user {customer_name} successfully"}), 200 
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8030)

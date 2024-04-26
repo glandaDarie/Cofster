@@ -9,9 +9,9 @@ prompt_update_blueprint : Blueprint = Blueprint(name="update_prompt", import_nam
 sys.path.append("../")
 
 from utils.paths import ROOT_PATH
+from utils.logger import LOGGER
 from utils.helpers import UserPromptGenerator, IOFile, get_prompt_information
 from services.prompt_convertor_builder_service import PromptConvertorBuilderService
-from utils.logger import LOGGER
 
 @prompt_blueprint.get("/prompt")
 def get_prompt() -> Tuple[jsonify, int]:
@@ -109,7 +109,7 @@ def update_prompt() -> Tuple[jsonify, int]:
         
         new_prompt_information, old_prompt, user_file_path = prompt_information
 
-        UserPromptGenerator.save_updated_prompt_to_specific_user_file( \
+        UserPromptGenerator.update_and_save_prompt_to_specific_user_file( \
             user_file_path=user_file_path, \
             prompt_convertor_builder_service_dependency=PromptConvertorBuilderService( \
                 coffee_name=coffee_name, \

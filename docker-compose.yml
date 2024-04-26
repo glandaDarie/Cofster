@@ -32,6 +32,7 @@ services:
   #     coffee-creation-network:
   #       ipv4_address: 172.28.0.3
 
+  # RUNS ON AN EC2 INSTANCE (ACTING ALSO AS A ENTRYPOINT TO THIS DOCKER NETWORK)
   ingredients-updater:
     image: ingredients-updater:latest
     restart: always
@@ -81,7 +82,9 @@ services:
         ipv4_address: 172.28.0.7
     command: >
       sh -c "
-      cp -r /usr/src/app/assets/* /usr/src/app/users_assets_volume/
+      if [ ! -d /usr/src/app/users_assets_volume/users_prompt_files ]; then
+        cp -r /usr/src/app/assets/* /usr/src/app/users_assets_volume/
+      fi
       "
   
   spark:
@@ -94,7 +97,7 @@ services:
       - SPARK_SSL_ENABLED=no
       - SPARK_USER=spark
     ports:
-      - '8010:8010'
+      - "8010:8010"
     volumes:
       - "./cup_detection/messaging/:/opt/spark"
     depends_on:
