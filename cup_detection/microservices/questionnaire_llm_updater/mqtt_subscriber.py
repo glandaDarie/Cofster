@@ -49,8 +49,6 @@ def on_message(client : Any, userdata : Any, msg : Any):
         coffee_name=coffee_name, \
         llm_model_name=GPTModelType.GPT_3_5_TURBO_0125.value \
     )
-
-    print(f"Response data: ${response_data}")
     LOGGER.info(f"Response data: ${response_data}")
 
 if __name__ == "__main__":

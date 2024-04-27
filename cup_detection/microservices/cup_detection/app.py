@@ -18,6 +18,7 @@ from messaging.drink_information_consumer import DrinkInformationConsumer
 from services.drink_creation_service import DrinkCreationSevice
 from services.image_processor_service import ImageProcessorBuilderService
 from simple_factories.recipe_simple_factory import RecipeSimpleFactory
+from utils.mappers.coffee import COFFEE_NAME_MAPPER
 
 """
 Handles the real-time processing of coffee drink information. It listens for updates from a message broker,
@@ -60,8 +61,14 @@ if __name__ == "__main__":
             
             coffee_information : Dict[str, Any] = drinks_information_consumer.drinks_information[0]
             customer_name : str = coffee_information["customerName"]
-            coffee_name : str = coffee_information["coffeeName"]
+            coffee_name : str = COFFEE_NAME_MAPPER.get(coffee_information["coffeeName"], None)
             recipe_type : str = coffee_information["recipeType"]
+
+            if coffee_name is None:
+                drinks_information_consumer.drinks_information.pop(0)
+                drinks_information_consumer.order_ids.pop(0)
+                LOGGER.error(f"Error: Coffee {coffee_name} does not exist.")
+                continue
 
             customer_data : Dict[str, Any] = {
                 "customer_name" : customer_name,

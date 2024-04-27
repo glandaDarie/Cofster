@@ -14,7 +14,7 @@ class RecipeLlmService(RecipeService):
         try:
             response : Response = requests.get(url=url, params=params)
             response.raise_for_status() 
-            
+
             str_data : str = json.loads(response.text)
             data : Dict[str, Any] = json.loads(str_data)
             keys : List[str] = list(data.keys()) 
