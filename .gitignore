@@ -10,3 +10,4 @@ previous_users_information.txt
 /cup_detection/microservices/questionnaire_llm_updater/postgres_data
 /cup_detection/microservices/user_file_prompt_updater/users_assets_volume
 /cup_detection/microservices/ingredients_updater/assets/ingredients_updater_microservice_keypair.pem
+roboflow_key.json
