@@ -64,7 +64,7 @@ if __name__ == "__main__":
             coffee_name : str = COFFEE_NAME_MAPPER.get(coffee_information["coffeeName"], None)
             recipe_type : str = coffee_information["recipeType"]
 
-            if coffee_name is None:
+            if coffee_name is None: # should not happen this EVER (there is no rollback for money back)
                 drinks_information_consumer.drinks_information.pop(0)
                 drinks_information_consumer.order_ids.pop(0)
                 LOGGER.error(f"Error: Coffee {coffee_name} does not exist.")
@@ -149,4 +149,3 @@ if __name__ == "__main__":
             main_thread_terminated_event.clear()
             if len(drinks_information_consumer.drinks_information) <= 0:
                cv2.destroyAllWindows() 
-

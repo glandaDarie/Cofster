@@ -11,12 +11,14 @@ Padding WriteOption({
 }) {
   final TextEditingController optionTextEditingController =
       TextEditingController();
+
   return Padding(
     padding: EdgeInsets.symmetric(vertical: 8.0),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Container(
+          height: MediaQuery.of(context).size.height - 400,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16.0),
             border: Border.all(color: Colors.brown, width: 1.0),
@@ -27,6 +29,8 @@ Padding WriteOption({
               fontSize: 16.0,
               color: Colors.black87,
             ),
+            textInputAction: TextInputAction.newline,
+            maxLines: 30,
             decoration: InputDecoration(
               hintText: "Enter text here",
               hintStyle: TextStyle(
@@ -40,7 +44,7 @@ Padding WriteOption({
           ),
         ),
         Padding(
-          padding: EdgeInsets.symmetric(vertical: 225.0),
+          padding: EdgeInsets.symmetric(vertical: 10.0),
         ),
         ElevatedButton(
           onPressed: () {

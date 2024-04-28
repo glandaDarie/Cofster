@@ -15,11 +15,11 @@ import 'package:coffee_orderer/utils/localUserInformation.dart'
     show createUserInformationFile;
 import 'package:coffee_orderer/providers/testScreenProvider.dart'
     show TestScreenProvider;
-import 'package:coffee_orderer/screens/authScreen.dart' show AuthPage;
-import 'package:coffee_orderer/screens/mainScreen.dart' show HomePage;
+// import 'package:coffee_orderer/screens/authScreen.dart' show AuthPage;
+// import 'package:coffee_orderer/screens/mainScreen.dart' show HomePage;
 // import 'package:coffee_orderer/utils/logger.dart' show LOGGER;
-// import 'package:coffee_orderer/screens/llmUpdaterFormularScreen.dart'
-//     show LLMUpdaterFormularPage;
+import 'package:coffee_orderer/screens/llmUpdaterFormularScreen.dart'
+    show LLMUpdaterFormularPage;
 // import 'package:coffee_orderer/screens/questionnaireScreen.dart';
 // import 'package:coffee_orderer/screens/loginScreen.dart';
 // import 'package:coffee_orderer/screens/testFormularCompletionDialogScreen.dart'
@@ -90,8 +90,8 @@ class CofsterPage extends StatelessWidget {
             // home: Home(),
             // home: HomePage(),
             // home: TestScreen(),
-            // home: LLMUpdaterFormularPage(), // debugging
-            home: loggingStatusResponse ? HomePage() : AuthPage(),
+            home: LLMUpdaterFormularPage(), // debugging
+            // home: loggingStatusResponse ? HomePage() : AuthPage(),
             debugShowCheckedModeBanner: false,
           );
         } else if (snapshot.hasError) {
