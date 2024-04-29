@@ -14,7 +14,6 @@ def coffee(pin : int) -> None:
 # coffee process
 def brewed_espresso(pin : int) -> None:
     GPIO.output(pin, GPIO.LOW)
-    sleep(3.2) 
     sleep(ingredients_quantity.get("brewed_espresso", 0)*S)
     GPIO.output(pin, GPIO.HIGH)
 
