@@ -3,7 +3,7 @@ import RPi.GPIO as GPIO
 from functools import wraps
 from typing import Any
 
-def initialize_gpio(*pins: List[int], **gpio_information: Dict[str, Any]) -> Any:
+def initialize_drink(*pins: List[int], **gpio_information: Dict[str, Any]) -> Any:
     def decorator(func : Callable):
         @wraps(func)
         def wrapper(self, data : Dict[str, Any], *args : List[Any], **kwargs : Dict[str, Any]):

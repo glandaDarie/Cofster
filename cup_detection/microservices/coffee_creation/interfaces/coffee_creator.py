@@ -6,7 +6,7 @@ class CoffeeCreator(ABC):
     @abstractmethod
     def __init__(self, parallel_coffee_creator_service : TypeCoffeeCreatorService):
         pass
-    
+        
     @abstractmethod
     def do(self, coffee_data : Dict[str, Any], *, pins : List[int] | None = None) -> Tuple[str]:
         pass

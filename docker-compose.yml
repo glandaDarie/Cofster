@@ -32,7 +32,6 @@ services:
   #     coffee-creation-network:
   #       ipv4_address: 172.28.0.3
 
-  # RUNS ON AN EC2 INSTANCE (ACTING ALSO AS A ENTRYPOINT TO THIS DOCKER NETWORK)
   ingredients-updater:
     image: ingredients-updater:latest
     restart: always
