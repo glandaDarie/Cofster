@@ -7,15 +7,15 @@ class ImageProcessorBuilderService:
         self.frame : np.ndarray | None = None
 
     def add_text_number_of_frames(self, frame : np.ndarray,
-                     start_time : int, 
-                     end_time : int,
-                     text : str = "Fps",
-                     org : Tuple[str] = (40, 40),
-                     fontFace : int = cv2.FONT_HERSHEY_COMPLEX,
-                     fontScale : float = 1.0, 
-                     color : tuple = (0, 255, 0), 
-                     thickness : int = 6
-                     ) -> Self:
+        start_time : int, 
+        end_time : int,
+        text : str = "Fps",
+        org : Tuple[str] = (40, 40),
+        fontFace : int = cv2.FONT_HERSHEY_COMPLEX,
+        fontScale : float = 1.0, 
+        color : tuple = (0, 255, 0), 
+        thickness : int = 6
+    ) -> Self:
         fps : int = int(1 / (end_time - start_time)) if end_time != start_time else 0
         text : str = f"{text}: {fps}"
         self.frame = cv2.putText(img=frame, text=text, org=org, fontFace=fontFace,

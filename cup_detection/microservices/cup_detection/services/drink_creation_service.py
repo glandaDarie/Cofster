@@ -4,13 +4,13 @@ import concurrent.futures
 from threading import Event
 
 from messaging.drink_information_consumer import DrinkInformationConsumer
+from services.coffee_creation_simple_facade_service import CoffeeCreationSimpleFacadeService
 from enums.coffee_process_types import CoffeeProcessTypes
 from utils.constants import CUP_DETECTION_DURATION_SECONDS
 from utils.logger import (
     thread_information_logger, 
     LOGGER
 )
-from services.coffee_creation_facade_service import CoffeeCreationFacadeService
 
 """
 Warning: Proceed with caution! This code is as hacky as it gets! Don't even think about touching anything here unless you're ready for an adventure in the wild world of confusion.
@@ -21,7 +21,7 @@ class DrinkCreationSevice:
     A service for simulating drink creation in a coffee machine.
 
     This service uses threads to simulate the creation of drinks in a coffee machine.
-    It monitors cup detection and creates drinks when a cup is detected.
+    It monitors cup detection and sends a request to another microservice to create coffee drinks.
 
     Args:
         drink_finished_callback (Callable[[bool], bool]): A callback function to handle the completion of drink creation.
@@ -130,8 +130,8 @@ class DrinkCreationSevice:
                 if elapsed_time_cup_detection >= CUP_DETECTION_DURATION_SECONDS:
                     self.__reset_cup_detection_timer()                    
 
-                    # coffee_creation_facade_service_response : str = "success" 
-                    coffee_creation_facade_service_response : str = CoffeeCreationFacadeService.create(payload=drinks_information)
+                    # coffee_creation_facade_service_response : str = "success" # when RPI server is not on for debugging 
+                    coffee_creation_facade_service_response : str = CoffeeCreationSimpleFacadeService.create(payload=drinks_information)
                     response_has_no_verbose_param : bool = len(coffee_creation_facade_service_response.split()) == 1
                     if response_has_no_verbose_param:
                         self.coffee_creation_response_message = coffee_creation_facade_service_response

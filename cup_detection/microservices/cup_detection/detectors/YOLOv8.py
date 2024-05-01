@@ -42,7 +42,7 @@ class YOLOv8Detector(Detector):
         """
         return self.detect(frame=frame)
 
-    def detect(self, frame : np.ndarray) -> YOLO | Tuple[YOLO, np.ndarray, bool, List[Boxes]]:
+    def detect(self, frame : np.ndarray) -> YOLO | Tuple[YOLO, List[str], bool, List[Boxes], List[float]]:
         """
         Detect objects in a frame using YOLOv8 model.
 
@@ -50,8 +50,8 @@ class YOLOv8Detector(Detector):
             frame (np.ndarray): Input frame.
 
         Returns:
-            Tuple[np.ndarray, bool, List[Boxes], List[float]]: Annotated frame, boolean indicating if bounding box 
-            is present, list of bounding boxes, list of box coordinates.
+            Tuple[YOLO, List[str], bool, List[Boxes], List[float]]: Annotated frame, list with the cup sizes detected, 
+            if atleast one cup is detected, list of boxes, list of boxes coordinates.
         """
         has_bounding_box : bool = False
         boxes : List[Boxes] | None = None

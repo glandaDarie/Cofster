@@ -6,7 +6,7 @@ sys.path.append("../")
 from controllers.coffee_creation_controller import CoffeeCreationController
 from services.coffee_creation_service import CoffeeCreationService
 
-class CoffeeCreationFacadeService:
+class CoffeeCreationSimpleFacadeService:
     @staticmethod
     def create(payload : Dict[str, Any]) -> str:
         coffee_creation_service_response : str = CoffeeCreationController(CoffeeCreationService()) \
