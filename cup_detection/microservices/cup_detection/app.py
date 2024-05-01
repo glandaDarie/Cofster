@@ -6,22 +6,23 @@ from threading import Event
 from threading import Thread
 import torch
 
+from utils.paths import PATH_MODEL_CUP_DETECTION
+# from utils.paths import PATH_MODEL_PLACEMENT_DETECTION
 from utils.constants import CAMERA_INDEX, WINDOW_NAME, TABLE_NAME
 from utils.logger import LOGGER
 from utils.firebase_rtd_url import DATABASE_OPTIONS
-from utils.paths import PATH_MODEL_CUP_DETECTION
-# from utils.paths import PATH_MODEL_PLACEMENT_DETECTION
+from utils.mappers.coffee import COFFEE_NAME_MAPPER
+from utils.mappers.cup_sizes import CUP_SIZE_MAPPER
+from utils.helpers.shared_resource_singleton import SharedResourceSingleton
+from utils.helpers.desired_cup_size_detected import DesiredCupSizeDetected
+from utils.helpers.drink_finished import DrinkFinished
 from detectors.Detector import Detector
 from detectors.YOLOv8 import YOLOv8Detector
 from messaging.drink_information_consumer import DrinkInformationConsumer
 from services.drink_creation_service import DrinkCreationSevice
 from services.image_processor_service import ImageProcessorBuilderService
 from simple_factories.recipe_simple_factory import RecipeSimpleFactory
-from utils.mappers.coffee import COFFEE_NAME_MAPPER
-from utils.mappers.cup_sizes import CUP_SIZE_MAPPER
-from utils.helpers.shared_resource_singleton import SharedResourceSingleton
-from utils.helpers.desired_cup_size_detected import DesiredCupSizeDetected
-from utils.helpers.drink_finished import DrinkFinished
+
 
 """
 Handles the real-time processing of coffee drink information. It listens for updates from a message broker,
