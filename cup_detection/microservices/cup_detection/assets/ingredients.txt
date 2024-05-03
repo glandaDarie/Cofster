@@ -1,6 +1,0 @@
-ingredients_coffee: {
-    "coffee_name": "Cappuccino",
-    "ingredient_1": "espresso",
-    "ingredient_2": "steamed milk",
-    "ingredient_3": "foamed milk"
-}

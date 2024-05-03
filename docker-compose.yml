@@ -17,7 +17,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}   
     volumes:
-      - ./cup_detection/microservices/questionnaire_llm_updater/postgres_data:/var/lib/postgresql/data
+      - ./microservices/questionnaire_llm_updater/postgres_data:/var/lib/postgresql/data
     networks:
       coffee-creation-network:
         ipv4_address: 172.28.0.2
@@ -35,7 +35,7 @@ services:
   ingredients-updater:
     image: ingredients-updater:latest
     restart: always
-    env_file: cup_detection/microservices/ingredients_updater/.env
+    env_file: microservices/ingredients_updater/.env
     environment:
       - PYTHONUNBUFFERED=1
     networks:
@@ -47,7 +47,7 @@ services:
   questionnaire-llm-updater:
     image: questionnaire-llm-updater:latest
     restart: always
-    env_file: cup_detection/microservices/questionnaire_llm_updater/.env
+    env_file: microservices/questionnaire_llm_updater/.env
     environment:
       - PYTHONUNBUFFERED=1
     networks:
@@ -62,7 +62,7 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
     volumes:
-      - ./cup_detection/microservices/user_file_prompt_updater/users_assets_volume:/usr/src/app/assets
+      - ./microservices/user_file_prompt_updater/users_assets_volume:/usr/src/app/assets
     networks:
       coffee-creation-network:
         ipv4_address: 172.28.0.6
@@ -74,8 +74,8 @@ services:
   populate-volume:
     image: busybox
     volumes:
-      - ./cup_detection/microservices/user_file_prompt_updater/assets:/usr/src/app/assets
-      - ./cup_detection/microservices/user_file_prompt_updater/users_assets_volume:/usr/src/app/users_assets_volume
+      - ./microservices/user_file_prompt_updater/assets:/usr/src/app/assets
+      - ./microservices/user_file_prompt_updater/users_assets_volume:/usr/src/app/users_assets_volume
     networks:
       coffee-creation-network:
         ipv4_address: 172.28.0.7
