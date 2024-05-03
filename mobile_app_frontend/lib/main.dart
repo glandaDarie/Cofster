@@ -13,10 +13,10 @@ import 'package:coffee_orderer/providers/orderIDProvider.dart'
     show OrderIDProvider;
 import 'package:coffee_orderer/utils/localUserInformation.dart'
     show createUserInformationFile;
-// import 'package:coffee_orderer/screens/authScreen.dart' show AuthPage;
-// import 'package:coffee_orderer/screens/mainScreen.dart' show HomePage;
-import 'package:coffee_orderer/screens/llmUpdaterFormularScreen.dart'
-    show LLMUpdaterFormularPage;
+import 'package:coffee_orderer/screens/authScreen.dart' show AuthPage;
+import 'package:coffee_orderer/screens/mainScreen.dart' show HomePage;
+// import 'package:coffee_orderer/screens/llmUpdaterFormularScreen.dart'
+//     show LLMUpdaterFormularPage;
 // import 'package:coffee_orderer/screens/questionnaireScreen.dart';
 // import 'package:coffee_orderer/screens/loginScreen.dart';
 // import 'package:coffee_orderer/screens/testFormularCompletionDialogScreen.dart'
@@ -83,8 +83,8 @@ class CofsterPage extends StatelessWidget {
             // home: QuestionnairePage(),
             // home: Home(),
             // home: HomePage(),
-            home: LLMUpdaterFormularPage(), // debugging
-            // home: loggingStatusResponse ? HomePage() : AuthPage(),
+            // home: LLMUpdaterFormularPage(), // debugging
+            home: loggingStatusResponse ? HomePage() : AuthPage(),
             debugShowCheckedModeBanner: false,
           );
         } else if (snapshot.hasError) {

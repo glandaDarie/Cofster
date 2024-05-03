@@ -1,4 +1,4 @@
-CAMERA_INDEX : int = 0 # should be changed with the new surveillance camera that will be set to the coffee machine
+CAMERA_INDEX : int = 1 # set camera for coffee machine, the one connected to my pc as of now (new iteration should be a surveillance camera)
 WINDOW_NAME : str = "Detect cup"
 TABLE_NAME : str = "Orders"
 THRESHOLD_SCORE : float = 0.5
