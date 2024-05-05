@@ -145,6 +145,11 @@ if __name__ == "__main__":
                     if detected_classes is None or frame is None or roi_frame is None:
                         raise MethodNotPassedToBuilderException()
 
+                    if roi_frame is not None:
+                        roi_w, roi_h, _ = roi_frame.shape
+                        if roi_w == 0 or roi_h == 0:
+                            continue
+
                 if roi_frame is not None:
                     cv2.imshow(WINDOW_NAME_PIPE_DETECTION, roi_frame)
                 else:
