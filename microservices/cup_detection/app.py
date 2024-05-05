@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 import numpy as np
 import cv2
 from time import time
@@ -7,12 +7,17 @@ from threading import Thread
 import torch
 
 from utils.paths import PATH_MODEL_CUP_DETECTION
-# from utils.paths import PATH_MODEL_PLACEMENT_DETECTION
-from utils.constants import CAMERA_INDEX, WINDOW_NAME, TABLE_NAME
+from utils.constants import (
+    CAMERA_INDEX,
+    WINDOW_NAME_CUP_DETECTION,
+    WINDOW_NAME_PIPE_DETECTION,
+    TABLE_NAME
+)
 from utils.logger import LOGGER
 from utils.firebase_rtd_url import DATABASE_OPTIONS
 from utils.mappers.coffee import COFFEE_NAME_MAPPER
 from utils.mappers.cup_sizes import CUP_SIZE_MAPPER
+from utils.exceptions import MethodNotPassedToBuilderException
 from utils.helpers.shared_resource_singleton import SharedResourceSingleton
 from utils.helpers.desired_cup_size_detected import DesiredCupSizeDetected
 from utils.helpers.drink_finished import DrinkFinished
@@ -21,6 +26,7 @@ from detectors.YOLOv8 import YOLOv8Detector
 from messaging.drink_information_consumer import DrinkInformationConsumer
 from services.drink_creation_service import DrinkCreationSevice
 from services.image_processor_service import ImageProcessorBuilderService
+from services.pipe_detector_service import PipeDetectorBuilderService
 from simple_factories.recipe_simple_factory import RecipeSimpleFactory
 
 """
@@ -99,7 +105,6 @@ if __name__ == "__main__":
                 break
 
             frame, detected_classes, _, _, _ = cup_detection_model(frame=frame)
-            # cup_detection_placement_model : YOLO = YOLOv8Detector.detect(path_weights=PATH_MODEL_PLACEMENT_DETECTION)
 
             desired_cup_size_detected : SharedResourceSingleton = DesiredCupSizeDetected()
             drink_finished : SharedResourceSingleton = DrinkFinished()
@@ -115,15 +120,12 @@ if __name__ == "__main__":
             start_fps_time : float = time()
             end_fps_time : float = start_fps_time
             image_processor_builder_service : ImageProcessorBuilderService = ImageProcessorBuilderService()
+            pipe_detector_builder_service : PipeDetectorBuilderService = PipeDetectorBuilderService()
 
             while success:
                 end_fps_time = time()
-                frame, detected_classes, cup_detected, _, _ = cup_detection_model(frame=frame)
+                frame, detected_classes, cup_detected, _, classes_coordinates = cup_detection_model(frame=frame)
                 
-                # cup_detection_placement_model, frame, cup_placement_detected, placement_bounding_boxes = YOLOv8Detector.detect(frame=frame, \
-                #                                                                                                                model=cup_detection_placement_model)
-                # cup_position_valid : bool = YOLOv8Detector.is_cup_in_correct_position(object1_boxes=cup_bounding_boxes, object2_boxes=placement_bounding_boxes, tolerance=6)
-
                 desired_cup_size_detected.set_state( \
                     customer_selected_cup_size=cup_size, \
                     detected_cup_sizes=detected_classes \
@@ -133,9 +135,25 @@ if __name__ == "__main__":
                     .add_text_number_of_frames(frame=frame, start_time=start_fps_time, end_time=end_fps_time) \
                     .build()
                 
+                roi_frame : Optional[np.ndarray] = None
+                if len(classes_coordinates) == 1:
+                    detected_pipe, frame, roi_frame = pipe_detector_builder_service \
+                        .create_roi_subwindow(frame=frame, classes_coordinates=classes_coordinates) \
+                        .find_white_pipe(draw=True) \
+                        .collect()
+                    
+                    if detected_classes is None or frame is None or roi_frame is None:
+                        raise MethodNotPassedToBuilderException()
+
+                if roi_frame is not None:
+                    cv2.imshow(WINDOW_NAME_PIPE_DETECTION, roi_frame)
+                else:
+                    if int(cv2.getWindowProperty(WINDOW_NAME_PIPE_DETECTION, cv2.WND_PROP_VISIBLE)) > 0:
+                        cv2.destroyWindow(WINDOW_NAME_PIPE_DETECTION)
+
                 start_fps_time = end_fps_time
                 
-                cv2.imshow(WINDOW_NAME, frame)
+                cv2.imshow(WINDOW_NAME_CUP_DETECTION, frame)
                 cv2.waitKey(1)
                 
                 success, frame = camera.read()
