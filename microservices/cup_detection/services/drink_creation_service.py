@@ -50,8 +50,13 @@ class DrinkCreationSevice:
         self.coffee_creation_response_message :  None | str = None
         self.coffee_creation_response_information : None | str = None
 
-    def simulate_creation(self, drinks_information_consumer : DrinkInformationConsumer, callback_cup_detection : Callable[[bool], bool], \
-                          main_thread_terminated_event : Event) -> str:
+    def simulate_creation(
+        self, 
+        drinks_information_consumer : DrinkInformationConsumer, 
+        callback_cup_detection : Callable[[bool], bool], 
+        callback_pipe_detection : Callable[[bool], bool],
+        main_thread_terminated_event : Event
+    ) -> str:
         """
         Simulate the creation of drinks based on cup detection.
 
@@ -63,19 +68,24 @@ class DrinkCreationSevice:
             drinks_information_consumer (DrinkInformationConsumer): An instance of DrinkInformationConsumer
                 containing information about the drinks to be created.
             callback_cup_detection (Callable[[bool], bool]): A callback function to detect the presence of a cup.
-            main_thread_terminated_event (Event): An event used to send broadcast alerts to the children threads to join the main one
+            callback_pipe_detection (Callable[[bool], bool]): A callback function to detect the presence of a pipe for coffee creation.
+            main_thread_terminated_event (Event): An event used to send broadcast alerts to the children threads to join the main one.
 
         Returns:
             str: A message indicating the status of the drink creation process.
         """
         while not main_thread_terminated_event.is_set():
-            if callback_cup_detection():
+            if callback_cup_detection() and callback_pipe_detection():
                 with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
                     self.stop_continuous_cup_checking_event.clear()
 
                     thread_futures : Dict[concurrent.futures.ThreadPoolExecutor, str] = {}
-                    thread_futures[executor.submit(lambda : self.__continuously_check_cup(drinks_information=drinks_information_consumer.drinks_information[-1], \
-                        callback_cup_detection=callback_cup_detection, main_thread_terminated_event=main_thread_terminated_event))] = "continuously_check_cup" 
+                    thread_futures[executor.submit(lambda : self.__continuously_check_cup(
+                        drinks_information=drinks_information_consumer.drinks_information[-1], \
+                        callback_cup_detection=callback_cup_detection, \
+                        callback_pipe_detection=callback_pipe_detection, \
+                        main_thread_terminated_event=main_thread_terminated_event \
+                    ))] = "continuously_check_cup" 
                     
                     drink_creation_completed : bool = False
                     for thread_future in concurrent.futures.as_completed(thread_futures):
@@ -109,7 +119,13 @@ class DrinkCreationSevice:
                 self.__reset_cup_detection_timer()
                 LOGGER.info("DrinkCreationSevice >> simulate_creation: Cup not detected")
 
-    def __continuously_check_cup(self, drinks_information : Dict[str, Any], callback_cup_detection : Callable[[bool], bool], main_thread_terminated_event : Event) -> Generator:
+    def __continuously_check_cup(
+        self, 
+        drinks_information : Dict[str, Any], 
+        callback_cup_detection : Callable[[bool], bool], 
+        callback_pipe_detection : Callable[[bool], bool],
+        main_thread_terminated_event : Event
+    ) -> Generator:
         """
         Private method to continuously monitor cup detection and trigger actions accordingly.
 
@@ -122,7 +138,7 @@ class DrinkCreationSevice:
         """
         while not main_thread_terminated_event.is_set() and not self.stop_continuous_cup_checking_event.is_set():
             print(f"callback_cup_detection: {callback_cup_detection()}")
-            if callback_cup_detection():
+            if callback_cup_detection() and callback_pipe_detection():
 
                 elapsed_time_cup_detection : float = time() - self.start_time_cup_detection
                 print(f"elapsed_time_cup_detection: {elapsed_time_cup_detection}")

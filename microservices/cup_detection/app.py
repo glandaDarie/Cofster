@@ -20,6 +20,7 @@ from utils.mappers.cup_sizes import CUP_SIZE_MAPPER
 from utils.exceptions import MethodNotPassedToBuilderException
 from utils.helpers.shared_resource_singleton import SharedResourceSingleton
 from utils.helpers.desired_cup_size_detected import DesiredCupSizeDetected
+from utils.helpers.pipe_detected import PipeDetected
 from utils.helpers.drink_finished import DrinkFinished
 from detectors.Detector import Detector
 from detectors.YOLOv8 import YOLOv8Detector
@@ -107,12 +108,18 @@ if __name__ == "__main__":
             frame, detected_classes, _, _, _ = cup_detection_model(frame=frame)
 
             desired_cup_size_detected : SharedResourceSingleton = DesiredCupSizeDetected()
+            pipe_detected : SharedResourceSingleton = PipeDetected()
             drink_finished : SharedResourceSingleton = DrinkFinished()
 
             drink_creation_service : DrinkCreationSevice = DrinkCreationSevice(drink_finished_callback=drink_finished.set_state)
-            background_create_coffee_drink_thread : Thread = Thread( \
-                target=drink_creation_service.simulate_creation, \
-                args=(drinks_information_consumer, desired_cup_size_detected.get_state, main_thread_terminated_event) \
+            background_create_coffee_drink_thread : Thread = Thread( 
+                target=drink_creation_service.simulate_creation, 
+                args=( 
+                    drinks_information_consumer,
+                    desired_cup_size_detected.get_state, 
+                    pipe_detected.get_state, 
+                    main_thread_terminated_event
+                )
             )
             background_create_coffee_drink_thread.daemon = True
             background_create_coffee_drink_thread.start()
@@ -142,8 +149,10 @@ if __name__ == "__main__":
                         .find_white_pipe(draw=True) \
                         .collect()
                     
-                    if detected_classes is None or frame is None or roi_frame is None:
+                    if detected_pipe is None or frame is None or roi_frame is None:
                         raise MethodNotPassedToBuilderException()
+
+                    pipe_detected.set_state(detected_pipe)
 
                     if roi_frame is not None:
                         roi_w, roi_h, _ = roi_frame.shape

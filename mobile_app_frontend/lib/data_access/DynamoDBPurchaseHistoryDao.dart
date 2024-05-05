@@ -71,6 +71,7 @@ class DynamoDBPurchaseHistoryDao {
             Duration(seconds: this._timeoutSeconds),
           );
       dynamic responseBody = jsonDecode(response.body);
+      print("Response body: ${responseBody}");
       if (responseBody["statusCode"] == 201) {
         return null;
       } else {

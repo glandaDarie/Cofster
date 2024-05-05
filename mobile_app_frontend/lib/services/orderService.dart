@@ -78,7 +78,7 @@ class OrderService {
     String placeOrderInUsersOrderHistoryWithRetryResponse =
         await this._placeOrderInUsersOrderHistoryWithRetry(
       orderData: coffeeName,
-      maxRetries: 5,
+      maxRetries: 10,
       enableDebug: true,
     );
     if (placeOrderInUsersOrderHistoryWithRetryResponse != null) {
