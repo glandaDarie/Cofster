@@ -4,7 +4,7 @@ CAMERA_INDEX : int = 1 # set camera for coffee machine, the one connected to my 
 WINDOW_NAME_CUP_DETECTION : str = "Detect cup"
 WINDOW_NAME_PIPE_DETECTION : str = "Detect pipe"
 TABLE_NAME : str = "Orders"
-THRESHOLD_SCORE : float = 0.5
+THRESHOLD_SCORE : float = 0.70
 PROMPT_TEMPLATE : str = "Given the coffee drink that I provided: {}, please generate a JSON with the ingredients necessary to make that respective drink."
 
 CUP_DETECTION_DURATION_SECONDS : int = 10
@@ -17,7 +17,7 @@ THRESHOLD_BIG_CUP_HEIGHT : int = 275
 UNKNOWN_CLASS : str = "Unknown"
 
 Y_COORD_OFFSET : int = 220
-H_COORD_OFFSET : int = Y_COORD_OFFSET - 50
+H_COORD_OFFSET : int = Y_COORD_OFFSET + 15
 W_COORD_OFFSET : int = 325
 MIN_AREA_PIPE : int = 500
 MIN_ASPECT_RATION_PIPE : int = 0.1

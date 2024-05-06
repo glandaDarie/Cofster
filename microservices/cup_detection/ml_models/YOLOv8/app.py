@@ -4,6 +4,7 @@ import torch
 from inference.detectors.yolo import YOLOv8Detector
 from inference.detectors.Detector import Detector
 from inference.utils.paths import CUP_DETECTION_PATH
+from inference.utils.constants import YOLOV8_WINDOW_NAME
 
 def main():
     """
@@ -12,7 +13,7 @@ def main():
     Opens the default camera, initializes the YOLOv8 object detection model,
     captures frames from the camera, and displays the frames with object detection results.
     """
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(index=1)
 
     if not cap.isOpened():
         print("Error: Unable to open camera.")
@@ -44,7 +45,7 @@ def main():
             cv2.putText(frame, f"Detected classes: {','.join(detected_classes)}", (10, 420), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
         cv2.putText(frame, f"FPS: {int(fps)}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
         
-        cv2.imshow("Frame", frame)
+        cv2.imshow(YOLOV8_WINDOW_NAME, frame)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break

@@ -4,9 +4,7 @@ import cv2
 from time import time
 from threading import Event
 from threading import Thread
-import torch
 
-from utils.paths import PATH_MODEL_CUP_DETECTION
 from utils.constants import (
     CAMERA_INDEX,
     WINDOW_NAME_CUP_DETECTION,
@@ -22,13 +20,14 @@ from utils.helpers.shared_resource_singleton import SharedResourceSingleton
 from utils.helpers.desired_cup_size_detected import DesiredCupSizeDetected
 from utils.helpers.pipe_detected import PipeDetected
 from utils.helpers.drink_finished import DrinkFinished
+from enums.cup_detection_model import CupDetectionModel
 from detectors.Detector import Detector
-from detectors.YOLOv8 import YOLOv8Detector
 from messaging.drink_information_consumer import DrinkInformationConsumer
 from services.drink_creation_service import DrinkCreationSevice
 from services.image_processor_service import ImageProcessorBuilderService
 from services.pipe_detector_service import PipeDetectorBuilderService
 from simple_factories.recipe_simple_factory import RecipeSimpleFactory
+from simple_factories.cup_detection_factory import CupDetectionFactory
 
 """
 Handles the real-time processing of coffee drink information. It listens for updates from a message broker,
@@ -64,7 +63,7 @@ if __name__ == "__main__":
     background_firebase_table_update_thread : Thread = Thread(target=drinks_information_consumer.listen_for_updates_on_drink_message_broker)
     background_firebase_table_update_thread.daemon = True
     background_firebase_table_update_thread.start()
-    cup_detection_model : Detector = YOLOv8Detector(path_weights=PATH_MODEL_CUP_DETECTION, device=torch.device("cuda"))
+    cup_detection_model : Detector = CupDetectionFactory.create(cup_detection_model=CupDetectionModel.YOLOV8)
 
     while True: # should run till the process is stopped (automatically would like to stop the camera)
         if len(drinks_information_consumer.drinks_information) > 0:
@@ -95,7 +94,7 @@ if __name__ == "__main__":
             print(f"new drinks information consumer : {drinks_information_consumer.drinks_information}")
             LOGGER.info(f"app.py: drink information received from client: {drinks_information_consumer.drinks_information}")
 
-            camera : object = cv2.VideoCapture(CAMERA_INDEX) 
+            camera : object = cv2.VideoCapture(index=CAMERA_INDEX)
             if not camera.isOpened():
                 LOGGER.error("Error when trying to open the camera")
                 break
@@ -144,19 +143,22 @@ if __name__ == "__main__":
                 
                 roi_frame : Optional[np.ndarray] = None
                 if len(classes_coordinates) == 1:
-                    detected_pipe, frame, roi_frame = pipe_detector_builder_service \
+                    detected_pipe, frame, roi_frame, ignore_frame = pipe_detector_builder_service \
                         .create_roi_subwindow(frame=frame, classes_coordinates=classes_coordinates) \
                         .find_white_pipe(draw=True) \
                         .collect()
                     
+                    if ignore_frame:
+                        continue
+
                     if detected_pipe is None or frame is None or roi_frame is None:
                         raise MethodNotPassedToBuilderException()
 
                     pipe_detected.set_state(detected_pipe)
 
                     if roi_frame is not None:
-                        roi_w, roi_h, _ = roi_frame.shape
-                        if roi_w == 0 or roi_h == 0:
+                        roi_w, roi_h, roi_c = roi_frame.shape
+                        if roi_w == 0 or roi_h == 0 or roi_c == 0:
                             continue
 
                 if roi_frame is not None:

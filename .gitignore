@@ -7,7 +7,8 @@ __pycache__
 users_prompt_files
 logging_information.log
 previous_users_information.txt
-/cup_detection/microservices/questionnaire_llm_updater/postgres_data
-/cup_detection/microservices/user_file_prompt_updater/users_assets_volume
-/cup_detection/microservices/ingredients_updater/assets/ingredients_updater_microservice_keypair.pem
+/microservices/questionnaire_llm_updater/postgres_data
+/microservices/user_file_prompt_updater/users_assets_volume
 roboflow_key.json
+/microservices/cup_detection/ml_models/YOLOv9/training/yolov9
+/microservices/cup_detection/ml_models/YOLOv9/training/venv_yolov9

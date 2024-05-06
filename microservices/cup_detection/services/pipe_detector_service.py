@@ -22,6 +22,7 @@ class PipeDetectorBuilderService:
         self.__roi_frame : Optional[np.ndarray] = None
         self.__contours : Optional[np.ndarray] = None
         self.__white_pipe_found : Optional[bool] = None
+        self.__ingore_frame : Optional[bool] = None
 
     def create_roi_subwindow(self, frame : np.ndarray, classes_coordinates : List[float]) -> Self:
         roi_subwindow : Dict[str, int] = {}
@@ -40,6 +41,11 @@ class PipeDetectorBuilderService:
         return self
     
     def find_white_pipe(self, draw : bool = False) -> Self:
+        roi_w, roi_h, _ = self.__roi_frame.shape
+        if roi_w == 0 or roi_h == 0:
+            self.__ingore_frame = True
+            return self
+        
         gray_roi : np.ndarray = cv2.cvtColor(self.__roi_frame, cv2.COLOR_BGR2GRAY)
 
         _, binary_roi = cv2.threshold(gray_roi, THRESHOLD_WHITE_PIXELS, 255, cv2.THRESH_BINARY)
@@ -48,6 +54,7 @@ class PipeDetectorBuilderService:
 
         self.__contours, _ = cv2.findContours(binary_roi, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         
+        self.__ingore_frame = False
         for contour in self.__contours:
             area : float = cv2.contourArea(contour)
             x, y, w, h = cv2.boundingRect(contour)
@@ -65,5 +72,5 @@ class PipeDetectorBuilderService:
 
     def collect(self) -> Tuple[bool, np.ndarray]:
         if self.__frame is not None:
-            return self.__white_pipe_found, self.__frame, self.__roi_frame
-        return None, None, None
+            return self.__white_pipe_found, self.__frame, self.__roi_frame, self.__ingore_frame
+        return None, None, None, True
