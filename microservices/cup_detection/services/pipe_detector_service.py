@@ -6,14 +6,12 @@ import sys
 sys.path.append("../")
 
 from utils.constants import (
-    Y_COORD_OFFSET,
-    W_COORD_OFFSET,
-    H_COORD_OFFSET,
     MIN_AREA_PIPE,
     MIN_ASPECT_RATION_PIPE,
     THRESHOLD_WHITE_PIXELS,
     THRESHOLD_MEAN_WHITE,
-    COORDINATE_NAMES
+    COORDINATE_NAMES,
+    COORDINATE_OFFSETS
 ) 
 
 class PipeDetectorBuilderService:
@@ -27,7 +25,6 @@ class PipeDetectorBuilderService:
     def create_roi_subwindow(self, frame : np.ndarray, classes_coordinates : List[float]) -> Self:
         roi_subwindow : Dict[str, int] = {}
 
-        COORDINATE_OFFSETS = {"y": Y_COORD_OFFSET, "w": W_COORD_OFFSET, "h": H_COORD_OFFSET}
         for class_coordinates in classes_coordinates:
             for class_coordinate, coordinate_name in zip(class_coordinates, COORDINATE_NAMES):
                 offset : int = COORDINATE_OFFSETS.get(coordinate_name, 0)

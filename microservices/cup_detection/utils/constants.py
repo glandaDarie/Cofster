@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict
 
 CAMERA_INDEX : int = 1 # set camera for coffee machine, the one connected to my pc as of now (new iteration should be a surveillance camera)
 WINDOW_NAME_CUP_DETECTION : str = "Detect cup"
@@ -24,3 +24,4 @@ MIN_ASPECT_RATION_PIPE : int = 0.1
 THRESHOLD_WHITE_PIXELS : int = 142
 THRESHOLD_MEAN_WHITE : int = 158
 COORDINATE_NAMES : List[str] = ["x", "y", "w", "h"]
+COORDINATE_OFFSETS : Dict[str, float] = {"y": Y_COORD_OFFSET, "w": W_COORD_OFFSET, "h": H_COORD_OFFSET}
