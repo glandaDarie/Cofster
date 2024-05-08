@@ -15,7 +15,13 @@ from utils.constants import (
 ) 
 
 class PipeDetectorBuilderService:
+    """
+    Service class for building and detecting pipes in images.
+    """
     def __init__(self):
+        """
+        Initialize the PipeDetectorBuilderService.
+        """
         self.__frame : Optional[np.ndarray] = None
         self.__roi_frame : Optional[np.ndarray] = None
         self.__contours : Optional[np.ndarray] = None
@@ -23,6 +29,16 @@ class PipeDetectorBuilderService:
         self.__ingore_frame : Optional[bool] = None
 
     def create_roi_subwindow(self, frame : np.ndarray, classes_coordinates : List[float]) -> Self:
+        """
+        Create a region of interest (ROI) subwindow based on provided class coordinates.
+
+        Args:
+        - frame (np.ndarray): The input image frame.
+        - classes_coordinates (List[float]): List of coordinates for different classes.
+
+        Returns:
+        - Self: The instance of PipeDetectorBuilderService.
+        """
         roi_subwindow : Dict[str, int] = {}
 
         for class_coordinates in classes_coordinates:
@@ -38,6 +54,15 @@ class PipeDetectorBuilderService:
         return self
     
     def find_white_pipe(self, draw : bool = False) -> Self:
+        """
+        Find white pipes in the region of interest (ROI) frame.
+
+        Args:
+        - draw (bool): Optional parameter whether to draw rectangles around detected pipes. 
+
+        Returns:
+        - Self: The instance of PipeDetectorBuilderService.
+        """
         roi_w, roi_h, _ = self.__roi_frame.shape
         if roi_w == 0 or roi_h == 0:
             self.__ingore_frame = True
@@ -68,6 +93,12 @@ class PipeDetectorBuilderService:
         return self
 
     def collect(self) -> Tuple[bool, np.ndarray]:
+        """
+        Collect the results of pipe detection.
+
+        Returns:
+        - Tuple[bool, np.ndarray]: A tuple containing whether white pipe is found and frame information.
+        """
         if self.__frame is not None:
             return self.__white_pipe_found, self.__frame, self.__roi_frame, self.__ingore_frame
         return None, None, None, True
