@@ -22,38 +22,34 @@ flutter run
 
 ## Backend Setup
 
-1. Install docker
+1. Install docker.
 2. Navigate to the microservices directory.
 3. Build the Docker images for each microservice except the coffee_creation one (if you want to do CUDA inferencing on the YOLO models, don't build the image for the cup_detection microservice) using the following command:
-
 ```sh
 docker build -t "image-name" .
 ```
 4. After building the Docker images, return to the root directory.
 5. Start all microservices using docker compose, with the following command:
-6. 
 ```sh
 docker compose up
 ```
 7. For the coffee_creation microservice, you should have an edge device, preferably a Raspberry Pi (should work for any version of RPI).
 
-To run the server on boot, follow these steps:
+  To run the server on boot, follow these steps:
 
-1. Navigate to the microservices/coffee_creation directory on your Raspberry PI. 
-2. Execute the following shell script:
+  1. Navigate to the microservices/coffee_creation directory on your Raspberry PI. 
+  2. Execute the following shell script:
+  ```sh
+  bash boostrap_loader_service.sh
+  ```
 
-```sh
-bash boostrap_loader_service.sh
-```
-Ensure you have a service created to run the process on boot. To create the service:
+  Ensure you have a service created to run the process on boot. To create the service:
 
-1. Navigate to the system service directory:
-
-```sh
-cd /etc/systemd/system/
-```
-
-2. Create the coffee making service unit file. An example file named bootstrap-coffee-making-service.service is provided in the microservices/coffee_creation directory.
+  1. Navigate to the system service directory:
+  ```sh
+  cd /etc/systemd/system/
+  ```
+  2. Create the coffee making service unit file. An example file named bootstrap-coffee-making-service.service is provided in the microservices/coffee_creation directory.
 
 8. If you want to close the backend, power off the Raspberry Pi, as well as run the following command on your localhost:
 
