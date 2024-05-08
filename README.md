@@ -37,8 +37,8 @@ docker compose up
 
     To run the server on boot, follow these steps:
   
-    1. Navigate to the microservices/coffee_creation directory on your Raspberry PI. 
-    2. Execute the following shell script:
+    a) Navigate to the microservices/coffee_creation directory on your Raspberry PI. 
+    b) Execute the following shell script:
        
     ```sh
     bash boostrap_loader_service.sh
@@ -46,12 +46,12 @@ docker compose up
 
     Ensure you have a service created to run the process on boot. To create the service:
   
-    1. Navigate to the system service directory:
+    a) Navigate to the system service directory:
        
     ```sh
     cd /etc/systemd/system/
     ```
-    2. Create the coffee making service unit file. An example file named bootstrap-coffee-making-service.service is provided in the microservices/coffee_creation directory.
+    b) Create the coffee making service unit file. An example file named bootstrap-coffee-making-service.service is provided in the microservices/coffee_creation directory.
 
 7. If you want to close the backend, power off the Raspberry Pi, as well as run the following command on your localhost:
 ```sh
