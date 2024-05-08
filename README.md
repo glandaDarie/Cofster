@@ -24,7 +24,7 @@ flutter run
 
 1. Install docker
 2. Navigate to the microservices directory.
-3. Build the Docker images for each microservice (if yo want to do CUDA inferencing on the YOLO models, don't build the cup_detection microservice) using the following command:
+3. Build the Docker images for each microservice (if yo want to do CUDA inferencing on the YOLO models, don't build the container on the cup_detection microservice) using the following command:
 
 ```sh
 docker build -t "image-name" .
