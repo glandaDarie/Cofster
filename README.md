@@ -39,6 +39,7 @@ docker compose up
   
     1. Navigate to the microservices/coffee_creation directory on your Raspberry PI. 
     2. Execute the following shell script:
+       
     ```sh
     bash boostrap_loader_service.sh
     ```
@@ -46,6 +47,7 @@ docker compose up
     Ensure you have a service created to run the process on boot. To create the service:
   
     1. Navigate to the system service directory:
+       
     ```sh
     cd /etc/systemd/system/
     ```
