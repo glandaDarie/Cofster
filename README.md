@@ -9,8 +9,7 @@ Follow these steps to set up the Smart Coffee Machine System:
 1. Clone the repository: `git clone https://github.com/your-username/smart-coffee-machine.git`
 2. Run frontend with the setup specified below.
 3. Run backend with the setup specified below.
-4. Configure the necessary cloud services and APIs by following the instructions provided in the documentation.
-5. Connect the hardware components as specified in the hardware setup guide.
+4. Connect the hardware components as specified in the hardware setup guide.
 
 ## Frontend Setup
 
