@@ -33,26 +33,25 @@ docker build -t "image-name" .
 ```sh
 docker compose up
 ```
-7. For the coffee_creation microservice, you should have an edge device, preferably a Raspberry Pi (should work for any version of RPI).
+6. For the coffee_creation microservice, you should have an edge device, preferably a Raspberry Pi (should work for any version of RPI).
 
-  To run the server on boot, follow these steps:
+    To run the server on boot, follow these steps:
+  
+    1. Navigate to the microservices/coffee_creation directory on your Raspberry PI. 
+    2. Execute the following shell script:
+    ```sh
+    bash boostrap_loader_service.sh
+    ```
 
-  1. Navigate to the microservices/coffee_creation directory on your Raspberry PI. 
-  2. Execute the following shell script:
-  ```sh
-  bash boostrap_loader_service.sh
-  ```
+    Ensure you have a service created to run the process on boot. To create the service:
+  
+    1. Navigate to the system service directory:
+    ```sh
+    cd /etc/systemd/system/
+    ```
+    2. Create the coffee making service unit file. An example file named bootstrap-coffee-making-service.service is provided in the microservices/coffee_creation directory.
 
-  Ensure you have a service created to run the process on boot. To create the service:
-
-  1. Navigate to the system service directory:
-  ```sh
-  cd /etc/systemd/system/
-  ```
-  2. Create the coffee making service unit file. An example file named bootstrap-coffee-making-service.service is provided in the microservices/coffee_creation directory.
-
-8. If you want to close the backend, power off the Raspberry Pi, as well as run the following command on your localhost:
-
+7. If you want to close the backend, power off the Raspberry Pi, as well as run the following command on your localhost:
 ```sh
 docker compose down
 ```
