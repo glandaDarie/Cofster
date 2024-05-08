@@ -13,7 +13,7 @@ def main():
     Opens the default camera, initializes the YOLOv8 object detection model,
     captures frames from the camera, and displays the frames with object detection results.
     """
-    cap = cv2.VideoCapture(index=1)
+    cap = cv2.VideoCapture(index=0)
 
     if not cap.isOpened():
         print("Error: Unable to open camera.")
