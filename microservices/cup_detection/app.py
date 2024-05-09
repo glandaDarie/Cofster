@@ -2,8 +2,8 @@ from typing import Dict, Any, Optional
 import numpy as np
 import cv2
 from time import time
-from threading import Event
-from threading import Thread
+from threading import Thread, Event 
+from kafka import KafkaProducer
 
 from utils.constants import (
     CAMERA_INDEX,
@@ -15,6 +15,10 @@ from utils.logger import LOGGER
 from utils.firebase_rtd_url import DATABASE_OPTIONS
 from utils.mappers.coffee import COFFEE_NAME_MAPPER
 from utils.mappers.cup_sizes import CUP_SIZE_MAPPER
+from utils.constants import (
+    BOOTSTRAP_SERVERS, 
+    TOPIC_NAME
+)
 from utils.exceptions import MethodNotPassedToBuilderException
 from utils.helpers.shared_resource_singleton import SharedResourceSingleton
 from utils.helpers.desired_cup_size_detected import DesiredCupSizeDetected
@@ -94,7 +98,8 @@ if __name__ == "__main__":
             print(f"new drinks information consumer : {drinks_information_consumer.drinks_information}")
             LOGGER.info(f"app.py: drink information received from client: {drinks_information_consumer.drinks_information}")
 
-            camera : object = cv2.VideoCapture(index=CAMERA_INDEX)
+            # camera : object = cv2.VideoCapture(index=CAMERA_INDEX)
+            camera : object = cv2.VideoCapture(index=0) # testing as of now on pc camera, instead of on external one
             if not camera.isOpened():
                 LOGGER.error("Error when trying to open the camera")
                 break
@@ -127,6 +132,10 @@ if __name__ == "__main__":
             end_fps_time : float = start_fps_time
             image_processor_builder_service : ImageProcessorBuilderService = ImageProcessorBuilderService()
             pipe_detector_builder_service : PipeDetectorBuilderService = PipeDetectorBuilderService()
+
+            producer : KafkaProducer = KafkaProducer(
+                bootstrap_servers=BOOTSTRAP_SERVERS,
+            )
 
             while success:
                 end_fps_time = time()
@@ -166,6 +175,12 @@ if __name__ == "__main__":
                 else:
                     if int(cv2.getWindowProperty(WINDOW_NAME_PIPE_DETECTION, cv2.WND_PROP_VISIBLE)) > 0:
                         cv2.destroyWindow(WINDOW_NAME_PIPE_DETECTION)
+                
+                _, encoded_frame = cv2.imencode(".jpg", frame)
+                image_bytes : bytes = encoded_frame.tobytes()
+
+                producer.send(topic=TOPIC_NAME, value=image_bytes)
+                producer.flush()
 
                 start_fps_time = end_fps_time
                 

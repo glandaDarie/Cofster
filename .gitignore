@@ -12,3 +12,6 @@ previous_users_information.txt
 roboflow_key.json
 /microservices/cup_detection/ml_models/YOLOv9/training/yolov9
 /microservices/cup_detection/ml_models/YOLOv9/training/venv_yolov9
+/config
+/microservices/messaging/kafka/data
+/web_app_camera_viewpoint/package-lock.json

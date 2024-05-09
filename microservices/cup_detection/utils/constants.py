@@ -25,3 +25,6 @@ THRESHOLD_WHITE_PIXELS : int = 142
 THRESHOLD_MEAN_WHITE : int = 158
 COORDINATE_NAMES : List[str] = ["x", "y", "w", "h"]
 COORDINATE_OFFSETS : Dict[str, float] = {"y": Y_COORD_OFFSET, "w": W_COORD_OFFSET, "h": H_COORD_OFFSET}
+
+BOOTSTRAP_SERVERS : List[str] = ["localhost:9092"]
+TOPIC_NAME : str = "render_frames"
