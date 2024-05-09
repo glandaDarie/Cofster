@@ -2,7 +2,80 @@
 
 Cofster is a sophisticated and innovative solution that combines cutting-edge technologies to revolutionize the coffee brewing experience. With advanced features such as personalized drink recommendations, voice recognition, and cloud integration, this system offers a seamless and convenient way to prepare your favorite coffee beverages.
 
-## Features
+## Getting Started
+
+Follow these steps to set up the Smart Coffee Machine System:
+
+1. Clone the repository: `git clone https://github.com/your-username/smart-coffee-machine.git`
+2. Run frontend with the setup specified below.
+3. Run backend with the setup specified below.
+4. Connect the hardware components as specified in the hardware setup guide.
+
+## Frontend Setup
+
+To run the frontend, navigate to the root directory and then to the `mobile_app_frontend` directory, and execute the following command:
+
+```sh
+flutter run
+```
+
+## Backend Setup
+
+1. Install docker.
+2. Navigate to the microservices directory.
+3. Build the Docker images for each microservice except the coffee_creation one (if you want to do CUDA inferencing on the YOLO models, don't build the image for the cup_detection microservice) using the following command:
+```sh
+docker build -t "image-name" .
+```
+4. After building the Docker images, return to the root directory.
+5. Start all microservices using docker compose, with the following command:
+```sh
+docker compose up
+```
+6. For the coffee_creation microservice, you should have an edge device, preferably a Raspberry Pi (should work for any version of RPI).
+
+    To run the server on boot, follow these steps:
+  
+    a) Navigate to the microservices/coffee_creation directory on your Raspberry PI.
+    
+    b) Execute the following shell script:
+       
+    ```sh
+    bash boostrap_loader_service.sh
+    ```
+
+    Ensure you have a service created to run the process on boot. To create the service:
+  
+    a) Navigate to the system service directory:
+       
+    ```sh
+    cd /etc/systemd/system/
+    ```
+    b) Create the coffee making service unit file. An example file named bootstrap-coffee-making-service.service is provided in the microservices/coffee_creation directory.
+
+8. If you want to close the backend, power off the Raspberry Pi, as well as run the following command on your localhost:
+```sh
+docker compose down
+```
+
+## Optional: CUDA Inference Setup
+
+If you are doing inference, you can also use your own GPU for the YOLO models. You just need to do the following things:
+
+1. Navigate to the microservices/cup_detection directory.
+2. Install the necessary Python dependencies using:
+
+```sh
+pip install -r requirements.txt
+```
+
+3. Run the cup detection microservice:
+
+```sh
+python app.py
+```
+
+## App Features
 
 - **Mobile App Control**: The system can be controlled through a user-friendly mobile app, allowing you to easily select and customize your coffee preferences.
 - **Personalized Drink Recommendations**: By leveraging machine learning techniques, the system analyzes user responses to provide personalized drink recommendations based on individual tastes and preferences.
@@ -57,17 +130,6 @@ Include screenshots here to showcase the user interface of the mobile applicatio
     <img src="mobile_app_images/help_and_support_screen.png" width="300" alt="Help and support screen">
   </div>
 </div>
-
-## Getting Started
-
-Follow these steps to set up the Smart Coffee Machine System:
-
-1. Clone the repository: `git clone https://github.com/your-username/smart-coffee-machine.git`
-2. Install the required dependencies: `pip install -r requirements.txt`
-3. Configure the necessary cloud services and APIs by following the instructions provided in the documentation.
-4. Connect the hardware components as specified in the hardware setup guide.
-
-For detailed installation instructions, usage guidelines, and API documentation, please refer to the [documentation](docs).
 
 ## Contributing
 
