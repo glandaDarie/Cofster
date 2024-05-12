@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
-
-interface FrameReceiverProps {
-  websocketUrl: string;
-}
+import { FrameReceiverProps  } from '../../interfaces/FrameReciever/props';
+import styles from './FrameReciever.module.css';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const FrameReceiver: React.FC<FrameReceiverProps> = ({ websocketUrl }) => {
   const [imageSrc, setImageSrc] = useState<string | null>(null);
-  console.log(`websocketUrl: ${websocketUrl}`)
 
   useEffect(() => {
     const socket : WebSocket = new WebSocket(websocketUrl);
@@ -16,7 +15,6 @@ export const FrameReceiver: React.FC<FrameReceiverProps> = ({ websocketUrl }) =>
     });
 
     socket.addEventListener('message', async (event) => {
-        console.log(`Message from server ${event.data}`)
         if (event.data instanceof Blob) {
             const reader : FileReader = new FileReader();
             reader.onload = () => {
@@ -29,6 +27,11 @@ export const FrameReceiver: React.FC<FrameReceiverProps> = ({ websocketUrl }) =>
 
     socket.addEventListener('error', (error) => {
         console.error('WebSocket error:', error);
+        toast.error('WebSocket connection error');
+    });
+
+    socket.addEventListener('close', () => {
+      console.log('WebSocket connection closed');
     });
 
     return () => {
@@ -37,8 +40,8 @@ export const FrameReceiver: React.FC<FrameReceiverProps> = ({ websocketUrl }) =>
   }, [websocketUrl]);
 
   return (
-    <div>
-      {imageSrc && <img src={imageSrc} alt="Received Image" />}
+    <div className={styles['frame-receiver-container']}> 
+      {imageSrc && <img src={imageSrc} alt="Received Image" className={styles['frame-image']} />} 
     </div>
   );
 }

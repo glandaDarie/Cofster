@@ -22,15 +22,16 @@ async def frame_consumer(websocket : websockets.server.WebSocketServerProtocol) 
         auto_offset_reset=AUTO_OFFSET_RESET
     )
 
-    for message in consumer:
-        image_bytes : bytes = message.value
-        await websocket.send(image_bytes)
+    try:
+        for message in consumer:
+            image_bytes : bytes = message.value
+            await websocket.send(image_bytes)
+    finally:
+        consumer.close()
 
-    consumer.close()
-
-async def connect_and_consume():
-    async with websockets.connect("ws://localhost:8765") as websocket:
-        await frame_consumer(websocket)
+async def connect_and_consume() -> None:
+    async with websockets.serve(frame_consumer, "localhost", 8765):
+        await asyncio.Future()  
 
 if __name__ == "__main__":
     asyncio.run(connect_and_consume())
