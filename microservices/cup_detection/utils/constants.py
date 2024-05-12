@@ -28,3 +28,4 @@ COORDINATE_OFFSETS : Dict[str, float] = {"y": Y_COORD_OFFSET, "w": W_COORD_OFFSE
 
 BOOTSTRAP_SERVERS : List[str] = ["localhost:9092"]
 TOPIC_NAME : str = "render_frames"
+AUTO_OFFSET_RESET : str = "latest"

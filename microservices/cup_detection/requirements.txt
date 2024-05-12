@@ -8,3 +8,4 @@ opencv-contrib-python==4.7.0.68
 firebase-admin==6.2.0
 attrs==22.2.0
 kafka-python==2.0.2
+nest-asyncio==1.5.6
