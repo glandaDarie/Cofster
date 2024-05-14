@@ -2,6 +2,8 @@ from typing import Dict, Any, List, Tuple
 from time import time
 import os
 from types import ModuleType
+import RPi.GPIO as GPIO
+
 from utils.enums.coffee_creator_types import CoffeeCreatorType
 from utils.helpers.module_from_path import get_module_from_path
 from utils.exceptions.no_such_coffee_type_creator_service_error import NoSuchCoffeeTypeCreatorService
@@ -9,10 +11,13 @@ from utils.exceptions.no_all_params_passed_error import NoAllParamsPassedError
 from interfaces.type_coffee_creator_service import TypeCoffeeCreatorService
 from utils.constants.drink_sizes import DRINK_SIZES
 from utils.exceptions.no_such_drink_size_error import NoSuchDrinkSizeError
+from utils.constants.pin_ingredient_mapper import LED_INDICATOR
 
 class CoffeeCreatorSimpleFacade:
     @staticmethod
     def create(params : Dict[str, Any]) -> Tuple[str, Dict[str, Any]]:
+        GPIO.output(LED_INDICATOR, GPIO.HIGH)
+
         drink_data : Dict[str, Any] = params.get("drink_data", None)
         pins : List[int] = params.get("pins", None)
         parallel_coffee_creator_service : TypeCoffeeCreatorService = params.get("parallel_coffee_creator_service", None)
@@ -50,5 +55,6 @@ class CoffeeCreatorSimpleFacade:
 
             message : str = f"Customer {customer_name} successfully recieved {drink_quantity} {drink_name if drink_quantity == 1 else f'{drink_name}s'}"
             history : Dict[str, Any] = {"time_for_order" : time() - start_time}
-            
+        
+        GPIO.output(LED_INDICATOR, GPIO.LOW)
         return (message, history) if verbose else (message, {})
