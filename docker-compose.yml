@@ -86,14 +86,6 @@ services:
       fi
       "
   
-  web-app-camera-viewpoint:
-    image: web-app-camera-viewpoint:latest
-    restart: always
-    ports: 
-      - "3000:3000"
-    volumes:
-      - ./web_app_camera_viewpoint:/app
-  
   zookeeper:
     image: "bitnami/zookeeper:latest"
     hostname: zookeeper
@@ -153,8 +145,6 @@ services:
       - SPARK_USER=spark
     depends_on:
       - questionnaire-llm-updater
-  
-
 
 networks:
   coffee-creation-network:

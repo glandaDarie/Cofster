@@ -98,8 +98,7 @@ if __name__ == "__main__":
             print(f"new drinks information consumer : {drinks_information_consumer.drinks_information}")
             LOGGER.info(f"app.py: drink information received from client: {drinks_information_consumer.drinks_information}")
 
-            # camera : object = cv2.VideoCapture(index=CAMERA_INDEX)
-            camera : object = cv2.VideoCapture(index=0)
+            camera : object = cv2.VideoCapture(index=CAMERA_INDEX)
             if not camera.isOpened():
                 LOGGER.error("Error when trying to open the camera")
                 break
