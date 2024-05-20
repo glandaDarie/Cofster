@@ -1,7 +1,7 @@
 from typing import List, Dict
 
 CAMERA_INDEX : int = 1 # set camera for coffee machine, the one connected to my pc as of now (new iteration should be a surveillance camera)
-WINDOW_NAME_CUP_DETECTION : str = "Detect cup"
+DEFAULT_WINDOW_NAME_CUP_DETECTION : str = "Detect cup"
 WINDOW_NAME_PIPE_DETECTION : str = "Detect pipe"
 TABLE_NAME : str = "Orders"
 THRESHOLD_SCORE : float = 0.70

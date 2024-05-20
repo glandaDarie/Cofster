@@ -92,12 +92,13 @@ class PipeDetectorBuilderService:
         self.__white_pipe_found = False
         return self
 
-    def collect(self) -> Tuple[bool, np.ndarray]:
+    def collect(self) -> Tuple[bool, np.ndarray, np.ndarray, bool]:
         """
         Collect the results of pipe detection.
 
         Returns:
-        - Tuple[bool, np.ndarray]: A tuple containing whether white pipe is found and frame information.
+        - Tuple[bool, np.ndarray, np.ndarray, bool]: A tuple containing whether white pipe is found and frame information.
+        
         """
         if self.__frame is not None:
             return self.__white_pipe_found, self.__frame, self.__roi_frame, self.__ingore_frame

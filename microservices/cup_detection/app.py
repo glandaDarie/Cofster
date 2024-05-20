@@ -7,7 +7,7 @@ from kafka import KafkaProducer
 
 from utils.constants import (
     CAMERA_INDEX,
-    WINDOW_NAME_CUP_DETECTION,
+    DEFAULT_WINDOW_NAME_CUP_DETECTION,
     WINDOW_NAME_PIPE_DETECTION,
     TABLE_NAME
 )
@@ -24,8 +24,9 @@ from utils.helpers.shared_resource_singleton import SharedResourceSingleton
 from utils.helpers.desired_cup_size_detected import DesiredCupSizeDetected
 from utils.helpers.pipe_detected import PipeDetected
 from utils.helpers.drink_finished import DrinkFinished
-from enums.cup_detection_model import CupDetectionModel
+from enums.cup_detection_model import CupDetectionModelType
 from detectors.Detector import Detector
+from dtos.cup_detection import DetectorDTO
 from messaging.drink_information_consumer import DrinkInformationConsumer
 from services.drink_creation_service import DrinkCreationSevice
 from services.image_processor_service import ImageProcessorBuilderService
@@ -67,9 +68,13 @@ if __name__ == "__main__":
     background_firebase_table_update_thread : Thread = Thread(target=drinks_information_consumer.listen_for_updates_on_drink_message_broker)
     background_firebase_table_update_thread.daemon = True
     background_firebase_table_update_thread.start()
-    cup_detection_model : Detector = CupDetectionFactory.create(cup_detection_model=CupDetectionModel.YOLOV8)
+    is_listening_for_client_orders : bool = True
 
-    while True: # should run till the process is stopped (automatically would like to stop the camera)
+    cup_detection_model_dto : DetectorDTO = CupDetectionFactory.create(cup_detection_model=CupDetectionModelType.YOLOV8)
+    WINDOW_NAME_CUP_DETECTION : str = f"{DEFAULT_WINDOW_NAME_CUP_DETECTION}: {cup_detection_model_dto.model_name}" 
+    cup_detection_model : Detector = cup_detection_model_dto.detector
+    
+    while is_listening_for_client_orders:
         if len(drinks_information_consumer.drinks_information) > 0:
             
             coffee_information : Dict[str, Any] = drinks_information_consumer.drinks_information[0]
@@ -132,7 +137,7 @@ if __name__ == "__main__":
             image_processor_builder_service : ImageProcessorBuilderService = ImageProcessorBuilderService()
             pipe_detector_builder_service : PipeDetectorBuilderService = PipeDetectorBuilderService()
 
-            producer : KafkaProducer = KafkaProducer(
+            kafka_producer : KafkaProducer = KafkaProducer(
                 bootstrap_servers=BOOTSTRAP_SERVERS,
             )
 
@@ -178,8 +183,8 @@ if __name__ == "__main__":
                 _, encoded_frame = cv2.imencode(".jpg", frame)
                 image_bytes : bytes = encoded_frame.tobytes()
 
-                producer.send(topic=TOPIC_NAME, value=image_bytes)
-                producer.flush()
+                kafka_producer.send(topic=TOPIC_NAME, value=image_bytes)
+                kafka_producer.flush()
 
                 start_fps_time = end_fps_time
                 
