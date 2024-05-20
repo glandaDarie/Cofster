@@ -9,3 +9,8 @@ class MethodNotPassedToBuilderException(Exception):
 class NoSuchCupDetector(Exception):
     def __init__(self, message : str = "Respective cup detector not found."):
         super.__init__(message)
+
+class FileWriterException(Exception):
+    def __init__(self, message : str = "Could not write to file."):
+        super.__init__(message)
+    

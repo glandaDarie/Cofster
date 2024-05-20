@@ -6,6 +6,8 @@ WINDOW_NAME_PIPE_DETECTION : str = "Detect pipe"
 TABLE_NAME : str = "Orders"
 THRESHOLD_SCORE : float = 0.70
 PROMPT_TEMPLATE : str = "Given the coffee drink that I provided: {}, please generate a JSON with the ingredients necessary to make that respective drink."
+SAVE_FPS_TIME_PER_ITERATION_IN_SECONDS : int = 3
+FPS_INDEX_THRESHOLD : int = 100
 
 CUP_DETECTION_DURATION_SECONDS : int = 10
 

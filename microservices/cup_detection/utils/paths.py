@@ -6,3 +6,4 @@ PATH_MODEL_PLACEMENT_DETECTION : str = os.path.join(os.path.join(os.getcwd(), "w
 PATH_THREAD_INFORMATION_LOGGER : str = os.path.join(os.getcwd(), "assets", "thread_termination_info.log")
 PATH_COFFEE_CREATION : str = os.path.join(os.path.dirname(os.getcwd()), "assets", "coffee_creation_data.txt")
 PATH_FILENAME : str = os.path.join(os.getcwd(), "assets", "logging_information.log") 
+PATH_FPS_RESULTS : str = os.path.join(os.path.join(os.getcwd(), "assets"), "fps_results.txt")

@@ -1,4 +1,4 @@
-from typing import Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Union
 import numpy as np
 import cv2
 from time import time
@@ -9,12 +9,15 @@ from utils.constants import (
     CAMERA_INDEX,
     DEFAULT_WINDOW_NAME_CUP_DETECTION,
     WINDOW_NAME_PIPE_DETECTION,
+    SAVE_FPS_TIME_PER_ITERATION_IN_SECONDS,
+    FPS_INDEX_THRESHOLD,
     TABLE_NAME
 )
 from utils.logger import LOGGER
 from utils.firebase_rtd_url import DATABASE_OPTIONS
 from utils.mappers.coffee import COFFEE_NAME_MAPPER
 from utils.mappers.cup_sizes import CUP_SIZE_MAPPER
+from utils.paths import PATH_FPS_RESULTS
 from utils.constants import (
     BOOTSTRAP_SERVERS, 
     TOPIC_NAME
@@ -24,6 +27,8 @@ from utils.helpers.shared_resource_singleton import SharedResourceSingleton
 from utils.helpers.desired_cup_size_detected import DesiredCupSizeDetected
 from utils.helpers.pipe_detected import PipeDetected
 from utils.helpers.drink_finished import DrinkFinished
+from utils.helpers.file_io import FileIO
+from utils.exceptions import FileWriterException
 from enums.cup_detection_model import CupDetectionModelType
 from detectors.Detector import Detector
 from dtos.cup_detection import DetectorDTO
@@ -70,9 +75,10 @@ if __name__ == "__main__":
     background_firebase_table_update_thread.start()
     is_listening_for_client_orders : bool = True
 
-    cup_detection_model_dto : DetectorDTO = CupDetectionFactory.create(cup_detection_model=CupDetectionModelType.YOLOV8)
-    WINDOW_NAME_CUP_DETECTION : str = f"{DEFAULT_WINDOW_NAME_CUP_DETECTION}: {cup_detection_model_dto.model_name}" 
+    cup_detection_model_dto : DetectorDTO = CupDetectionFactory.create(cup_detection_model=CupDetectionModelType.YOLOV9)
     cup_detection_model : Detector = cup_detection_model_dto.detector
+    cup_detection_model_name : str = cup_detection_model_dto.model_name
+    WINDOW_NAME_CUP_DETECTION : str = f"{DEFAULT_WINDOW_NAME_CUP_DETECTION}: {cup_detection_model_name}" 
     
     while is_listening_for_client_orders:
         if len(drinks_information_consumer.drinks_information) > 0:
@@ -141,8 +147,17 @@ if __name__ == "__main__":
                 bootstrap_servers=BOOTSTRAP_SERVERS,
             )
 
+            fps_history : List[str] = []
+            fps_history_per_iteration : List[int] = []
+            fps_index : int = 1
+            start_fps_save_to_history_time : float = time() 
+            end_fps_save_to_history_time : float = start_fps_save_to_history_time
+            file_io : FileIO = FileIO(path=PATH_FPS_RESULTS)
+            is_fps_saving_enabled : bool = False
+
             while success:
                 end_fps_time = time()
+                end_fps_save_to_history_time = time()
                 frame, detected_classes, cup_detected, _, classes_coordinates = cup_detection_model(frame=frame)
                 
                 desired_cup_size_detected.set_state( \
@@ -150,9 +165,28 @@ if __name__ == "__main__":
                     detected_cup_sizes=detected_classes \
                 )
 
-                frame : np.ndarray = image_processor_builder_service \
+                fps, frame = image_processor_builder_service \
                     .add_text_number_of_frames(frame=frame, start_time=start_fps_time, end_time=end_fps_time) \
                     .build()
+
+                if (end_fps_save_to_history_time - start_fps_save_to_history_time) > SAVE_FPS_TIME_PER_ITERATION_IN_SECONDS and is_fps_saving_enabled:
+                    fps_history_item : str = f"{fps_index} {int(sum(fps_history_per_iteration)/len(fps_history_per_iteration))}"
+                    fps_history.append(fps_history_item)
+                    fps_history_per_iteration = []
+                    fps_index += 1
+
+                    if fps_index >= FPS_INDEX_THRESHOLD:
+                        start_model_name : str = f"--------------------\n{cup_detection_model_name}\n--------------------\n"
+                        content : str = "{}\n{}".format(start_model_name, '\n'.join(fps_history))
+                        
+                        error_msg : Union[str, None] = file_io.write(content=content)
+                        if error_msg is not None:
+                            raise FileWriterException(message=error_msg)
+                        
+                        is_fps_saving_enabled = False
+                        fps_index = 1
+                    
+                    start_fps_save_to_history_time = end_fps_save_to_history_time
                 
                 roi_frame : Optional[np.ndarray] = None
                 if len(classes_coordinates) == 1:
@@ -195,6 +229,8 @@ if __name__ == "__main__":
                 if drink_finished.get_state():
                     drink_finished.set_state(False)
                     break
+
+                fps_history_per_iteration.append(fps)
 
             camera.release()
             main_thread_terminated_event.set()

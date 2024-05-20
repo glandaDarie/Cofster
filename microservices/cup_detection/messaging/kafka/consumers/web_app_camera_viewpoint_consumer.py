@@ -14,7 +14,7 @@ from utils.constants import (
     AUTO_OFFSET_RESET
 )
 
-# should be used later for LOAD BALANCING to multiple clients
+# should be used later for easier HORIZONTAL SCALING to multiple clients
 async def frame_consumer(websocket : websockets.server.WebSocketServerProtocol) -> Coroutine[Any, Any, Coroutine]:
     consumer : KafkaConsumer = KafkaConsumer(
         TOPIC_NAME,
