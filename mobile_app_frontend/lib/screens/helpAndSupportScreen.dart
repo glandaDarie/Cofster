@@ -118,36 +118,16 @@ class _HelpAndSupportPageState extends StatelessWidget {
               SizedBox(height: 30),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // GestureDetector(
-                  //     onTap: () async {
-                  //       final Uri uriLaunchFacebookProfile =
-                  //           Uri(path: "https://www.facebook.com/darie.glanda");
-                  //       launchUrl(uriLaunchFacebookProfile);
-                  //     },
-                  //     child: FaIcon(
-                  //       FontAwesomeIcons.facebook,
-                  //       color: Colors.brown,
-                  //       size: 40,
-                  //     )),
-                  FaIcon(
+                children: faIcons(
+                  icons: [
                     FontAwesomeIcons.facebook,
-                    color: Colors.brown,
-                    size: 40,
-                  ),
-                  SizedBox(width: 40),
-                  FaIcon(
                     FontAwesomeIcons.instagram,
-                    color: Colors.brown,
-                    size: 40,
-                  ),
-                  SizedBox(width: 40),
-                  FaIcon(
-                    FontAwesomeIcons.reddit,
-                    color: Colors.brown,
-                    size: 40,
-                  ),
-                ],
+                    FontAwesomeIcons.reddit
+                  ],
+                  iconSize: 40,
+                  iconColor: Colors.brown,
+                  paddingBetweenIcons: 40,
+                ),
               ),
             ],
           ),
@@ -155,4 +135,38 @@ class _HelpAndSupportPageState extends StatelessWidget {
       ),
     );
   }
+}
+
+List<Widget> faIcons({
+  @required List<IconData> icons,
+  @required double iconSize,
+  @required Color iconColor,
+  @required double paddingBetweenIcons,
+}) {
+  return icons.asMap().entries.map(
+    (MapEntry<int, IconData> entry) {
+      final index = entry.key;
+      final icon = entry.value;
+      return index >= icons.length - 1
+          ? Row(
+              children: [
+                FaIcon(
+                  icon,
+                  size: iconSize,
+                  color: iconColor,
+                ),
+              ],
+            )
+          : Row(
+              children: [
+                FaIcon(
+                  icon,
+                  size: iconSize,
+                  color: iconColor,
+                ),
+                SizedBox(width: paddingBetweenIcons),
+              ],
+            );
+    },
+  ).toList();
 }

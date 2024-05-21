@@ -43,17 +43,25 @@ ValueListenableBuilder bottomNavigationBar(
             ),
           ),
           GestureDetector(
-            onTap: () {
-              callbackSelectedIndex(1);
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (BuildContext context) => ProfileInformationPage(
-                      callbackSelectedIndex: callbackSelectedIndex)));
-            },
-            child: Icon(
-              Icons.person,
-              color: Color.fromARGB(255, 69, 45, 36),
-            ),
-          ),
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                callbackSelectedIndex(1);
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => ProfileInformationPage(
+                        callbackSelectedIndex: callbackSelectedIndex),
+                  ),
+                );
+              },
+              child: Container(
+                width: 80,
+                height: 60,
+                alignment: Alignment.center,
+                child: Icon(
+                  Icons.person,
+                  color: Color.fromARGB(255, 69, 45, 36),
+                ),
+              )),
           GestureDetector(
             onTap: () {
               callbackSelectedIndex(2);
@@ -90,46 +98,50 @@ ValueListenableBuilder bottomNavigationBar(
             },
           ),
           GestureDetector(
-              onTap: () {
-                callbackSelectedIndex(4);
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (BuildContext context) => GiftCardPage(
-                        callbackSelectedIndex: callbackSelectedIndex)));
-              },
-              child: ValueListenableBuilder(
-                  valueListenable: userGiftsNotifier,
-                  builder: (BuildContext context, bool fetchedUserGifts,
-                      Widget child) {
-                    userGiftsNotifier.value = false;
-                    if (!fetchedUserGifts) {
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              callbackSelectedIndex(4);
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (BuildContext context) => GiftCardPage(
+                    callbackSelectedIndex: callbackSelectedIndex,
+                  ),
+                ),
+              );
+            },
+            child: ValueListenableBuilder(
+              valueListenable: userGiftsNotifier,
+              builder:
+                  (BuildContext context, bool fetchedUserGifts, Widget child) {
+                userGiftsNotifier.value = false;
+                if (!fetchedUserGifts) {
+                  return badgeWithLabel(numberOfGifts, Icons.wallet_giftcard);
+                }
+                return FutureBuilder<dynamic>(
+                  future: giftController.getUserGifts(),
+                  builder: (final BuildContext context,
+                      final AsyncSnapshot<dynamic> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
                       return badgeWithLabel(
                           numberOfGifts, Icons.wallet_giftcard);
+                    } else if (snapshot.hasError) {
+                      return Center(
+                        child: Text("Error: ${snapshot.error}"),
+                      );
                     }
-                    return FutureBuilder<dynamic>(
-                      future: giftController.getUserGifts(),
-                      builder: (final BuildContext context,
-                          final AsyncSnapshot<dynamic> snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return badgeWithLabel(
-                              numberOfGifts, Icons.wallet_giftcard);
-                        } else if (snapshot.hasError) {
-                          return Center(
-                            child: Text("Error: ${snapshot.error}"),
-                          );
-                        }
-                        dynamic giftsResponse = snapshot.data;
-                        if (giftsResponse is String) {
-                          return Message.error(
-                            message: giftsResponse.toString(),
-                          );
-                        }
-                        numberOfGifts = giftsResponse.length;
-                        return badgeWithLabel(
-                            numberOfGifts, Icons.wallet_giftcard);
-                      },
-                    );
-                  })),
+                    dynamic giftsResponse = snapshot.data;
+                    if (giftsResponse is String) {
+                      return Message.error(
+                        message: giftsResponse.toString(),
+                      );
+                    }
+                    numberOfGifts = giftsResponse.length;
+                    return badgeWithLabel(numberOfGifts, Icons.wallet_giftcard);
+                  },
+                );
+              },
+            ),
+          ),
         ],
         onTap: callbackSelectedIndex,
       );
