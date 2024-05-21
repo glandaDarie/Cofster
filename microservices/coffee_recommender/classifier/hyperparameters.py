@@ -3,7 +3,7 @@ from typing import Dict
 params_dict : Dict[str, int] = {
     "BATCH_SIZE" : 128,
     "LEARNING_RATE" : 0.1,
-    "EPOCHS" : 1000,
+    "EPOCHS" : 10000,
     "GRADIENT_CLIPPING_VALUE" : 0.5,
     "WEIGHT_DECAY" : 0.001,
     "DROPOUT_PROBABILITY_LAYER1" : 0.4,
