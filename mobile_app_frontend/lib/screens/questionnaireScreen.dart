@@ -150,20 +150,24 @@ class _QuestionnairePageState extends State<QuestionnairePage> {
                                   .postQuestionsToGetPredictedFavouriteDrinks(
                                       selectedOptionsForClassifier);
                           Map<String, String> favouriteDrinks =
-                              fetchedFavouriteDrinks.asMap().map((key, value) =>
-                                  MapEntry("drink ${key + 1}", value));
+                              fetchedFavouriteDrinks.asMap().map(
+                                    (int key, String value) =>
+                                        MapEntry("drink ${key + 1}", value),
+                                  );
                           String response = await userController
                               .updateUsersFavouriteDrinks(favouriteDrinks);
                           if (response !=
                               "Successfully updated the favourite drinks") {
                             ToastUtils.showToast(response);
                             return Center(
-                                child: CircularProgressIndicator(
-                                    color: Colors.brown,
-                                    backgroundColor: Colors.white));
+                              child: CircularProgressIndicator(
+                                  color: Colors.brown,
+                                  backgroundColor: Colors.white),
+                            );
                           }
                           Map<String, String> convertedFavouriteDrinks =
-                              favouriteDrinks.map((key, value) {
+                              favouriteDrinks
+                                  .map((final String key, final String value) {
                             String newKey = key.replaceAll(" ", "-");
                             String newValue = value.replaceAll(" ", "-");
                             return MapEntry(newKey, newValue);
@@ -171,8 +175,10 @@ class _QuestionnairePageState extends State<QuestionnairePage> {
                           await storeUserInformationInCache(
                               convertedFavouriteDrinks);
                           Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                  builder: (context) => HomePage()));
+                            MaterialPageRoute(
+                              builder: (context) => HomePage(),
+                            ),
+                          );
                           return null;
                         }
                       },

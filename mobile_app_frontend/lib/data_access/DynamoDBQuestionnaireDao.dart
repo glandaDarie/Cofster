@@ -40,16 +40,18 @@ class DynamoDBQuestionnaireDao {
     dynamic jsonResponse = null;
     Map<String, dynamic> requestBody = {"body": content};
     try {
-      http.Response response = await http.post(Uri.parse(this._url),
-          headers: {"Content-Type": "application/json"},
-          body: jsonEncode(requestBody));
+      http.Response response = await http.post(
+        Uri.parse(this._url),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(requestBody),
+      );
       jsonResponse = jsonDecode(response.body);
       if (jsonResponse["statusCode"] != 201) {
         ToastUtils.showToast("Error: ${jsonResponse["body"]}");
         return null;
       }
-    } catch (e) {
-      ToastUtils.showToast("Exception when inserting a new user: ${e}");
+    } catch (error) {
+      ToastUtils.showToast("Exception when inserting a new user: ${error}");
       return null;
     }
     return jsonResponse["favouriteDrinks"].values.toList().cast<String>();

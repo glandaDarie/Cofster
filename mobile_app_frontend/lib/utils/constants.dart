@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:coffee_orderer/enums/coffeeTypes.dart' show CoffeeType;
 import 'package:coffee_orderer/utils/appAssets.dart' show FooterImages;
 import 'package:coffee_orderer/utils/drinkMadeByOrderType.dart' show OrderType;
@@ -54,3 +56,6 @@ const String LLM_FORMULAR_POPUP_PROCEED_TEXT = "Answer";
 const String LLM_FORMULAR_POPUP_CANCEL_TEXT = "Cancel";
 
 const String ORDERS_TABLE = "Orders";
+
+const String HOST_EMAIL = "smtp-mail.outlook.com";
+const int HOST_PORT = 587;

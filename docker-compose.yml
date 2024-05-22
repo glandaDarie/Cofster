@@ -7,7 +7,7 @@ services:
       - PYTHONUNBUFFERED=1
     restart: always
     ports:
-      - "8001:8000" 
+      - "8001:8001"
 
   postgres:
     image: postgres:latest
@@ -24,7 +24,7 @@ services:
     ports:
       - "5432:5432"
   
-  # SHOULD ADD THIS WHEN NVIDIA ENABLES EASIER BINDING OF CUDA TO THE DOCKER CONTAINER
+  # NOTE: IF YOU DO INFERENCE ON CPU, YOU CAN UNCOMMENT THIS. FOR INFERENCE ON CUDA, SHOULD UNCOMMENT THIS WHEN NVIDIA ENABLES EASIER BINDING OF CUDA TO THE DOCKER CONTAINER
   # cup-detection:
   #   image: cup-detection:latest
   #   restart: always

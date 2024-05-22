@@ -27,13 +27,13 @@ def prediction_drinks() -> json:
         predictions : Dict[str, str] = \
             {f"drink {i+1}": labels[pred] for i, pred in enumerate(predictions)}
         return jsonify({
-            "status" : 201,
+            "statusCode" : 201,
             "favouriteDrinks" : predictions
             })
     return jsonify({
-        "status": 405,
+        "statusCode": 405,
         "message": "Method not allowed"
     })
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8000)
+    app.run(host="0.0.0.0", port=8001)

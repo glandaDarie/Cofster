@@ -15,6 +15,7 @@ import 'package:steel_crypt/steel_crypt.dart';
 import 'package:coffee_orderer/utils/toast.dart' show ToastUtils;
 import 'package:coffee_orderer/services/loggedInService.dart'
     show LoggedInService;
+import 'package:coffee_orderer/utils/constants.dart' show HOST_EMAIL, HOST_PORT;
 
 class AuthController extends ValidateCredentialsService {
   Duration get loginTime => Duration(milliseconds: 2250);
@@ -124,8 +125,8 @@ class AuthController extends ValidateCredentialsService {
     String passwordSender = credentialsSender[1];
     SmtpServer smtpServer = null;
     try {
-      smtpServer = SmtpServer("smtp-mail.outlook.com",
-          port: 587, username: usernameSender, password: passwordSender);
+      smtpServer = SmtpServer(HOST_EMAIL,
+          port: HOST_PORT, username: usernameSender, password: passwordSender);
     } catch (e) {
       ToastUtils.showToast("Error creating SmtpServer: ${e}");
       return null;

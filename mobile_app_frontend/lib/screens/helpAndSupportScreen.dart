@@ -145,28 +145,18 @@ List<Widget> faIcons({
 }) {
   return icons.asMap().entries.map(
     (MapEntry<int, IconData> entry) {
-      final index = entry.key;
-      final icon = entry.value;
-      return index >= icons.length - 1
-          ? Row(
-              children: [
-                FaIcon(
-                  icon,
-                  size: iconSize,
-                  color: iconColor,
-                ),
-              ],
-            )
-          : Row(
-              children: [
-                FaIcon(
-                  icon,
-                  size: iconSize,
-                  color: iconColor,
-                ),
-                SizedBox(width: paddingBetweenIcons),
-              ],
-            );
+      final int index = entry.key;
+      final IconData icon = entry.value;
+      return Row(
+        children: [
+          FaIcon(
+            icon,
+            size: iconSize,
+            color: iconColor,
+          ),
+          if (index < icons.length - 1) SizedBox(width: paddingBetweenIcons)
+        ],
+      );
     },
   ).toList();
 }
