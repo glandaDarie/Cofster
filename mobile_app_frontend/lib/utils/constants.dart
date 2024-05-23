@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:coffee_orderer/enums/coffeeTypes.dart' show CoffeeType;
 import 'package:coffee_orderer/utils/appAssets.dart' show FooterImages;
 import 'package:coffee_orderer/utils/drinkMadeByOrderType.dart' show OrderType;
@@ -59,3 +57,6 @@ const String ORDERS_TABLE = "Orders";
 
 const String HOST_EMAIL = "smtp-mail.outlook.com";
 const int HOST_PORT = 587;
+
+const int DIALOG_FORMULAR_TIMER_SECONDS = 10;
+const int DIALOG_FORMULAR_PERIODIC_CHANGE_CHECK_TIME = 1;

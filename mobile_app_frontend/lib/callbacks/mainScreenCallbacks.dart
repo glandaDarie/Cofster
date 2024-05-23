@@ -4,6 +4,10 @@ import 'package:coffee_orderer/services/loggedInService.dart'
     show LoggedInService;
 import 'package:coffee_orderer/providers/dialogFormularTimerSingletonProvider.dart'
     show DialogFormularTimerSingletonProvider;
+import 'package:coffee_orderer/utils/constants.dart'
+    show
+        DIALOG_FORMULAR_TIMER_SECONDS,
+        DIALOG_FORMULAR_PERIODIC_CHANGE_CHECK_TIME;
 
 class MainScreenCallbacks {
   bool speechState;
@@ -32,7 +36,6 @@ class MainScreenCallbacks {
     return this.listeningState;
   }
 
-  // work on the actual implementation here
   Future<void> onSetDialogFormular(
       {@required final String sharedPreferenceKey}) async {
     final dynamic elapsedTime =
@@ -59,6 +62,8 @@ class MainScreenCallbacks {
     );
     // in prod it should be 30 minutes
     dialogFormularTimerProvider.startTimer(
-        periodicChangeCheckTime: 1, microseconds: 10000000); // dev environment
+      periodicChangeCheckTime: DIALOG_FORMULAR_PERIODIC_CHANGE_CHECK_TIME,
+      microseconds: DIALOG_FORMULAR_TIMER_SECONDS * 1000 * 1000,
+    ); // in development and when presenting 10 seconds
   }
 }

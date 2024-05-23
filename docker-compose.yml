@@ -126,8 +126,6 @@ services:
       - SPARK_USER=spark
     ports:
       - "8010:8010"
-    volumes:
-      - "./cup_detection/messaging/:/opt/spark"
     depends_on:
       - questionnaire-llm-updater
 
