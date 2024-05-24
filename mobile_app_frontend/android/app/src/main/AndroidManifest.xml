@@ -19,7 +19,7 @@
   </intent>
 </queries>
    <application
-        android:label="mobile_app_frontend"
+        android:label="Cofster" 
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
