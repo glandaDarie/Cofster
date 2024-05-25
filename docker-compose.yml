@@ -86,6 +86,14 @@ services:
       fi
       "
   
+  web-app-camera-viewpoint:
+    image: web-app-camera-viewpoint:latest
+    networks:
+      coffee-creation-network:
+        ipv4_address: 172.28.0.8
+    ports:
+      - "3000:3000"    
+
   zookeeper:
     image: "bitnami/zookeeper:latest"
     hostname: zookeeper
