@@ -71,12 +71,14 @@ def train_model() -> None:
     in_features, hid_features_hid_in, hid_features_hid_hid, hid_features_hid_hid_second, \
         hid_features_hid_hid_third, hid_features_hid_hid_fourth, out_features_hid_out = \
         cast(Tuple[int, int, int, int, int, int, int], nr_features)
-    model : DrinkClassifier = DrinkClassifier(in_features=in_features, hid_features_hid_in=hid_features_hid_in, 
-                                                hid_features_hid_hid=hid_features_hid_hid, 
-                                                hid_features_hid_hid_second=hid_features_hid_hid_second,
-                                                hid_features_hid_hid_third=hid_features_hid_hid_third,
-                                                hid_features_hid_hid_fourth=hid_features_hid_hid_fourth, 
-                                                out_features_hid_out=out_features_hid_out).to(device)
+    model : DrinkClassifier = DrinkClassifier(
+        in_features=in_features, hid_features_hid_in=hid_features_hid_in, 
+        hid_features_hid_hid=hid_features_hid_hid, 
+        hid_features_hid_hid_second=hid_features_hid_hid_second,
+        hid_features_hid_hid_third=hid_features_hid_hid_third,
+        hid_features_hid_hid_fourth=hid_features_hid_hid_fourth, 
+        out_features_hid_out=out_features_hid_out
+    ).to(device)
     loss_fn : torch.nn.modules.loss.CrossEntropyLoss = nn.CrossEntropyLoss()
     optimizer : torch.optim.SGD = torch.optim.SGD(params=model.parameters(), lr=params_dict["LEARNING_RATE"], 
                                                   weight_decay=params_dict["WEIGHT_DECAY"])
