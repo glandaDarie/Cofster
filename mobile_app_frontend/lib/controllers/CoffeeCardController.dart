@@ -61,9 +61,9 @@ class CoffeeCardController {
       String coffeeNameSpeech,
       [double threshold = 0.6]) {
     for (CoffeeCard objectCoffeeCard in this._objectsCoffeeCards) {
-      double probability =
+      double similarityScore =
           scoreProbability(coffeeNameSpeech, objectCoffeeCard.coffeeName);
-      if (probability >= threshold) {
+      if (similarityScore >= threshold) {
         return objectCoffeeCard;
       }
     }
