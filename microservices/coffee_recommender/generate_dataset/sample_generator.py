@@ -23,13 +23,13 @@ def add_sample_batch_to_file(path : str, content : str) -> None:
         file.write(content)
 
 def main() -> None:
-    PATH : str = os.path.join(os.path.dirname(__file__), "coffee_dataset.txt") 
-    samples : List[str] = get_samples_from_file(path=PATH)
-    PATH : str = os.path.join(os.path.dirname(__file__), "test_dataset.txt") 
+    path : str = os.path.join(os.path.dirname(__file__), "coffee_dataset.txt") 
+    samples : List[str] = get_samples_from_file(path=path)
+    path : str = os.path.join(os.path.dirname(__file__), "test_dataset.txt") 
     for batch_size in range(50):
         random_samples : np.ndarray[str] = select_n_random_samples(samples=samples)
         formatted_samples : str = format_content(samples=random_samples)
-        add_sample_batch_to_file(PATH, formatted_samples)
+        add_sample_batch_to_file(path, formatted_samples)
         print(f"Batch size: {batch_size}")
 
 if __name__ == "__main__":
