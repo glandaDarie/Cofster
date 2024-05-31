@@ -29,7 +29,7 @@ def preprocess() -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor
           model_selection.train_test_split(X, y, test_size=0.2, random_state=42)
       X_train, X_test, y_train, y_test = cast(Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray], data)
       data : Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor] = \
-          process. arrays_to_tensor_floats32(X_train, X_test, y_train, y_test)
+          process.arrays_to_tensor_floats32(X_train, X_test, y_train, y_test)
       X_train, X_test, y_train, y_test = cast(Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor], data)
       put_content_in_cache(cache_path, (X_train, X_test, y_train, y_test))
       train_dataloader : DataLoader = process.load_array_batches(data_arrays=(X_train, y_train), batch_size=params_dict["BATCH_SIZE"])
