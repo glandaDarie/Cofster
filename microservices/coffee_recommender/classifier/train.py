@@ -117,4 +117,4 @@ def train_model() -> None:
         if (epoch+1) % 100 == 0:
             print(f"Epoch: {epoch} | train loss: {train_loss:.5f}, train acc: {train_acc:.2f}% | test Loss: {test_loss:.5f}, test Acc: {test_acc:.2f}%")
     path : str = os.path.join(os.path.dirname(__file__), "model_parameters.pickle") 
-    print(save_params(path, model))
+    save_params(path, model)
