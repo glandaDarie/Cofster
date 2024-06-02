@@ -88,9 +88,6 @@ services:
   
   web-app-camera-viewpoint:
     image: web-app-camera-viewpoint:latest
-    networks:
-      coffee-creation-network:
-        ipv4_address: 172.28.0.8
     ports:
       - "3000:3000"    
 
@@ -122,7 +119,7 @@ services:
     volumes:
       - "./microservices/cup_detection/messaging/kafka/run-init-kafka-topics.sh:/docker-entrypoint-initdb.d/run-init-kafka-topics.sh:ro"
       - "./microservices/cup_detection/messaging/kafka/init-kafka-topics.sh:/init-kafka-topics.sh:ro"
-  
+
   spark:
     image: docker.io/bitnami/spark:3.5
     environment:
