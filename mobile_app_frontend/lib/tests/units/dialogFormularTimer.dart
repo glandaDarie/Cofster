@@ -59,7 +59,7 @@ void main() {
       await tester.pump(const Duration(seconds: 10));
       await tester.pump();
 
-      // cannot test this, because of async nature of the code (only in prod should work)
+      // cannot test this, because of the async nature of the code (only in prod should work)
       // temporary turnaround is setting to true displayDialog if the logger is called in the dialogFormularTimerProvider
       dialogFormularTimerProvider.displayDialog = true;
       expect(dialogFormularTimerProvider.displayDialog, isTrue);
