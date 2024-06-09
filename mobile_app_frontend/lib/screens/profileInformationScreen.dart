@@ -158,6 +158,10 @@ class _ProfileInformationPageState extends State<ProfileInformationPage> {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final screenHeight = mediaQuery.size.height;
+    final screenWidth = mediaQuery.size.width;
+
     return WillPopScope(
       onWillPop: () {
         _callbackSelectedIndex(
@@ -171,21 +175,21 @@ class _ProfileInformationPageState extends State<ProfileInformationPage> {
       },
       child: FutureBuilder<Uint8List>(
         future: _authController.loadUserPhoto(),
-        builder: (BuildContext context, AsyncSnapshot<Uint8List> snapshot) {
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             home: Scaffold(
-              body: Container(
-                color: Colors.brown.shade700,
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    return Column(
+              body: SafeArea(
+                child: SingleChildScrollView(
+                  child: Container(
+                    color: Colors.brown.shade700,
+                    child: Column(
                       children: [
                         SizedBox(
-                          height: constraints.maxHeight * 0.1,
+                          height: screenHeight * 0.1,
                         ),
-                        _UserImageInProfileInformation(snapshot, constraints),
-                        SizedBox(height: constraints.maxHeight * 0.02),
+                        _UserImageInProfileInformation(snapshot, screenWidth),
+                        SizedBox(height: screenHeight * 0.02),
                         FutureBuilder(
                           future: Future.delayed(Duration(seconds: 3)).then(
                             (_) => LoggedInService.getSharedPreferenceValue(
@@ -204,7 +208,7 @@ class _ProfileInformationPageState extends State<ProfileInformationPage> {
                                   snapshot.data,
                                   style: TextStyle(
                                       fontWeight: FontWeight.w900,
-                                      fontSize: constraints.maxWidth * 0.06,
+                                      fontSize: screenWidth * 0.065,
                                       color: Colors.white),
                                 ),
                               );
@@ -214,7 +218,7 @@ class _ProfileInformationPageState extends State<ProfileInformationPage> {
                                   "Guest",
                                   style: TextStyle(
                                       fontWeight: FontWeight.w900,
-                                      fontSize: constraints.maxWidth * 0.06,
+                                      fontSize: screenWidth * 0.065,
                                       color: Colors.white),
                                 ),
                               );
@@ -225,20 +229,20 @@ class _ProfileInformationPageState extends State<ProfileInformationPage> {
                           child: Text(
                             "@cofster",
                             style: TextStyle(
-                                fontSize: constraints.maxWidth * 0.045,
+                                fontSize: screenWidth * 0.045,
                                 color: Colors.white),
                           ),
                         ),
-                        Expanded(
-                          child: ListView(
-                            children: [
-                              ...ProfileCards(context),
-                            ],
-                          ),
+                        ListView(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          children: [
+                            ...ProfileCards(context),
+                          ],
                         ),
                       ],
-                    );
-                  },
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -250,13 +254,13 @@ class _ProfileInformationPageState extends State<ProfileInformationPage> {
 }
 
 Center _UserImageInProfileInformation(
-    AsyncSnapshot<Uint8List> snapshot, BoxConstraints constraints) {
+    AsyncSnapshot snapshot, double screenWidth) {
   Object image = snapshot.hasData
       ? MemoryImage(snapshot.data)
       : AssetImage("assets/images/no_profile_image.jpg");
   return Center(
     child: CircleAvatar(
-      maxRadius: constraints.maxWidth * 0.2,
+      maxRadius: screenWidth * 0.2,
       backgroundImage: image,
     ),
   );

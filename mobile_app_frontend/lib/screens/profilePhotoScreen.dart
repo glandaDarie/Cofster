@@ -42,25 +42,17 @@ class _ProfilePhotoPageState extends State<ProfilePhotoPage>
       body: Center(
         child: Column(
           children: [
-            SizedBox(height: 180),
-            FutureBuilder<String>(
-                future: this.authController.getNameFromCache(),
-                builder:
-                    (BuildContext context, AsyncSnapshot<String> snapshot) {
-                  if (snapshot.hasData) {
-                    return Text(
-                      "${snapshot.data}, please select a photo",
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF4A3731),
-                      ),
-                    );
-                  } else {
-                    return CircularProgressIndicator(
-                        color: Colors.brown, backgroundColor: Colors.white);
-                  }
-                }),
+            SizedBox(height: 90),
+            SingleChildScrollView(
+              child: Text(
+                "Please select a photo",
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF4A3731),
+                ),
+              ),
+            ),
             const SizedBox(
               height: 30.0,
             ),

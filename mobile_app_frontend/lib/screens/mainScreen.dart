@@ -192,6 +192,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final MediaQueryData mediaQuery = MediaQuery.of(context);
+    final double screenWidth = mediaQuery.size.width;
+    final double screenHeight = mediaQuery.size.height;
     return FutureBuilder<Map<String, List<String>>>(
       future: this
           .questionnaireController
@@ -235,7 +238,7 @@ class _HomePageState extends State<HomePage> {
                     },
                   );
                 }
-                return body();
+                return body(screenWidth, screenHeight);
               },
             ),
           );
@@ -244,61 +247,64 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget body() {
+  Widget body(double screenWidth, double screenHeight) {
     return Stack(
       children: [
         ListView(
           padding: EdgeInsets.only(left: 10.0, top: 20.0),
           children: <Widget>[
             Padding(padding: EdgeInsets.only(top: 50.0)),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                FutureBuilder<dynamic>(
-                  future: () async {
-                    dynamic nameFromPreferences =
-                        await LoggedInService.getSharedPreferenceValue(
-                            "<nameUser>");
-                    return nameFromPreferences ??
-                        await this.authController.loadName();
-                  }(),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                    if (snapshot.hasData) {
-                      return Text(
-                        "Hello, ${snapshot.data}",
-                        style: TextStyle(
-                            fontFamily: "Baskerville",
-                            fontSize: 35.0,
-                            fontWeight: FontWeight.bold,
-                            foreground: Paint()
-                              ..shader = LinearGradient(
-                                colors: [
-                                  Color.fromARGB(255, 167, 155, 143),
-                                  Color.fromARGB(255, 95, 76, 51),
-                                  Color.fromARGB(255, 71, 54, 32)
-                                ],
-                              ).createShader(Rect.fromLTWH(0, 0, 100, 100))),
-                      );
-                    } else if (snapshot.hasError) {
-                      return Text("Error: ${snapshot.error}");
-                    } else {
-                      return CircularProgressIndicator(
-                          color: Colors.brown, backgroundColor: Colors.white);
-                    }
-                  },
-                ),
-                Padding(
-                  padding: EdgeInsets.only(right: 13.0),
-                  child: FutureBuilder<Uint8List>(
-                    future: this.authController.loadUserPhoto(),
+            SingleChildScrollView(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  FutureBuilder<dynamic>(
+                    future: () async {
+                      dynamic nameFromPreferences =
+                          await LoggedInService.getSharedPreferenceValue(
+                              "<nameUser>");
+                      return nameFromPreferences ??
+                          await this.authController.loadName();
+                    }(),
                     builder: (BuildContext context,
-                        AsyncSnapshot<Uint8List> snapshot) {
-                      return buildUserImage(snapshot);
+                        AsyncSnapshot<dynamic> snapshot) {
+                      if (snapshot.hasData) {
+                        return Text(
+                          "Hello, ${snapshot.data}",
+                          style: TextStyle(
+                              fontFamily: "Baskerville",
+                              fontSize: 35.0,
+                              fontWeight: FontWeight.bold,
+                              foreground: Paint()
+                                ..shader = LinearGradient(
+                                  colors: [
+                                    Color.fromARGB(255, 167, 155, 143),
+                                    Color.fromARGB(255, 95, 76, 51),
+                                    Color.fromARGB(255, 71, 54, 32)
+                                  ],
+                                ).createShader(Rect.fromLTWH(0, 0, 100, 100))),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Text("Error: ${snapshot.error}");
+                      } else {
+                        return CircularProgressIndicator(
+                            color: Colors.brown, backgroundColor: Colors.white);
+                      }
                     },
                   ),
-                ),
-              ],
+                  Padding(
+                    padding: EdgeInsets.only(right: 5.0),
+                    child: FutureBuilder<Uint8List>(
+                      future: this.authController.loadUserPhoto(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<Uint8List> snapshot) {
+                        return buildUserImage(
+                            snapshot, screenWidth, screenHeight);
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
             SizedBox(height: 10.0),
             Padding(
