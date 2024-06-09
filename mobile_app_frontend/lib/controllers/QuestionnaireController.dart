@@ -5,6 +5,8 @@ import 'package:coffee_orderer/utils/localUserInformation.dart';
 import 'package:coffee_orderer/controllers/UserController.dart';
 import 'package:coffee_orderer/services/loggedInService.dart'
     show LoggedInService;
+import 'package:coffee_orderer/utils/constants.dart'
+    show COFFEE_RECOMMENDER_URL;
 
 class QuestionnaireController {
   UrlService urlServiceGetQuestions;
@@ -33,7 +35,7 @@ class QuestionnaireController {
   Future<List<String>> postQuestionsToGetPredictedFavouriteDrinks(
       Map<String, String> content) async {
     this.urlServicePostAnswers =
-        UrlService("http://192.168.1.100:8001", "/prediction_drinks");
+        UrlService(COFFEE_RECOMMENDER_URL, "/prediction_drinks");
     this.urlPostAnswers = this.urlServicePostAnswers.createUrl();
     this.userDaoPostAnswers = DynamoDBQuestionnaireDao(this.urlPostAnswers);
     return await this
