@@ -12,4 +12,4 @@ app.include_router(coffee_router, prefix="/coffee")
 app.dependency_overrides[CoffeeController] = lambda: CoffeeController(CoffeeService()) 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="192.168.0.192", port=5000)
+    uvicorn.run(app, host="0.0.0.0", port=5000)

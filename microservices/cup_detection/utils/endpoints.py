@@ -1,0 +1,1 @@
+CREATE_COFFEE_ENDPOINT : str = "http://192.168.1.104:5000/coffee"
