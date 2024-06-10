@@ -193,7 +193,8 @@ class OrderService {
             coffeePrice: "${this._extraIngredients["price"]}\$",
             quantity: this._extraIngredients["quantity"],
             coffeeCupSize: this._extraIngredients["coffeeSize"],
-            coffeeTemperature: this._extraIngredients["coffeeTemperature"],
+            coffeeTemperature:
+                this._extraIngredients["coffeeTemperature"] ?? "Cold",
             hasCream: this._extraIngredients["hasCream"],
             numberOfSugarCubes: this._extraIngredients["numberSugarCubes"],
             numberOfIceCubes: this._extraIngredients["numberIceCubes"],
