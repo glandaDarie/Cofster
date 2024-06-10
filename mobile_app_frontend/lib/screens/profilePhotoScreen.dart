@@ -37,12 +37,15 @@ class _ProfilePhotoPageState extends State<ProfilePhotoPage>
 
   @override
   Widget build(BuildContext context) {
+    final MediaQueryData mediaQuery = MediaQuery.of(context);
+    final double screenWidth = mediaQuery.size.width;
+    final double screenHeight = mediaQuery.size.height;
     return Scaffold(
       backgroundColor: Color(0xFFE6E2D3),
       body: Center(
         child: Column(
           children: [
-            SizedBox(height: 90),
+            SizedBox(height: screenHeight * 0.16),
             SingleChildScrollView(
               child: Text(
                 "Please select a photo",
@@ -53,27 +56,27 @@ class _ProfilePhotoPageState extends State<ProfilePhotoPage>
                 ),
               ),
             ),
-            const SizedBox(
-              height: 30.0,
+            SizedBox(
+              height: screenHeight * 0.05,
             ),
             this.imageFile == null
                 ? ClipRRect(
-                    borderRadius: BorderRadius.circular(150.0),
+                    borderRadius: BorderRadius.circular(screenHeight * 0.18),
                     child: Image.asset(
                       "assets/images/no_profile_image.jpg",
-                      height: 300.0,
-                      width: 300.0,
+                      height: screenHeight * 0.36,
+                      width: screenWidth * 0.73,
                     ))
                 : ClipRRect(
-                    borderRadius: BorderRadius.circular(150.0),
+                    borderRadius: BorderRadius.circular(screenHeight * 0.18),
                     child: Image.file(
                       this.imageFile,
-                      height: 300.0,
-                      width: 300.0,
+                      height: screenHeight * 0.36,
+                      width: screenWidth * 0.73,
                       fit: BoxFit.fill,
                     )),
-            const SizedBox(
-              height: 50.0,
+            SizedBox(
+              height: screenHeight * 0.06,
             ),
             ElevatedButton(
               onPressed: () async {
@@ -86,7 +89,7 @@ class _ProfilePhotoPageState extends State<ProfilePhotoPage>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.photo_library),
-                  SizedBox(width: 8),
+                  SizedBox(width: screenWidth * 0.02),
                   Text(
                     "Select image",
                     style: TextStyle(fontSize: 16),
@@ -100,8 +103,8 @@ class _ProfilePhotoPageState extends State<ProfilePhotoPage>
                 ),
               ),
             ),
-            const SizedBox(
-              height: 5.0,
+            SizedBox(
+              height: screenHeight * 0.0060,
             ),
             ElevatedButton(
               onPressed: () async {
@@ -116,7 +119,7 @@ class _ProfilePhotoPageState extends State<ProfilePhotoPage>
                   };
                   await this.userController.uploadUsersPhotoToS3(content);
                 }
-                // save name of the person in shared preferences
+
                 String preferenceValueResponse =
                     await LoggedInService.setSharedPreferenceValue("<nameUser>",
                         value: cache["name"]);
@@ -161,67 +164,69 @@ class _ProfilePhotoPageState extends State<ProfilePhotoPage>
 
   void showImagePicker(BuildContext context) {
     showModalBottomSheet(
-        context: context,
-        builder: (builder) {
-          return Card(
-            child: Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height / 5.2,
-                margin: const EdgeInsets.only(top: 8.0),
-                padding: const EdgeInsets.all(12),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                        child: InkWell(
+      context: context,
+      builder: (builder) {
+        return Card(
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height / 5.2,
+            margin: const EdgeInsets.only(top: 8.0),
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                    child: InkWell(
+                  child: Column(
+                    children: const [
+                      Icon(
+                        Icons.image,
+                        color: Color(0xFF8C6F51),
+                        size: 60.0,
+                      ),
+                      SizedBox(height: 12.0),
+                      Text(
+                        "Gallery",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 16, color: Colors.brown),
+                      )
+                    ],
+                  ),
+                  onTap: () {
+                    photoSelector("gallery", callback);
+                    Navigator.pop(context);
+                  },
+                )),
+                Expanded(
+                  child: InkWell(
+                    child: SizedBox(
                       child: Column(
                         children: const [
                           Icon(
-                            Icons.image,
+                            Icons.camera_alt,
                             color: Color(0xFF8C6F51),
                             size: 60.0,
                           ),
                           SizedBox(height: 12.0),
                           Text(
-                            "Gallery",
+                            "Camera",
                             textAlign: TextAlign.center,
                             style: TextStyle(fontSize: 16, color: Colors.brown),
                           )
                         ],
                       ),
-                      onTap: () {
-                        photoSelector("gallery", callback);
-                        Navigator.pop(context);
-                      },
-                    )),
-                    Expanded(
-                        child: InkWell(
-                      child: SizedBox(
-                        child: Column(
-                          children: const [
-                            Icon(
-                              Icons.camera_alt,
-                              color: Color(0xFF8C6F51),
-                              size: 60.0,
-                            ),
-                            SizedBox(height: 12.0),
-                            Text(
-                              "Camera",
-                              textAlign: TextAlign.center,
-                              style:
-                                  TextStyle(fontSize: 16, color: Colors.brown),
-                            )
-                          ],
-                        ),
-                      ),
-                      onTap: () {
-                        photoSelector("camera", callback);
-                        Navigator.pop(context);
-                      },
-                    ))
-                  ],
-                )),
-          );
-        });
+                    ),
+                    onTap: () {
+                      photoSelector("camera", callback);
+                      Navigator.pop(context);
+                    },
+                  ),
+                )
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }
