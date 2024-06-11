@@ -15,6 +15,8 @@ import 'package:coffee_orderer/utils/localUserInformation.dart'
     show createUserInformationFile;
 import 'package:coffee_orderer/screens/authScreen.dart' show AuthPage;
 import 'package:coffee_orderer/screens/mainScreen.dart' show HomePage;
+import 'package:coffee_orderer/screens/questionnaireScreen.dart'
+    show QuestionnairePage;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -73,7 +75,8 @@ class CofsterPage extends StatelessWidget {
             return Text("${loggingStatusResponse}");
           }
           return MaterialApp(
-            home: loggingStatusResponse ? HomePage() : AuthPage(),
+            home: QuestionnairePage(),
+            // home: loggingStatusResponse ? HomePage() : AuthPage(),
             debugShowCheckedModeBanner: false,
           );
         } else if (snapshot.hasError) {

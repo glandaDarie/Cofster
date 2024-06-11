@@ -96,137 +96,152 @@ class _QuestionnairePageState extends State<QuestionnairePage> {
     Question currentQuestion = _questions[_questionIndex];
     List<String> currentQuestionOptions = currentQuestion.getOptions();
     bool questionnaireFinished = false;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Expanded(
-          child: Container(
-            padding: EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 10,
-                  spreadRadius: 1,
-                ),
-              ],
-            ),
-            child: Column(
-              children: [
-                Text(
-                  currentQuestion.question,
-                  style: GoogleFonts.quicksand(
-                    textStyle: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.brown,
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        double screenWidth = constraints.maxWidth;
+        double screenHeight = constraints.maxHeight;
+        double fontSize = screenWidth * 0.05;
+        double buttonHeight = screenHeight * 0.08;
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.all(screenWidth * 0.04),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(screenWidth * 0.04),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 10,
+                      spreadRadius: 1,
                     ),
-                  ),
-                  textAlign: TextAlign.center,
+                  ],
                 ),
-                SizedBox(height: 16),
-                ...currentQuestionOptions.map(
-                  (option) => Padding(
-                    padding: EdgeInsets.symmetric(vertical: 8.0),
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        setState(() {
-                          _selectedOptions.add(option);
-                          _questionIndex >= _questions.length - 1
-                              ? questionnaireFinished = true
-                              : _questionIndex += 1;
-                        });
-                        if (questionnaireFinished) {
-                          Map<String, String> selectedOptionsForClassifier = {};
-                          for (int i = 0; i < _selectedOptions.length; ++i) {
-                            selectedOptionsForClassifier["Question ${i}"] =
-                                _selectedOptions[i].toLowerCase();
-                          }
-                          List<String> fetchedFavouriteDrinks =
-                              await questionnaireController
-                                  .postQuestionsToGetPredictedFavouriteDrinks(
-                                      selectedOptionsForClassifier);
-                          Map<String, String> favouriteDrinks =
-                              fetchedFavouriteDrinks.asMap().map(
-                                    (int key, String value) =>
-                                        MapEntry("drink ${key + 1}", value),
-                                  );
-                          String response = await userController
-                              .updateUsersFavouriteDrinks(favouriteDrinks);
-                          if (response !=
-                              "Successfully updated the favourite drinks") {
-                            ToastUtils.showToast(response);
-                            return Center(
-                              child: CircularProgressIndicator(
-                                  color: Colors.brown,
-                                  backgroundColor: Colors.white),
-                            );
-                          }
-                          Map<String, String> convertedFavouriteDrinks =
-                              favouriteDrinks
-                                  .map((final String key, final String value) {
-                            String newKey = key.replaceAll(" ", "-");
-                            String newValue = value.replaceAll(" ", "-");
-                            return MapEntry(newKey, newValue);
-                          });
-                          await storeUserInformationInCache(
-                              convertedFavouriteDrinks);
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (context) => HomePage(),
-                            ),
-                          );
-                          return null;
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.brown,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16.0),
+                child: Column(
+                  children: [
+                    Text(
+                      currentQuestion.question,
+                      style: GoogleFonts.quicksand(
+                        textStyle: TextStyle(
+                          fontSize: fontSize,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.brown,
                         ),
-                        minimumSize: Size(double.infinity, 48),
                       ),
-                      child: Center(
-                        child: Text(
-                          option,
-                          style: GoogleFonts.quicksand(
-                            textStyle: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: screenHeight * 0.02),
+                    ...currentQuestionOptions.map(
+                      (option) => Padding(
+                        padding:
+                            EdgeInsets.symmetric(vertical: screenHeight * 0.01),
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            setState(() {
+                              _selectedOptions.add(option);
+                              _questionIndex >= _questions.length - 1
+                                  ? questionnaireFinished = true
+                                  : _questionIndex += 1;
+                            });
+                            if (questionnaireFinished) {
+                              Map<String, String> selectedOptionsForClassifier =
+                                  {};
+                              for (int i = 0;
+                                  i < _selectedOptions.length;
+                                  ++i) {
+                                selectedOptionsForClassifier["Question ${i}"] =
+                                    _selectedOptions[i].toLowerCase();
+                              }
+                              List<String> fetchedFavouriteDrinks =
+                                  await questionnaireController
+                                      .postQuestionsToGetPredictedFavouriteDrinks(
+                                          selectedOptionsForClassifier);
+                              Map<String, String> favouriteDrinks =
+                                  fetchedFavouriteDrinks.asMap().map(
+                                        (int key, String value) =>
+                                            MapEntry("drink ${key + 1}", value),
+                                      );
+                              String response = await userController
+                                  .updateUsersFavouriteDrinks(favouriteDrinks);
+                              if (response !=
+                                  "Successfully updated the favourite drinks") {
+                                ToastUtils.showToast(response);
+                                return Center(
+                                  child: CircularProgressIndicator(
+                                      color: Colors.brown,
+                                      backgroundColor: Colors.white),
+                                );
+                              }
+                              Map<String, String> convertedFavouriteDrinks =
+                                  favouriteDrinks.map(
+                                      (final String key, final String value) {
+                                String newKey = key.replaceAll(" ", "-");
+                                String newValue = value.replaceAll(" ", "-");
+                                return MapEntry(newKey, newValue);
+                              });
+                              await storeUserInformationInCache(
+                                  convertedFavouriteDrinks);
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (context) => HomePage(),
+                                ),
+                              );
+                              return null;
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.brown,
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(screenWidth * 0.04),
+                            ),
+                            minimumSize: Size(double.infinity, buttonHeight),
+                          ),
+                          child: Center(
+                            child: Text(
+                              option,
+                              style: GoogleFonts.quicksand(
+                                textStyle: TextStyle(
+                                  fontSize: fontSize * 0.8,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              textAlign: TextAlign.center,
                             ),
                           ),
-                          textAlign: TextAlign.center,
                         ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
-        Text(
-          "${_questionIndex + 1}/${_questions.length}",
-          style: GoogleFonts.quicksand(
-            textStyle: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
+            SizedBox(height: screenHeight * 0.02),
+            Text(
+              "${_questionIndex + 1}/${_questions.length}",
+              style: GoogleFonts.quicksand(
+                textStyle: TextStyle(
+                  fontSize: fontSize * 0.8,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              textAlign: TextAlign.center,
             ),
-          ),
-          textAlign: TextAlign.center,
-        ),
-        SizedBox(height: 16),
-        LinearProgressIndicator(
-          value: (_questionIndex + 1) / _questions.length,
-          valueColor: AlwaysStoppedAnimation<Color>(Colors.brown),
-          backgroundColor: Colors.grey.withOpacity(0.3),
-        ),
-      ],
+            SizedBox(height: screenHeight * 0.02),
+            LinearProgressIndicator(
+              value: (_questionIndex + 1) / _questions.length,
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.brown),
+              backgroundColor: Colors.grey.withOpacity(0.3),
+            ),
+          ],
+        );
+      },
     );
   }
 }
